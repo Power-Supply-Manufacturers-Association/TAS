@@ -1,0 +1,129 @@
+{
+    "inputs": {
+        "designRequirements": {
+            "name": "Buck 12V to 5V @ 3A",
+            "topology": "Buck Converter",
+            "inputVoltage": { "minimum": 10.0, "nominal": 12.0, "maximum": 14.0 },
+            "outputVoltage": { "nominal": 5.0 },
+            "outputCurrent": { "nominal": 3.0 },
+            "efficiencyTarget": 0.92,
+            "operatingMode": "CCM",
+            "modulationType": "PWM",
+            "controlMode": "Voltage Mode"
+        },
+        "operatingPoints": [
+            {
+                "name": "Full Load Vin_nom",
+                "conditions": {
+                    "ambientTemperature": 25.0,
+                    "inputVoltage": 12.0,
+                    "outputCurrent": 3.0
+                },
+                "switchingFrequency": 500000,
+                "dutyCycle": 0.417,
+                "operatingMode": "CCM",
+                "waveforms": {
+                    "inductorCurrent": {
+                        "processed": {
+                            "label": "Triangular",
+                            "peakToPeak": 0.6,
+                            "offset": 3.0,
+                            "dutyCycle": 0.417
+                        }
+                    },
+                    "switchVoltage": {
+                        "processed": {
+                            "label": "Rectangular",
+                            "peakToPeak": 12.0,
+                            "offset": 6.0,
+                            "dutyCycle": 0.417
+                        }
+                    }
+                }
+            }
+        ]
+    },
+    "components": {
+        "magnetics": [
+            {
+                "name": "L1",
+                "role": "mainInductor",
+                "summary": {
+                    "magnetizingInductance": 22e-6,
+                    "coreShape": "Coilcraft XAL5030",
+                    "coreMaterial": "Metal composite",
+                    "windingLosses": 0.12,
+                    "coreLosses": 0.05
+                }
+            }
+        ],
+        "semiconductors": [
+            {
+                "name": "Q1",
+                "role": "highSideSwitch",
+                "summary": {
+                    "partNumber": "BSC010N04LS",
+                    "deviceType": "mosfet",
+                    "technology": "Si",
+                    "voltageRating": 40,
+                    "currentRating": 100,
+                    "onResistance": 0.001,
+                    "totalGateCharge": 48e-9
+                }
+            },
+            {
+                "name": "D1",
+                "role": "freewheelDiode",
+                "summary": {
+                    "partNumber": "SS34",
+                    "deviceType": "diode",
+                    "technology": "Si",
+                    "voltageRating": 40,
+                    "currentRating": 3,
+                    "forwardVoltage": 0.5
+                }
+            }
+        ],
+        "capacitors": [
+            {
+                "name": "Cout",
+                "role": "outputCapacitor",
+                "quantity": 3,
+                "summary": {
+                    "capacitance": 22e-6,
+                    "voltageRating": 10.0,
+                    "esr": 0.003,
+                    "esrFrequency": 500000,
+                    "technology": "MLCC X5R"
+                }
+            }
+        ]
+    },
+    "outputs": [
+        {
+            "operatingPointName": "Full Load Vin_nom",
+            "origin": "analytical",
+            "methodUsed": "Proteus converter-designer",
+            "losses": {
+                "coreLosses": 0.05,
+                "windingLosses": 0.12,
+                "switchConduction": 0.009,
+                "switchSwitching": 0.15,
+                "diodeConduction": 0.25,
+                "capacitorEsr": 0.01,
+                "total": 0.59
+            },
+            "stresses": {
+                "switchVoltageMax": 14,
+                "switchVoltageRating": 40,
+                "switchVoltageMargin": 0.65
+            },
+            "kpis": {
+                "efficiency": 0.962,
+                "outputRipple": 0.020,
+                "inputPower": 15.59,
+                "outputPower": 15.0
+            }
+        }
+    ]
+}

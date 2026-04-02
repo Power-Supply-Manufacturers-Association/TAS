@@ -1,0 +1,114 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "http://openconverters.com/schemas/TAS/components.json",
+    "title": "components",
+    "description": "Components used in the converter and their circuit connections. Each component is an EAS document (inline or reference).",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "componentList": {
+            "description": "List of all components in the converter. Each has a name, role, and data (either a full EAS document inline or a string reference to an external EAS file).",
+            "type": "array",
+            "items": { "$ref": "#/$defs/component" }
+        },
+        "netlist": {
+            "description": "Circuit connections between components. Defines nodes and how component pins connect to them.",
+            "$ref": "#/$defs/netlist"
+        }
+    },
+    "required": ["componentList"],
+    "$defs": {
+        "componentRole": {
+            "description": "Role of the component in the converter circuit",
+            "type": "string",
+            "enum": [
+                "mainInductor", "resonantInductor", "pfcInductor", "filterInductor",
+                "mainTransformer", "gateTransformer", "currentTransformer",
+                "highSideSwitch", "lowSideSwitch", "primarySwitch", "secondarySwitch",
+                "clampSwitch", "synchronousRectifier", "pfcSwitch",
+                "outputRectifier", "freewheelDiode", "clampDiode", "boostDiode",
+                "inputCapacitor", "outputCapacitor", "bulkCapacitor",
+                "resonantCapacitor", "bootstrapCapacitor", "decouplingCapacitor",
+                "snubberCapacitor", "clampCapacitor",
+                "currentSenseResistor", "gateResistor", "feedbackResistor",
+                "bleederResistor", "snubberResistor", "clampResistor"
+            ]
+        },
+        "component": {
+            "description": "A component in the converter. Following the MAS pattern (like core shape/material), 'data' can be either a full EAS document inline or a string reference to an external EAS file.",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "name": {
+                    "description": "Reference designator (e.g. 'T1', 'Q1', 'C1', 'R1')",
+                    "type": "string"
+                },
+                "role": { "$ref": "#/$defs/componentRole" },
+                "quantity": {
+                    "description": "Number of identical units in parallel",
+                    "type": "integer",
+                    "minimum": 1,
+                    "default": 1
+                },
+                "pins": {
+                    "description": "Pin names for this component, used in netlist connections. If omitted, default pins are inferred from the component type.",
+                    "type": "array",
+                    "items": { "type": "string" }
+                },
+                "data": {
+                    "title": "EASDataOrReference",
+                    "description": "The component data: either a full EAS document inline, or a string path/URI to an external EAS file (same pattern as MAS core shape/material).",
+                    "oneOf": [
+                        {
+                            "$ref": "http://openconverters.com/schemas/EAS/eas.json",
+                            "description": "Full EAS document inline"
+                        },
+                        {
+                            "type": "string",
+                            "description": "Path or URI to an external EAS document"
+                        }
+                    ]
+                }
+            },
+            "required": ["name", "role", "data"]
+        },
+        "netlist": {
+            "description": "Circuit connections defining how components are wired together.",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "nodes": {
+                    "description": "Named electrical nodes in the circuit (e.g. 'Vin', 'sw_node', 'out', 'gnd')",
+                    "type": "array",
+                    "items": { "type": "string" }
+                },
+                "connections": {
+                    "description": "List of connections: each maps a component pin to a node.",
+                    "type": "array",
+                    "items": { "$ref": "#/$defs/connection" }
+                }
+            },
+            "required": ["nodes", "connections"]
+        },
+        "connection": {
+            "description": "A single connection: one pin of one component to one circuit node.",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "component": {
+                    "description": "Reference designator of the component (must match a name in componentList)",
+                    "type": "string"
+                },
+                "pin": {
+                    "description": "Pin name on the component (e.g. 'drain', 'source', 'gate', 'anode', 'cathode', 'dot', 'undot', 'positive', 'negative')",
+                    "type": "string"
+                },
+                "node": {
+                    "description": "Circuit node this pin connects to (must be in nodes list)",
+                    "type": "string"
+                }
+            },
+            "required": ["component", "pin", "node"]
+        }
+    }
+}

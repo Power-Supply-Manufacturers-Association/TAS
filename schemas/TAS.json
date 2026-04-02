@@ -1,0 +1,27 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "http://openconverters.com/schemas/TAS/TAS.json",
+    "title": "TAS",
+    "description": "Topology Agnostic Structure (TAS) — Describes a complete power converter design: requirements, components, and results.",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "inputs": {
+            "description": "Converter requirements and operating conditions",
+            "title": "inputs",
+            "$ref": "./inputs.json"
+        },
+        "components": {
+            "description": "Components used in the converter (references MAS/SAS/CAS/RAS or inline)",
+            "title": "components",
+            "$ref": "./components.json"
+        },
+        "outputs": {
+            "description": "Computed results: losses, efficiency, waveforms",
+            "title": "outputs",
+            "type": "array",
+            "items": { "$ref": "./outputs.json" }
+        }
+    },
+    "required": ["inputs"]
+}

@@ -1,0 +1,159 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "http://openconverters.com/schemas/TAS/inputs.json",
+    "title": "inputs",
+    "description": "Converter design requirements and operating points",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "designRequirements": {
+            "$ref": "#/$defs/designRequirements"
+        },
+        "operatingPoints": {
+            "description": "One or more operating conditions the converter must handle",
+            "type": "array",
+            "items": { "$ref": "#/$defs/operatingPoint" },
+            "minItems": 1
+        }
+    },
+    "required": ["designRequirements"],
+    "$defs": {
+        "designRequirements": {
+            "description": "Electrical requirements for the converter",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "name": {
+                    "description": "A label for this design",
+                    "type": "string"
+                },
+                "topology": {
+                    "description": "Converter topology (same enum as MAS designRequirements.topology)",
+                    "type": "string",
+                    "enum": [
+                        "Buck Converter",
+                        "Boost Converter",
+                        "Buck-Boost Converter",
+                        "Inverting Buck-Boost Converter",
+                        "SEPIC Converter",
+                        "Cuk Converter",
+                        "Zeta Converter",
+                        "Flyback Converter",
+                        "Forward Converter",
+                        "Two-Switch Forward Converter",
+                        "Active Clamp Forward Converter",
+                        "Push-Pull Converter",
+                        "Half-Bridge Converter",
+                        "Full-Bridge Converter",
+                        "Phase-Shifted Full-Bridge Converter",
+                        "LLC Resonant Converter",
+                        "CLLC Resonant Converter",
+                        "Dual Active Bridge",
+                        "Power Factor Correction Boost",
+                        "Totem-Pole Bridgeless PFC"
+                    ]
+                },
+                "inputVoltage": {
+                    "description": "Input voltage range in Volts",
+                    "$ref": "./utils.json#/$defs/dimensionWithTolerance"
+                },
+                "outputVoltage": {
+                    "description": "Output voltage in Volts",
+                    "$ref": "./utils.json#/$defs/dimensionWithTolerance"
+                },
+                "outputCurrent": {
+                    "description": "Output current in Amperes",
+                    "$ref": "./utils.json#/$defs/dimensionWithTolerance"
+                },
+                "outputPower": {
+                    "description": "Output power in Watts",
+                    "$ref": "./utils.json#/$defs/dimensionWithTolerance"
+                },
+                "efficiencyTarget": {
+                    "description": "Target efficiency as fraction (0.90 = 90%)",
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                },
+                "isolationVoltage": {
+                    "description": "Required isolation voltage in Volts. Null or absent = non-isolated.",
+                    "type": ["number", "null"]
+                },
+                "operatingMode": {
+                    "description": "Preferred operating mode",
+                    "type": "string",
+                    "enum": ["CCM", "DCM", "BCM", "CrCM", "QR"]
+                },
+                "modulationType": {
+                    "description": "Modulation scheme",
+                    "type": "string",
+                    "enum": ["PWM", "PFM", "Hysteretic", "Phase-Shift"]
+                },
+                "controlMode": {
+                    "description": "Control loop architecture",
+                    "type": "string",
+                    "enum": ["Voltage Mode", "Peak Current Mode", "Average Current Mode", "COT"]
+                },
+                "maximumDutyCycle": {
+                    "description": "Maximum allowed duty cycle (0-1)",
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                },
+                "ambientTemperature": {
+                    "description": "Ambient temperature range in Celsius",
+                    "$ref": "./utils.json#/$defs/dimensionWithTolerance"
+                },
+                "market": {
+                    "description": "Target market",
+                    "type": "string",
+                    "enum": ["Consumer", "Commercial", "Industrial", "Automotive", "Medical", "Military", "Space"]
+                }
+            },
+            "required": ["topology", "inputVoltage", "outputVoltage"]
+        },
+        "operatingPoint": {
+            "description": "A specific operating condition",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "name": {
+                    "description": "Operating point name (e.g. 'Full Load Vin_min')",
+                    "type": "string"
+                },
+                "conditions": {
+                    "description": "Environmental conditions",
+                    "type": "object",
+                    "properties": {
+                        "ambientTemperature": { "type": "number" },
+                        "inputVoltage": { "type": "number" },
+                        "outputCurrent": { "type": "number" }
+                    }
+                },
+                "switchingFrequency": {
+                    "description": "Switching frequency in Hz",
+                    "type": "number"
+                },
+                "dutyCycle": {
+                    "description": "Duty cycle (0-1)",
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                },
+                "operatingMode": {
+                    "description": "Actual operating mode at this point",
+                    "type": "string",
+                    "enum": ["CCM", "DCM", "BCM", "CrCM", "QR"]
+                },
+                "waveforms": {
+                    "description": "Waveforms at this operating point, keyed by signal name",
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "./utils.json#/$defs/signalDescriptor"
+                    }
+                }
+            },
+            "required": ["name"]
+        }
+    }
+}

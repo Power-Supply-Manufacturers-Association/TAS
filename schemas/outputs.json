@@ -1,0 +1,97 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "http://openconverters.com/schemas/TAS/outputs.json",
+    "title": "outputs",
+    "description": "Computed results for a converter operating point",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "operatingPointName": {
+            "description": "Which operating point these results correspond to",
+            "type": "string"
+        },
+        "origin": {
+            "description": "How these results were obtained",
+            "type": "string",
+            "enum": ["simulation", "measurement", "analytical"]
+        },
+        "methodUsed": {
+            "description": "Specific method or tool used",
+            "type": "string"
+        },
+        "losses": {
+            "$ref": "#/$defs/lossBreakdown"
+        },
+        "stresses": {
+            "$ref": "#/$defs/stressAnalysis"
+        },
+        "kpis": {
+            "$ref": "#/$defs/kpis"
+        },
+        "waveforms": {
+            "description": "Result waveforms keyed by signal name",
+            "type": "object",
+            "additionalProperties": {
+                "$ref": "./utils.json#/$defs/signalDescriptor"
+            }
+        }
+    },
+    "$defs": {
+        "lossBreakdown": {
+            "description": "Complete loss budget for the converter",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "coreLosses": { "type": "number", "description": "Magnetic core losses in Watts" },
+                "windingLosses": { "type": "number", "description": "Magnetic winding losses in Watts" },
+                "switchConduction": { "type": "number", "description": "MOSFET/IGBT conduction losses in Watts" },
+                "switchSwitching": { "type": "number", "description": "Turn-on + turn-off overlap losses in Watts" },
+                "switchCoss": { "type": "number", "description": "Output capacitance charging losses in Watts" },
+                "gateDrive": { "type": "number", "description": "Gate drive losses (Qg × Vgs × fsw) in Watts" },
+                "diodeConduction": { "type": "number", "description": "Diode forward voltage losses in Watts" },
+                "diodeReverseRecovery": { "type": "number", "description": "Diode Qrr losses in Watts" },
+                "capacitorEsr": { "type": "number", "description": "Capacitor ESR losses in Watts" },
+                "clamp": { "type": "number", "description": "RCD/active clamp losses in Watts" },
+                "snubber": { "type": "number", "description": "Snubber losses in Watts" },
+                "controller": { "type": "number", "description": "Controller quiescent power in Watts" },
+                "other": { "type": "number", "description": "Other losses in Watts" },
+                "total": { "type": "number", "description": "Total losses in Watts" }
+            }
+        },
+        "stressAnalysis": {
+            "description": "Component stress margins",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "switchVoltageMax": { "type": "number", "description": "Maximum switch voltage in Volts" },
+                "switchVoltageRating": { "type": "number", "description": "Switch voltage rating in Volts" },
+                "switchVoltageMargin": { "type": "number", "description": "Fraction (0.25 = 25% margin)" },
+                "diodeVoltageMax": { "type": "number", "description": "Maximum diode reverse voltage in Volts" },
+                "diodeVoltageRating": { "type": "number", "description": "Diode voltage rating in Volts" },
+                "diodeVoltageMargin": { "type": "number" },
+                "capacitorVoltageMax": { "type": "number", "description": "Maximum cap voltage in Volts" },
+                "capacitorVoltageRating": { "type": "number" },
+                "capacitorVoltageMargin": { "type": "number" },
+                "inductorCurrentMax": { "type": "number", "description": "Peak inductor current in Amperes" },
+                "inductorSaturationCurrent": { "type": "number" },
+                "inductorCurrentMargin": { "type": "number" },
+                "maxJunctionTemperature": { "type": "number", "description": "Hottest junction in Celsius" },
+                "junctionTemperatureRating": { "type": "number" },
+                "thermalMargin": { "type": "number" }
+            }
+        },
+        "kpis": {
+            "description": "Key performance indicators",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "efficiency": { "type": "number", "description": "Pout / Pin (0-1)" },
+                "outputRipple": { "type": "number", "description": "Output voltage ripple peak-to-peak in Volts" },
+                "inputPower": { "type": "number", "description": "Input power in Watts" },
+                "outputPower": { "type": "number", "description": "Output power in Watts" },
+                "powerDensity": { "type": ["number", "null"], "description": "W/cm³" },
+                "cost": { "type": ["number", "null"], "description": "Estimated BOM cost in USD" }
+            }
+        }
+    }
+}

@@ -1,0 +1,79 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "http://openconverters.com/schemas/TAS/utils.json",
+    "title": "utils",
+    "description": "Shared definition utilities for TAS (Topology Agnostic Structure)",
+    "type": "object",
+    "$defs": {
+        "dimensionWithTolerance": {
+            "description": "A dimension with minimum, nominal, and maximum values",
+            "type": "object",
+            "properties": {
+                "minimum": { "description": "The minimum value", "type": "number" },
+                "nominal": { "description": "The nominal value", "type": "number" },
+                "maximum": { "description": "The maximum value", "type": "number" }
+            },
+            "anyOf": [
+                {"required": ["minimum"]},
+                {"required": ["nominal"]},
+                {"required": ["maximum"]}
+            ]
+        },
+        "curve": {
+            "type": "object",
+            "description": "X-Y curve data points",
+            "additionalProperties": false,
+            "properties": {
+                "xData": { "description": "X-axis values", "$ref": "#/$defs/numberArray" },
+                "yData": { "description": "Y-axis values", "$ref": "#/$defs/numberArray" }
+            }
+        },
+        "numberArray": {
+            "type": "array",
+            "description": "Array of numeric values",
+            "items": { "type": ["number"] }
+        },
+        "signalDescriptor": {
+            "description": "Signal description in time domain (MAS-compatible). Must have waveform OR processed.",
+            "type": "object",
+            "properties": {
+                "waveform": {
+                    "description": "Time-domain waveform data (MAS-compatible)",
+                    "type": "object",
+                    "properties": {
+                        "data": { "$ref": "#/$defs/numberArray" },
+                        "time": { "$ref": "#/$defs/numberArray" },
+                        "numberPeriods": { "type": "integer", "default": 1 }
+                    },
+                    "required": ["data", "time"]
+                },
+                "processed": {
+                    "description": "Processed waveform parameters (MAS-compatible)",
+                    "type": "object",
+                    "properties": {
+                        "label": {
+                            "type": "string",
+                            "enum": [
+                                "Triangular", "Sinusoidal", "Rectangular", "Custom",
+                                "Unipolar Rectangular", "Bipolar Rectangular",
+                                "Flyback Primary", "Flyback Secondary",
+                                "Forward Primary", "Forward Secondary"
+                            ]
+                        },
+                        "dutyCycle": { "type": "number", "minimum": 0, "maximum": 1 },
+                        "peakToPeak": { "type": "number" },
+                        "peak": { "type": "number" },
+                        "offset": { "type": "number" },
+                        "average": { "type": "number" },
+                        "rms": { "type": "number" },
+                        "effectiveFrequency": { "type": "number" }
+                    }
+                }
+            },
+            "anyOf": [
+                {"required": ["waveform"]},
+                {"required": ["processed"]}
+            ]
+        }
+    }
+}
