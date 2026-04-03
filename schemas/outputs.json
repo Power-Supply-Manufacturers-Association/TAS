@@ -90,7 +90,13 @@
                 "inputPower": { "type": "number", "description": "Input power in Watts" },
                 "outputPower": { "type": "number", "description": "Output power in Watts" },
                 "powerDensity": { "type": ["number", "null"], "description": "W/cm³" },
-                "cost": { "type": ["number", "null"], "description": "Estimated BOM cost in USD" }
+                "cost": { "type": ["number", "null"], "description": "Estimated BOM cost in USD" },
+                "volume_cm3": { "type": ["number", "null"], "description": "Total converter volume in cm³" },
+                "mass_g": { "type": ["number", "null"], "description": "Estimated total mass in grams" },
+                "footprintArea_cm2": { "type": ["number", "null"], "description": "PCB footprint area in cm²" },
+                "specificPower_W_per_cm3": { "type": ["number", "null"], "description": "Pout / volume" },
+                "thermalMargin": { "type": ["number", "null"], "description": "Tj_max - Tj_actual for hottest device, in °C" },
+                "emcMargin_dB": { "type": ["number", "null"], "description": "Worst-case CISPR 32 margin in dB (pre-layout estimate ±10dB)" }
             }
         }
     }

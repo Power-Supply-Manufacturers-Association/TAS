@@ -14,6 +14,43 @@
             "type": "array",
             "items": { "$ref": "#/$defs/operatingPoint" },
             "minItems": 1
+        },
+        "designSweepParameters": {
+            "description": "Parameters varied during a design sweep (for reproducibility)",
+            "type": "object",
+            "properties": {
+                "frequencies": {
+                    "description": "Switching frequencies to sweep (Hz)",
+                    "type": "array",
+                    "items": { "type": "number" }
+                },
+                "maxFetCandidates": {
+                    "description": "Max number of FET candidates to evaluate per frequency",
+                    "type": "integer",
+                    "default": 5
+                },
+                "maxDiodeCandidates": {
+                    "description": "Max number of diode candidates",
+                    "type": "integer",
+                    "default": 3
+                },
+                "maxCapCandidates": {
+                    "description": "Max number of capacitor candidates",
+                    "type": "integer",
+                    "default": 3
+                },
+                "paretoObjectives": {
+                    "description": "Objectives for Pareto extraction",
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "metric": { "type": "string" },
+                            "direction": { "type": "string", "enum": ["minimize", "maximize"] }
+                        }
+                    }
+                }
+            }
         }
     },
     "required": ["designRequirements"],
