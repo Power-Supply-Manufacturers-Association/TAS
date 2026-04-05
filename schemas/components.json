@@ -68,6 +68,25 @@
                             "description": "Path or URI to an external EAS document"
                         }
                     ]
+                },
+                "usageNotes": {
+                    "description": "Engineering notes about this component's usage in the design — selection rationale, derating decisions, cross-reference history, known caveats, lessons learned. Free-form text. Populated by agents (cross-referencer, component-selector, converter-designer) when non-obvious choices are made.",
+                    "type": "string"
+                },
+                "crossReferenceHistory": {
+                    "description": "Log of cross-reference substitution attempts for this component slot. Populated by the cross-referencer agent.",
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "date": { "type": "string", "description": "ISO 8601 date of the cross-reference attempt" },
+                            "targetManufacturer": { "type": "string" },
+                            "candidatePartNumber": { "type": "string" },
+                            "outcome": { "type": "string", "enum": ["accepted", "rejected", "pending_verification"] },
+                            "reason": { "type": "string", "description": "Why the candidate was accepted or rejected" },
+                            "efficiencyDelta": { "type": ["number", "null"], "description": "Efficiency change in percentage points (positive = improvement)" }
+                        }
+                    }
                 }
             },
             "required": ["name", "role", "data"]
