@@ -53,16 +53,9 @@
                     "enum": ["analytical", "simulated", "measured"]
                 },
                 "sweepParameters": {
-                    "description": "The swept parameter values for this variant",
+                    "description": "The swept parameter values that distinguish this variant from others (free-form key-value). Use human-readable keys, SI units. E.g. {\"switchingFrequency_Hz\": 130000, \"coreShape\": \"PQ32/25\"}. Full component data lives in components — this is for labelling/filtering only.",
                     "type": "object",
-                    "properties": {
-                        "switchingFrequency": { "type": "number", "description": "Hz" },
-                        "primarySwitch": { "type": "string", "description": "Part number" },
-                        "outputRectifier": { "type": "string" },
-                        "outputCapacitor": { "type": "string" },
-                        "coreShape": { "type": "string" },
-                        "coreMaterial": { "type": "string" }
-                    }
+                    "additionalProperties": { "type": ["number", "string", "boolean"] }
                 },
                 "components": {
                     "$ref": "./components.json"

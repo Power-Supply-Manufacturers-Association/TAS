@@ -262,6 +262,96 @@
                 { "component": "Cout", "pin": "positive", "node": "out" },
                 { "component": "Cout", "pin": "negative", "node": "sec_gnd" }
             ]
+        },
+        "circuit": {
+            "title": "Flyback 48V to 12V @ 2A — ngspice netlist",
+            "elements": [
+                {
+                    "name": "Vin",
+                    "type": "voltageSource",
+                    "nodes": ["Vin", "pri_gnd"],
+                    "value": 48.0
+                },
+                {
+                    "name": "Cin",
+                    "type": "capacitor",
+                    "nodes": ["Vin", "pri_gnd"],
+                    "value": 100e-6,
+                    "eas": { "category": "capacitors", "partNumber": "UPW1H102MHD" }
+                },
+                {
+                    "name": "Lpri",
+                    "type": "inductor",
+                    "nodes": ["Vin", "sw_node"],
+                    "value": 200e-6,
+                    "parameters": { "ic": 0 }
+                },
+                {
+                    "name": "Lsec",
+                    "type": "inductor",
+                    "nodes": ["sec_dot_node", "sec_gnd"],
+                    "value": 12.5e-6,
+                    "parameters": { "ic": 0 }
+                },
+                {
+                    "name": "K1",
+                    "type": "coupling",
+                    "nodes": [],
+                    "value": 0.997,
+                    "coupledInductors": ["Lpri", "Lsec"]
+                },
+                {
+                    "name": "Q1",
+                    "type": "mosfet",
+                    "nodes": ["sw_node", "gate_drive", "sense_node", "sense_node"],
+                    "value": null,
+                    "model": "NMOS_IPD65R420CFD",
+                    "eas": { "category": "mosfets", "partNumber": "IPD65R420CFD" }
+                },
+                {
+                    "name": "D1",
+                    "type": "diode",
+                    "nodes": ["sec_dot_node", "out"],
+                    "value": null,
+                    "model": "STPS8L40B",
+                    "eas": { "category": "diodes", "partNumber": "STPS8L40B" }
+                },
+                {
+                    "name": "Cout",
+                    "type": "capacitor",
+                    "nodes": ["out", "sec_gnd"],
+                    "value": 220e-6,
+                    "eas": { "category": "capacitors", "partNumber": "EEUFR1E221" }
+                },
+                {
+                    "name": "Rsense",
+                    "type": "resistor",
+                    "nodes": ["sense_node", "pri_gnd"],
+                    "value": 0.5
+                },
+                {
+                    "name": "Rload",
+                    "type": "resistor",
+                    "nodes": ["out", "sec_gnd"],
+                    "value": 6.0
+                }
+            ],
+            "models": [
+                {
+                    "name": "NMOS_IPD65R420CFD",
+                    "kind": "model",
+                    "text": ".model NMOS_IPD65R420CFD NMOS level=3 vto=3.5 kp=2.4 rd=0.42 cgs=0.8e-9 cgd=0.05e-9"
+                },
+                {
+                    "name": "STPS8L40B",
+                    "kind": "model",
+                    "text": ".model STPS8L40B D is=5e-6 n=1.05 rs=0.02 cj0=150e-12 vj=0.5 m=0.4 tt=8e-9 bv=40 ibv=1e-3"
+                }
+            ],
+            "simulationCommands": [
+                ".tran 10n 2m 1.8m 10n UIC",
+                ".option RELTOL=1e-4 ABSTOL=1e-9 VNTOL=1e-6"
+            ]
         }
     },
     "outputs": [
