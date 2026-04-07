@@ -12,8 +12,12 @@
             "items": { "$ref": "#/$defs/component" }
         },
         "netlist": {
-            "description": "Circuit connections between components. Defines nodes and how component pins connect to them.",
+            "description": "Structural circuit connections between components. Defines nodes and how component pins connect to them. Topology-level — not SPICE-ready.",
             "$ref": "#/$defs/netlist"
+        },
+        "circuit": {
+            "description": "SPICE-ready circuit definition for this converter. Elements reference the same physical components via their eas field. Present when a simulation netlist has been generated.",
+            "$ref": "./circuit.json"
         }
     },
     "required": ["componentList"],
@@ -57,7 +61,7 @@
                 },
                 "data": {
                     "title": "EASDataOrReference",
-                    "description": "The component data: either a full EAS document inline, or a string path/URI to an external EAS file (same pattern as MAS core shape/material).",
+                    "description": "The component data: either a full EAS document inline, or a string path/URI to an external EAS file. When using a string reference, always identify by partNumber (e.g. 'TAS/data/mosfets.ndjson?partNumber=C3M0032120K'), never by line number — NDJSON files may be reordered.",
                     "oneOf": [
                         {
                             "$ref": "http://openconverters.com/schemas/EAS/eas.json",
@@ -65,7 +69,7 @@
                         },
                         {
                             "type": "string",
-                            "description": "Path or URI to an external EAS document"
+                            "description": "Path or URI to an external EAS document — identify by partNumber, not line number"
                         }
                     ]
                 },
