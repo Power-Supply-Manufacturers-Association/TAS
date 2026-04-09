@@ -1,101 +1,162 @@
 {
-    "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "http://openconverters.com/schemas/TAS/outputs.json",
-    "title": "outputs",
-    "description": "Computed results for a converter operating point",
-    "type": "object",
-    "additionalProperties": false,
-    "properties": {
-        "operatingPointName": {
-            "description": "Which operating point these results correspond to",
-            "type": "string"
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "http://openconverters.com/schemas/TAS/outputs.json",
+  "title": "TAS outputs v2",
+  "description": "Computed/measured results of running the topology against the inputs. Two sections: design (cross-cutting metrics that apply to the whole converter) and operatingPoints[] (per-condition losses, stresses, KPIs). All values in SI units.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "design": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Cross-cutting metrics that describe the whole converter, not any single operating point. Single source of truth for cost/volume/mass/footprint \u2014 these used to be duplicated across every operating point in v1.",
+      "properties": {
+        "cost_usd": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "BOM cost in USD."
+        },
+        "volume_cm3": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Total converter volume in cm\u00b3."
+        },
+        "mass_g": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Total mass in grams."
+        },
+        "footprint_cm2": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "PCB footprint area in cm\u00b2."
+        }
+      }
+    },
+    "operatingPoints": {
+      "type": "array",
+      "description": "Per-condition results. Each entry corresponds (by name) to an inputs.operatingPoints[] entry.",
+      "items": {
+        "$ref": "#/$defs/operatingPointResult"
+      }
+    }
+  },
+  "$defs": {
+    "operatingPointResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Joins to inputs.operatingPoints[].name."
         },
         "origin": {
-            "description": "How these results were obtained",
-            "type": "string",
-            "enum": ["simulation", "measurement", "analytical"]
+          "type": "string",
+          "enum": [
+            "analytical",
+            "simulation",
+            "measurement"
+          ],
+          "description": "How these results were obtained. Project lesson: analytical is the trusted number; ngspice is 2-5% optimistic. Tag the origin so reviewers can compare."
         },
         "methodUsed": {
-            "description": "Specific method or tool used",
-            "type": "string"
+          "type": "string",
+          "description": "Free-form tool/method label (e.g. 'ngspice', 'analytical loss budget', 'PyOpenMagnetics core loss', 'lab bench')."
+        },
+        "kpis": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Headline metrics for this operating point.",
+          "properties": {
+            "efficiency": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "powerIn": {
+              "type": "number",
+              "description": "Pin, W"
+            },
+            "powerOut": {
+              "type": "number",
+              "description": "Pout, W"
+            },
+            "outputVoltage": {
+              "type": "number",
+              "description": "Actual Vout at this operating point, V. May differ slightly from inputs.outputVoltage.nominal due to regulation accuracy, cross-regulation, or load-dependent drop."
+            },
+            "outputRipple_Vpp": {
+              "type": "number",
+              "description": "Output ripple peak-to-peak, V"
+            },
+            "switchingFrequency": {
+              "type": "number",
+              "description": "Actual fsw at this operating point in Hz. For fixed-frequency designs this echoes inputs.switchingFrequency.nominal in every entry. For variable-frequency designs (LLC, COT, hysteretic, BCM/QR) this varies entry-to-entry as the control law responds to (Vin, Iout, Tamb). Optional but recommended \u2014 useful for design review and EMC checks."
+            },
+            "operatingMode": {
+              "type": "string",
+              "enum": [
+                "CCM",
+                "DCM",
+                "BCM",
+                "CrCM",
+                "QR"
+              ],
+              "description": "Actual inductor/transformer operating mode at this OP. For designs that intentionally cross the boundary (CCM at full load, DCM at light load), this varies entry-to-entry. For mode-pinned designs it echoes inputs.operatingMode in every entry. Optional but recommended."
+            }
+          }
         },
         "losses": {
-            "$ref": "#/$defs/lossBreakdown"
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Loss breakdown in Watts. Per-component, indexed by refdes (matches topology.components[].name). Free-form mechanism keys per component so new mechanisms (e.g. 'driver_quiescent', 'pcb_trace') do not require schema migrations.",
+          "properties": {
+            "byComponent": {
+              "type": "object",
+              "description": "{ refdes : { mechanism : watts, ... }, ... }   e.g. { Q1: {conduction: 1.23, switching: 0.45, coss: 0.08}, L1: {core: 0.12, winding: 0.34}, Cout: {esr: 0.05} }",
+              "additionalProperties": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "number"
+                }
+              }
+            },
+            "total": {
+              "type": "number",
+              "description": "Sum across all components, W. Should equal sum of byComponent values; agents writing this should ensure consistency."
+            }
+          }
         },
         "stresses": {
-            "$ref": "#/$defs/stressAnalysis"
-        },
-        "kpis": {
-            "$ref": "#/$defs/kpis"
-        },
-        "waveforms": {
-            "description": "Result waveforms keyed by signal name",
-            "type": "object",
-            "additionalProperties": {
-                "$ref": "./utils.json#/$defs/signalDescriptor"
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Per-component stress + margin map.",
+          "properties": {
+            "byComponent": {
+              "type": "object",
+              "description": "{ refdes : { quantity : value, ... }, ... }  Free-form quantity keys; SI units. Conventional keys: voltageMax (V), voltageMargin (fraction), currentPeak (A), currentRms (A), saturationMargin (fraction), Tj (\u00b0C), thermalMargin (\u00b0C). e.g. { Q1: {voltageMax: 510, voltageMargin: 0.15, Tj: 95, thermalMargin: 55}, L1: {currentPeak: 8.4, saturationMargin: 0.18} }",
+              "additionalProperties": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "number"
+                }
+              }
             }
+          }
         }
-    },
-    "$defs": {
-        "lossBreakdown": {
-            "description": "Complete loss budget for the converter",
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-                "coreLosses": { "type": "number", "description": "Magnetic core losses in Watts" },
-                "windingLosses": { "type": "number", "description": "Magnetic winding losses in Watts" },
-                "switchConduction": { "type": "number", "description": "MOSFET/IGBT conduction losses in Watts" },
-                "switchSwitching": { "type": "number", "description": "Turn-on + turn-off overlap losses in Watts" },
-                "switchCoss": { "type": "number", "description": "Output capacitance charging losses in Watts" },
-                "gateDrive": { "type": "number", "description": "Gate drive losses (Qg × Vgs × fsw) in Watts" },
-                "diodeConduction": { "type": "number", "description": "Diode forward voltage losses in Watts" },
-                "diodeReverseRecovery": { "type": "number", "description": "Diode Qrr losses in Watts" },
-                "capacitorEsr": { "type": "number", "description": "Capacitor ESR losses in Watts" },
-                "clamp": { "type": "number", "description": "RCD/active clamp losses in Watts" },
-                "snubber": { "type": "number", "description": "Snubber losses in Watts" },
-                "controller": { "type": "number", "description": "Controller quiescent power in Watts" },
-                "other": { "type": "number", "description": "Other losses in Watts" },
-                "total": { "type": "number", "description": "Total losses in Watts" }
-            }
-        },
-        "stressAnalysis": {
-            "description": "Component stress margins",
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-                "switchVoltageMax": { "type": "number", "description": "Maximum switch voltage in Volts" },
-                "switchVoltageRating": { "type": "number", "description": "Switch voltage rating in Volts" },
-                "switchVoltageMargin": { "type": "number", "description": "Fraction (0.25 = 25% margin)" },
-                "diodeVoltageMax": { "type": "number", "description": "Maximum diode reverse voltage in Volts" },
-                "diodeVoltageRating": { "type": "number", "description": "Diode voltage rating in Volts" },
-                "diodeVoltageMargin": { "type": "number" },
-                "capacitorVoltageMax": { "type": "number", "description": "Maximum cap voltage in Volts" },
-                "capacitorVoltageRating": { "type": "number" },
-                "capacitorVoltageMargin": { "type": "number" },
-                "inductorCurrentMax": { "type": "number", "description": "Peak inductor current in Amperes" },
-                "inductorSaturationCurrent": { "type": "number" },
-                "inductorCurrentMargin": { "type": "number" },
-                "maxJunctionTemperature": { "type": "number", "description": "Hottest junction in Celsius" },
-                "junctionTemperatureRating": { "type": "number", "description": "Tj_max rating of the hottest device in Celsius" },
-                "thermalMargin": { "type": "number", "description": "Tj_max_rated - Tj_actual for the hottest device in °C" }
-            }
-        },
-        "kpis": {
-            "description": "Key performance indicators",
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-                "efficiency": { "type": "number", "description": "Pout / Pin (0-1)" },
-                "outputRipple": { "type": "number", "description": "Output voltage ripple peak-to-peak in Volts" },
-                "inputPower": { "type": "number", "description": "Input power in Watts" },
-                "outputPower": { "type": "number", "description": "Output power in Watts" },
-                "powerDensity": { "type": ["number", "null"], "description": "W/cm³ — output power divided by converter volume" },
-                "cost": { "type": ["number", "null"], "description": "Estimated BOM cost in USD" },
-                "volume_cm3": { "type": ["number", "null"], "description": "Total converter volume in cm³" },
-                "mass_g": { "type": ["number", "null"], "description": "Estimated total mass in grams" },
-                "footprintArea_cm2": { "type": ["number", "null"], "description": "PCB footprint area in cm²" },
-                "emcMargin_dB": { "type": ["number", "null"], "description": "Worst-case CISPR 32 margin in dB (pre-layout estimate ±10dB)" }
-            }
-        }
+      }
     }
+  }
 }
