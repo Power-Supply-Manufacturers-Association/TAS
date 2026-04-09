@@ -1,117 +1,26 @@
 {
-    "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "http://openconverters.com/schemas/TAS/TAS.json",
-    "title": "TAS",
-    "description": "Topology Agnostic Structure (TAS) — Describes a complete power converter design: requirements, components, and results.",
-    "type": "object",
-    "additionalProperties": false,
-    "properties": {
-        "inputs": {
-            "description": "Converter requirements and operating conditions",
-            "title": "inputs",
-            "$ref": "./inputs.json"
-        },
-        "components": {
-            "description": "Components used in the converter (references MAS/SAS/CAS/RAS or inline)",
-            "title": "components",
-            "$ref": "./components.json"
-        },
-        "outputs": {
-            "description": "Computed results: losses, efficiency, waveforms",
-            "title": "outputs",
-            "type": "array",
-            "items": { "$ref": "./outputs.json" }
-        },
-        "designVariants": {
-            "description": "Multiple design variants from a sweep or optimization study. Use instead of components+outputs for multi-variant designs.",
-            "type": "array",
-            "items": { "$ref": "#/$defs/designVariant" }
-        },
-        "paretoFront": {
-            "description": "Pareto-optimal variants across specified objectives",
-            "$ref": "#/$defs/paretoFront"
-        }
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "http://openconverters.com/schemas/TAS/TAS.json",
+  "title": "TAS",
+  "description": "Topology Agnostic Structure (TAS) v2 \u2014 describes a complete power converter design as three sections: inputs (the spec the converter must satisfy), topology (how it is built), outputs (how it performs). Mirrors the same three-section pattern that EAS / MAS / SAS / CAS / RAS use for individual components. Replaces v1's components.json + circuit.json + designVariants[] + paretoFront.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "inputs",
+    "topology"
+  ],
+  "properties": {
+    "inputs": {
+      "$ref": "./inputs.json",
+      "description": "Design specification + operating points the converter must satisfy."
     },
-    "required": ["inputs"],
-    "$defs": {
-        "designVariant": {
-            "description": "One design variant from a sweep or optimization study, with its own component selection and results.",
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-                "variantId": {
-                    "description": "Unique identifier (e.g., 'var_001', 'highEff', 'lowCost')",
-                    "type": "string"
-                },
-                "label": {
-                    "description": "Human-readable label (e.g., 'High-Efficiency Option')",
-                    "type": "string"
-                },
-                "level": {
-                    "description": "Analysis level used for this variant",
-                    "type": "string",
-                    "enum": ["analytical", "simulated", "measured"]
-                },
-                "sweepParameters": {
-                    "description": "The swept parameter values that distinguish this variant from others (free-form key-value). Use human-readable keys, SI units. E.g. {\"switchingFrequency_Hz\": 130000, \"coreShape\": \"PQ32/25\"}. Full component data lives in components — this is for labelling/filtering only.",
-                    "type": "object",
-                    "additionalProperties": { "type": ["number", "string", "boolean"] }
-                },
-                "components": {
-                    "$ref": "./components.json"
-                },
-                "outputs": {
-                    "type": "array",
-                    "items": { "$ref": "./outputs.json" }
-                },
-                "feasible": {
-                    "description": "Whether this variant meets all constraints",
-                    "type": "boolean"
-                },
-                "infeasibilityReason": {
-                    "description": "Why this variant was rejected (if feasible=false)",
-                    "type": ["string", "null"]
-                }
-            },
-            "required": ["variantId", "level"]
-        },
-        "paretoFront": {
-            "description": "Metadata about the Pareto-optimal design variants",
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-                "objectives": {
-                    "description": "Optimization objectives and their directions",
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "metric": {
-                                "type": "string",
-                                "enum": ["efficiency", "cost", "volume_cm3", "powerDensity", "mass_g", "footprintArea_cm2", "thermalMargin", "emcMargin_dB"]
-                            },
-                            "direction": {
-                                "type": "string",
-                                "enum": ["minimize", "maximize"]
-                            }
-                        },
-                        "required": ["metric", "direction"]
-                    }
-                },
-                "variantIds": {
-                    "description": "IDs of Pareto-optimal variants (references designVariants[].variantId)",
-                    "type": "array",
-                    "items": { "type": "string" }
-                },
-                "totalEvaluated": {
-                    "description": "Total number of variants evaluated in the sweep",
-                    "type": "integer"
-                },
-                "totalFeasible": {
-                    "description": "Number of variants that passed all constraints",
-                    "type": "integer"
-                }
-            }
-        }
+    "topology": {
+      "$ref": "./topology.json",
+      "description": "Components used in the converter plus the circuit graph that wires them."
+    },
+    "outputs": {
+      "$ref": "./outputs.json",
+      "description": "Computed/measured results: per-design metrics (cost/volume/mass/footprint) plus per-operating-point losses, stresses, KPIs."
     }
+  }
 }
