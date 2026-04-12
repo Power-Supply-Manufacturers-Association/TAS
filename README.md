@@ -2,7 +2,22 @@
 
 > The universal data format for complete power converter designs — and the component catalog that powers them.
 
-TAS is a JSON schema standard for describing power converter designs end-to-end: requirements, components, circuit connections, and computed results. It also hosts a curated component database of 22,000+ real parts used by the Proteus AI design system.
+TAS is a JSON schema standard for describing power converter designs end-to-end: requirements, components, circuit connections, and computed results. It also hosts a curated component database of **64,000+ real parts** used by the Proteus AI design system.
+
+## Quick Stats (April 2026)
+
+| Category | Parts | Largest Manufacturer | Share |
+|----------|-------|----------------------|-------|
+| Capacitors | 20,932 | Würth Elektronik | 18.7% |
+| Resistors | 7,476 | Vishay | 20.6% |
+| MOSFETs | 4,790 | onsemi | 13.8% |
+| Diodes | 9,097 | Nexperia | 35.2% |
+| IGBTs | 2,092 | STMicroelectronics | 22.3% |
+| Magnetics | 19,222 | Würth Elektronik | 33.1% |
+| Controllers | 387 | onsemi | 18.6% |
+| Converters | 101 | — | — |
+| **Active Total** | **64,097** | — | — |
+| Quarantine | 2,493 | — | — |
 
 ---
 
@@ -40,18 +55,19 @@ Only `inputs` is required — a TAS document can represent just a spec (inputs o
 
 ### The Component Database
 
-`data/` contains NDJSON files with real parts scraped from manufacturer datasheets. These are queried by Proteus agents during converter design.
+`data/` contains NDJSON files with real parts scraped from manufacturer datasheets and APIs. These are queried by Proteus agents during converter design.
 
-| File | Parts | What's in it |
-|------|-------|-------------|
-| `mosfets.ndjson` | 1,271 | Si, SiC, GaN — Rds_on(Tj), Coss(Vds), Eon/Eoff curves |
-| `diodes.ndjson` | 1,051 | Schottky, ultrafast, SiC — Qrr verified at TJ=175°C |
-| `igbts.ndjson` | 12 | With Eon/Eoff vs Ic switching energy curves |
-| `capacitors.ndjson` | 13,179 | MLCC, electrolytic, film — dissipationFactor as fraction |
-| `resistors.ndjson` | 1,439 | Sense, feedback, snubber types |
-| `magnetics.ndjson` | 5,071 | Power inductors — WE-Aplan + TAS formats |
-| `converters.ndjson` | — | Full converter TAS documents (reference designs) |
-| `quarantine.ndjson` | ~111 | Parts with verified data errors, excluded from queries |
+| File | Parts | What's in it | Top Manufacturer |
+|------|-------|-------------|------------------|
+| `mosfets.ndjson` | 4,790 | Si, SiC, GaN — Rds_on(Tj), Coss(Vds), Eon/Eoff curves | onsemi 13.8% |
+| `diodes.ndjson` | 9,097 | Schottky, ultrafast, SiC, Zener, switching | Nexperia 35.2% |
+| `igbts.ndjson` | 2,092 | With Eon/Eoff vs Ic switching energy curves | STMicroelectronics 22.3% |
+| `capacitors.ndjson` | 20,932 | MLCC, electrolytic, film, polymer — dissipationFactor as fraction | Würth Elektronik 18.7% |
+| `resistors.ndjson` | 7,476 | Sense, feedback, snubber, current-sense types | Vishay 20.6% |
+| `magnetics.ndjson` | 19,222 | Power inductors, RF inductors, transformers, chokes | Würth Elektronik 33.1% |
+| `controllers.ndjson` | 387 | PWM/LLC controllers, gate drivers | onsemi 18.6% |
+| `converters.ndjson` | 101 | Full converter TAS documents (reference designs) | — |
+| `quarantine.ndjson` | 2,493 | Parts with verified data errors, excluded from queries | — |
 
 To search the database:
 
