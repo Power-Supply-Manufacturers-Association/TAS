@@ -1,0 +1,2058 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml">
+<head><meta http-equiv="content-type" content="text/html; charset=utf-8" /><meta name="viewport" content="width=device-width, initial-scale = 1.0" /><meta http-equiv="X-UA-Compatible" content="IE=edge" /><meta name="robots" content="noindex" /><script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('consent', 'default', {
+      ad_personalization: "denied",
+      ad_storage: "denied",
+      ad_user_data: "denied",
+      analytics_storage: "denied",
+      functionality_storage: "denied",
+      personalization_storage: "denied",
+      security_storage: "denied",
+      wait_for_update: 500
+});
+gtag("set", "ads_data_redaction", true);
+gtag("set", "url_passthrough", true); 
+</script><!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-59T9R9X4');</script>
+<!-- End Google Tag Manager --><script type="text/javascript"> 
+function OptanonWrapper() { } 
+</script><script type='text/javascript' src='https://code.jquery.com/jquery-3.7.1.min.js'></script><script type="text/javascript">//_linkedin_partner_id = "2896682";
+//window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
+//window._linkedin_data_partner_ids.push(_linkedin_partner_id);</script><script type="text/javascript">//(function(l) {
+//if (!l){window.lintrk = function(a,b){window.lintrk.q.push([a,b])};
+//window.lintrk.q=[]}
+//var s = document.getElementsByTagName("script")[0];
+//var b = document.createElement("script");
+//b.type = "text/javascript";b.async = true;
+//b.src = "https://snap.licdn.com/li.lms-analytics/insight.min.js";
+//s.parentNode.insertBefore(b, s);})(window.lintrk);</script><meta name="Generator" content="Sitefinity 14.4.8146.0 DX" /><link rel="canonical" href="https://bourns.com/error" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><script type="text/javascript">
+	(function() {var _rdDeviceWidth = (window.innerWidth > 0) ? window.innerWidth : screen.width;var _rdDeviceHeight = (window.innerHeight > 0) ? window.innerHeight : screen.height;var _rdOrientation = (window.width > window.height) ? 'landscape' : 'portrait';})();
+</script><link href="/Telerik.Web.UI.WebResource.axd?d=zNFhiSKIYyWcejs2AKn-N5hLtdmNiNmIa8GCYr5UUaQGwSC4ylgarDPiuOvk2CO20IRmFQ8dtV5KJAHQcCg507kXhor4iu5IJLnCkv2lnBOyQj8J07VtE5j7UBNWzK0UMVSbvGfDKcVxTIaYoNQKvA2&amp;t=638687935200174603&amp;compress=0&amp;_TSM_CombinedScripts_=%3b%3bTelerik.Sitefinity.Resources%2c+Version%3d14.4.8146.0%2c+Culture%3dneutral%2c+PublicKeyToken%3db28c218413bdf563%3aen%3a3207e2a5-e854-4d47-a81c-3a451e29b9c8%3a7a90d6a%3ac1bd62cb%3ab6439d72%3a7a6c1bf7%3a83fa35c7" type="text/css" rel="stylesheet" /><link href="/Sitefinity/Public/ResponsiveDesign/layout_transformations.css?pageDataId=15a4f72b-90e1-65f5-8a72-ff000066632f&amp;pageSiteNode=14A4F72B-90E1-65F5-8A72-FF000066632F/93de76ba-0621-424b-885d-a0fa1bcbd291/SitefinitySiteMap" type="text/css" rel="stylesheet" /><link href="/common/css/ccommon.css?v=20260412122253" type="text/css" rel="stylesheet" /><style type="text/css" media="all">#gdprConsent { display: none !important; }
+
+.crrlink {
+  background: #08679f;
+  border: none;
+  cursor: pointer;
+  padding: 4px 15px 6px;
+  color: #fff;
+  margin-right: 10px;
+  text-decoration: none;
+}
+.crrlink:hover {
+  opacity: .7;
+}
+#ot-sdk-btn-floating { display: none !important; }
+#ot-sdk-btn.ot-sdk-show-settings {
+    color: #fff !important;
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    height: auto !important;
+    width: auto !important;
+    text-align: left !important;
+    font-size: 13px !important;
+    font-family: 'myriad-pro' !important;
+}
+#ot-sdk-btn.ot-sdk-show-settings:hover {
+  background:transparent !important;
+}</style><style type="text/css" media="all">.masearchbtns, .manavbar { display: none; }</style><style type="text/css" media="all">#nav-mobile-language {
+ content: '';
+}
+
+.mobile-language {
+  padding: 0 25px 10px 25px !important;
+}
+
+.mobile-language .sflanguagesDropDownList select {
+  width: 100%;
+  padding: 5px;
+}</style><link href="https://use.typekit.net/fte3rio.css" type="text/css" rel="stylesheet" media="all" /><link href="//use.fontawesome.com/releases/v5.7.2/css/all.css" type="text/css" rel="stylesheet" media="all" /><link href="/common/menu/slicknav.css" type="text/css" rel="stylesheet" media="all" /><style type="text/css" media="all">.landing-widget {
+  max-width: 350px !important;
+  min-width: 350px !important;
+}
+
+.breadcrumb-wrapper {
+  margin: 0 0 30px;
+    font-size: 90%;
+}
+
+@media screen and (max-width: 500px) {
+.landing-widgets-wrapper {
+  margin: 30px 0;
+    gap: 0;
+  }
+  .landing-widget {
+        padding-bottom: 30px;
+    margin-bottom: 10px;
+  }
+.landing-widget h2 {
+  margin: 15px 10px;
+    line-height: 1.2;
+    font-size: 22px;
+  }
+.landing-widget img {
+  width: 100%;
+}      
+  .landing-widget h2::after {
+    margin-left: 0;
+    bottom: 15px;
+  }
+}</style><link href="../../common/css/smartphone.css" type="text/css" rel="stylesheet" media="screen and (max-width: 480px)" /><link href="../../common/css/medium.css" type="text/css" rel="stylesheet" media="screen and (max-width: 885px)" /><title>
+	Error
+</title><meta name="description" content="Error" /><meta name="keywords" content="Error" /></head>
+<body>
+    <form method="post" action="./magnetics.csv?404%3bhttps%3a%2f%2fwww.bourns.com%3a8089%2fdata%2fproducts%2fmagnetics.csv" onsubmit="javascript:return WebForm_OnSubmit();" id="aspnetForm">
+<div class="aspNetHidden">
+<input type="hidden" name="ctl78_TSM" id="ctl78_TSM" value="" />
+<input type="hidden" name="ctl79_TSSM" id="ctl79_TSSM" value="" />
+<input type="hidden" name="__EVENTTARGET" id="__EVENTTARGET" value="" />
+<input type="hidden" name="__EVENTARGUMENT" id="__EVENTARGUMENT" value="" />
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwUINzEzNTUxNDQPZBYCAgQPZBYEZg8WAh4RT3V0cHV0Q29tcHJlc3Npb24LKXpUZWxlcmlrLldlYi5VSS5PdXRwdXRDb21wcmVzc2lvbiwgVGVsZXJpay5XZWIuVUksIFZlcnNpb249MjAyMy4zLjE2MTYuNDUsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49MTIxZmFlNzgxNjViYTNkNAJkAgcPZBYCAgEPZBYEAgQPZBYCAgEPZBYCAgEPZBYCZg9kFgICAQ9kFgICAQ9kFgQCAQ9kFgJmD2QWAmYPZBYCZg8PFgQeBFRleHRlHgdWaXNpYmxlaGRkAgIPZBYCZg9kFgJmD2QWAmYPDxYEHwFlHwJoZGQCBg9kFgICAQ9kFgICAQ9kFgQCAg8PFgQeCENzc0NsYXNzBTZzdXJ2ZXlGb3JtIHNmRm9ybXNFZGl0b3Igc2ZUb3BMYmxzIHN1cnZleUZvcm1RdWVzdGlvbnMeBF8hU0ICAmQWAmYPZBYCZg9kFgQCBA8PFgIfAWUWAh4Fc3R5bGUFDWRpc3BsYXk6bm9uZTtkAgYPZBYCAgIPZBYQZg8PFgYfAQURQm91cm5zIFdlYiBTdXJ2ZXkfAwUYc2ZGb3JtVGl0bGUgc2ZUaXRsZVNtYWxsHwQCAmRkAgEPDxYEHwMFIXNmQ29udGVudEJsb2NrIHNmRm9ybUluc3RydWN0aW9ucx8EAgJkZAICDw8WBB8DBRptY1JlcXVpcmVkIHNmRm9ybVJhZGlvbGlzdB8EAgJkFgJmD2QWAmYPZBYCZg9kFgJmD2QWAgIBDw8WAh8BBUFIb3cgZWFzeSB3YXMgaXQgdG8gZmluZCB3aGF0IHlvdSB3ZXJlIGxvb2tpbmcgZm9yIG9uIG91ciB3ZWJzaXRlP2RkAgMPDxYEHwMFGm1jUmVxdWlyZWQgc2ZGb3JtUmFkaW9saXN0HwQCAmQWAmYPZBYCZg9kFgJmD2QWAmYPZBYCAgEPDxYCHwEFKEhvdyBzYXRpc2ZpZWQgYXJlIHlvdSB3aXRoIHRoZSBjb250ZW50PyBkZAIEDw8WBB8DBRptY1JlcXVpcmVkIHNmRm9ybVJhZGlvbGlzdB8EAgJkFgJmD2QWAmYPZBYCZg9kFgJmD2QWAgIBDw8WAh8BBVZEaWQgaXQgdGFrZSB5b3UgbW9yZSBvciBsZXNzIHRpbWUgdGhhbiB5b3UgZXhwZWN0ZWQgdG8gZmluZCB3aGF0IHlvdSB3ZXJlIGxvb2tpbmcgZm9yP2RkAgUPDxYEHwMFGm1jUmVxdWlyZWQgc2ZGb3JtUmFkaW9saXN0HwQCAmQWAmYPZBYCZg9kFgJmD2QWAmYPZBYCAgEPDxYCHwEFT0hvdyBsaWtlbHkgaXMgaXQgdGhhdCB5b3Ugd2lsbCByZWNvbW1lbmQgb3VyIHdlYnNpdGUgdG8gYSBmcmllbmQgb3IgY29sbGVhZ3VlPwpkZAIGDw8WBh4IVGFiSW5kZXgBAAAfAwUcc2ZGb3JtQmxvY2sgc2ZUeHRCbG9ja01lZGl1bR8EAgJkFgJmD2QWAmYPZBYCZg9kFgJmD2QWAgIJD2QWBgIFDw8WAh8CaGRkAgcPDxYCHwEFPyAoUGxlYXNlIGluY2x1ZGUgeW91ciBlbWFpbCBhZGRyZXNzIGlmIHlvdSBoYXZlIGFueSBxdWVzdGlvbnMuKWRkAgkPDxYCHwFlFgIfBQUNZGlzcGxheTpub25lO2QCBw9kFgJmD2QWAgIBDxQrAAMPFgYeFUVuYWJsZUVtYmVkZGVkU2NyaXB0c2ceElJlc29sdmVkUmVuZGVyTW9kZQspc1RlbGVyaWsuV2ViLlVJLlJlbmRlck1vZGUsIFRlbGVyaWsuV2ViLlVJLCBWZXJzaW9uPTIwMjMuMy4xNjE2LjQ1LCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPTEyMWZhZTc4MTY1YmEzZDQBHhdFbmFibGVBamF4U2tpblJlbmRlcmluZ2hkFgIeC0N1cnJlbnRHdWlkBSRkNjM5ZDYzZS1jNjJlLTRjYmItYjljOC0zYjhhNTE4MjAwMjcUKwADZGRkFgICAQ9kFgxmD2QWAmYPZBYIZg8PFgoeBkhlaWdodBsAAAAAAABJQAEAAAAeBVdpZHRoGwAAAAAAgGZAAQAAAB8DZR4ISW1hZ2VVcmwFXH4vVGVsZXJpay5XZWIuVUkuV2ViUmVzb3VyY2UuYXhkP3R5cGU9cmNhJmlzYz10cnVlJmd1aWQ9ZDYzOWQ2M2UtYzYyZS00Y2JiLWI5YzgtM2I4YTUxODIwMDI3HwQCggNkZAIBDw8WAh8BBRJHZW5lcmF0ZSBOZXcgSW1hZ2UWAh4FdGl0bGUFEkdlbmVyYXRlIE5ldyBJbWFnZWQCAg8WBB4JaW5uZXJodG1sBQ5HZXQgQXVkaW8gQ29kZR4EaHJlZgVkfi9UZWxlcmlrLldlYi5VSS5XZWJSZXNvdXJjZS5heGQ/dHlwZT1jYWgmYW1wO2lzYz10cnVlJmFtcDtndWlkPWQ2MzlkNjNlLWM2MmUtNGNiYi1iOWM4LTNiOGE1MTgyMDAyN2QCAw8WBB8PBRNEb3dubG9hZCBBdWRpbyBDb2RlHxAFZH4vVGVsZXJpay5XZWIuVUkuV2ViUmVzb3VyY2UuYXhkP3R5cGU9Y2FoJmFtcDtpc2M9dHJ1ZSZhbXA7Z3VpZD1kNjM5ZDYzZS1jNjJlLTRjYmItYjljOC0zYjhhNTE4MjAwMjdkAgEPDxYKHwsbAAAAAAAASUABAAAAHwwbAAAAAACAZkABAAAAHwNlHw0FXH4vVGVsZXJpay5XZWIuVUkuV2ViUmVzb3VyY2UuYXhkP3R5cGU9cmNhJmlzYz10cnVlJmd1aWQ9ZDYzOWQ2M2UtYzYyZS00Y2JiLWI5YzgtM2I4YTUxODIwMDI3HwQCggNkZAICDxYEHw8FDkdldCBBdWRpbyBDb2RlHxAFZH4vVGVsZXJpay5XZWIuVUkuV2ViUmVzb3VyY2UuYXhkP3R5cGU9Y2FoJmFtcDtpc2M9dHJ1ZSZhbXA7Z3VpZD1kNjM5ZDYzZS1jNjJlLTRjYmItYjljOC0zYjhhNTE4MjAwMjdkAgMPFgQfDwUTRG93bmxvYWQgQXVkaW8gQ29kZR8QBWR+L1RlbGVyaWsuV2ViLlVJLldlYlJlc291cmNlLmF4ZD90eXBlPWNhaCZhbXA7aXNjPXRydWUmYW1wO2d1aWQ9ZDYzOWQ2M2UtYzYyZS00Y2JiLWI5YzgtM2I4YTUxODIwMDI3ZAIED2QWAmYPFgQfDgUXTWlzc2luZyBCcm93c2VyIFBsdWctSW4fDwUXTWlzc2luZyBCcm93c2VyIFBsdWctSW5kAgUPZBYEZg8PFgofAwUFc2ZUeHQeCUFjY2Vzc0tleWUfBgEAAB4HVG9vbFRpcGUfBAICZGQCAQ8PFgYfAwUIc2ZUeHRMYmwfAQUcVHlwZSB0aGUgY29kZSBmcm9tIHRoZSBpbWFnZR8EAgJkZAIKD2QWAgIBD2QWAgIBD2QWAgIBD2QWAgIBD2QWAgIBD2QWAmYPZBYEAgEPZBYCAgEPZBYCZg9kFgYCAQ9kFgICAQ9kFgICAQ9kFgJmD2QWAmYPZBYEAgIPDxYEHwFlHwJoZGQCBQ9kFgxmD2QWAgIBDxYEHxAFES9zdXBwb3J0L2Fib3V0LXVzHgZ0YXJnZXRkFgJmDxUBCldobyBXZSBBcmVkAgEPZBYCAgEPFgQfEAUZL3N1cHBvcnQvYWJvdXQtdXMvbWlzc2lvbh8TZBYCZg8VAQtPdXIgTWlzc2lvbmQCAg9kFgICAQ8WBB8QBRovc3VwcG9ydC93b3JraW5nLWF0LWJvdXJucx8TZBYCZg8VARFXb3JraW5nIGF0IEJvdXJuc2QCAw9kFgICAQ8WBB8QBRAvc3VwcG9ydC9jYXJlZXJzHxMFBl9ibGFuaxYCZg8VAQdDYXJlZXJzZAIED2QWAgIBDxYEHxAFJC9zdXBwb3J0L2Fib3V0LXVzL2NvbW11bml0eS1vdXRyZWFjaB8TZBYCZg8VARJDb21tdW5pdHkgT3V0cmVhY2hkAgUPZBYCAgEPFgQfEAUnL3N1cHBvcnQvYWJvdXQtdXMvdGhlLWJvdXJucy1mb3VuZGF0aW9uHxNkFgJmDxUBFVRoZSBCb3VybnMgRm91bmRhdGlvbmQCAw9kFgICAQ9kFgICAQ9kFgJmD2QWAmYPZBYEAgIPDxYEHwFlHwJoZGQCBQ9kFgxmD2QWAgIBDxYEHxAFEi9uZXdzL25ldy1wcm9kdWN0cx8TZBYCZg8VAQxOZXcgUHJvZHVjdHNkAgEPZBYCAgEPFgQfEAUWL25ld3MvbmV3LXB1YmxpY2F0aW9ucx8TZBYCZg8VAQxQdWJsaWNhdGlvbnNkAgIPZBYCAgEPFgQfEAUUL25ld3MvcHJlc3MtcmVsZWFzZXMfE2QWAmYPFQEOUHJlc3MgUmVsZWFzZXNkAgMPZBYCAgEPFgQfEAUQL25ld3MvdHJhZGVzaG93cx8TZBYCZg8VAQpUcmFkZXNob3dzZAIED2QWAgIBDxYEHxAFCi9uZXdzL2Jsb2cfEwUGX2JsYW5rFgJmDxUBBEJsb2dkAgUPZBYCAgEPFgQfEAUSL25ld3Mvc29jaWFsLW1lZGlhHxNkFgJmDxUBDFNvY2lhbCBNZWRpYWQCBQ9kFgICAQ9kFgICAQ9kFgJmD2QWAmYPZBYEAgIPDxYEHwFlHwJoZGQCBQ9kFgxmD2QWAgIBDxYEHxAFCS9wcm9kdWN0cx8TZBYCZg8VAQhQcm9kdWN0c2QCAQ9kFgICAQ8WBB8QBRwvcmVzb3VyY2VzL3RlY2huaWNhbC1saWJyYXJ5HxNkFgJmDxUBEVRlY2huaWNhbCBMaWJyYXJ5ZAICD2QWAgIBDxYEHxAFHC9yZXNvdXJjZXMvcGFyYW1ldHJpYy1zZWFyY2gfE2QWAmYPFQERUGFyYW1ldHJpYyBTZWFyY2hkAgMPZBYCAgEPFgQfEAUXL3Jlc291cmNlcy9kZXNpZ24tdG9vbHMfE2QWAmYPFQEMRGVzaWduIFRvb2xzZAIED2QWAgIBDxYEHxAFEy9yZXNvdXJjZXMvdHJhaW5pbmcfE2QWAmYPFQEIVHJhaW5pbmdkAgUPZBYCAgEPFgQfEAUZL2ludmVudG9yeS1zZWFyY2gtcmVzdWx0cx8TZBYCZg8VARBJbnZlbnRvcnkgU2VhcmNoZAIDD2QWAgIBD2QWAmYPZBYEAgEPZBYCAgEPZBYCAgEPZBYCZg9kFgJmD2QWBAICDw8WBB8BZR8CaGRkAgUPZBYMZg9kFgICAQ8WBB8QBRgvc3VwcG9ydC9yZXF1ZXN0LXNhbXBsZXMfE2QWAmYPFQEPUmVxdWVzdCBTYW1wbGVzZAIBD2QWAgIBDxYEHxAFGC9zdXBwb3J0L3NhbGVzLWxvY2F0aW9ucx8TZBYCZg8VAQ9TYWxlcyBMb2NhdGlvbnNkAgIPZBYCAgEPFgQfEAUZL3N1cHBvcnQvZ2xvYmFsLWxvY2F0aW9ucx8TZBYCZg8VARBHbG9iYWwgTG9jYXRpb25zZAIDD2QWAgIBDxYEHxAFFy9zdXBwb3J0L2NvbnRhY3QtcmllZG9uHxNkFgJmDxUBDkNvbnRhY3QgUmllZG9uZAIED2QWAgIBDxYEHxAFGy9zdXBwb3J0L2NvbnRhY3Qta3JsLWJhbnRyeR8TZBYCZg8VARJDb250YWN0IEtSTCBCYW50cnlkAgUPZBYCAgEPFgQfEAUQL3N1cHBvcnQvc2l0ZW1hcB8TZBYCZg8VAQdTaXRlbWFwZAIDD2QWAgIBD2QWAgIBD2QWAmYPZBYCZg9kFgQCAg8PFgQfAWUfAmhkZAIFD2QWBGYPZBYCAgEPFgQfEAUQL3N1cHBvcnQvY29udGFjdB8TZBYCZg8VAQpDb250YWN0IFVzZAIBD2QWAgIBDxYEHxAFGC9zdXBwb3J0L215LWJvdXJucy1sb2dpbh8TZBYCZg8VARFMb2dpbiB0byBteUJvdXJuc2QYAgUeX19Db250cm9sc1JlcXVpcmVQb3N0QmFja0tleV9fFgEFLlQ0QTg1RTRFQTE2NSRjdGwwMCRjdGwwMCRDMDEyJGN0bDAwJHJhZENhcHRjaGEFLlQ0QTg1RTRFQTE2NSRjdGwwMCRjdGwwMCRDMDEyJGN0bDAwJHJhZENhcHRjaGEPFCsAAgUkZDYzOWQ2M2UtYzYyZS00Y2JiLWI5YzgtM2I4YTUxODIwMDI3BgAAAAAAAAAAZOamKiFaphRYwAN0s744zVxEIhkldbxPL2oeAGBF/Wm1" />
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+var theForm = document.forms['aspnetForm'];
+if (!theForm) {
+    theForm = document.aspnetForm;
+}
+function __doPostBack(eventTarget, eventArgument) {
+    if (!theForm.onsubmit || (theForm.onsubmit() != false)) {
+        theForm.__EVENTTARGET.value = eventTarget;
+        theForm.__EVENTARGUMENT.value = eventArgument;
+        theForm.submit();
+    }
+}
+//]]>
+</script>
+
+
+<script src="https://ajax.aspnetcdn.com/ajax/4.6/1/WebForms.js" type="text/javascript"></script>
+<script type="text/javascript">
+//<![CDATA[
+window.WebForm_PostBackOptions||document.write('<script type="text/javascript" src="/WebResource.axd?d=LkQMqkBQqoHufWDW4A1GaRS_r7GelLHIV1GuoXsdNNtLcivWwDQ_XASmIpBxWF1AiZjDq0d2Ok8FzVQdCp-4XuSNMvFsS8e5JOynmnMu9yY1&amp;t=638627955619783110"><\/script>');//]]>
+</script>
+
+
+
+<script src="https://ajax.aspnetcdn.com/ajax/4.6/1/WebUIValidation.js" type="text/javascript"></script>
+<script type="text/javascript">
+//<![CDATA[
+var __cultureInfo = {"name":"en","numberFormat":{"CurrencyDecimalDigits":2,"CurrencyDecimalSeparator":".","IsReadOnly":true,"CurrencyGroupSizes":[3],"NumberGroupSizes":[3],"PercentGroupSizes":[3],"CurrencyGroupSeparator":",","CurrencySymbol":"$","NaNSymbol":"NaN","CurrencyNegativePattern":0,"NumberNegativePattern":1,"PercentPositivePattern":0,"PercentNegativePattern":0,"NegativeInfinitySymbol":"-∞","NegativeSign":"-","NumberDecimalDigits":2,"NumberDecimalSeparator":".","NumberGroupSeparator":",","CurrencyPositivePattern":0,"PositiveInfinitySymbol":"∞","PositiveSign":"+","PercentDecimalDigits":2,"PercentDecimalSeparator":".","PercentGroupSeparator":",","PercentSymbol":"%","PerMilleSymbol":"‰","NativeDigits":["0","1","2","3","4","5","6","7","8","9"],"DigitSubstitution":1},"dateTimeFormat":{"AMDesignator":"AM","Calendar":{"MinSupportedDateTime":"\/Date(-62135568000000)\/","MaxSupportedDateTime":"\/Date(253402300799999)\/","AlgorithmType":1,"CalendarType":1,"Eras":[1],"TwoDigitYearMax":2029,"IsReadOnly":true},"DateSeparator":"/","FirstDayOfWeek":0,"CalendarWeekRule":0,"FullDateTimePattern":"dddd, MMMM d, yyyy h:mm:ss tt","LongDatePattern":"dddd, MMMM d, yyyy","LongTimePattern":"h:mm:ss tt","MonthDayPattern":"MMMM d","PMDesignator":"PM","RFC1123Pattern":"ddd, dd MMM yyyy HH\u0027:\u0027mm\u0027:\u0027ss \u0027GMT\u0027","ShortDatePattern":"M/d/yyyy","ShortTimePattern":"h:mm tt","SortableDateTimePattern":"yyyy\u0027-\u0027MM\u0027-\u0027dd\u0027T\u0027HH\u0027:\u0027mm\u0027:\u0027ss","TimeSeparator":":","UniversalSortableDateTimePattern":"yyyy\u0027-\u0027MM\u0027-\u0027dd HH\u0027:\u0027mm\u0027:\u0027ss\u0027Z\u0027","YearMonthPattern":"MMMM yyyy","AbbreviatedDayNames":["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],"ShortestDayNames":["Su","Mo","Tu","We","Th","Fr","Sa"],"DayNames":["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],"AbbreviatedMonthNames":["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec",""],"MonthNames":["January","February","March","April","May","June","July","August","September","October","November","December",""],"IsReadOnly":true,"NativeCalendarName":"Gregorian Calendar","AbbreviatedMonthGenitiveNames":["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec",""],"MonthGenitiveNames":["January","February","March","April","May","June","July","August","September","October","November","December",""]},"eras":[1,"A.D.",null,0]};//]]>
+</script>
+
+<script src="https://ajax.aspnetcdn.com/ajax/4.6/1/MicrosoftAjax.debug.js" type="text/javascript"></script>
+<script type="text/javascript">
+//<![CDATA[
+(window.Sys && Sys._Application && Sys.Observer)||document.write('<script type="text/javascript" src="/ScriptResource.axd?d=cdsDJci9fggTxu7sAO1tK1nD8pSVezoBCXqsMlHqg3wkvd4O3us0VIJgTyiqhAO_z-Jc-sWQOmINv5QW13PQieHoZGnVKkjIhBYj3nRExb71VIX1LuoWsgAyJ4zZeY6fa7ZpzYVZDgrIkrPEb8GN5oVQNg9c34dobdKFYHpzlSGjZjiDOREKwg7bA5Q_5sBW0&t=2a9d95e3"><\/script>');//]]>
+</script>
+
+<script type="text/javascript">
+//<![CDATA[
+if (typeof(Sys) === 'undefined') throw new Error('ASP.NET Ajax client-side framework failed to load.');
+//]]>
+</script>
+
+<script src="https://ajax.microsoft.com/ajax/beta/0910/MicrosoftAjaxWebForms.js" type="text/javascript"></script>
+<script type="text/javascript">
+//<![CDATA[
+(window.Sys && Sys.WebForms)||document.write('<script type="text/javascript" src="https://ajax.microsoft.com/ajax/beta/0910/MicrosoftAjaxWebForms.js"><\/script>');//]]>
+</script>
+
+<script src="/ScriptResource.axd?d=3CSUpRAXhVrSKDvq0LrXSeMDV0umOAMUYxG3GzWEPbFQoqrEsvZpgIXx1Eu1nKnlgPiN1pO11h5VMHap_qC3vfeRPgiLowbdeCDOJdug84jBucgR9-zvUD8Wijual8PpFEF0iSabLmaH1hLbIldu5qGrUsm0KB2h2Nqz9c9XfzhHDKbKio8-pq48WWoJ5cOj0&amp;t=ffffffffaa59361e" type="text/javascript"></script>
+<script src="https://code.jquery.com/jquery-migrate-3.4.0.min.js" type="text/javascript"></script>
+<script src="https://kendo.cdn.telerik.com/2017.3.913/js/kendo.all.min.js" type="text/javascript"></script>
+<script src="https://ajax.microsoft.com/ajax/jQuery.Validate/1.19.3/jQuery.Validate.min.js" type="text/javascript"></script>
+<script src="/Telerik.Web.UI.WebResource.axd?_TSM_HiddenField_=ctl78_TSM&amp;compress=2&amp;_TSM_CombinedScripts_=%3b%3bTelerik.Sitefinity.Resources%3aen%3a3207e2a5-e854-4d47-a81c-3a451e29b9c8%3a83eb063b%3a1939e47e%3bTelerik.Sitefinity%3aen%3a50374d43-f56d-4b55-853c-e2789859a4dc%3a993d8e92%3a5b182b17%3a3b9a1b05%3bTelerik.Sitefinity.Search.Impl%2c+Version%3d14.4.8146.0%2c+Culture%3dneutral%2c+PublicKeyToken%3db28c218413bdf563%3aen%3a27b1ab6e-b232-44e0-829d-9a6901e2f295%3a7561727d%3bTelerik.Sitefinity%2c+Version%3d14.4.8146.0%2c+Culture%3dneutral%2c+PublicKeyToken%3db28c218413bdf563%3aen%3a50374d43-f56d-4b55-853c-e2789859a4dc%3a3dad28d9%3a1900ec7d%3a2aeb216e%3af77740f1%3a26cfb6dc%3a6e04508f%3a447a22b8%3bTelerik.Sitefinity.Resources%3aen%3a3207e2a5-e854-4d47-a81c-3a451e29b9c8%3ac4ef6dcd%3a6f03d72a%3bTelerik.Sitefinity%2c+Version%3d14.4.8146.0%2c+Culture%3dneutral%2c+PublicKeyToken%3db28c218413bdf563%3aen%3a50374d43-f56d-4b55-853c-e2789859a4dc%3aa05bbffe%3a6ef1aa4d%3ad1fb4819%3a359bd2b9%3a8bc17194%3ac1fc658e%3aef84b30a%3a8f2a0776" type="text/javascript"></script>
+<script src="https://d2i2wahzwrm1n5.cloudfront.net/ajaxz/2023.3.1616/Common/Core.js" type="text/javascript"></script>
+<script src="https://d2i2wahzwrm1n5.cloudfront.net/ajaxz/2023.3.1616/Captcha/RadCaptcha.js" type="text/javascript"></script>
+<script type="text/javascript">
+//<![CDATA[
+function WebForm_OnSubmit() {
+if (typeof(ValidatorOnSubmit) == "function" && ValidatorOnSubmit() == false) return false;
+return true;
+}
+//]]>
+</script>
+
+<div class="aspNetHidden">
+
+	<input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="A9B3467D" />
+	<input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="/wEdACUbVi5NaAiztkuRv5sY//KO6L50D2PYOaeRNkZ/p8PMphE6nwl4e75/rBj8bFIdr4NrAeAQmumzX3RbIfLCOScxrBy+PHUvUOYAnmApJb/BtLO78w3/fDfH+JK0tBsu/nk977As0n4Qe1dwBYVImbmfjGVKasfXIbHtvREx1yWvl1gwyB7ZQai9kz8+7HLDO0ZaHJdvOiF0QJWUyLQbwtM/6n4EhBhiPFOZR/P3O+aWb+dc7zbLzXO4FgbJAD8LYVL3BmLn/fSNdmMPtmJXlxJb0O2hQa4z6OjV/1weo7HZcNDgzcM3X/hg7qqv64xHlbKW43jrU4Hf52wrz4MJDfI4hHl79fmGvJCGq98BiBotrtyphUcBWodMRwb/paccfnxa6WGoIJD+rYKKUyCCJ5DXlvYxBGKdu7jam7klauRAx2QYnWpGUXNMm3ibOmlkVbdhUZPi/5umu3fVsYeRREP00QipDFEE+R6Vp9caqXt5+JnuR+ElXvqI3hEJcXasTgMQH6VCPQxr74pxmaLPRz/GTH9jyqBpesAXzpXDhOTqebMDT3Tg4uuSKMfiHSg2UlO0GGytDn5ofumFytmN9+BUWwif15Pxw4sR4nZtG2dg7FXof20qbDjiVhXN1ERCFmk3Al1zY937a57diiR824YuySsGBPI3apxEKjqOGVDYS+nNqZQGdvp7jrAorM2fiqpXO6n/jNMxECrfL7rus/TcuNPUU/reoJn8zcbcR6Jv2tTlZ8OFiflc+oqLqH2McmXHAtUuseXbzMxS9dFR24qkMy7DWp1duPpb2kyUy1ucWTGJTbw0yqKDe2E7h5Jng04=" />
+</div><script type="text/javascript">
+//<![CDATA[
+Sys.WebForms.PageRequestManager._initialize('ctl78', 'aspnetForm', ['tT4A85E4EA165$ctl00$ctl00$C012$ctl00$radCaptcha$ctl01',''], ['T4A85E4EA165$ctl00$ctl00$C012$ctl00$radCaptcha$CaptchaLinkButton',''], [], 90, '');
+//]]>
+</script>
+<input type="hidden" name="ctl78" id="ctl78" />
+<script type="text/javascript">
+//<![CDATA[
+Sys.Application.setServerId("ctl78", "ctl78");
+Sys.Application._enableHistoryInScriptManager();
+//]]>
+</script>
+
+
+
+
+        <div id="PublicWrapper" class="sfPublicWrapper">
+            
+<script src="https://kit.fontawesome.com/814e95cb40.js" crossorigin="anonymous"></script>
+
+<input type="hidden" name="T4A85E4EA097$hfTemplate" id="T4A85E4EA097_hfTemplate" value="NO COOKIE" />
+
+
+<script>
+    var holdLink = "";
+    $(document).ready(function () {
+
+    });
+    function maSearchClick() {
+        if ($("#masearch").val().trim() != "") {
+            $("#maloading").show();
+            if ($("#stKeyword").hasClass("active")) {
+                location.href = "/search?indexCatalogue=psindex&searchQuery=" + $("#masearch").val() + "&ma=v2";
+            }
+            if ($("#stDatasheet").hasClass("active")) {
+                location.href = "/datasheet-search?PART=" + $("#masearch").val() + "&ST=BeginsWith&PL=00&ma=v2";
+            }
+            if ($("#stInventory").hasClass("active")) {
+                location.href = "/inventory-search-results?PARTS=" + $("#masearch").val() + "&ma=v2";
+            }
+            if ($("#stRohs").hasClass("active")) {
+                location.href = "/rohs-search?model=" + $("#masearch").val() + "&ma=v2";
+            }
+        }
+        else {
+            $("#masearch").addClass("error");
+            setTimeout(function () {
+                $("#masearch").removeClass("error");
+            }, 500);
+        }
+    }
+    function commonClick(ctl, type) {
+        switch (type) {
+            case "logo":
+                ctl.animate({
+                    opacity: '0.8',
+                    width: '-=2px'
+                }, 50);
+                break;
+            case "mat":
+                ctl.find("span.imgwrap").css("background", "linear-gradient(to bottom, #83a8d6 0%,#467bbc 100%)");
+                break;
+            case "stab":
+                ctl.css("background-color", "#1765c1");
+                break;
+        }
+    }
+    function replaceProductImg(li, imgsrc) {
+        var imgurl = "/images/mobile/product-lines/prodline-" + imgsrc.replace(/\./g, "") + ".png";
+        //console.log(imgurl);
+        li.css("background-image", "url('" + imgurl + "')");
+        //$.ajax({
+        //    url: imgurl,
+        //    type: 'HEAD',
+        //    success: function () {
+        //        console.log(imgurl);
+        //        li.css("background-image", "url(" + imgurl + ")");
+        //    }
+        //});
+    }
+    function hidePLF() {
+        $(".prodLineFeature").removeClass("on");
+        $(".fa-window-close").remove();
+    }
+    function hideTF() {
+        $(".trainingFeature").removeClass("on");
+        $(".fa-window-close").remove();
+    }
+    function hideGCC() {
+        $(".genContentCustom").removeClass("on");
+        $(".fa-window-close").remove();
+    }
+    function getParmByName(name, url) {
+        if (!url) url = window.location.href;
+        name = name.replace(/[\[\]]/g, '\\$&');
+        var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        var ret = "";
+        try {
+            ret = decodeURIComponent(results[2].replace(/\+/g, ' '));
+        }
+        catch (err) {
+            ret = results[2].replace(/\+/g, ' ');
+        }
+        return ret;
+    }
+
+    function checkBournsPages(url) {
+        var maok = false;
+        if (url.indexOf("/mahome") > -1) { maok = true; }
+        if (url.indexOf("/products") > -1) {
+            if (url.indexOf("power-magnetics-manufacturing-and-design") < 0 &&
+                url.indexOf("custom-special") < 0) {
+                maok = true;
+            }
+        }
+		if (url.indexOf("gdt1940") > -1) { maok = true; }
+        if (url.indexOf("/product-mds") > -1) { maok = true; }
+        if (url.indexOf("/applications") > -1) { maok = true; }
+        if (url.indexOf("/resources/video-library") > -1) { maok = true; }
+        if (url.indexOf("/resources/training") > -1) { maok = true; }
+        if (url.indexOf("/resources/design-tools") > -1) { maok = true; }
+        if (url.indexOf("/power-integrations") > -1) { maok = true; }
+        if (url.indexOf("/parametric-search") > -1) { maok = true; }
+        if (url.indexOf("/support/request-samples") > -1) { maok = true; }
+        if (url.toLowerCase() == "/support") { maok = true; }
+        if (url.indexOf("/legal") > -1) { maok = true; }
+        if (url.indexOf("/services") > -1) { maok = true; } //added because of link from microelectronic
+        if (url.indexOf("/xref-search-results") > -1) { maok = true; }
+        if (url.indexOf("/datasheet-search") > -1) { maok = true; }
+        if (url.indexOf("/search") > -1) { maok = true; }
+        if (url.indexOf("/inventory-search-results") > -1) { maok = true; }
+        return maok;
+    }
+
+    function openPDF(url) {
+        location.href(url);
+    }
+
+    function pdfViewer(url) {
+        var link = "";
+        if (true) //use to be able to determine browser from app
+        {
+            link = "https://docs.google.com/viewer?url=" + url + "&embedded=true";
+        }
+        $('<iframe>', {
+            src: link,
+            id: 'myFrame',
+            frameborder: 0,
+            height: '100%',
+            width: '100%',
+            scrolling: 'yes'
+        }).prependTo('#pdfViewer');
+        $("#pdfViewer").fadeIn();
+        $("#pdfViewerClose").click(function () {
+            $("#pdfViewer").fadeOut();
+        });
+    }
+</script>
+<div id="offsiteLinkConfirm" style="display: none;">
+    <p>This link will direct you to a web page outside the Bourns app. Do you wish to proceed?</p>
+    <span class="oslcYes">Yes</span><span class="oslcNo">No</span>
+</div>
+<div id="pdfViewer" style="display: none; position: fixed; z-index: 999; width: 100% !important; height: 95% !important; top: 40px; left: 0; padding-bottom: 100px;">
+    <div id="pdfViewerClose">< BACK</div>
+</div>
+<div id="mawhiteout"></div>
+<div id="maloading">
+    <div class="loader"></div>
+</div>
+<div class='sfContentBlock'><div style="position:fixed; bottom:50px; right:20px; z-index:9999; font-family:Arial;">
+<style>
+    #widget-toggle {
+    display: none;
+    }
+    .iframe-box {
+    width: 400px;
+    height: 600px;
+    background: #fff;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    border-radius: 10px;
+    overflow: hidden;
+    display: none;
+    position: relative;
+    }
+    #widget-toggle:checked + label + .iframe-box {
+    display: block;
+    }
+    #widget-toggle:checked + label {
+    display: none;
+    }
+    .close-btn {
+    position: absolute;
+    top: 5px;
+    right: 50px;
+    cursor: pointer;
+    background: #fff;
+    border-radius: 50%;
+    padding: 4px 8px;
+    font-weight: bold;
+    }
+    iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    }
+    .open-btn img {
+    width: 80px;
+    height: 80px;
+    cursor: pointer;
+    }
+</style>
+<input type="checkbox" id="widget-toggle" />
+<label for="widget-toggle" class="open-btn">
+<img src="https://www.bourns.com/images/common/bourns_chatbot_ai_symbol_anim04.gif" alt="Open" />
+</label>
+<div class="iframe-box">
+<label for="widget-toggle" class="close-btn">✖</label>
+<iframe src="https://uat-iframe.bourns.com"></iframe>
+</div>
+</div>
+
+</div><div class='sfContentBlock'><noscript>
+<link rel="stylesheet" type="text/css" href="/common/css/noscript.css">
+</noscript>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-59T9R9X4"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+</div><div class="sf_cols">
+    <div class="sf_colsOut sf_1col_1_100" data-placeholder-label="Header">
+        <div id="T3808C028001_Col00" class="sf_colsIn sf_1col_1in_100"><div class="sf_cols mobileHeader">
+    <div class="sf_colsOut sf_1col_1_100" style="width: 100%;" data-placeholder-label="MOBILE HEADER">
+        <div id="T4A85E4EA059_Col00" class="sf_colsIn sf_1col_1in_100"><div class='sfContentBlock logo'><a href="/home"><img src="/images/Home-Page/bourns_logo_white.png" alt="Bourns" title="bourns_logo_white" style="max-width:150px;" /></a>
+
+</div><div class="sfimageWrp searchIcon">
+	        
+<img id="T4A85E4EA067_ctl00_ctl00_imageItem" title="search" src="/images/common/search.png?sfvrsn=36138bf1_4" alt="Search" />
+
+
+</div><div class="sfimageWrp languageIcon">
+	        
+<img id="T4A85E4EA068_ctl00_ctl00_imageItem" title="globe" src="/images/common/globe.png?sfvrsn=1c138bf1_4" alt="Languages" />
+
+
+</div><div class="sf_cols  featureBoxSm">
+    <div class="sf_colsOut sf_2cols_1_50" style="width: 38%;">
+        <div id="T4A85E4EA064_Col00" class="sf_colsIn sf_2cols_1in_50" style="margin: 0px;">
+            
+        </div>
+    </div>
+    <div class="sf_colsOut sf_2cols_2_50" style="width: 62%;">
+        <div id="T4A85E4EA064_Col01" class="sf_colsIn sf_2cols_2in_50" style="margin: 0px 0px 0px 10px;">            
+        </div>
+    </div>
+</div>
+            
+        </div>
+    </div>
+</div><div class="sf_cols stickyHeader">
+    <div class="sf_colsOut sf_1col_1_100" data-placeholder-label="Sticky Header" style="">
+        <div id="T4A85E4EA045_Col00" class="sf_colsIn sf_1col_1in_100"><div class="sf_cols fixedWidth">
+    <div class="sf_colsOut sf_1col_1_100 header" data-placeholder-label="Header Links">
+        <div id="T4A85E4EA021_Col00" class="sf_colsIn sf_1col_1in_100"><div class='sfContentBlock headerLinks'><ul>
+    <li><a href="/support/my-bourns-login">My Bourns</a></li>
+    <li><a href="/support/working-at-bourns">Careers</a></li>
+    <li><a href="/support/contact">Contact Us</a></li>
+</ul>
+
+</div><div id="T4A85E4EA063" class="languageSelect">
+	<div id="T4A85E4EA063_ctl00_ctl00_controlWrapper">
+
+    
+
+    
+                
+                        <ul class="sflanguagesVerticalList">
+                    
+                        <li id="T4A85E4EA063_ctl00_ctl00_languagesRepeater_vertical_langHolder_0" class="sflanguageItem sflang_en sflangSelected">
+                            <a href="../../error" id="T4A85E4EA063_ctl00_ctl00_languagesRepeater_vertical_langLink_0" class="sflanguageLnk" lang="en"><span id="T4A85E4EA063_ctl00_ctl00_languagesRepeater_vertical_langName_0">English</span></a>
+                        </li>
+                    
+                        </ul>
+                    
+            
+</div>
+
+</div>
+            
+        </div>
+    </div>
+</div><div class="sf_cols">
+    <div class="sf_colsOut sf_1col_1_100 fullWidth navbar">
+        <div id="T4A85E4EA010_Col00" class="sf_colsIn sf_1col_1in_100"><div class='sfContentBlock'><div id="headerTabFx">
+<div id="headerTabBg">&nbsp;</div>
+<div id="headerTabSlant">&nbsp;</div>
+</div>
+
+</div><div class="sf_cols fixedWidth">
+    <div class="sf_colsOut sf_2cols_1_25" data-placeholder-label="Logo" style="width: 20%;">
+        <div id="T4A85E4EA008_Col00" class="sf_colsIn sf_2cols_1in_25"><div class='sfContentBlock logo'><a href="/home"><img src="/images/home-page/bourns_logo_white.png?sfvrsn=295490f1_3" displaymode="Original" alt="Bourns" title="bourns_logo_white" /></a>
+
+</div>
+            
+        </div>
+    </div>
+    <div class="sf_colsOut sf_2cols_2_75" data-placeholder-label="Top Nav" style="width: 80%;">
+        <div id="T4A85E4EA008_Col01" class="sf_colsIn sf_2cols_2in_75"><div class='sfContentBlock'><span id="mobileMenu"><em class="fa-solid fa-bars"></em></span>
+
+</div><div class='sfContentBlock'><div class="sfNavWrp sfNavHorizontalDropDownWrp topnav">
+<ul id="T4A85E4EA003_ctl00_ctl00_navigationUl" class="sfNavHorizontalDropDown sfNavList">
+    <!--<li class="tlNavItem">
+    <a href="/markets" class="moView">Markets</a>
+    <a class="dtoView">Markets</a>
+    <div class="sf_cols navbar-item navMarkets">
+    <div class="sf_colsOut " data-placeholder-label="Markets Nav" style="width: 100%;">
+    <div id="T4A85E4EA119_Col00" class="sf_colsIn sf_1col_1in_100">
+    <div class="sfimageWrp">
+    <img alt="" id="T4A85E4EA131_ctl00_ctl00_imageItem" title="flat_gdt_bkd" src="/images/hfc/flat_gdt_bkd.jpg?sfvrsn=daca50f6_5" />
+    </div>
+    <div class="sfNavWrp sfNavHorizontalSiteMapWrp ">
+    <a class="dtoView" href="/markets">Markets</a>
+    <ul class="sfNavList">
+        <li><a href="/market-segments/automotive">Automotive</a>
+        <ul id="T4A85E4EA125_ctl00_ctl00_ctl03_ctl00_childNodesContainer">
+            <li><a href="/market-segments/automotive/product-focus">Product Focus</a></li>
+            <li><a href="/market-segments/automotive/automotive-components">Automotive Components</a></li>
+            <li><a href="/market-segments/automotive/automotive-sensors">Automotive Sensors</a></li>
+            <li><a href="/market-segments/automotive/commercial-vehicle-sensors">Commercial Vehicle Sensors</a></li>
+        </ul>
+        </li>
+        <li><a href="/market-segments/circuit-protection">Circuit Protection</a>
+        <ul id="T4A85E4EA125_ctl00_ctl00_ctl04_ctl00_childNodesContainer">
+            <li><a href="/market-segments/circuit-protection">Wireless and Wireline Communications</a></li>
+            <li><a href="/market-segments/circuit-protection">Vehicle Electrification</a></li>
+            <li><a href="/market-segments/circuit-protection">Industry 4.0</a></li>
+            <li><a href="/market-segments/circuit-protection">Cloud and Edge Computing</a></li>
+            <li><a href="/market-segments/circuit-protection">Consumer Goods</a></li>
+        </ul>
+        </li>
+        <li><a href="/market-segments/power-conversion">Power Conversion</a>
+        <ul id="T4A85E4EA125_ctl00_ctl00_ctl05_ctl00_childNodesContainer">
+            <li><a href="/market-segments/power-conversion/automotive-power">Automotive Power</a></li>
+            <li><a href="/market-segments/power-conversion/consumer-electronics-power-supplies">Consumer Electronics Power Supplies</a></li>
+            <li><a href="/market-segments/power-conversion/renewable-energy-power">Renewable Energy Power</a></li>
+            <li><a href="/market-segments/power-conversion/network-and-telecommunication-power">Network and Telecommunication Power</a></li>
+        </ul>
+        </li>
+        <li><a href="/market-segments/sensing">Sensing</a>
+        <ul id="T4A85E4EA125_ctl00_ctl00_ctl06_ctl00_childNodesContainer">
+            <li><a href="/market-segments/sensing">Electric Vehicle Charging</a></li>
+            <li><a href="/market-segments/sensing">Energy Systems</a></li>
+            <li><a href="/market-segments/sensing">Medical Equipment</a></li>
+            <li><a href="/market-segments/sensing">Welding Equipment</a></li>
+            <li><a href="/market-segments/sensing">Automotive</a></li>
+            <li><a href="/market-segments/sensing">Motor Controls</a></li>
+            <li><a href="/market-segments/sensing">Heavy Equipment</a></li>
+        </ul>
+        </li>
+    </ul>
+    </div>
+    </div>
+    </div>
+    </div>
+    </li>-->
+    <li class="tlNavItem">
+    <a href="/applications" class="moView">Applications</a>
+    <a class="dtoView">Applications</a>
+    <div class="sf_cols navbar-item navApplications">
+    <div class="sf_colsOut " data-placeholder-label="Applications Nav" style="width: 100%;">
+    <div id="T4A85E4EA120_Col00" class="sf_colsIn sf_1col_1in_100">
+    <div class="sfimageWrp">
+    <img alt="" id="T4A85E4EA132_ctl00_ctl00_imageItem" title="flat_gdt_bkd" src="/images/hfc/topnav-applications.jpg" />
+    </div>
+    <div class="sfNavWrp sfNavHorizontalSiteMapWrp ">
+    <div class="dtoView tnFeature">
+    <span class="tnfTitle">Discover the optimal solution for your specific application.</span>
+    <span class="tnfText">With innovative new technologies, products and solutions, there are more reasons to partner with Bourns than ever before.</span>
+    </div>
+    <a href="/applications" class="dtoView">Applications</a>
+    <ul class="sfNavList">
+        <li><a href="/applications/automotive">Automotive</a></li>
+        <li><a href="/applications/consumer-electronics">Consumer Electronics</a></li>
+        <li><a href="/applications/esd-protection">ESD Protection Guide</a></li>
+        <li><a href="/applications/lighting">Lighting</a></li>
+        <li><a href="/applications/medical">Medical</a></li>
+        <li><a href="/applications/military">Military</a></li>
+        <li><a href="/applications/mobile">Mobile</a></li>
+        <li><a href="/applications/network-communications">Network Communications</a></li>
+        <li><a href="/applications/office-machines">Office Machines</a></li>
+        <li><a href="/applications/power-conversion">Power Conversion</a></li>
+        <li><a href="/applications/industrial-instrumentation">Industrial &amp; Instrumentation</a></li>
+        <li><a href="/applications/telecommunications">Telecommunications</a></li>
+    </ul>
+    </div>
+    </div>
+    </div>
+    </div>
+    </li>
+    <li class="tlNavItem">
+    <a class="moView" href="/products">Products</a>
+    <a class="dtoView">Products</a>
+    <div class="sf_cols navbar-item navProducts">
+    <div class="sf_colsOut " data-placeholder-label="Products Nav" style="width: 100%;">
+    <div id="T4A85E4EA121_Col00" class="sf_colsIn sf_1col_1in_100">
+    <div class="sfimageWrp">
+    <img alt="" id="T4A85E4EA133_ctl00_ctl00_imageItem" title="flat_gdt_bkd" src="/images/hfc/topnav-products.jpg" />
+    </div>
+    <div class="sfNavWrp sfNavHorizontalSiteMapWrp ">
+    <a class="dtoView" href="/products">Products</a>
+    <ul class="sfNavList">
+        <li class="tnFeatureItem">
+        <a href="/products/new-products">New Products</a></li>
+        <li><a href="/products/automotive">Automotive Sensors</a></li>
+        <li><a href="/products/aec-q-compliant-products">AEC-Q Compliant Products</a></li>
+        <li><a href="/products/circuit-protection">Circuit Protection</a></li>
+        <li><a href="/products/connectors">Connectors</a></li>
+        <li><a href="/products/diodes">Diodes</a></li>
+        <li><a href="/products/encoders">Encoders</a></li>
+        <li><a href="/products/heaters">Heaters</a></li>
+        <li><a href="/products/igbt">IGBTs</a></li>
+        <li><a href="/products/co-outside-plant-products">CO &amp; Outside Plant Products</a></li>
+        <li><a href="/products/led-shunt-protectors">LED Shunt Protectors</a></li>
+        <li><a href="/products/magnetic-products">Magnetic Products</a></li>
+        <li><a href="/products/microelectronic-modules">Microelectronic Modules</a></li>
+        <li><a href="/products/connectors/modular-contacts">Modular Contacts</a></li>
+        <li><a href="/products/potentiometers">Potentiometers</a></li>
+        <li><a href="/products/resistors">Resistors</a></li>
+        <li><a href="/products/sensors">Sensors</a></li>
+        <li><a href="/products/services">Services</a></li>
+        <li><a href="/products/surge-protective-devices">Surge Protective Devices</a></li>
+        <li><a href="/products/switches">Miniature Switches</a></li>
+        <li><a href="/products/thermal-cutoff-devices">Thermal Cutoff Devices (TCOs)</a></li>
+        <li><a href="/products/thermal-sensing-devices">Thermal Sensing Devices</a></li>
+        <li><a href="/products/thermal-solutions">Thermal Solutions</a></li>
+        <li><a href="/products/thick-film-on-steel/thick-film-on-steel">Thick Film on Steel</a></li>
+        <li><a href="/products/trimpot-trimming-potentiometers">Trimpot&reg; Trimming Potentiometers</a></li>
+        <li><a href="/products/guitar-pots">Guitar Pots</a></li>
+        <li><a href="/products/proaudio">Pro Audio</a></li>
+        <li><a href="/products/pro-lighting">Pro Lighting</a></li>
+    </ul>
+    </div>
+    </div>
+    </div>
+    </div>
+    </li>
+    <li class="tlNavItem">
+    <a class="moView" href="/news">News</a>
+    <a class="dtoView">News</a>
+    <div class="sf_cols navbar-item navNews">
+    <div class="sf_colsOut " data-placeholder-label="News Nav" style="width: 100%;">
+    <div id="T4A85E4EA124_Col00" class="sf_colsIn sf_1col_1in_100">
+    <div class="sfimageWrp">
+    <img alt="" id="T4A85E4EA134_ctl00_ctl00_imageItem" title="flat_gdt_bkd" src="/images/hfc/topnav-news.jpg" />
+    </div>
+    <div class="sfNavWrp sfNavHorizontalSiteMapWrp ">
+    <a class="dtoView" href="/news">News</a>
+    <div class="dtoView tnFeature">
+    <span class="tnfTitle">Unlock More with MyBourns</span>
+    <span class="tnfText"><a href="https://www.bourns.com/support/my-bourns-login">&gt;&gt; Sign up now &lt;&lt;</a> And get exclusive access to resources and updates.</span>
+    </div>
+    <ul class="sfNavList">
+        <li class="tnFeatureItem fi1">
+        <a href="/news/new-products">New Products</a></li>
+        <li class="tnFeatureItem fi1">
+        <a href="/news/new-publications">New Publications</a></li>
+        <li><a href="/news/press-releases">Press Releases</a></li>
+        <li><a href="/news/tradeshows">Tradeshows</a></li>
+        <li><a href="/news/social-media">Social Media</a></li>
+        <li><a href="/news/blog" target="_blank">Blog</a></li>
+        <li><a href="https://bourns.com/e-news-sign-up" target="_blank">eNewsletter</a></li>
+        <li><a href="https://bourns.com/support/my-bourns-login" target="_blank">MyBourns</a></li>
+    </ul>
+    </div>
+    </div>
+    </div>
+    </div>
+    </li>
+    <li class="tlNavItem">
+    <a class="moView" href="/resources">Resources</a>
+    <a class="dtoView">Resources</a>
+    <div class="sf_cols navbar-item navResources">
+    <div class="sf_colsOut " data-placeholder-label="Resources Nav" style="width: 100%;">
+    <div id="T4A85E4EA123_Col00" class="sf_colsIn sf_1col_1in_100">
+    <div class="sfimageWrp">
+    <img alt="" id="T4A85E4EA135_ctl00_ctl00_imageItem" title="flat_gdt_bkd" src="/images/hfc/topnav-gen1.jpg" />
+    </div>
+    <div class="sfNavWrp sfNavHorizontalSiteMapWrp ">
+    <a class="dtoView" href="/resources">Resources</a>
+    <ul class="sfNavList dtoView">
+        <li>
+        <div class="dtoView tnFeature">
+        <span class="tnfTitle">Technical Library &amp; Documents</span>
+        </div>
+        <ul>
+            <li><a href="/resources/new-product-releases">New Products</a></li>
+            <li><a href="/resources/data-sheets">Data Sheets</a></li>
+            <li><a href="/resources/technical-library">Technical Library</a></li>
+            <li><a href="/resources/portnote-solutions">PortNote&reg; Solutions</a></li>
+            <li><a href="/resources/power-play-solutions">Power Play Solutions</a></li>
+            <li><a href="/resources/video-library">Video Library</a></li>
+            <li><a href="/resources/webinars">Webinars</a></li>
+            <li><a href="/resources/product-change-notifications">Product Change Notifications</a></li>
+            <li><a href="/resources/product-obsolescence-memos">Product Obsolescence Memos</a></li>
+            <li><a href="/resources/obsolete-data-sheets">Obsolete Data Sheets</a></li>
+        </ul>
+        </li>
+        <li>
+        <div class="dtoView tnFeature">
+        <span class="tnfTitle">Tools &amp; Training</span>
+        </div>
+        <ul>
+            <li><a href="/resources/parametric-search">Parametric Search</a></li>
+            <li><a href="/resources/design-tools">Design Tools</a></li>
+            <li><a href="/support/request-samples">Request Samples</a></li>
+            <li><a href="/resources/reference-design">Reference Design</a></li>
+            <li><a href="/resources/training">Training</a></li>
+            <li><a href="/resources/faqs">FAQs</a></li>
+            <li><a href="/applications/esd-protection">ESD Protection Guide</a></li>
+            <li><a href="/resources/fixed-resistors-part-number-lookup">Resistor Part Number Lookup</a></li>
+        </ul>
+        <br />
+        <br />
+        <div class="dtoView tnFeature">
+        <span class="tnfTitle">Other Resources</span>
+        </div>
+        <ul>
+            <li><a href="/resources/bourns-environmental-sustainability">Bourns Environmental, Social and Governance</a></li>
+            <!--<li><a href="/news/press-releases/pr/2023/07/27/people-s-republic-of-china-restrictions-on-gallium-germanium">Ga/Ge Statement</a></li>-->
+            <li><a href="/resources/certificates">Certificates and Standards</a></li>
+            <li><a href="/resources/partner-portals">Partner Portals</a></li>
+            <li><a href="/legal/disclaimers-terms-and-policies">Disclaimers, Terms and Policies</a></li>
+        </ul>
+        </li>
+        <li>
+        <div class="dtoView tnFeature">
+        <span class="tnfTitle">Product Compliance</span>
+        </div>
+        <ul>
+            <li><a href="/resources/rohs">RoHS/MDS</a></li>
+            <li><a href="/resources/bourns-reach-letter" target="_blank">REACH Statement</a></li>
+            <li><a href="/resources/bourns-tsca-statement" target="_blank">TSCA Statement</a></li>
+            <li><a href="https://www.bourns.com/docs/RoHS-Content/Bourns_PFAS_Declaration.pdf">PFAS Declaration</a></li>
+            <li><a href="https://www.bourns.com/docs/RoHS-Content/bourns_pfos_pfoa_letter.pdf">PFOS/PFOA Compliance Position</a></li>
+            <li><a href="/resources/bourns_kaschke_components_regulated_substances_list">Kaschke Regulated Substances List</a></li>
+            <li><a href="/resources/responsible-minerals">Responsible Mineral Reporting</a></li>
+            <li><a href="https://www.bourns.com/docs/rohs-content/bourns_statement_on_basel_stockholm_and_minamata_conventions.pdf" target="_blank">Bourns Statement on Basel Stockholm and Minamata Conventions</a></li>
+            <li><a href="/resources/scip-submittal-listing" target="_blank">SCIP Submittal Listing</a></li>
+            <li><a href="/resources/china-voc-declaration" target="_blank">China VOC Statement</a></li>
+            <li><a href="/resources/bourns-ca-proposition-65-statement" target="_blank">California Proposition 65 Statement</a></li>
+            <li><a href="/support/contact#eci" target="_blank">Export Control Inquiry</a></li>
+        </ul>
+        </li>
+    </ul>
+    <ul class="sfNavList moView">
+        <li><a href="/resources/new-product-releases">New Products</a></li>
+        <li><a href="/resources/data-sheets">Data Sheets</a></li>
+        <li><a href="/resources/technical-library">Technical Library</a></li>
+        <li><a href="/resources/portnote-solutions">PortNote&reg; Solutions</a></li>
+        <li><a href="/resources/power-play-solutions">Power Play Solutions</a></li>
+        <li><a href="/resources/video-library">Video Library</a></li>
+        <li><a href="/resources/webinars">Webinars</a></li>
+        <li><a href="/resources/product-change-notifications">Product Change Notifications</a></li>
+        <li><a href="/resources/product-obsolescence-memos">Product Obsolescence Memos</a></li>
+        <li><a href="/resources/obsolete-data-sheets">Obsolete Data Sheets</a></li>
+        <li><a href="/resources/parametric-search">Parametric Search</a></li>
+        <li><a href="/resources/design-tools">Design Tools</a></li>
+        <li><a href="/resources/reference-design">Reference Design</a></li>
+        <li><a href="/resources/training">Training</a></li>
+        <li><a href="/resources/faqs">FAQs</a></li>
+        <li><a href="/resources/fixed-resistors-part-number-lookup">Resistor Part Number Lookup</a></li>
+        <li><a href="/resources/rohs">RoHS/Material Declaration Sheets (MDS) </a></li>
+        <li><a href="/resources/bourns-environmental-sustainability">Bourns Environmental, Social and Governance</a></li>
+        <li><a href="/resources/bourns-reach-letter" target="_blank">REACH Statement</a></li>
+        <li><a href="/resources/bourns-tsca-statement" target="_blank">TSCA Statement</a></li>
+        <li><a href="/docs/RoHS-Content/bourns_pfos_pfoa_letter.pdf" target="_blank">PFOS/PFOA Compliance Position</a></li>
+        <li><a href="/resources/bourns_kaschke_components_regulated_substances_list">Kaschke Regulated Substances List</a></li>
+        <li><a href="/resources/conflict-minerals">Conflict Mineral Reporting</a></li>
+        <li><a href="/resources/scip-submittal-listing" target="_blank">SCIP Submittal Listing</a></li>
+        <li><a href="/resources/china-voc-declaration" target="_blank">China VOC Statement</a></li>
+        <li><a href="/resources/bourns-ca-proposition-65-statement" target="_blank">California Proposition 65 Statement</a></li>
+        <li><a href="/news/press-releases/pr/2023/07/27/people-s-republic-of-china-restrictions-on-gallium-germanium">Ga/Ge Statement</a></li>
+        <li><a href="/support/contact#eci" target="_blank">Export Control Inquiry</a></li>
+        <li><a href="/resources/certificates">Certificates and Standards</a></li>
+        <li><a href="/resources/partner-portals">Partner Portals</a></li>
+    </ul>
+    </div>
+    </div>
+    </div>
+    </div>
+    </li>
+    <li class="tlNavItem">
+    <a class="moView" href="/support">Support</a>
+    <a class="dtoView">Support</a>
+    <div class="sf_cols navbar-item navSupport">
+    <div class="sf_colsOut " data-placeholder-label="Support Nav" style="width: 100%;">
+    <div id="T4A85E4EA122_Col00" class="sf_colsIn sf_1col_1in_100">
+    <div class="sfimageWrp">
+    <img alt="" id="T4A85E4EA136_ctl00_ctl00_imageItem" title="flat_gdt_bkd" src="/images/hfc/topnav-support.jpg" />
+    </div>
+    <div class="sfNavWrp sfNavHorizontalSiteMapWrp ">
+    <a class="dtoView" href="/support">Support</a>
+    <ul class="sfNavList">
+        <li class="navFeature">
+        <a href="/support/about-us">About Us</a>
+        <ul>
+            <li><a href="/support/about-us/mission">Bourns Mission</a></li>
+            <li><a href="/support/about-us/bourns-advantage">Bourns Advantage</a></li>
+            <li><a href="/support/working-at-bourns">Working at Bourns</a></li>
+            <li><a href="/support/about-us/community-outreach">Community Outreach</a></li>
+            <li><a href="/support/about-us/the-bourns-foundation">The Bourns Foundation</a></li>
+            <li><a href="https://youtu.be/Vw9s3ptema4" target="_blank">Bourns Corporate Video</a></li>
+            <li><a href="/common/BeyondOurWildestDreams/index.html">Beyond Our Wildest Dreams</a></li>
+            <li><a href="/support/about-us/compliance-ethics-and-registrations">Compliance, Ethics, and Registrations</a></li>
+            <li><a href="/support/about-us/local-microsites">Local Microsites</a></li>
+            <li><a href="/support/about-us/quality-systems">Quality Systems</a></li>
+        </ul>
+        </li>
+        <li><a href="/support/contact">Contact</a></li>
+        <li><a href="/support/sales-locations">Sales Locations</a></li>
+        <li><a href="/support/global-locations">Global Locations</a></li>
+        <li><a href="/support/request-samples">Request Samples</a></li>
+        <li><a href="/support/careers">Careers</a></li>
+        <li><a href="/legal/disclaimers-terms-and-policies">Legal</a></li>
+    </ul>
+    </div>
+    </div>
+    </div>
+    </div>
+    </li>
+    <li class="quickLink qlContact"><a href="/support/contact">Contact Us</a></li>
+    <li class="quickLink qlCareers"><a href="/support/careers">Careers</a></li>
+    <li class="quickLink qlMyBourns"><a href="/support/my-bourns-login">My Bourns</a></li>
+    <li class="quickLink qlLanguage"><a>Language</a>
+    <div id="nav-mobile-language">&nbsp;</div>
+    </li>
+</ul>
+</div>
+
+</div>
+        
+        </div>
+    </div>
+</div>
+            
+        </div>
+    </div>
+</div><div class="sf_cols header-bottom">
+    <div class="sf_colsOut sf_1col_1_100" style="" data-placeholder-label="Header Bottom">
+        <div id="T4A85E4EA142_Col00" class="sf_colsIn sf_1col_1in_100">
+            
+        </div>
+    </div>
+</div><div class="sf_cols search_wrapper">
+    <div class="sf_colsOut " style="width: 100%;" data-placeholder-label="Search">
+        <div id="T4A85E4EA114_Col00" class="sf_colsIn sf_1col_1in_100"><div class='sfContentBlock'><div id="searchTabFx">
+<div id="searchTabBg">&nbsp;</div>
+<div id="searchTabSlant">&nbsp;</div>
+<div id="searchTabClr">&nbsp;</div>
+</div>
+
+</div><div class="sf_cols fixedWidth">
+    <div class="sf_colsOut sf_1col_1_100" data-placeholder-label="Search Fixed Width" style="">
+        <div id="T4A85E4EA152_Col00" class="sf_colsIn sf_1col_1in_100"><div class='bsfFilters'><ul class="bsfFilterChoices">
+    <li class="bsfKeyword active"><span>&bull;</span>Keyword</li>
+    <li class="bsfInventory"><span>&bull;</span>Inventory</li>
+    <li class="bsfXRef"><span>&bull;</span>Cross-Reference</li>
+    <li class="bsfParm"><span>&bull;</span>Parametric Search</li>
+</ul>
+<div id="awebChromeHelper">&nbsp;</div>
+
+</div><div class='sfContentBlock searchClick'><div id="searchClickBtn"><em class="fa-solid fa-magnifying-glass"></em></div>
+
+</div><div id="T4A85E4EA146">
+	
+
+<fieldset id="T4A85E4EA146_ctl00_ctl00_main" class="sfsearchBox">
+    <input name="T4A85E4EA146$ctl00$ctl00$searchTextBox" type="text" id="T4A85E4EA146_ctl00_ctl00_searchTextBox" class="sfsearchTxt" />
+    <input type="submit" name="T4A85E4EA146$ctl00$ctl00$searchButton" value="Search" onclick="return false;WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions(&quot;T4A85E4EA146$ctl00$ctl00$searchButton&quot;, &quot;&quot;, true, &quot;&quot;, &quot;&quot;, false, false))" id="T4A85E4EA146_ctl00_ctl00_searchButton" class="sfsearchSubmit" />
+</fieldset>
+
+</div><div class='altSearchWrapper'><input type="text" id="mainSearch" placeholder="Search for part numbers, data sheets, or keywords" />
+
+</div>
+            
+        </div>
+    </div>
+</div>
+            
+        </div>
+    </div>
+</div>
+            
+        </div>
+    </div>
+</div>
+            
+        </div>
+    </div>
+</div><div class="sf_cols">
+    <div class="sf_colsOut sf_1col_1_100" data-placeholder-label="Content">
+        <div id="T3808C028002_Col00" class="sf_colsIn sf_1col_1in_100"><div class="sf_cols bannerBack">
+    <div class="sf_colsOut sf_1col_1_100">
+        <div id="TEBE0B39E006_Col00" class="sf_colsIn sf_1col_1in_100"><div class="sf_cols banner fixedWidth">
+    <div class="sf_colsOut sf_1col_1_100" data-placeholder-label="Banner (Optional)">
+        <div id="TEBE0B39E005_Col00" class="sf_colsIn sf_1col_1in_100">
+            
+        </div>
+    </div>
+</div>
+            
+        </div>
+    </div>
+</div><div class="sf_cols scrollBody">
+    <div class="sf_colsOut sf_1col_1_100 fixedWidth setHeight">
+        <div id="T4A85E4EA058_Col00" class="sf_colsIn sf_1col_1in_100"><div class="sf_cols ">
+    <div class="sf_colsOut sf_1col_1_100 mobileMargin" data-placeholder-label="Main Content Wrapper">
+        <div id="T4A85E4EA013_Col00" class="sf_colsIn sf_1col_1in_100"><div class="sf_cols PageTitle">
+    <div class="sf_colsOut sf_1col_1_100" data-placeholder-label="Page Title">
+        <div id="TEBE0B39E002_Col00" class="sf_colsIn sf_1col_1in_100"><div class='sfContentBlock'><h2>404 Page Not Found</h2>
+
+</div>
+            
+        </div>
+    </div>
+</div><div class="sf_cols breadcrumb-wrapper">
+    <div class="sf_colsOut sf_1col_1_100" style="" data-placeholder-label="Breadcrumb">
+        <div id="TEBE0B39E028_Col00" class="sf_colsIn sf_1col_1in_100"><div>
+
+            <a href="/">Home </a>
+            <span> / </span>
+Error</div>
+            
+        </div>
+    </div>
+</div><div class="sf_cols">
+    <div class="sf_colsOut sf_1col_1_100 genContent" data-placeholder-label="Main Content" style="">
+        <div id="TEBE0B39E003_Col00" class="sf_colsIn sf_1col_1in_100"><div class='sfContentBlock'>The page you're looking for was not found. Please check the URL to try the page again.
+
+</div>
+            
+        </div>
+    </div>
+</div>
+            
+        </div>
+    </div>
+</div>
+            
+        </div>
+    </div>
+</div>
+            
+        </div>
+    </div>
+</div><div class="sf_cols def_footer_wrapper">
+    <div class="sf_colsOut sf_1col_1_100" data-placeholder-label="Footer" style="">
+        <div id="T3808C028003_Col00" class="sf_colsIn sf_1col_1in_100"><div class='sfContentBlock'><div id="BournsSurvey">
+<img src="/common/images/survey_icon.png" alt="Please take a quick survey" />
+<div id="BournsSurveyText">Quick survey&nbsp;&nbsp;</div>
+<span id="OptOutX"><img src="/common/images/web_survey_button03_round_close.png" alt="Opt out" /></span>
+</div>
+
+</div><div id="T4A85E4EA165" class="surveyForm sfFormsEditor sfTopLbls surveyFormQuestions">
+	
+
+
+<div id="T4A85E4EA165_ctl00_ctl00_successMessage" class="sfSuccess" style="display:none;">
+		
+	</div>
+<div id="T4A85E4EA165_ctl00_ctl00_formControls">
+		
+<h2 id="T4A85E4EA165_ctl00_ctl00_C001" class="sfFormTitle sfTitleSmall">
+			Bourns Web Survey
+		</h2><div class='sfContentBlock sfFormInstructions'><em>Please answer as many questions as you can with&nbsp;1 being unfavorable and&nbsp;5 most favorable.</em><br />
+
+</div><div id="T4A85E4EA165_ctl00_ctl00_C004" class="mcRequired sfFormRadiolist">
+			
+            <div id="T4A85E4EA165_ctl00_ctl00_C004_ctl00_ctl00_titleLabel_radiobuttons" class="sfTxtLbl">
+				How easy was it to find what you were looking for on our website?
+			</div>
+            <span id="T4A85E4EA165_ctl00_ctl00_C004_ctl00_ctl00_radioButtons_radiobuttons" class="sfRadioList sfFieldWrp"><input id="T4A85E4EA165_ctl00_ctl00_C004_ctl00_ctl00_radioButtons_radiobuttons_0" type="radio" name="T4A85E4EA165$ctl00$ctl00$C004$ctl00$ctl00$radioButtons_radiobuttons" value="1" /><label for="T4A85E4EA165_ctl00_ctl00_C004_ctl00_ctl00_radioButtons_radiobuttons_0">1</label><input id="T4A85E4EA165_ctl00_ctl00_C004_ctl00_ctl00_radioButtons_radiobuttons_1" type="radio" name="T4A85E4EA165$ctl00$ctl00$C004$ctl00$ctl00$radioButtons_radiobuttons" value="2" /><label for="T4A85E4EA165_ctl00_ctl00_C004_ctl00_ctl00_radioButtons_radiobuttons_1">2</label><input id="T4A85E4EA165_ctl00_ctl00_C004_ctl00_ctl00_radioButtons_radiobuttons_2" type="radio" name="T4A85E4EA165$ctl00$ctl00$C004$ctl00$ctl00$radioButtons_radiobuttons" value="3" /><label for="T4A85E4EA165_ctl00_ctl00_C004_ctl00_ctl00_radioButtons_radiobuttons_2">3</label><input id="T4A85E4EA165_ctl00_ctl00_C004_ctl00_ctl00_radioButtons_radiobuttons_3" type="radio" name="T4A85E4EA165$ctl00$ctl00$C004$ctl00$ctl00$radioButtons_radiobuttons" value="4" /><label for="T4A85E4EA165_ctl00_ctl00_C004_ctl00_ctl00_radioButtons_radiobuttons_3">4</label><input id="T4A85E4EA165_ctl00_ctl00_C004_ctl00_ctl00_radioButtons_radiobuttons_4" type="radio" name="T4A85E4EA165$ctl00$ctl00$C004$ctl00$ctl00$radioButtons_radiobuttons" value="5" /><label for="T4A85E4EA165_ctl00_ctl00_C004_ctl00_ctl00_radioButtons_radiobuttons_4">5</label></span>
+            
+        
+
+
+		</div><div id="T4A85E4EA165_ctl00_ctl00_C005" class="mcRequired sfFormRadiolist">
+			
+            <div id="T4A85E4EA165_ctl00_ctl00_C005_ctl00_ctl00_titleLabel_radiobuttons" class="sfTxtLbl">
+				How satisfied are you with the content? 
+			</div>
+            <span id="T4A85E4EA165_ctl00_ctl00_C005_ctl00_ctl00_radioButtons_radiobuttons" class="sfRadioList sfFieldWrp"><input id="T4A85E4EA165_ctl00_ctl00_C005_ctl00_ctl00_radioButtons_radiobuttons_0" type="radio" name="T4A85E4EA165$ctl00$ctl00$C005$ctl00$ctl00$radioButtons_radiobuttons" value="1" /><label for="T4A85E4EA165_ctl00_ctl00_C005_ctl00_ctl00_radioButtons_radiobuttons_0">1</label><input id="T4A85E4EA165_ctl00_ctl00_C005_ctl00_ctl00_radioButtons_radiobuttons_1" type="radio" name="T4A85E4EA165$ctl00$ctl00$C005$ctl00$ctl00$radioButtons_radiobuttons" value="2" /><label for="T4A85E4EA165_ctl00_ctl00_C005_ctl00_ctl00_radioButtons_radiobuttons_1">2</label><input id="T4A85E4EA165_ctl00_ctl00_C005_ctl00_ctl00_radioButtons_radiobuttons_2" type="radio" name="T4A85E4EA165$ctl00$ctl00$C005$ctl00$ctl00$radioButtons_radiobuttons" value="3" /><label for="T4A85E4EA165_ctl00_ctl00_C005_ctl00_ctl00_radioButtons_radiobuttons_2">3</label><input id="T4A85E4EA165_ctl00_ctl00_C005_ctl00_ctl00_radioButtons_radiobuttons_3" type="radio" name="T4A85E4EA165$ctl00$ctl00$C005$ctl00$ctl00$radioButtons_radiobuttons" value="4" /><label for="T4A85E4EA165_ctl00_ctl00_C005_ctl00_ctl00_radioButtons_radiobuttons_3">4</label><input id="T4A85E4EA165_ctl00_ctl00_C005_ctl00_ctl00_radioButtons_radiobuttons_4" type="radio" name="T4A85E4EA165$ctl00$ctl00$C005$ctl00$ctl00$radioButtons_radiobuttons" value="5" /><label for="T4A85E4EA165_ctl00_ctl00_C005_ctl00_ctl00_radioButtons_radiobuttons_4">5</label></span>
+            
+        
+
+
+		</div><div id="T4A85E4EA165_ctl00_ctl00_C006" class="mcRequired sfFormRadiolist">
+			
+            <div id="T4A85E4EA165_ctl00_ctl00_C006_ctl00_ctl00_titleLabel_radiobuttons" class="sfTxtLbl">
+				Did it take you more or less time than you expected to find what you were looking for?
+			</div>
+            <span id="T4A85E4EA165_ctl00_ctl00_C006_ctl00_ctl00_radioButtons_radiobuttons" class="sfRadioList sfFieldWrp"><input id="T4A85E4EA165_ctl00_ctl00_C006_ctl00_ctl00_radioButtons_radiobuttons_0" type="radio" name="T4A85E4EA165$ctl00$ctl00$C006$ctl00$ctl00$radioButtons_radiobuttons" value="1" /><label for="T4A85E4EA165_ctl00_ctl00_C006_ctl00_ctl00_radioButtons_radiobuttons_0">1</label><input id="T4A85E4EA165_ctl00_ctl00_C006_ctl00_ctl00_radioButtons_radiobuttons_1" type="radio" name="T4A85E4EA165$ctl00$ctl00$C006$ctl00$ctl00$radioButtons_radiobuttons" value="2" /><label for="T4A85E4EA165_ctl00_ctl00_C006_ctl00_ctl00_radioButtons_radiobuttons_1">2</label><input id="T4A85E4EA165_ctl00_ctl00_C006_ctl00_ctl00_radioButtons_radiobuttons_2" type="radio" name="T4A85E4EA165$ctl00$ctl00$C006$ctl00$ctl00$radioButtons_radiobuttons" value="3" /><label for="T4A85E4EA165_ctl00_ctl00_C006_ctl00_ctl00_radioButtons_radiobuttons_2">3</label><input id="T4A85E4EA165_ctl00_ctl00_C006_ctl00_ctl00_radioButtons_radiobuttons_3" type="radio" name="T4A85E4EA165$ctl00$ctl00$C006$ctl00$ctl00$radioButtons_radiobuttons" value="4" /><label for="T4A85E4EA165_ctl00_ctl00_C006_ctl00_ctl00_radioButtons_radiobuttons_3">4</label><input id="T4A85E4EA165_ctl00_ctl00_C006_ctl00_ctl00_radioButtons_radiobuttons_4" type="radio" name="T4A85E4EA165$ctl00$ctl00$C006$ctl00$ctl00$radioButtons_radiobuttons" value="5" /><label for="T4A85E4EA165_ctl00_ctl00_C006_ctl00_ctl00_radioButtons_radiobuttons_4">5</label></span>
+            
+        
+
+
+		</div><div id="T4A85E4EA165_ctl00_ctl00_C007" class="mcRequired sfFormRadiolist">
+			
+            <div id="T4A85E4EA165_ctl00_ctl00_C007_ctl00_ctl00_titleLabel_radiobuttons" class="sfTxtLbl">
+				How likely is it that you will recommend our website to a friend or colleague?
+
+			</div>
+            <span id="T4A85E4EA165_ctl00_ctl00_C007_ctl00_ctl00_radioButtons_radiobuttons" class="sfRadioList sfFieldWrp"><input id="T4A85E4EA165_ctl00_ctl00_C007_ctl00_ctl00_radioButtons_radiobuttons_0" type="radio" name="T4A85E4EA165$ctl00$ctl00$C007$ctl00$ctl00$radioButtons_radiobuttons" value="1" /><label for="T4A85E4EA165_ctl00_ctl00_C007_ctl00_ctl00_radioButtons_radiobuttons_0">1</label><input id="T4A85E4EA165_ctl00_ctl00_C007_ctl00_ctl00_radioButtons_radiobuttons_1" type="radio" name="T4A85E4EA165$ctl00$ctl00$C007$ctl00$ctl00$radioButtons_radiobuttons" value="2" /><label for="T4A85E4EA165_ctl00_ctl00_C007_ctl00_ctl00_radioButtons_radiobuttons_1">2</label><input id="T4A85E4EA165_ctl00_ctl00_C007_ctl00_ctl00_radioButtons_radiobuttons_2" type="radio" name="T4A85E4EA165$ctl00$ctl00$C007$ctl00$ctl00$radioButtons_radiobuttons" value="3" /><label for="T4A85E4EA165_ctl00_ctl00_C007_ctl00_ctl00_radioButtons_radiobuttons_2">3</label><input id="T4A85E4EA165_ctl00_ctl00_C007_ctl00_ctl00_radioButtons_radiobuttons_3" type="radio" name="T4A85E4EA165$ctl00$ctl00$C007$ctl00$ctl00$radioButtons_radiobuttons" value="4" /><label for="T4A85E4EA165_ctl00_ctl00_C007_ctl00_ctl00_radioButtons_radiobuttons_3">4</label><input id="T4A85E4EA165_ctl00_ctl00_C007_ctl00_ctl00_radioButtons_radiobuttons_4" type="radio" name="T4A85E4EA165$ctl00$ctl00$C007$ctl00$ctl00$radioButtons_radiobuttons" value="5" /><label for="T4A85E4EA165_ctl00_ctl00_C007_ctl00_ctl00_radioButtons_radiobuttons_4">5</label></span>
+            
+        
+
+
+		</div><div id="T4A85E4EA165_ctl00_ctl00_C009" class="sfFormBlock sfTxtBlockMedium">
+			
+            
+            <div>
+                <label for="T4A85E4EA165_ctl00_ctl00_C009_ctl00_ctl00_textBox_write" id="T4A85E4EA165_ctl00_ctl00_C009_ctl00_ctl00_titleLabel_write" class="sfTxtLbl sfInlineBlock">Do you have any other comments about how we can improve our website?</label>
+                
+            </div>
+            <a onclick="return false;" id="T4A85E4EA165_ctl00_ctl00_C009_ctl00_ctl00_expandButton_write" class="sfOptionalExpander" href="javascript:WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions(&quot;T4A85E4EA165$ctl00$ctl00$C009$ctl00$ctl00$expandButton_write&quot;, &quot;&quot;, true, &quot;&quot;, &quot;&quot;, false, true))" style="display:none;">Click to add</a>
+            <div id="T4A85E4EA165_ctl00_ctl00_C009_ctl00_ctl00_expandableTarget_write" class="sfFieldWrp" style="display:;">
+				
+                <textarea name="T4A85E4EA165$ctl00$ctl00$C009$ctl00$ctl00$textBox_write" rows="5" cols="20" id="T4A85E4EA165_ctl00_ctl00_C009_ctl00_ctl00_textBox_write" class="sfTxt">
+</textarea>
+                
+                
+                <div id="T4A85E4EA165_ctl00_ctl00_C009_ctl00_ctl00_exampleLabel_write" class="sfExample">
+					 (Please include your email address if you have any questions.)
+				</div>
+                <p id="T4A85E4EA165_ctl00_ctl00_C009_ctl00_ctl00_characterCounterDescription_write" class="sfExample" style="display:none;"></p>
+            
+			</div>
+        
+<div id="T4A85E4EA165_ctl00_ctl00_C009_ctl00_ConditionalTemplates" style="display:none;">
+				<div id="ClientTemplatePanel_C009">
+	        
+            <div id="T4A85E4EA165_ctl00_ctl00_C009_titleLabel_read_C009" class="sfTxtTitle">
+		
+	</div>
+            <span id="T4A85E4EA165_ctl00_ctl00_C009_tooltip_read_C009">
+
+<div class="sfDetailsPopupWrp sfInlineBlock">
+    <a onclick="return false;" id="T4A85E4EA165_ctl00_ctl00_C009_tooltip_read_C009_ctl00_ctl00_T4A85E4EA165_ctl00_ctl00_C009_tooltip_read_C009_ctl00_ctl00_btnToolTipTarget_C009"><span class="sfTooltip">(?)</span></a>
+    <div id="T4A85E4EA165_ctl00_ctl00_C009_tooltip_read_C009_ctl00_ctl00_T4A85E4EA165_ctl00_ctl00_C009_tooltip_read_C009_ctl00_ctl00_wrpToolTip_C009" class="sfDetailsPopup sfInlineBlock" style="display: none;">
+        <span id="T4A85E4EA165_ctl00_ctl00_C009_tooltip_read_C009_ctl00_ctl00_T4A85E4EA165_ctl00_ctl00_C009_tooltip_read_C009_ctl00_ctl00_T4A85E4EA165_ctl00_ctl00_C009_tooltip_read_C009_ctl00_ctl00_wrpToolTip_C009_lblTitle_C009"></span>
+        
+    </div>
+</div>
+</span>
+            <div id="T4A85E4EA165_ctl00_ctl00_C009_textLabel_read_C009" class="sfTxtContent" data-empty-label="not set">
+		
+	</div>
+            <p id="T4A85E4EA165_ctl00_ctl00_C009_descriptionLabel_read_C009" class="sfDescription"></p>
+            <div id="T4A85E4EA165_ctl00_ctl00_C009_characterCounter_read_C009">
+		
+	</div>
+        
+</div>
+			</div>
+		</div><div id="T4A85E4EA165_ctl00_ctl00_C012">
+			<div id="T4A85E4EA165_ctl00_ctl00_C012_ctl00_radCaptcha" class="RadCaptcha RadCaptcha_Default  sfFormCaptcha">
+				<!-- 2023.3.1616.45 --><span id="T4A85E4EA165_ctl00_ctl00_C012_ctl00_radCaptcha_ctl00" style="visibility:hidden;"></span><div id="T4A85E4EA165_ctl00_ctl00_C012_ctl00_radCaptcha_SpamProtectorPanel" class="sfFormCaptcha">
+					<div id="T4A85E4EA165_ctl00_ctl00_C012_ctl00_radCaptcha_ctl01">
+						<img id="T4A85E4EA165_ctl00_ctl00_C012_ctl00_radCaptcha_CaptchaImageUP" alt="" src="../../Telerik.Web.UI.WebResource.axd?type=rca&amp;isc=true&amp;guid=d639d63e-c62e-4cbb-b9c8-3b8a51820027" style="height:50px;width:180px;display:block;" /><a id="T4A85E4EA165_ctl00_ctl00_C012_ctl00_radCaptcha_CaptchaLinkButton" class="rcRefreshImage" title="Generate New Image" href="javascript:__doPostBack(&#39;T4A85E4EA165$ctl00$ctl00$C012$ctl00$radCaptcha$CaptchaLinkButton&#39;,&#39;&#39;)" style="display:block;">Generate New Image</a>
+					</div><p><input name="T4A85E4EA165$ctl00$ctl00$C012$ctl00$radCaptcha$CaptchaTextBox" type="text" maxlength="6" id="T4A85E4EA165_ctl00_ctl00_C012_ctl00_radCaptcha_CaptchaTextBox" class="sfTxt" /><label for="T4A85E4EA165_ctl00_ctl00_C012_ctl00_radCaptcha_CaptchaTextBox" id="T4A85E4EA165_ctl00_ctl00_C012_ctl00_radCaptcha_CaptchaTextBoxLabel" class="sfTxtLbl">Type the code from the image</label></p>
+				</div><input id="T4A85E4EA165_ctl00_ctl00_C012_ctl00_radCaptcha_ClientState" name="T4A85E4EA165_ctl00_ctl00_C012_ctl00_radCaptcha_ClientState" type="hidden" />
+			</div>
+		</div><div class="sfFormSubmit sfSubmitBtnSmall" data-sf-btn-role="submit">
+			<input type="submit" name="T4A85E4EA165$ctl00$ctl00$C002" value="Submit" onclick="cleanWebSurvey();WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions(&quot;T4A85E4EA165$ctl00$ctl00$C002&quot;, &quot;&quot;, true, &quot;&quot;, &quot;&quot;, false, false))" id="T4A85E4EA165_ctl00_ctl00_C002" />
+		</div>
+	</div>
+<input name="T4A85E4EA165$ctl00$ctl00$queryData" type="hidden" id="T4A85E4EA165_ctl00_ctl00_queryData" />
+<input name="T4A85E4EA165$ctl00$ctl00$currentFormMode" type="hidden" id="T4A85E4EA165_ctl00_ctl00_currentFormMode" value="create" />
+</div>
+
+	<script>
+        function deleteCookie(cookieName) {
+            document.cookie = cookieName + '=;expires=Mon Jan 01 1900 00:00:00 ; path=/; domain=bourns.com';
+            document.cookie = cookieName + '=;expires=Mon Jan 01 1900 00:00:00 ; path=/; domain=.bourns.com';
+            //document.cookie = cookieName;
+        }
+
+		function getCookie(cname) {
+		  let name = cname + "=";
+		  let decodedCookie = decodeURIComponent(document.cookie);
+		  let ca = decodedCookie.split(';');
+		  for(let i = 0; i <ca.length; i++) {
+		    let c = ca[i];
+		    while (c.charAt(0) == ' ') {
+		      c = c.substring(1);
+		    }
+		    if (c.indexOf(name) == 0) {
+		      return c.substring(name.length, c.length);
+		    }
+		  }
+		  return "";
+		}	
+		function setCookie(cname, cvalue, exdays) {
+		  const d = new Date();
+		  d.setTime(d.getTime() + (exdays*24*60*60*1000));
+		  let expires = "expires="+ d.toUTCString();
+		  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+		}			
+    </script>
+
+
+<input type="hidden" name="T4A85E4EA096$hidBPSCC" id="T4A85E4EA096_hidBPSCC" />
+<div class="sf_cols footer-file">
+    <div class="sf_colsOut sf_1col_1_100" data-placeholder-label="Footer File Bar" style="">
+        <div id="T4A85E4EA117_Col00" class="sf_colsIn sf_1col_1in_100"><div class='sfContentBlock'><div id="footerTabFx">
+<div id="footerTabBgLeft">&nbsp;</div>
+<div id="footerTabSlantLeft">&nbsp;</div>
+<div id="footerTabBgMiddle">&nbsp;</div>
+<div id="footerTabSlantRight">&nbsp;</div>
+<div id="footerTabBgRight">&nbsp;</div>
+</div>
+
+</div>
+            
+        </div>
+    </div>
+</div><div class="sf_cols fullWidth footer">
+    <div class="sf_colsOut sf_1col_1_100" style="width: 100%;">
+        <div id="T4A85E4EA014_Col00" class="sf_colsIn sf_1col_1in_100"><div class="sf_cols fixedWidth">
+    <div class="sf_colsOut sf_1col_1_100" style="">
+        <div id="T4A85E4EA171_Col00" class="sf_colsIn sf_1col_1in_100"><div class="sf_cols">
+    <div class="sf_colsOut sf_1col_1_100">
+        <div id="T4A85E4EA172_Col00" class="sf_colsIn sf_1col_1in_100">
+            
+        </div>
+    </div>
+</div>
+            
+        </div>
+    </div>
+</div><div class="sf_cols fixedWidth footer-bg">
+    <div class="sf_colsOut sf_2cols_1_75" style="width: 98%;">
+        <div id="T4A85E4EA106_Col00" class="sf_colsIn sf_2cols_1in_75"><div class="sf_cols footer-sm-cols">
+    <div class="sf_colsOut sf_2cols_1_50" style="width: 60%;">
+        <div id="T4A85E4EA107_Col00" class="sf_colsIn sf_2cols_1in_50" style="margin: 0px;"><div class="sf_cols">
+    <div class="sf_colsOut sf_3cols_1_33" style="width: 33%;">
+        <div id="T4A85E4EA108_Col00" class="sf_colsIn sf_3cols_1in_33" style="margin: 0px 12px 0px 0px;"><div class='sfContentBlock mobileHide'><h3><a href="/support/about-us"></a><a href="/support/about-us">About Bourns</a>
+</h3>
+
+</div>
+
+
+
+
+<div class="sfNavWrp sfNavVerticalWrp mobileHide">
+    
+    
+    
+    
+
+    <ul class="sfNavVertical sfNavList">
+        
+                            <li>
+                                <a href="/support/about-us">Who We Are</a>          
+                            </li>
+                         
+                            <li>
+                                <a href="/support/about-us/mission">Our Mission</a>          
+                            </li>
+                         
+                            <li>
+                                <a href="/support/working-at-bourns">Working at Bourns</a>          
+                            </li>
+                         
+                            <li>
+                                <a href="/support/careers" target="_blank">Careers</a>          
+                            </li>
+                         
+                            <li>
+                                <a href="/support/about-us/community-outreach">Community Outreach</a>          
+                            </li>
+                         
+                            <li>
+                                <a href="/support/about-us/the-bourns-foundation">The Bourns Foundation</a>          
+                            </li>
+                         
+    </ul>
+</div>
+
+            
+        </div>
+    </div>
+    <div class="sf_colsOut sf_3cols_2_34" style="width: 34%;">
+        <div id="T4A85E4EA108_Col01" class="sf_colsIn sf_3cols_2in_34" style="margin: 0px 12px 0px 0px;"><div class='sfContentBlock mobileHide'><h3><a href="/news">News</a></h3>
+
+</div>
+
+
+
+
+<div class="sfNavWrp sfNavVerticalWrp mobileHide">
+    
+    
+    
+    
+
+    <ul class="sfNavVertical sfNavList">
+        
+                            <li>
+                                <a href="/news/new-products">New Products</a>          
+                            </li>
+                         
+                            <li>
+                                <a href="/news/new-publications">Publications</a>          
+                            </li>
+                         
+                            <li>
+                                <a href="/news/press-releases">Press Releases</a>          
+                            </li>
+                         
+                            <li>
+                                <a href="/news/tradeshows">Tradeshows</a>          
+                            </li>
+                         
+                            <li>
+                                <a href="/news/blog" target="_blank">Blog</a>          
+                            </li>
+                         
+                            <li>
+                                <a href="/news/social-media">Social Media</a>          
+                            </li>
+                         
+    </ul>
+</div>
+
+            
+        </div>
+    </div>
+    <div class="sf_colsOut sf_3cols_3_33" style="width: 33%;">
+        <div id="T4A85E4EA108_Col02" class="sf_colsIn sf_3cols_3in_33" style="margin: 0px 12px 0px 0px;"><div class='sfContentBlock mobileHide'><h3><a href="/resources">Resources</a></h3>
+
+</div>
+
+
+
+
+<div class="sfNavWrp sfNavVerticalWrp mobileHide">
+    
+    
+    
+    
+
+    <ul class="sfNavVertical sfNavList">
+        
+                            <li>
+                                <a href="/products">Products</a>          
+                            </li>
+                         
+                            <li>
+                                <a href="/resources/technical-library">Technical Library</a>          
+                            </li>
+                         
+                            <li>
+                                <a href="/resources/parametric-search">Parametric Search</a>          
+                            </li>
+                         
+                            <li>
+                                <a href="/resources/design-tools">Design Tools</a>          
+                            </li>
+                         
+                            <li>
+                                <a href="/resources/training">Training</a>          
+                            </li>
+                         
+                            <li>
+                                <a href="/inventory-search-results">Inventory Search</a>          
+                            </li>
+                         
+    </ul>
+</div>
+
+            
+        </div>
+    </div>
+</div>
+            
+        </div>
+    </div>
+    <div class="sf_colsOut sf_2cols_2_50" style="width: 40%;">
+        <div id="T4A85E4EA107_Col01" class="sf_colsIn sf_2cols_2in_50" style="margin: 0px;"><div class="sf_cols">
+    <div class="sf_colsOut sf_3cols_1_33" style="width: 49%;">
+        <div id="T4A85E4EA109_Col00" class="sf_colsIn sf_3cols_1in_33" style="margin: 0px 12px 0px 0px;"><div class='sfContentBlock mobileHide'><h3><a href="/support">Support</a></h3>
+
+</div>
+
+
+
+
+<div class="sfNavWrp sfNavVerticalWrp mobileHide">
+    
+    
+    
+    
+
+    <ul class="sfNavVertical sfNavList">
+        
+                            <li>
+                                <a href="/support/request-samples">Request Samples</a>          
+                            </li>
+                         
+                            <li>
+                                <a href="/support/sales-locations">Sales Locations</a>          
+                            </li>
+                         
+                            <li>
+                                <a href="/support/global-locations">Global Locations</a>          
+                            </li>
+                         
+                            <li>
+                                <a href="/support/contact-riedon">Contact Riedon</a>          
+                            </li>
+                         
+                            <li>
+                                <a href="/support/contact-krl-bantry">Contact KRL Bantry</a>          
+                            </li>
+                         
+                            <li>
+                                <a href="/support/sitemap">Sitemap</a>          
+                            </li>
+                         
+    </ul>
+</div>
+
+            
+        </div>
+    </div>
+    <div class="sf_colsOut sf_3cols_2_34" style="width: 49%;">
+        <div id="T4A85E4EA109_Col01" class="sf_colsIn sf_3cols_2in_34" style="margin: 0px 12px 0px 0px;"><div class='sfContentBlock mobileHide'><h3><a href="/support/contact">Connect</a></h3>
+
+</div>
+
+
+
+
+<div class="sfNavWrp sfNavVerticalWrp mobileHide">
+    
+    
+    
+    
+
+    <ul class="sfNavVertical sfNavList">
+        
+                            <li>
+                                <a href="/support/contact">Contact Us</a>          
+                            </li>
+                         
+                            <li>
+                                <a href="/support/my-bourns-login">Login to myBourns</a>          
+                            </li>
+                         
+    </ul>
+</div>
+<div class='sfContentBlock smLinkBox'><div class="smf_icons">
+<div class="smf_icon"><a href="https://www.linkedin.com/company/bourns" target="_blank"><img src="/images/default-album/sm_linkedin.png?sfvrsn=cec552f6_0" data-displaymode="Original" alt="LinkedIn" title="LinkedIn" /></a></div>
+<div class="smf_icon"><a href="https://bourns.wordpress.com/" target="_blank"><img src="/images/default-album/sm_wordpress.png?sfvrsn=28c552f6_0" data-displaymode="Original" alt="Blog" title="Blog" /></a></div>
+<div class="smf_icon"><a href="https://twitter.com/bourns" target="_blank"><img src="/images/default-album/sm_x.png?sfvrsn=12c552f6_4" data-displaymode="Original" alt="Twitter" title="Twitter" /></a></div>
+</div>
+<br />
+<br />
+<div class="smf_icons">
+<div class="smf_icon"><a href="https://www.facebook.com/pages/Bourns/242605875800377" target="_blank"><img src="/images/default-album/sm_fb.png?sfvrsn=4c552f6_0" data-displaymode="Original" alt="Facebook" title="Facebook" /></a></div>
+<div class="smf_icon"><a href="https://www.instagram.com/bourns/" target="_blank"><img src="/images/default-album/sm_insta.png?sfvrsn=36c552f6_0" data-displaymode="Original" alt="Instagram" title="Instagram" /></a></div>
+<div class="smf_icon"><a href="https://www.youtube.com/user/bournsvideos" target="_blank"><img src="/images/default-album/sm_youtube.png?sfvrsn=e0c552f6_0" data-displaymode="Original" alt="YouTube" title="YouTube" /></a></div>
+</div>
+<br />
+&nbsp;<br />
+
+</div>
+            
+        </div>
+    </div>
+    <div class="sf_colsOut sf_3cols_3_33" style="width: 2%;">
+        <div id="T4A85E4EA109_Col02" class="sf_colsIn sf_3cols_3in_33" style="margin: 0px 12px 0px 0px;">
+            
+        </div>
+    </div>
+</div>            
+        </div>
+    </div>
+</div>
+            
+        </div>
+    </div>
+    <div class="sf_colsOut sf_2cols_2_25" style="width: 2%;">
+        <div id="T4A85E4EA106_Col01" class="sf_colsIn sf_2cols_2in_25">            
+        </div>
+    </div>
+</div><div class="sf_cols fixedWidth">
+    <div class="sf_colsOut sf_1col_1_100" style="width: 100%;">
+        <div id="T4A85E4EA111_Col00" class="sf_colsIn sf_1col_1in_100"><div class="sf_cols div-mobile-language">
+    <div class="sf_colsOut sf_1col_1_100" style="width: 100%;">
+        <div id="T4A85E4EA159_Col00" class="sf_colsIn sf_1col_1in_100"><div id="T4A85E4EA160" class="mobile-language">
+	<div id="T4A85E4EA160_ctl00_ctl00_controlWrapper">
+
+    
+
+    
+                <div class="sflanguagesDropDownList">
+                    <select name="T4A85E4EA160$ctl00$ctl00$langsSelect" id="T4A85E4EA160_ctl00_ctl00_langsSelect" class="sflanguagesDropDown" onChange="document.location.href = this.value;">
+		<option selected="selected" value="https://www.bourns.com/error" lang="en">English</option>
+
+	</select>
+                </div>
+            
+</div>
+
+</div>
+            
+        </div>
+    </div>
+</div><div class='sfContentBlock'><div class="footer-legal-links"><a href="/legal/disclaimers-terms-and-policies">Disclaimers, Terms and Policies</a> /
+<a href="/legal/ca-transparency-in-supply-chains-act" target="_blank">CA Transparency in Supply Chains Act</a>
+/ <span id="ot-sdk-btn" class="ot-sdk-show-settings">Cookie Settings</span></div>
+
+</div>
+            
+        </div>
+    </div>
+</div><div class="sf_cols sub-footer">
+    <div class="sf_colsOut fixedWidth" style="width: 100%;" data-placeholder-label="Sub-Footer">
+        <div id="T4A85E4EA112_Col00" class="sf_colsIn sf_1col_1in_100"><div class='sfContentBlock'><address>&copy; 2026 Bourns, Inc. All Rights Reserved.</address>
+
+</div>
+            
+        </div>
+    </div>
+</div><div class='sfContentBlock'><!--<img alt="" height="1" width="1" style="display:none;" src="https://px.ads.linkedin.com/collect/?pid=2896682&amp;fmt=gif" />-->
+
+</div>
+            
+        </div>
+    </div>
+</div><div class='sfContentBlock'><div id="matoolbar" style="display:none;">
+<div class="mat">
+<a href="/products?ma=v2">
+<span class="imgwrap"><img alt="" src="/images/mobile/products-icon.png" /></span>
+<span>Products</span>
+</a>
+</div>
+<div class="mat">
+<a href="/resources/video-library?ma=v2">
+<span class="imgwrap"><img alt="" src="/images/mobile/videos-icon.png" /></span>
+<span>Videos</span>
+</a>
+</div>
+<div class="mat">
+<a href="/support/contact?ma=v2">
+<span class="imgwrap"><img alt="" src="/images/mobile/support-icon.png" /></span>
+<span>Support</span>
+</a>
+</div>
+<div class="mat">
+<a href="/mobilehome/more">
+<span class="imgwrap"><img alt="" src="/images/mobile/more-icon.png" /></span>
+<span>More...</span>
+</a>
+</div>
+</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+        </div>
+    
+<script type="text/javascript">
+//<![CDATA[
+var Page_Validators =  new Array(document.getElementById("T4A85E4EA165_ctl00_ctl00_C012_ctl00_radCaptcha_ctl00"));
+//]]>
+</script>
+
+<script type="text/javascript">
+//<![CDATA[
+var T4A85E4EA165_ctl00_ctl00_C012_ctl00_radCaptcha_ctl00 = document.all ? document.all["T4A85E4EA165_ctl00_ctl00_C012_ctl00_radCaptcha_ctl00"] : document.getElementById("T4A85E4EA165_ctl00_ctl00_C012_ctl00_radCaptcha_ctl00");
+T4A85E4EA165_ctl00_ctl00_C012_ctl00_radCaptcha_ctl00.evaluationfunction = "CustomValidatorEvaluateIsValid";
+//]]>
+</script>
+
+
+<script type="text/javascript">
+//<![CDATA[
+window.__TsmHiddenField = $get('ctl78_TSM');//]]>
+</script>
+<script type="text/javascript">function setCookie(t, o, i) {
+    var e = new Date;
+    e.setTime(e.getTime() + 24 * i * 60 * 60 * 1e3);
+    var a = "expires=" + e.toUTCString();
+    document.cookie = t + "=" + o + ";" + a + ";path=/"
+}
+
+function getCookie(t) {
+    for (var o = t + "=", i = decodeURIComponent(document.cookie).split(";"), e = 0; e < i.length; e++) {
+        for (var a = i[e];
+            " " == a.charAt(0);) a = a.substring(1);
+        if (0 == a.indexOf(o)) return a.substring(o.length, a.length)
+    }
+    return ""
+}
+
+$(document).ready(function () {
+    var yetVisited = document.cookie.indexOf("BournsSurveyVisited2107") > -1; //false
+    /*
+	if (location.href == "https://www.bourns.com/" || location.href == "https://www.bourns.com/home") {
+        	yetVisited = true;
+    	}
+    */
+    if (yetVisited) { $("#BournsSurvey").hide(); }
+    if (location.href == "https://www.bourns.com/products") { $("#BournsSurvey").css("top", "505px"); }
+
+    var dlg = $(".surveyForm").dialog({
+        autoOpen: false,
+        dialogClass: "no-close",
+        modal: true,
+        width: 360,
+        buttons: [
+            {
+                text: "X",
+                click: function () {
+                    $(this).dialog("close");
+                    setCookie("BournsSurveyVisited2107", true, 14);
+                    $("#BournsSurvey").show("fast");
+                }
+            }
+        ],
+        open: function() {
+            $(this).parent().appendTo('form:first');
+        }
+    });
+    //dlg.parent().appendTo(jQuery("form:first"));
+
+    if ($.trim($("#T4A85E4EA165_ctl00_ctl00_successMessage").html()) != "") {
+        $("#BournsSurvey").hide();
+        $(".surveyForm").dialog("open");
+        $("#T4A85E4EA165_ctl00_ctl00_successMessage").show();
+    }
+
+    $("#BournsSurveyText").click(function () {
+        $(".surveyForm").dialog("open");
+        $("#BournsSurvey").stop(true, true);
+        $("#BournsSurvey").hide("fast");
+    });
+
+    $("#OptOutX").click(function () {
+        $("#BournsSurvey").hide("fast");
+        setCookie("BournsSurveyVisited2107", true, 14);
+    });
+
+    $("#T4A85E4EA165_ctl00_ctl00_C002").click(function (e) {
+        //validation
+        $("#wsInstr").remove();
+        var error = "";
+        var radioValue = $("input[name='T4A85E4EA165$ctl00$ctl00$C004$ctl00$ctl00$radioButtons_radiobuttons']:checked").val();
+        if (!radioValue) {
+            error += "x";
+        }
+        radioValue = $("input[name='T4A85E4EA165$ctl00$ctl00$C005$ctl00$ctl00$radioButtons_radiobuttons']:checked").val();
+        if (!radioValue) {
+            error += "x";
+        }
+        radioValue = $("input[name='T4A85E4EA165$ctl00$ctl00$C006$ctl00$ctl00$radioButtons_radiobuttons']:checked").val();
+        if (!radioValue) {
+            error += "x";
+        }
+        radioValue = $("input[name='T4A85E4EA165$ctl00$ctl00$C007$ctl00$ctl00$radioButtons_radiobuttons']:checked").val();
+        if (!radioValue) {
+            error += "x";
+        }
+        if (error != "") {
+            $(".wsInstructions").append($("<span id='wsInstr' style='color:#fff;padding:5px;background-color:red;display:block;'>Please select a rating for each question</span>"));
+            e.preventDefault();
+        }
+        else {
+            $(".scrollBody").append($("<div style='width:100%;padding:5px;color:#fff;text-align:center;font-weight:bold;position: absolute;margin-top: 20px;'><div style='max-width: 300px;background-color: green;padding: 15px;color:#fff;margin: auto;'>Thank you for taking our survey</div></div>"));
+        }
+    });
+
+
+    $("#BournsSurvey").animate({
+        right: "+=185"
+    }, 1000, function () {
+        $("#BournsSurveyText").show();
+    });
+    $("#BournsSurveyText").delay(5000).animate({
+        width: "0"
+    }, 2000, function () {
+    });
+
+    $("#BournsSurvey").hover(function () {
+        if ($("#BournsSurveyText").css("width") == "0px") {
+            $("#BournsSurveyText").animate({
+                width: "117"
+            }, 1000, function () {
+            });
+        }
+    });
+
+});
+
+function cleanWebSurvey() {
+    var regex = /(|<([^>]+)>)/ig;
+    var cleanVal = $("#T4A85E4EA165_ctl00_ctl00_C009_ctl00_ctl00_textBox_write").val().replace(regex, "");
+    $("#T4A85E4EA165_ctl00_ctl00_C009_ctl00_ctl00_textBox_write").val(cleanVal);
+}</script>
+<script type="text/javascript">
+//<![CDATA[
+
+var Page_ValidationActive = false;
+if (typeof(ValidatorOnLoad) == "function") {
+    ValidatorOnLoad();
+}
+
+function ValidatorOnSubmit() {
+    if (Page_ValidationActive) {
+        return ValidatorCommonOnSubmit();
+    }
+    else {
+        return true;
+    }
+}
+        //]]>
+</script>
+<script type="text/javascript">$(document).ready(function () {
+	//search
+	$("#T4A85E4EA146_ctl00_ctl00_searchTextBox").attr("placeholder", "Search for part numbers, data sheets, or keywords");
+	$("#T4A85E4EA146_ctl00_ctl00_searchTextBox").focus(function () {
+		$(".bsfFilters").addClass("on");
+		$("#T4A85E4EA146").addClass("on");
+		$(".searchClick").addClass("on");
+	});	
+	$("#mainSearch").focus(function(){
+		$(".bsfFilters").addClass("on");
+		$("#T4A85E4EA146").addClass("on");
+		$(".searchClick").addClass("on");
+	});
+	$(document).click(function(e){
+        var isInSearch = false;
+        $(e.target).parents().each(function( index, itm ) {
+          if ($(this).attr("id") == "T4A85E4EA152_Col00") {
+            isInSearch = true;
+          }
+        });
+    	if (!(isInSearch)) {
+			$(".bsfFilters").removeClass("on");
+			$("#T4A85E4EA146").removeClass("on");
+			$(".searchClick").removeClass("on");
+		}
+	});
+	if (location.href.indexOf("indexCatalogue") > -1) {
+		$(".bsfFilterChoices li").removeClass("active");
+		$(".bsfFilterChoices li:nth-child(1)").addClass("active")
+    }
+	if (location.href.indexOf("inventory-search-results") > -1) {
+		$(".bsfFilterChoices li").removeClass("active");
+		$(".bsfFilterChoices li:nth-child(2)").addClass("active")
+	}
+	if (location.href.indexOf("xref-search-results") > -1) {
+		$(".bsfFilterChoices li").removeClass("active");
+		$(".bsfFilterChoices li:nth-child(3)").addClass("active")
+	}
+	if (location.href.indexOf("parametric-search") > -1) {
+		$(".bsfFilterChoices li").removeClass("active");
+		$(".bsfFilterChoices li:nth-child(4)").addClass("active");
+		$("#T4A85E4EA146_ctl00_ctl00_searchTextBox").hide();
+		$("#mainSearch").attr("placeholder", "");
+		$("#mainSearch").show();
+	}
+	$(".bsfFilterChoices li").click(function () {
+		$(".bsfFilterChoices li").removeClass("active");
+		$(this).addClass("active");
+		if ($(this).hasClass("bsfKeyword")) {
+			if ($("#mainSearch").val().trim() != "") {
+				$("#T4A85E4EA146_ctl00_ctl00_searchTextBox").val($("#mainSearch").val().trim());
+            }
+			$("#T4A85E4EA146_ctl00_ctl00_searchTextBox").show();
+			$("#mainSearch").hide();
+		}
+		else {
+			if ($(this).hasClass("bsfInventory")) {
+				$("#mainSearch").attr("placeholder", "Search for inventory by part number");
+			}
+			else if ($(this).hasClass("bsfParm")) {
+				location.href="/parametric-search";
+				$("#mainSearch").attr("placeholder", "");
+			}
+			else {
+				$("#mainSearch").attr("placeholder", "Search for competitor cross-reference by part number");
+			}
+			if ($("#T4A85E4EA146_ctl00_ctl00_searchTextBox").val().trim() != "") {
+				$("#mainSearch").val($("#T4A85E4EA146_ctl00_ctl00_searchTextBox").val().trim());
+			}
+			$("#mainSearch").show();
+			$("#T4A85E4EA146_ctl00_ctl00_searchTextBox").hide();
+		}
+	});
+	$("#searchClickBtn").click(function () {
+		if ($(".bsfFilterChoices li:nth-child(1)").hasClass("active")) {
+			location.href = "/search?indexCatalogue=psindex&searchQuery=" + $("#T4A85E4EA146_ctl00_ctl00_searchTextBox").val().trim() + "*";
+		}
+		else if ($(".bsfFilterChoices li:nth-child(2)").hasClass("active")) {
+			location.href = "/inventory-search-results?PARTS=" + $('#mainSearch').val().trim();
+		}
+		else if ($(this).hasClass("bsfParm")) {
+			location.href="/parametric-search";
+		}
+		else {
+			location.href = "/xref-search-results?PART=" + $('#mainSearch').val().trim() + "&ST=BeginsWith";
+		}
+	});
+
+	$('#mainSearch').keypress(function (event) {
+		var keycode = (event.keyCode ? event.keyCode : event.which);
+		if (keycode == '13') {
+			if ($(".bsfFilterChoices li:nth-child(2)").hasClass("active")) {
+				location.href = "/inventory-search-results?PARTS=" + $('#mainSearch').val().trim();
+			}
+		else if ($(this).hasClass("bsfParm")) {
+			location.href="/parametric-search";
+		}
+		else {
+				location.href = "/xref-search-results?PART=" + $('#mainSearch').val().trim() + "&ST=BeginsWith";
+			}
+		}
+	});
+
+	//topnav
+	$("#T4A85E4EA003_ctl00_ctl00_navigationUl li.tlNavItem").click(function () {
+		var io = $(this).hasClass("open");
+		$("li.tlNavItem .navbar-item").slideUp();
+		$("li.tlNavItem").removeClass("open");
+		if (!io) {
+			$(this).delay(250).addClass("open");
+			$(this).find(".navbar-item").delay(250).slideDown();
+		}
+	});
+	$(".scrollBody").click(function () {
+		$("li.tlNavItem .navbar-item").slideUp();
+		$("li.tlNavItem").removeClass("open");
+	});
+	$(".def_footer_wrapper").click(function () {
+		$("li.tlNavItem .navbar-item").slideUp();
+		$("li.tlNavItem").removeClass("open");
+	});
+	$(".footer").click(function () {
+		$("li.tlNavItem .navbar-item").slideUp();
+		$("li.tlNavItem").removeClass("open");
+	});
+});</script><script type="text/javascript">$(document).ready(function() 
+{
+  width = $( window ).width();
+  if (width >= 270) { 
+  if (window.location.href.indexOf("Sitefinity") < 0)
+  {
+  $('<script>')
+    .attr('type', 'text/javascript')
+    .attr('src', 'https://mylivechat.com/chatinline.aspx?hccid=15670156')
+    .attr('async', 'async')
+    .attr('defer', 'defer')
+    .attr('data-cfasync', 'false')
+    .appendTo('head');
+}
+}
+});</script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-migrate/3.0.1/jquery-migrate.min.js"></script><script type="text/javascript" src="/common/js/jquery-ui.js"></script><script type="text/javascript">var fragment = document.createDocumentFragment();
+fragment.appendChild(document.getElementsByClassName('div-mobile-language')[0]);
+document.getElementById('nav-mobile-language').innerHTML = '';
+document.getElementById('nav-mobile-language').appendChild(fragment);
+
+
+var nav = document.getElementById('nav-mobile-language');
+var div = nav.getElementsByClassName('mobile-language')[0];
+var divDdl = div.getElementsByClassName('sflanguagesDropDownList')[0];
+var selectlanguage = divDdl.getElementsByClassName('sflanguagesDropDown')[0];
+console.log('selectlanguage: ', selectlanguage);
+console.log('selectlanguage value: ', selectlanguage.value);
+
+selectlanguage.addEventListener('change', (e) => {
+  window.location.href = selectlanguage.value;
+});
+  
+</script><script type="text/javascript">$(document).ready(function () {
+	if (location.href.toLowerCase().indexOf("/zh-chs/") > -1) {
+		$("#lang_zh-CHS").addClass("selected");
+	}
+	else if (location.href.toLowerCase().indexOf("/zh-cht/") > -1) {
+		$("#lang_zh-CHT").addClass("selected");
+	}
+	else if (location.href.toLowerCase().indexOf("/de/") > -1) {
+		$("#lang_de").addClass("selected");
+	}
+	else if (location.href.toLowerCase().indexOf("/ja/") > -1) {
+		$("#lang_ja").addClass("selected");
+	}
+	else {
+		$("#lang_en").addClass("selected");
+	}
+
+
+	$("#mobileMenu").click(function () {
+		$(this).toggleClass("on");
+		$("#T4A85E4EA003_ctl00_ctl00_navigationUl").slideToggle();
+		$("#T4A85E4EA003_ctl00_ctl00_navigationUl").toggleClass("on");
+	});
+
+	$(".hlink-language").click(function () {
+		$("#lang_list").slideToggle();
+	});
+
+	$("#lang_list li").click(function () {
+		var tmp_href = location.href.toLowerCase().replace("/en", "").replace("/zh-chs", "").replace("/zh-cht", "").replace("/de/", "/").replace("/ja/", "/");
+		location.href = tmp_href.replace("bourns.com/", "bourns.com/" + $(this).attr("id").toLowerCase().replace("lang_", "") + "/").replace("/en/", "/");
+	});
+  $(".landing-widget").click(function(){
+    if ($(this).parent().hasClass("no-link-widget") || $(this).hasClass("no-link-widget")) {
+        }
+        else {
+	var lnk = $(this).find("a").attr("href");
+	if (lnk!="") {
+		location.href=lnk;
+	}
+        }
+});
+});</script><script type="text/javascript">
+
+var browser = {
+    isIe: function () {
+        return navigator.appVersion.indexOf("MSIE") != -1;
+    },
+    navigator: navigator.appVersion,
+    getVersion: function () {
+        var version = 999; // we assume a sane browser
+        if (navigator.appVersion.indexOf("MSIE") != -1)
+            // bah, IE again, lets downgrade version number
+            version = parseFloat(navigator.appVersion.split("MSIE")[1]);
+        return version;
+    }
+};
+
+$(document).ready(function () {
+    $('#T4A85E4EA003_ctl00_ctl00_navigationUl').slicknav();
+
+    if (document.title.indexOf('Bourns') < 0) {
+        document.title = 'Bourns - ' + document.title;
+    }
+
+    $(".languageIcon").click(function () {
+        $(".languageSelect").toggle("fast");
+    });
+    $(".searchIcon").click(function () {
+        $(".featureBoxSm").toggle("fast");
+    });
+
+    $(".languageSelect").click(function () {
+        $(".sflanguagesVerticalList").toggle('fast');
+    });
+
+    if (window.location.pathname.indexOf("/zh-chs/") > -1) {
+        $(".languageSelect").prepend("<img src='/common/images/flag-zh-chs.gif' alt='中文(简体)' /><span>中文(简体)</span>");
+    } else if (window.location.pathname.indexOf("/zh-cht/") > -1) {
+        $(".languageSelect").prepend("<img src='/common/images/flag-zh-cht.gif' alt='中文(繁體)' /><span>中文(繁體)</span>");
+    } else if (window.location.pathname.indexOf("/de/") > -1) {
+        $(".languageSelect").prepend("<img src='/common/images/flag-de.gif' alt='Deutsch' /><span>Deutsch</span>");
+    } else {
+        $(".languageSelect").prepend("<img src='/common/images/flag-en.png' alt='English' /><span>English</span>");
+    }
+
+    if (window.location.pathname.indexOf("inventory-search-results") > -1) {
+        if (getParameterByName('PARTS') != "") {
+            $('.sfsearchTxt').val(getParameterByName('PARTS'));
+            $("#T4A85E4EA072").hide();
+            $("#searchNSL").show();
+        }
+    }
+    if (window.location.pathname.indexOf("xref-search-results") > -1) {
+        if (getParameterByName('PART') != "") {
+            $('.sfsearchTxt').val(getParameterByName('PART'));
+            $("#T4A85E4EA072").hide();
+            $("#searchNSL").show();
+        }
+    }
+
+    if (window.location.pathname.indexOf("parametric-search") > -1) {
+    }
+    if (window.location.pathname.indexOf('rohs-search') > -1) {
+        $('.sfsearchTxt').val(getParameterByName('model'));
+        $("#T4A85E4EA072").hide();
+        $("#searchNSL").show();
+    }
+    if (window.location.pathname.toLowerCase() == "/search") {
+        $('.sfsearchTxt').val(getParameterByName('searchQuery').replace('"', '').replace('*','').trim());
+        $("#T4A85E4EA072").show();
+        $("#searchNSL").hide();
+    }
+
+    $('.sfsearchTxt').keyup(function (e) {
+        if (e.keyCode == 13) {
+            searchClick($(this).val());
+            e.preventDefault();
+            return false;
+        }
+    });
+    $("#T4A85E4EA072_ctl00_ctl00_searchButton").click(function (e) {
+        var txt = $("#T4A85E4EA072_ctl00_ctl00_searchTextBox").val();
+        searchClick(txt);
+    });
+
+    $("#searchNSL_ctl00_ctl00_searchButton").click(function (e) {
+        e.preventDefault();
+        var txt = $("#searchNSL_ctl00_ctl00_searchTextBox").val();
+        searchClick(txt);
+        return false;
+    });
+
+
+    var tndelay = 500, setTndelay;
+    $(".topnav ul li").hover(
+        function () {
+            $tnli = $(this);
+            setTndelay = setTimeout(function () {
+                if ($tnli.html().indexOf("T4A85E4EA003_ctl00_ctl00_ctl02_ctl00_childNodesContainer") < 0) {
+                    rol($tnli);
+                }
+                $tnli.find("ul").show();
+            }, tndelay);
+        },
+        function () {
+            clearTimeout(setTndelay);
+            $(this).find("ul").hide();
+        }
+    );
+
+
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+    }
+    else {
+        $(".languageSelect").show();
+        $(".featureBoxSm").show();
+    }
+
+});
+
+function getParameterByName(name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+function rol(li) {
+    var elm = $(li).children('ul:first');
+    var off = elm.offset();
+    var l = off.left;
+    var w = elm.width();
+    var docW = $(window).width() - 200;
+
+    var right = l + w;
+
+    var isEntirelyVisible = (right < docW);
+
+    if (!isEntirelyVisible) {
+        $(elm).css('right', '0');
+        var sub = (elm).find('li ul');
+        $(elm).find('li ul').css('right', '0');
+        $(elm).find('li ul').each(function () {
+            this.style.setProperty('left', '-235px', 'important');
+        });
+    } else {
+        $(elm).css('right', 'auto');
+        $(elm).find('ul li').css('right', 'auto');
+        //$(elm).find('ul li').css('left','0');
+    }
+}
+
+function searchClick(txt) {
+    var rd = "";
+    if (txt != "") {
+        $("#T4A85E4EA072_ctl00_ctl00_searchTextBox").val(txt);
+        rd = "/search?indexCatalogue=psindex&searchQuery=" + txt;
+    }
+    window.location.href = rd;
+}
+
+
+
+</script><script type="text/javascript" src="/common/menu/jquery.slicknav.min.js"></script><script type="text/javascript">$(document).ready(function(){
+        if ($("#mobileMenu").is(":visible")) {
+            $(".productsTable").each(function(ind) {
+				mobilizeTable($(this), ".productsTable");
+			});
+            $(".rohsTable").each(function(ind) {
+				mobilizeTable($(this), ".rohsTable");
+			});
+            $(".bodyTable").each(function(ind) {
+				mobilizeTable($(this), ".bodyTable");
+			});
+        }
+});
+
+function mobilizeTable(tbl, cls) {
+	var thStyles = "";
+	tbl.find("th").each(function(i) {
+		thStyles += cls + " tr td:nth-child(" + (i+1) + ")::before {content:'" + $(this).text().trim().replace("<br>"," ").replace("<br/>"," ").replace("<sub>","").replace("</sub>","").replace("<br>"," ").replace("<br/>"," ") + "'; }";
+	});
+	
+	$("head").append("<style>" + thStyles + "</style>");
+}</script>
+<script type="text/javascript">
+//<![CDATA[
+;(function() {
+                        function loadHandler() {
+                            var hf = $get('ctl79_TSSM');
+                            if (!hf._RSSM_init) { hf._RSSM_init = true; hf.value = ''; }
+                            hf.value += ';Telerik.Sitefinity.Resources, Version=14.4.8146.0, Culture=neutral, PublicKeyToken=b28c218413bdf563:en:3207e2a5-e854-4d47-a81c-3a451e29b9c8:7a90d6a:c1bd62cb:b6439d72:7a6c1bf7:83fa35c7';
+                            Sys.Application.remove_load(loadHandler);
+                        };
+                        Sys.Application.add_load(loadHandler);
+                    })();Sys.Application.add_init(function() {
+    $create(Telerik.Sitefinity.Services.Search.Web.UI.Public.SearchBox, {"disableSuggestions":false,"indexCatalogue":"fullindex","language":"en","minSuggestLength":2,"resultsUrl":"/search","searchButton":$get("T4A85E4EA146_ctl00_ctl00_searchButton"),"searchTextBox":$get("T4A85E4EA146_ctl00_ctl00_searchTextBox"),"siteId":"93de76ba-0621-424b-885d-a0fa1bcbd291","suggestionFields":"Title,PartNums","suggestionsRoute":"/restapi/search/suggestions"}, null, null, $get("T4A85E4EA146"));
+});
+Sys.Application.add_init(function() {
+    $create(Telerik.Sitefinity.Modules.Forms.Web.UI.FormsControl, {"_clrTypeDelimiter":"#ClrType#","_currentMode":"create","errorsPanelContainerId":"T4A85E4EA165_ctl00_ctl00_errorsPanel","formControlsContainerId":"T4A85E4EA165_ctl00_ctl00_formControls","formDescriptionFound":true,"formFieldsMetadata":"[{\"Id\":\"T4A85E4EA165_ctl00_ctl00_C004\",\"Type\":\"Telerik.Sitefinity.Modules.Forms.Web.UI.Fields.FormMultipleChoice\",\"FieldName\":\"FormMultipleChoice_C004\",\"ClrType\":\"System.String\"},{\"Id\":\"T4A85E4EA165_ctl00_ctl00_C005\",\"Type\":\"Telerik.Sitefinity.Modules.Forms.Web.UI.Fields.FormMultipleChoice\",\"FieldName\":\"FormMultipleChoice_C005\",\"ClrType\":\"System.String\"},{\"Id\":\"T4A85E4EA165_ctl00_ctl00_C006\",\"Type\":\"Telerik.Sitefinity.Modules.Forms.Web.UI.Fields.FormMultipleChoice\",\"FieldName\":\"FormMultipleChoice_C006\",\"ClrType\":\"System.String\"},{\"Id\":\"T4A85E4EA165_ctl00_ctl00_C007\",\"Type\":\"Telerik.Sitefinity.Modules.Forms.Web.UI.Fields.FormMultipleChoice\",\"FieldName\":\"FormMultipleChoice_C007\",\"ClrType\":\"System.String\"},{\"Id\":\"T4A85E4EA165_ctl00_ctl00_C009\",\"Type\":\"Telerik.Sitefinity.Modules.Forms.Web.UI.Fields.FormParagraphTextBox\",\"FieldName\":\"FormParagraphTextBox_C009\",\"ClrType\":\"System.String\"},{\"Id\":\"T4A85E4EA165_ctl00_ctl00_C012\",\"Type\":\"Telerik.Sitefinity.Modules.Forms.Web.UI.Fields.FormCaptcha\",\"FieldName\":\"FormCaptcha_0\",\"ClrType\":\"System.Boolean\"}]","formId":"71d1fa2b-90e1-65f5-8a72-ff000066632f","formName":"sf_websurvey","formRedirectUrl":null,"formSubmitAction":"TextMessage","formSubmitButtonsMetadata":"[{\"Id\":\"T4A85E4EA165_ctl00_ctl00_C002\",\"Type\":\"Telerik.Sitefinity.Modules.Forms.Web.UI.Fields.FormSubmitButton\"}]","formsSubmitUrl":"/Forms/Submit","hasFileUploadField":false,"successMessage":"Thank you for filling out our survey!","successMessageBlockId":"T4A85E4EA165_ctl00_ctl00_successMessage","usePostbackOnSubmit":true,"validationGroup":"sf_websurveyT4A85E4EA165"}, null, null, $get("T4A85E4EA165"));
+});
+Sys.Application.add_init(function() {
+    $create(Telerik.Sitefinity.Web.UI.Fields.FormManager, {"_controlIdMappings":{"C004":"T4A85E4EA165_ctl00_ctl00_C004","C005":"T4A85E4EA165_ctl00_ctl00_C005","C006":"T4A85E4EA165_ctl00_ctl00_C006","C007":"T4A85E4EA165_ctl00_ctl00_C007","C009":"T4A85E4EA165_ctl00_ctl00_C009","C012":"T4A85E4EA165_ctl00_ctl00_C012"},"_validationGroupMappings":{"sf_websurveyT4A85E4EA165":["T4A85E4EA165_ctl00_ctl00_C004","T4A85E4EA165_ctl00_ctl00_C005","T4A85E4EA165_ctl00_ctl00_C006","T4A85E4EA165_ctl00_ctl00_C007","T4A85E4EA165_ctl00_ctl00_C009","T4A85E4EA165_ctl00_ctl00_C012"]}}, null, null);
+});
+Sys.Application.add_init(function() {
+    $create(Telerik.Sitefinity.Modules.Forms.Web.UI.Fields.FormMultipleChoice, {"_mutuallyExclusive":false,"_renderChoicesAs":3,"_returnValuesAlwaysInArray":false,"_selectedChoicesIndex":null,"choiceElement":$get("T4A85E4EA165_ctl00_ctl00_C004_ctl00_ctl00_radioButtons_radiobuttons"),"choices":[{"Text":"1","Value":"1","Description":null,"Enabled":false,"Selected":false},{"Text":"2","Value":"2","Description":null,"Enabled":false,"Selected":false},{"Text":"3","Value":"3","Description":null,"Enabled":false,"Selected":false},{"Text":"4","Value":"4","Description":null,"Enabled":false,"Selected":false},{"Text":"5","Value":"5","Description":null,"Enabled":false,"Selected":false}],"controlErrorCssClass":"sfErrorWrp ","dataFieldName":"FormMultipleChoice_C004","dataFormatString":null,"defaultValue":"1","description":null,"descriptionElement":$get("T4A85E4EA165_ctl00_ctl00_C004_ctl00_ctl00_descriptionLabel"),"displayMode":1,"example":null,"exampleElement":$get("T4A85E4EA165_ctl00_ctl00_C004_ctl00_ctl00_exampleLabel"),"fieldName":null,"title":"How easy was it to find what you were looking for on our website?","titleElement":$get("T4A85E4EA165_ctl00_ctl00_C004_ctl00_ctl00_titleLabel_radiobuttons"),"validatorDefinition":"{\"AlphaNumericViolationMessage\":\"Non alphanumeric characters are not allowed.\",\"ComparingValidatorDefinitions\":[],\"CurrencyViolationMessage\":\"You have entered an invalid currency.\",\"EmailAddressViolationMessage\":\"You have entered an invalid email address.\",\"ExpectedFormat\":0,\"IntegerViolationMessage\":\"You have entered an invalid integer.\",\"InternetUrlViolationMessage\":\"You have entered an invalid URL.\",\"MaxLength\":0,\"MaxLengthViolationMessage\":\"Too long\",\"MaxValue\":null,\"MaxValueViolationMessage\":\"Too big\",\"MessageCssClass\":\"sfError \",\"MessageTagName\":\"div\",\"MinLength\":0,\"MinLengthViolationMessage\":\"Too short.\",\"MinValue\":null,\"MinValueViolationMessage\":\"Too small.\",\"NonAlphaNumericViolationMessage\":\"Alphanumeric characters are not allowed.\",\"NumericViolationMessage\":\"You have entered an invalid number.\",\"PercentageViolationMessage\":\"You have entered an invalid percentage.\",\"RecommendedCharactersCount\":null,\"RegularExpression\":null,\"RegularExpressionSeparator\":null,\"RegularExpressionViolationMessage\":\"Invalid format\",\"Required\":null,\"RequiredViolationMessage\":\"Required field.\",\"ResourceClassId\":\"\",\"USSocialSecurityNumberViolationMessage\":\"You have entered an invalid US social security number.\",\"USZipCodeViolationMessage\":\"You have entered an invalid US ZIP code.\",\"ValidateIfInvisible\":true}","value":""}, null, null, $get("T4A85E4EA165_ctl00_ctl00_C004"));
+});
+Sys.Application.add_init(function() {
+    $create(Telerik.Sitefinity.Modules.Forms.Web.UI.Fields.FormMultipleChoice, {"_mutuallyExclusive":false,"_renderChoicesAs":3,"_returnValuesAlwaysInArray":false,"_selectedChoicesIndex":null,"choiceElement":$get("T4A85E4EA165_ctl00_ctl00_C005_ctl00_ctl00_radioButtons_radiobuttons"),"choices":[{"Text":"1","Value":"1","Description":null,"Enabled":false,"Selected":false},{"Text":"2","Value":"2","Description":null,"Enabled":false,"Selected":false},{"Text":"3","Value":"3","Description":null,"Enabled":false,"Selected":false},{"Text":"4","Value":"4","Description":null,"Enabled":false,"Selected":false},{"Text":"5","Value":"5","Description":null,"Enabled":false,"Selected":false}],"controlErrorCssClass":"sfErrorWrp ","dataFieldName":"FormMultipleChoice_C005","dataFormatString":null,"defaultValue":"1","description":null,"descriptionElement":$get("T4A85E4EA165_ctl00_ctl00_C005_ctl00_ctl00_descriptionLabel"),"displayMode":1,"example":null,"exampleElement":$get("T4A85E4EA165_ctl00_ctl00_C005_ctl00_ctl00_exampleLabel"),"fieldName":null,"title":"How satisfied are you with the content? ","titleElement":$get("T4A85E4EA165_ctl00_ctl00_C005_ctl00_ctl00_titleLabel_radiobuttons"),"validatorDefinition":"{\"AlphaNumericViolationMessage\":\"Non alphanumeric characters are not allowed.\",\"ComparingValidatorDefinitions\":[],\"CurrencyViolationMessage\":\"You have entered an invalid currency.\",\"EmailAddressViolationMessage\":\"You have entered an invalid email address.\",\"ExpectedFormat\":0,\"IntegerViolationMessage\":\"You have entered an invalid integer.\",\"InternetUrlViolationMessage\":\"You have entered an invalid URL.\",\"MaxLength\":0,\"MaxLengthViolationMessage\":\"Too long\",\"MaxValue\":null,\"MaxValueViolationMessage\":\"Too big\",\"MessageCssClass\":\"sfError \",\"MessageTagName\":\"div\",\"MinLength\":0,\"MinLengthViolationMessage\":\"Too short.\",\"MinValue\":null,\"MinValueViolationMessage\":\"Too small.\",\"NonAlphaNumericViolationMessage\":\"Alphanumeric characters are not allowed.\",\"NumericViolationMessage\":\"You have entered an invalid number.\",\"PercentageViolationMessage\":\"You have entered an invalid percentage.\",\"RecommendedCharactersCount\":null,\"RegularExpression\":null,\"RegularExpressionSeparator\":null,\"RegularExpressionViolationMessage\":\"Invalid format\",\"Required\":null,\"RequiredViolationMessage\":\"Required field.\",\"ResourceClassId\":\"\",\"USSocialSecurityNumberViolationMessage\":\"You have entered an invalid US social security number.\",\"USZipCodeViolationMessage\":\"You have entered an invalid US ZIP code.\",\"ValidateIfInvisible\":true}","value":""}, null, null, $get("T4A85E4EA165_ctl00_ctl00_C005"));
+});
+Sys.Application.add_init(function() {
+    $create(Telerik.Sitefinity.Modules.Forms.Web.UI.Fields.FormMultipleChoice, {"_mutuallyExclusive":false,"_renderChoicesAs":3,"_returnValuesAlwaysInArray":false,"_selectedChoicesIndex":null,"choiceElement":$get("T4A85E4EA165_ctl00_ctl00_C006_ctl00_ctl00_radioButtons_radiobuttons"),"choices":[{"Text":"1","Value":"1","Description":null,"Enabled":false,"Selected":false},{"Text":"2","Value":"2","Description":null,"Enabled":false,"Selected":false},{"Text":"3","Value":"3","Description":null,"Enabled":false,"Selected":false},{"Text":"4","Value":"4","Description":null,"Enabled":false,"Selected":false},{"Text":"5","Value":"5","Description":null,"Enabled":false,"Selected":false}],"controlErrorCssClass":"sfErrorWrp ","dataFieldName":"FormMultipleChoice_C006","dataFormatString":null,"defaultValue":"1","description":null,"descriptionElement":$get("T4A85E4EA165_ctl00_ctl00_C006_ctl00_ctl00_descriptionLabel"),"displayMode":1,"example":null,"exampleElement":$get("T4A85E4EA165_ctl00_ctl00_C006_ctl00_ctl00_exampleLabel"),"fieldName":null,"title":"Did it take you more or less time than you expected to find what you were looking for?","titleElement":$get("T4A85E4EA165_ctl00_ctl00_C006_ctl00_ctl00_titleLabel_radiobuttons"),"validatorDefinition":"{\"AlphaNumericViolationMessage\":\"Non alphanumeric characters are not allowed.\",\"ComparingValidatorDefinitions\":[],\"CurrencyViolationMessage\":\"You have entered an invalid currency.\",\"EmailAddressViolationMessage\":\"You have entered an invalid email address.\",\"ExpectedFormat\":0,\"IntegerViolationMessage\":\"You have entered an invalid integer.\",\"InternetUrlViolationMessage\":\"You have entered an invalid URL.\",\"MaxLength\":0,\"MaxLengthViolationMessage\":\"Too long\",\"MaxValue\":null,\"MaxValueViolationMessage\":\"Too big\",\"MessageCssClass\":\"sfError \",\"MessageTagName\":\"div\",\"MinLength\":0,\"MinLengthViolationMessage\":\"Too short.\",\"MinValue\":null,\"MinValueViolationMessage\":\"Too small.\",\"NonAlphaNumericViolationMessage\":\"Alphanumeric characters are not allowed.\",\"NumericViolationMessage\":\"You have entered an invalid number.\",\"PercentageViolationMessage\":\"You have entered an invalid percentage.\",\"RecommendedCharactersCount\":null,\"RegularExpression\":null,\"RegularExpressionSeparator\":null,\"RegularExpressionViolationMessage\":\"Invalid format\",\"Required\":null,\"RequiredViolationMessage\":\"Required field.\",\"ResourceClassId\":\"\",\"USSocialSecurityNumberViolationMessage\":\"You have entered an invalid US social security number.\",\"USZipCodeViolationMessage\":\"You have entered an invalid US ZIP code.\",\"ValidateIfInvisible\":true}","value":""}, null, null, $get("T4A85E4EA165_ctl00_ctl00_C006"));
+});
+Sys.Application.add_init(function() {
+    $create(Telerik.Sitefinity.Modules.Forms.Web.UI.Fields.FormMultipleChoice, {"_mutuallyExclusive":false,"_renderChoicesAs":3,"_returnValuesAlwaysInArray":false,"_selectedChoicesIndex":null,"choiceElement":$get("T4A85E4EA165_ctl00_ctl00_C007_ctl00_ctl00_radioButtons_radiobuttons"),"choices":[{"Text":"1","Value":"1","Description":null,"Enabled":false,"Selected":false},{"Text":"2","Value":"2","Description":null,"Enabled":false,"Selected":false},{"Text":"3","Value":"3","Description":null,"Enabled":false,"Selected":false},{"Text":"4","Value":"4","Description":null,"Enabled":false,"Selected":false},{"Text":"5","Value":"5","Description":null,"Enabled":false,"Selected":false}],"controlErrorCssClass":"sfErrorWrp ","dataFieldName":"FormMultipleChoice_C007","dataFormatString":null,"defaultValue":"1","description":null,"descriptionElement":$get("T4A85E4EA165_ctl00_ctl00_C007_ctl00_ctl00_descriptionLabel"),"displayMode":1,"example":null,"exampleElement":$get("T4A85E4EA165_ctl00_ctl00_C007_ctl00_ctl00_exampleLabel"),"fieldName":null,"title":"How likely is it that you will recommend our website to a friend or colleague?\n","titleElement":$get("T4A85E4EA165_ctl00_ctl00_C007_ctl00_ctl00_titleLabel_radiobuttons"),"validatorDefinition":"{\"AlphaNumericViolationMessage\":\"Non alphanumeric characters are not allowed.\",\"ComparingValidatorDefinitions\":[],\"CurrencyViolationMessage\":\"You have entered an invalid currency.\",\"EmailAddressViolationMessage\":\"You have entered an invalid email address.\",\"ExpectedFormat\":0,\"IntegerViolationMessage\":\"You have entered an invalid integer.\",\"InternetUrlViolationMessage\":\"You have entered an invalid URL.\",\"MaxLength\":0,\"MaxLengthViolationMessage\":\"Too long\",\"MaxValue\":null,\"MaxValueViolationMessage\":\"Too big\",\"MessageCssClass\":\"sfError \",\"MessageTagName\":\"div\",\"MinLength\":0,\"MinLengthViolationMessage\":\"Too short.\",\"MinValue\":null,\"MinValueViolationMessage\":\"Too small.\",\"NonAlphaNumericViolationMessage\":\"Alphanumeric characters are not allowed.\",\"NumericViolationMessage\":\"You have entered an invalid number.\",\"PercentageViolationMessage\":\"You have entered an invalid percentage.\",\"RecommendedCharactersCount\":null,\"RegularExpression\":null,\"RegularExpressionSeparator\":null,\"RegularExpressionViolationMessage\":\"Invalid format\",\"Required\":null,\"RequiredViolationMessage\":\"Required field.\",\"ResourceClassId\":\"\",\"USSocialSecurityNumberViolationMessage\":\"You have entered an invalid US social security number.\",\"USZipCodeViolationMessage\":\"You have entered an invalid US ZIP code.\",\"ValidateIfInvisible\":true}","value":""}, null, null, $get("T4A85E4EA165_ctl00_ctl00_C007"));
+});
+Sys.Application.add_init(function() {
+    $create(Telerik.Sitefinity.Web.UI.Extenders.ExpandableExtender, {"expandElement":$get("T4A85E4EA165_ctl00_ctl00_C009_ctl00_ctl00_expandButton_write"),"expandTarget":$get("T4A85E4EA165_ctl00_ctl00_C009_ctl00_ctl00_expandableTarget_write"),"expandText":"Click to add","expanded":true}, null, {"fieldControl":"T4A85E4EA165_ctl00_ctl00_C009"}, $get("T4A85E4EA165_ctl00_ctl00_C009"));
+    $create(Telerik.Sitefinity.Modules.Forms.Web.UI.Fields.FormParagraphTextBox, {"_allowNulls":false,"_conditionalTemplatesContainerId":"T4A85E4EA165_ctl00_ctl00_C009_ctl00_ConditionalTemplates","_currentCondition":"displaymode-equal-write","_isLocalizable":false,"_maxChars":0,"_readOnlyReplacement":null,"_textBoxId":"textBox_write","_textLabelId":"textLabel_read","_trimSpaces":false,"_unit":null,"conditionDictionary":{"displaymode-equal-read":"ClientTemplatePanel_C009","displaymode-equal-write":"T4A85E4EA165_ctl00_ctl00_C009_ctl00_ctl00_conditionalTemplate"},"controlErrorCssClass":"sfErrorWrp ","dataFieldName":"FormParagraphTextBox_C009","dataFormatString":null,"defaultValue":"","description":null,"descriptionElement":$get("T4A85E4EA165_ctl00_ctl00_C009_ctl00_ctl00_descriptionLabel_write"),"displayMode":1,"example":" (Please include your email address if you have any questions.)","exampleElement":$get("T4A85E4EA165_ctl00_ctl00_C009_ctl00_ctl00_exampleLabel_write"),"fieldName":null,"suffix":"_C009","textBoxElement":$get("T4A85E4EA165_ctl00_ctl00_C009_ctl00_ctl00_textBox_write"),"title":"Do you have any other comments about how we can improve our website?","titleElement":$get("T4A85E4EA165_ctl00_ctl00_C009_ctl00_ctl00_titleLabel_write"),"validatorDefinition":"{\"AlphaNumericViolationMessage\":\"Non alphanumeric characters are not allowed.\",\"ComparingValidatorDefinitions\":[],\"CurrencyViolationMessage\":\"You have entered an invalid currency.\",\"EmailAddressViolationMessage\":\"You have entered an invalid email address.\",\"ExpectedFormat\":0,\"IntegerViolationMessage\":\"You have entered an invalid integer.\",\"InternetUrlViolationMessage\":\"You have entered an invalid URL.\",\"MaxLength\":0,\"MaxLengthViolationMessage\":\"Too long\",\"MaxValue\":null,\"MaxValueViolationMessage\":\"Too big\",\"MessageCssClass\":\"sfError \",\"MessageTagName\":\"div\",\"MinLength\":0,\"MinLengthViolationMessage\":\"Too long\",\"MinValue\":null,\"MinValueViolationMessage\":\"Too small.\",\"NonAlphaNumericViolationMessage\":\"Alphanumeric characters are not allowed.\",\"NumericViolationMessage\":\"You have entered an invalid number.\",\"PercentageViolationMessage\":\"You have entered an invalid percentage.\",\"RecommendedCharactersCount\":null,\"RegularExpression\":null,\"RegularExpressionSeparator\":null,\"RegularExpressionViolationMessage\":\"Invalid format\",\"Required\":false,\"RequiredViolationMessage\":\"Required field.\",\"ResourceClassId\":\"\",\"USSocialSecurityNumberViolationMessage\":\"You have entered an invalid US social security number.\",\"USZipCodeViolationMessage\":\"You have entered an invalid US ZIP code.\",\"ValidateIfInvisible\":true}","value":""}, null, null, $get("T4A85E4EA165_ctl00_ctl00_C009"));
+});
+Sys.Application.add_init(function() {
+    $create(Telerik.Sitefinity.Modules.Forms.Web.UI.Fields.FormCaptcha, {"controlErrorCssClass":"sfErrorWrp ","dataFieldName":"FormCaptcha_0","dataFormatString":null,"description":null,"displayMode":0,"example":null,"fieldName":null,"title":"Captcha","validatorDefinition":"{\"AlphaNumericViolationMessage\":\"Non alphanumeric characters are not allowed.\",\"ComparingValidatorDefinitions\":[],\"CurrencyViolationMessage\":\"You have entered an invalid currency.\",\"EmailAddressViolationMessage\":\"You have entered an invalid email address.\",\"ExpectedFormat\":0,\"IntegerViolationMessage\":\"You have entered an invalid integer.\",\"InternetUrlViolationMessage\":\"You have entered an invalid URL.\",\"MaxLength\":0,\"MaxLengthViolationMessage\":\"Too long\",\"MaxValue\":null,\"MaxValueViolationMessage\":\"Too big\",\"MessageCssClass\":\"sfError \",\"MessageTagName\":\"div\",\"MinLength\":0,\"MinLengthViolationMessage\":\"Too short.\",\"MinValue\":null,\"MinValueViolationMessage\":\"Too small.\",\"NonAlphaNumericViolationMessage\":\"Alphanumeric characters are not allowed.\",\"NumericViolationMessage\":\"You have entered an invalid number.\",\"PercentageViolationMessage\":\"You have entered an invalid percentage.\",\"RecommendedCharactersCount\":null,\"RegularExpression\":null,\"RegularExpressionSeparator\":null,\"RegularExpressionViolationMessage\":\"Invalid format\",\"Required\":null,\"RequiredViolationMessage\":\"Required field.\",\"ResourceClassId\":\"\",\"USSocialSecurityNumberViolationMessage\":\"You have entered an invalid US social security number.\",\"USZipCodeViolationMessage\":\"You have entered an invalid US ZIP code.\",\"ValidateIfInvisible\":true}","value":null}, null, {"radFormCaptcha":"T4A85E4EA165_ctl00_ctl00_C012_ctl00_radCaptcha"}, $get("T4A85E4EA165_ctl00_ctl00_C012"));
+});
+
+document.getElementById('T4A85E4EA165_ctl00_ctl00_C012_ctl00_radCaptcha_ctl00').dispose = function() {
+    Array.remove(Page_Validators, document.getElementById('T4A85E4EA165_ctl00_ctl00_C012_ctl00_radCaptcha_ctl00'));
+}
+Sys.Application.add_init(function() {
+    $create(Telerik.Web.UI.RadCaptcha, {"_audioUrl":"/Telerik.Web.UI.WebResource.axd?type=cah\u0026isc=true\u0026guid=d639d63e-c62e-4cbb-b9c8-3b8a51820027","_enableAudio":false,"_persistCode":false,"clientStateFieldID":"T4A85E4EA165_ctl00_ctl00_C012_ctl00_radCaptcha_ClientState"}, null, null, $get("T4A85E4EA165_ctl00_ctl00_C012_ctl00_radCaptcha"));
+});
+//]]>
+</script>
+</form>
+</body>
+</html>

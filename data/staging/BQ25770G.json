@@ -1,0 +1,94 @@
+{
+  "name": "BQ25770G",
+  "type": "controller",
+  "manufacturer": "Texas Instruments",
+  "reason": "no schema (controller IC)",
+  "datasheetUrl": "https://www.ti.com/lit/ds/symlink/bq25770g.pdf",
+  "distributorUrl": "https://www.digikey.com/en/products/detail/texas-instruments/BQ25770G/",
+  "category": "battery-charger",
+  "topologies": ["buck-boost"],
+  "features": [
+    "NVDC buck-boost",
+    "quasi dual-phase",
+    "GaN HEMT optimized",
+    "USB-C PD EPR compatible",
+    "SMBus/I2C control",
+    "integrated ADC",
+    "power path",
+    "USB OTG",
+    "fast role swap",
+    "DRSS EMI dithering",
+    "pass-through mode",
+    "PROCHOT",
+    "PSYS monitor",
+    "VAP mode",
+    "ICO input current optimization",
+    "IINDPM/VINDPM",
+    "thermal regulation"
+  ],
+  "vinRange": {
+    "min": 3.5,
+    "max": 40
+  },
+  "voutRange": {
+    "min": 4.4,
+    "max": 23
+  },
+  "switchingFrequencyRange": {
+    "min": 600,
+    "max": 800
+  },
+  "integratedFET": false,
+  "integratedDriver": true,
+  "source": "web-search",
+  "date": "2026-04-20",
+  "notes": "40V synchronous NVDC quasi dual-phase buck-boost battery charge controller for 2- to 5-cell Li-Ion/LiFePO4 batteries. Optimized for GaN HEMT. Charges up to 16.3A/30A (5mΩ/2mΩ sense). Input current limit up to 8.2A/16.4A (10mΩ/5mΩ sense). 600kHz/800kHz programmable switching frequency. 36-pin WQFN (4.0mm x 5.0mm). Supports USB-C PD EPR, SPR, and legacy adapters. Pass-through mode for >99% efficiency. Dual random spread spectrum (DRSS) for EMI compliance. IMVP8/IMVP9 compliant with PROCHOT and PSYS. 16-bit ADC for voltage/current/power monitoring.",
+  "manufacturerInfo": {
+    "name": "Texas Instruments",
+    "reference": "BQ25770G",
+    "status": "production",
+    "datasheetInfo": {
+      "part": {
+        "partNumber": "BQ25770G",
+        "deviceType": "controller",
+        "technology": "GaN-optimized buck-boost battery charger"
+      },
+      "electrical": {
+        "inputVoltageMin": 3.5,
+        "inputVoltageMax": 40,
+        "absoluteMaxVin": 45,
+        "outputVoltageMin": 4.4,
+        "outputVoltageMax": 23,
+        "chargeCurrentMax": 16.3,
+        "inputCurrentLimitMax": 8.2,
+        "switchingFrequency": {
+          "min": 600000,
+          "max": 800000,
+          "unit": "Hz"
+        },
+        "controlInterface": "SMBus/I2C",
+        "cellCount": "2-5",
+        "cellChemistry": ["Li-Ion", "Li-Polymer", "LiFePO4"],
+        "otgVoltageRange": {
+          "min": 3,
+          "max": 5
+        },
+        "otgCurrentLimitMax": 3
+      },
+      "thermal": {
+        "operatingTemperatureMin": -40,
+        "operatingTemperatureMax": 125,
+        "unit": "°C"
+      },
+      "mechanical": {
+        "package": "WQFN",
+        "pinCount": 36,
+        "dimensions": {
+          "length": 4.0,
+          "width": 5.0,
+          "unit": "mm"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "manufacturerInfo": {
+    "partNumber": "B45196H1226K109",
+    "manufacturer": "TDK/EPCOS",
+    "series": "B45196H",
+    "datasheetInfo": {
+      "part": {
+        "partNumber": "B45196H1226K109",
+        "package": "SMD"
+      },
+      "electrical": {
+        "capacitance": 2.2e-05,
+        "tolerance": 0.1,
+        "ratedVoltageDC": 400,
+        "dissipationFactor": 0.12,
+        "esr": 2.5,
+        "rippleCurrent": 0.15,
+        "leakageCurrent": 8.8e-05,
+        "selfResonantFrequency": null
+      },
+      "thermal": {
+        "temperatureRange": {
+          "min": -40,
+          "max": 105
+        },
+        "rth": 35
+      },
+      "mechanical": {
+        "package": "SMD",
+        "diameter": 0.008,
+        "length": 0.0102,
+        "mounting": "SMD"
+      }
+    }
+  }
+}
