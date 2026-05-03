@@ -1,0 +1,34 @@
+{
+  "manufacturerInfo": {
+    "partNumber": "B32922C3104K",
+    "manufacturer": "TDK/EPCOS",
+    "series": "B3292*",
+    "datasheetInfo": {
+      "part": {
+        "partNumber": "B32922C3104K",
+        "package": "Radial"
+      },
+      "electrical": {
+        "capacitance": 1e-07,
+        "tolerance": 0.1,
+        "ratedVoltageAC": 305,
+        "ratedVoltageDC": 630,
+        "dissipationFactor": 0.001,
+        "insulationResistance": 15000000000.0,
+        "esr": null,
+        "selfResonantFrequency": null
+      },
+      "thermal": {
+        "temperatureRange": {
+          "min": -40,
+          "max": 110
+        }
+      },
+      "mechanical": {
+        "package": "Radial Lead",
+        "leadSpacing": 0.015,
+        "mounting": "THT"
+      }
+    }
+  }
+}

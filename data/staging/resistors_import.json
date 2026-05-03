@@ -1,0 +1,260 @@
+[
+  {
+    "resistor": {
+      "manufacturerInfo": {
+        "datasheetInfo": {
+          "part": {
+            "partNumber": "RC0603FR-0740K2L",
+            "series": "RC",
+            "technology": "thickFilm",
+            "case": "0603",
+            "matchcodeDescription": "40.2kOhm 1% 0.1W 0603 Thick Film"
+          },
+          "electrical": {
+            "resistance": {
+              "nominal": 40200.0
+            },
+            "tolerance": 0.01,
+            "temperatureCoefficient": 100,
+            "powerRating": 0.1,
+            "powerRatingTemperature": 70,
+            "maxVoltage": 75,
+            "maxOverloadVoltage": 150,
+            "insulationResistance": null,
+            "noiseIndex": null
+          },
+          "thermal": {
+            "operatingTemperature": {
+              "minimum": -55,
+              "maximum": 155
+            }
+          },
+          "mechanical": {
+            "dimensions": {
+              "length": {
+                "nominal": 0.0016
+              },
+              "width": {
+                "nominal": 0.0008
+              },
+              "height": {
+                "nominal": 0.00045
+              }
+            },
+            "shape": {
+              "assembly": "SMT",
+              "shapeType": "SMD Chip"
+            }
+          },
+          "business": {
+            "packaging": "Tape & Reel",
+            "vpe": 5000,
+            "moq": 5000,
+            "priceCost": 0.002
+          },
+          "modelParams": {
+            "r": 40200.0,
+            "tcr1": 9.999999999999999e-05,
+            "tcr2": null
+          },
+          "factors": {
+            "powerDeratingTemperature": [
+              70,
+              100,
+              125,
+              155
+            ],
+            "powerDeratingAmplitude": [
+              1.0,
+              0.65,
+              0.35,
+              0.0
+            ]
+          }
+        },
+        "datasheetUrl": "https://www.yageo.com/upload/media/product/productdatasheet/RC0603FR-0740K2L.pdf",
+        "name": "Yageo"
+      },
+      "resistance": 40200.0,
+      "tolerance": 0.01,
+      "powerRating": 0.1,
+      "temperatureCoefficient": 100,
+      "maxVoltage": 75,
+      "maxOverloadVoltage": 150,
+      "insulationResistance": null,
+      "noiseIndex": null
+    }
+  },
+  {
+    "resistor": {
+      "manufacturerInfo": {
+        "datasheetInfo": {
+          "part": {
+            "partNumber": "RC0603FR-078K87L",
+            "series": "RC",
+            "technology": "thickFilm",
+            "case": "0603",
+            "matchcodeDescription": "8.87kOhm 1% 0.1W 0603 Thick Film"
+          },
+          "electrical": {
+            "resistance": {
+              "nominal": 8870.0
+            },
+            "tolerance": 0.01,
+            "temperatureCoefficient": 100,
+            "powerRating": 0.1,
+            "powerRatingTemperature": 70,
+            "maxVoltage": 75,
+            "maxOverloadVoltage": 150,
+            "insulationResistance": null,
+            "noiseIndex": null
+          },
+          "thermal": {
+            "operatingTemperature": {
+              "minimum": -55,
+              "maximum": 155
+            }
+          },
+          "mechanical": {
+            "dimensions": {
+              "length": {
+                "nominal": 0.0016
+              },
+              "width": {
+                "nominal": 0.0008
+              },
+              "height": {
+                "nominal": 0.00045
+              }
+            },
+            "shape": {
+              "assembly": "SMT",
+              "shapeType": "SMD Chip"
+            }
+          },
+          "business": {
+            "packaging": "Tape & Reel",
+            "vpe": 5000,
+            "moq": 5000,
+            "priceCost": 0.002
+          },
+          "modelParams": {
+            "r": 8870.0,
+            "tcr1": 9.999999999999999e-05,
+            "tcr2": null
+          },
+          "factors": {
+            "powerDeratingTemperature": [
+              70,
+              100,
+              125,
+              155
+            ],
+            "powerDeratingAmplitude": [
+              1.0,
+              0.65,
+              0.35,
+              0.0
+            ]
+          }
+        },
+        "datasheetUrl": "https://www.yageo.com/upload/media/product/productdatasheet/RC0603FR-078K87L.pdf",
+        "name": "Yageo"
+      },
+      "resistance": 8870.0,
+      "tolerance": 0.01,
+      "powerRating": 0.1,
+      "temperatureCoefficient": 100,
+      "maxVoltage": 75,
+      "maxOverloadVoltage": 150,
+      "insulationResistance": null,
+      "noiseIndex": null
+    }
+  },
+  {
+    "resistor": {
+      "manufacturerInfo": {
+        "datasheetInfo": {
+          "part": {
+            "partNumber": "RC0603FR-070RL",
+            "series": "RC",
+            "technology": "thickFilm",
+            "case": "0603",
+            "matchcodeDescription": "0Ohm 1% 0.1W 0603 Thick Film Jumper"
+          },
+          "electrical": {
+            "resistance": {
+              "nominal": 0.0
+            },
+            "tolerance": 0.01,
+            "temperatureCoefficient": 100,
+            "powerRating": 0.1,
+            "powerRatingTemperature": 70,
+            "maxVoltage": 75,
+            "maxOverloadVoltage": 150,
+            "insulationResistance": null,
+            "noiseIndex": null
+          },
+          "thermal": {
+            "operatingTemperature": {
+              "minimum": -55,
+              "maximum": 155
+            }
+          },
+          "mechanical": {
+            "dimensions": {
+              "length": {
+                "nominal": 0.0016
+              },
+              "width": {
+                "nominal": 0.0008
+              },
+              "height": {
+                "nominal": 0.00045
+              }
+            },
+            "shape": {
+              "assembly": "SMT",
+              "shapeType": "SMD Chip"
+            }
+          },
+          "business": {
+            "packaging": "Tape & Reel",
+            "vpe": 5000,
+            "moq": 5000,
+            "priceCost": 0.002
+          },
+          "modelParams": {
+            "r": 0.0,
+            "tcr1": 9.999999999999999e-05,
+            "tcr2": null
+          },
+          "factors": {
+            "powerDeratingTemperature": [
+              70,
+              100,
+              125,
+              155
+            ],
+            "powerDeratingAmplitude": [
+              1.0,
+              0.65,
+              0.35,
+              0.0
+            ]
+          }
+        },
+        "datasheetUrl": "https://www.yageo.com/upload/media/product/productdatasheet/RC0603FR-070RL.pdf",
+        "name": "Yageo"
+      },
+      "resistance": 0.0,
+      "tolerance": 0.01,
+      "powerRating": 0.1,
+      "temperatureCoefficient": 100,
+      "maxVoltage": 75,
+      "maxOverloadVoltage": 150,
+      "insulationResistance": null,
+      "noiseIndex": null
+    }
+  }
+]

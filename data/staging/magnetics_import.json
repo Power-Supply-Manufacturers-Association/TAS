@@ -1,0 +1,56 @@
+[
+  {
+    "magnetic": {
+      "manufacturerInfo": {
+        "name": "Monolithic Power Systems",
+        "reference": "MPL-AL6050-1R5",
+        "status": "production",
+        "family": "MPL-AL6050",
+        "datasheetInfo": {
+          "part": {
+            "partNumber": "MPL-AL6050-1R5",
+            "family": "MPL-AL6050",
+            "componentType": "inductor"
+          },
+          "electrical": {
+            "inductance": {
+              "nominal": 1.5e-06
+            },
+            "saturationCurrent": 11.0,
+            "dcResistanceMax": 0.0144
+          },
+          "mechanical": {
+            "case": "MPL-AL6050"
+          },
+          "_provenance": {
+            "inputs": {
+              "designRequirements": {}
+            },
+            "outputs": {}
+          }
+        },
+        "datasheetUrl": "https://www.monolithicpower.com/en/documentview/productdocument/index/version/2/document_type/Datasheet/lang/en/sku/MPL-AL6050/document_id/8551"
+      },
+      "core": {
+        "functionalDescription": {
+          "type": "two-piece set",
+          "material": "Dummy",
+          "shape": "Dummy",
+          "gapping": []
+        }
+      },
+      "coil": {
+        "bobbin": "Dummy",
+        "functionalDescription": [
+          {
+            "name": "Dummy",
+            "numberTurns": 1,
+            "numberParallels": 1,
+            "isolationSide": "primary",
+            "wire": "Dummy"
+          }
+        ]
+      }
+    }
+  }
+]

@@ -1,0 +1,43 @@
+{
+  "manufacturerInfo": {
+    "partNumber": "IPU80R1K4P7",
+    "manufacturer": "Infineon Technologies",
+    "series": "CoolMOS P7",
+    "datasheetInfo": {
+      "part": {
+        "partNumber": "IPU80R1K4P7",
+        "package": "TO-220 FullPAK"
+      },
+      "electrical": {
+        "vds": 800,
+        "vgs": 20,
+        "vgs_th": 3.0,
+        "rds_on": 1.4,
+        "rds_on_test_vgs": 10,
+        "id": 5.1,
+        "id_pulse": 20.4,
+        "qg": 15.0,
+        "qg_th": 3.5,
+        "ciss": 6.8e-10,
+        "coss": 3.5e-11,
+        "crss": 5e-12,
+        "td_on": 1.5e-08,
+        "td_off": 5.5e-08,
+        "tr": 2.5e-08,
+        "tf": 3e-08,
+        "rg_int": 1.5,
+        "vbr_dss": 800
+      },
+      "thermal": {
+        "rth_jc": 4.2,
+        "rth_ja": 62.5,
+        "tj_max": 150,
+        "tj_min": -55
+      },
+      "mechanical": {
+        "package": "TO-220 FullPAK",
+        "mounting": "THT"
+      }
+    }
+  }
+}
