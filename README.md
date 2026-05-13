@@ -38,10 +38,10 @@ A real power converter design involves dozens of interrelated decisions scattere
 │    efficiencyTarget: 0.88                                        │
 │                                                                  │
 │  COMPONENTS — what you build with                                │
-│    T1: E25/13/7 N87 transformer  ← full MAS/EAS document        │
-│    Q1: IPD65R420CFD 650V MOSFET  ← full SAS/EAS document        │
-│    D1: STPS8L40B Schottky        ← full SAS/EAS document        │
-│    Cout: 2× 220µF polymer        ← full CAS/EAS document        │
+│    T1: E25/13/7 N87 transformer  ← full MAS/PEAS document        │
+│    Q1: IPD65R420CFD 650V MOSFET  ← full SAS/PEAS document        │
+│    D1: STPS8L40B Schottky        ← full SAS/PEAS document        │
+│    Cout: 2× 220µF polymer        ← full CAS/PEAS document        │
 │    Netlist: pin-to-node connections                              │
 │                                                                  │
 │  OUTPUTS — what you computed                                     │
@@ -90,15 +90,15 @@ schemas/
 ├── TAS.json         Root document — inputs (required), components, outputs (optional)
 ├── inputs.json      Design requirements + operating points
 ├── outputs.json     Loss breakdown, stress analysis, KPIs
-├── components.json  Component list (EAS references) + circuit netlist
+├── components.json  Component list (PEAS references) + circuit netlist
 └── utils.json       Shared types: dimensionWithTolerance, signalDescriptor
 ```
 
-### TAS sits at the top of the EAS hierarchy
+### TAS sits at the top of the PEAS hierarchy
 
 ```
 TAS   ← complete converter designs + finished component catalog
- └── EAS   ← universal component container (abstract base)
+ └── PEAS   ← universal component container (abstract base)
       ├── MAS   ← magnetics (cores, windings, bobbins)
       ├── SAS   ← semiconductors (MOSFETs, diodes, IGBTs)
       ├── CAS   ← capacitors

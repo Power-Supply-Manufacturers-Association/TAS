@@ -72,7 +72,7 @@ def create_mosfet_entry(
     datasheet_url: str = "",
     cost: float = None,
 ) -> Dict:
-    """Create a MOSFET EAS document."""
+    """Create a MOSFET PEAS document."""
     return {
         "inputs": {"designRequirements": {}},
         "semiconductor": {
@@ -127,7 +127,7 @@ def create_diode_entry(
     ir: float = None,
     datasheet_url: str = "",
 ) -> Dict:
-    """Create a diode EAS document."""
+    """Create a diode PEAS document."""
     entry = {
         "manufacturerInfo": {
             "name": manufacturer,
@@ -176,7 +176,7 @@ def create_capacitor_entry(
     esr: float = None,
     datasheet_url: str = "",
 ) -> Dict:
-    """Create a capacitor EAS document (flat structure per CAS schema)."""
+    """Create a capacitor PEAS document (flat structure per CAS schema)."""
     return {
         "manufacturerInfo": {
             "name": manufacturer,
@@ -215,7 +215,7 @@ def create_magnetic_entry(
     package: str,
     datasheet_url: str = "",
 ) -> Dict:
-    """Create a magnetic (inductor) EAS document."""
+    """Create a magnetic (inductor) PEAS document."""
     nom = inductance
     lo = nom * 0.80
     hi = nom * 1.20

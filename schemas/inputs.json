@@ -1,128 +1,86 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "http://openconverters.com/schemas/TAS/inputs.json",
-  "title": "TAS inputs v2",
-  "description": "Design specification (the contract the converter must meet) plus operating points (specific test conditions within that contract). Flat \u2014 no designRequirements wrapper. All values in SI units (V, A, W, \u00b0C, Hz). The fields here are REQUIREMENTS only \u2014 design choices like modulationType / controlMode / operatingMode are not inputs, they are decisions made by the design pipeline.",
-  "type": "object",
-  "additionalProperties": false,
-  "required": [
-    "inputVoltage",
-    "outputVoltage"
-  ],
-  "properties": {
-    "name": {
-      "type": "string",
-      "description": "Optional human-readable design name (e.g. '60W 48V to 5V buck for industrial sensor')."
-    },
-    "inputVoltage": {
-      "$ref": "./utils.json#/$defs/dimensionWithTolerance",
-      "description": "Input voltage range in Volts. The converter must operate across this range. Use {minimum, nominal, maximum} for ranged inputs; {nominal} alone for fixed-input designs."
-    },
-    "outputVoltage": {
-      "$ref": "./utils.json#/$defs/dimensionWithTolerance",
-      "description": "Output voltage in Volts. Use {nominal} alone for fixed outputs; {minimum, maximum} for adjustable outputs."
-    },
-    "outputCurrent": {
-      "$ref": "./utils.json#/$defs/dimensionWithTolerance",
-      "description": "Output current range in Amperes. Provide either outputCurrent or outputPower (or both)."
-    },
-    "outputPower": {
-      "$ref": "./utils.json#/$defs/dimensionWithTolerance",
-      "description": "Output power range in Watts."
-    },
-    "efficiencyTarget": {
-      "type": "number",
-      "minimum": 0,
-      "maximum": 1,
-      "description": "Target efficiency as a fraction (0.94 = 94%). Optional \u2014 agents will try to maximise efficiency regardless, but a target gates the design review."
-    },
-    "isolationVoltage": {
-      "type": [
-        "number",
-        "null"
-      ],
-      "description": "Required galvanic isolation in Volts (working voltage per IEC-62368). Null or omitted = non-isolated."
-    },
-    "ambientTemperature": {
-      "$ref": "./utils.json#/$defs/dimensionWithTolerance",
-      "description": "Operating ambient temperature range in \u00b0C. Worst case is the maximum \u2014 used for Tj derating calculations."
-    },
-    "switchingFrequency": {
-      "$ref": "./utils.json#/$defs/dimensionWithTolerance",
-      "description": "Switching frequency constraint in Hz. Three usage modes: (1) {nominal: 350e3} = fixed-frequency design pinned at 350 kHz; (2) {minimum: 50e3, maximum: 250e3} = the design must operate within this range \u2014 used for variable-frequency topologies (LLC, COT, hysteretic) or to exclude EMC-sensitive bands (AM 530\u20131700 kHz, audio <20 kHz, ISM bands); (3) omit entirely = the agent picks freely. The per-operating-point ACTUAL fsw at each test condition is reported in outputs.operatingPoints[].kpis.switchingFrequency, not here. Test conditions are (Vin, Iout/Pout, Tamb) only."
-    },
-    "controlMode": {
-      "type": "string",
-      "enum": [
-        "Voltage Mode",
-        "Peak Current Mode",
-        "Average Current Mode",
-        "COT",
-        "V\u00b2 Mode"
-      ],
-      "description": "Required feedback control architecture. Pin this when the choice is forced \u2014 by a stock controller IC, by load-step stability requirements (e.g. average current mode for 48 V automotive), or by an existing reference design being cloned. Omit entirely = the control-designer picks. Picked once for the converter; cannot vary per operating point."
-    },
-    "modulationType": {
-      "type": "string",
-      "enum": [
-        "PWM",
-        "PFM",
-        "Hysteretic",
-        "Phase-Shift",
-        "PWM+PFM"
-      ],
-      "description": "Required modulation scheme. Pin this when transient response, light-load efficiency, or topology constraints force the choice (e.g. Phase-Shift for PSFB; Hysteretic for fastest-transient buck; PWM+PFM hybrid for IC-based light-load efficiency). Omit = agent picks. Picked once for the converter."
-    },
-    "operatingMode": {
-      "type": "string",
-      "enum": [
-        "CCM",
-        "DCM",
-        "BCM",
-        "CrCM",
-        "QR"
-      ],
-      "description": "Required inductor/transformer current operating mode. Pin this when forced by safety/audio requirements (e.g. no DCM for audio amplifiers \u2014 audible artifacts), primary-side regulation needs (DCM mandatory for some flyback PSR controllers), or PFC topology choice (CrCM is the boundary mode used by most low-power PFCs). Omit = agent picks. NOTE: this is the *required* mode design-wide. The ACTUAL mode at each operating point is reported in outputs.operatingPoints[].kpis.operatingMode and may differ across OPs (e.g. CCM at full load, DCM at light load is intentional in some designs)."
-    },
-    "operatingPoints": {
-      "type": "array",
-      "description": "Specific (Vin, Iout/Pout, Tamb) test conditions the design must satisfy. Each entry is one point drawn from the spec ranges above. Outputs.operatingPoints[] entries join to this list by name. Common points: 'full load Vin_min', 'full load Vin_max', 'no load Vin_max', 'startup Vin_min'.",
-      "items": {
-        "$ref": "#/$defs/operatingPoint"
-      }
-    }
-  },
-  "$defs": {
-    "operatingPoint": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "name"
-      ],
-      "description": "A single test condition. All fields are scalars (not ranges) \u2014 this is one specific point in the spec envelope.",
-      "properties": {
-        "name": {
-          "type": "string",
-          "minLength": 1,
-          "description": "Identifier unique within this inputs document (e.g. 'full load Vin_min'). Used to join with outputs.operatingPoints[]."
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "http://openconverters.com/schemas/TAS/inputs.json",
+    "title": "TAS inputs",
+    "description": "Design specification (the contract the converter must meet) plus operating points (specific test conditions within that contract). Flat \u2014 no designRequirements wrapper. All values in SI units (V, A, W, \u00b0C, Hz). The fields here are REQUIREMENTS only \u2014 design choices like modulationType / controlMode / operatingMode are not inputs, they are decisions made by the design pipeline.",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "operatingPoints": {
+            "description": "Data describing the operating points",
+            "title": "operatingPoints",
+            "type": "array",
+            "items": {
+                "$ref": "#/$defs/operatingPoint"
+            },
+            "minItems": 1
         },
-        "inputVoltage": {
-          "type": "number",
-          "description": "Vin at this point, V."
+        "designRequirements": {
+            "description": "Data describing the design requirements",
+            "title": "designRequirements",
+            "$ref": "#/$defs/designRequirements"
         },
-        "outputCurrent": {
-          "type": "number",
-          "description": "Iout at this point, A. Provide either outputCurrent or outputPower."
+    },
+    "required": [
+        "operatingPoints",
+        "designRequirements"
+    ],
+
+    "$defs": {
+        "designRequirements": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "efficiency"
+            ],
+            "properties": {
+                "efficiency": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "Target efficiency as a fraction (0.94 = 94%)."
+                }
+            }
         },
-        "outputPower": {
-          "type": "number",
-          "description": "Pout at this point, W."
-        },
-        "ambientTemperature": {
-          "type": "number",
-          "description": "Tamb at this point, \u00b0C."
+        "operatingPoint": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "name",
+                "inputVoltage",
+                "outputCurrent",
+                "outputPower",
+                "switchingFrequency",
+                "ambientTemperature"
+            ],
+            "description": "A single test condition. All fields are scalars (not ranges) \u2014 this is one specific point in the spec envelope.",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Identifier unique within this inputs document (e.g. 'full load Vin_min'). Used to join with outputs.operatingPoints[]."
+                },
+                "inputVoltage": {
+                    "type": "number",
+                    "description": "Vin at this point, V."
+                },
+                "outputCurrent": {
+                    "type": "number",
+                    "description": "Iout at this point, A. Provide either outputCurrent or outputPower."
+                },
+                "outputPower": {
+                    "type": "number",
+                    "description": "Pout at this point, W."
+                },
+                "switchingFrequency": {
+                    "$ref": "./utils.json#/$defs/dimensionWithTolerance",
+                    "description": "Switching frequency constraint in Hz. Three usage modes: (1) {nominal: 350e3} = fixed-frequency design pinned at 350 kHz; (2) {minimum: 50e3, maximum: 250e3} = the design must operate within this range \u2014 used for variable-frequency topologies (LLC, COT, hysteretic) or to exclude EMC-sensitive bands (AM 530\u20131700 kHz, audio <20 kHz, ISM bands); (3) omit entirely = the agent picks freely. The per-operating-point ACTUAL fsw at each test condition is reported in outputs.operatingPoints[].kpis.switchingFrequency, not here. Test conditions are (Vin, Iout/Pout, Tamb) only."
+                },
+                "ambientTemperature": {
+                    "type": "number",
+                    "description": "Tamb at this point, \u00b0C."
+                }
+            }
         }
-      }
     }
-  }
 }
