@@ -105,7 +105,7 @@ Array of component objects.
 | `role` | `componentRole` (enum) | See full list below |
 | `quantity` | `integer` (>= 1) | Default: 1. Use for parallel components (e.g. 3x output caps). |
 | `pins` | `string[]` | Pin names for netlist. Omit for default pins. |
-| `data` | EAS document or `string` | Inline EAS or path to external file |
+| `data` | PEAS document or `string` | Inline PEAS or path to external file |
 
 **componentRole enum (32 values):**
 
@@ -153,13 +153,13 @@ Resistors:
 - `snubberResistor` -- snubber circuit resistor
 - `clampResistor` -- clamp circuit resistor
 
-### data field (EAS document or reference)
+### data field (PEAS document or reference)
 
 The `data` field uses `oneOf` to accept either:
 
-1. **Inline EAS document** -- a full object conforming to the EAS schema (`http://openconverters.com/schemas/EAS/eas.json`). This contains `inputs`, `outputs`, and one of `magnetic`, `semiconductor`, `capacitor`, or `resistor`.
+1. **Inline PEAS document** -- a full object conforming to the PEAS schema (`http://openconverters.com/schemas/PEAS/peas.json`). This contains `inputs`, `outputs`, and one of `magnetic`, `semiconductor`, `capacitor`, or `resistor`.
 
-2. **String reference** -- a file path or URI pointing to an external EAS document.
+2. **String reference** -- a file path or URI pointing to an external PEAS document.
 
 This follows the same indirection pattern used in MAS for core shapes and materials.
 
@@ -324,9 +324,9 @@ MAS-compatible signal description. Must have either `waveform` or `processed` (e
 
 ## Cross-References to Sibling Schemas
 
-The `data` field in each component references the EAS schema, which dispatches to:
+The `data` field in each component references the PEAS schema, which dispatches to:
 
-| EAS key | Schema | Repo |
+| PEAS key | Schema | Repo |
 |---------|--------|------|
 | `magnetic` | MAS `magnetic.json` | OpenMagnetics/MAS |
 | `semiconductor` | SAS `semiconductor.json` | OpenConverters/SAS |
@@ -351,4 +351,4 @@ ajv validate -s schemas/TAS.json -d examples/01_flyback_48v_to_12v.json \
   -r "schemas/utils.json"
 ```
 
-Note: Full validation requires the EAS, SAS, CAS, RAS, and MAS schemas to be available for `$ref` resolution of inline component data.
+Note: Full validation requires the PEAS, SAS, CAS, RAS, and MAS schemas to be available for `$ref` resolution of inline component data.

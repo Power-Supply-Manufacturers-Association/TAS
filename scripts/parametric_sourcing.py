@@ -63,7 +63,7 @@ def create_mosfet_entry(
     id_cont: float,
     rds_on: float,
 ) -> Dict:
-    """Create a MOSFET EAS document."""
+    """Create a MOSFET PEAS document."""
     return {
         "inputs": {"designRequirements": {}},
         "semiconductor": {
@@ -113,7 +113,7 @@ def create_diode_entry(
     if_cont: float,
     vf: float,
 ) -> Dict:
-    """Create a diode EAS document."""
+    """Create a diode PEAS document."""
     return {
         "manufacturerInfo": {
             "name": manufacturer,
@@ -153,7 +153,7 @@ def create_capacitor_entry(
     case: str,
     capacitor_type: str,
 ) -> Dict:
-    """Create a capacitor EAS document."""
+    """Create a capacitor PEAS document."""
     return {
         "manufacturerInfo": {
             "name": manufacturer,
@@ -188,7 +188,7 @@ def create_magnetic_entry(
     irated: float,
     package: str,
 ) -> Dict:
-    """Create a magnetic (inductor) EAS document."""
+    """Create a magnetic (inductor) PEAS document."""
     nom = inductance
     return {
         "inputs": {

@@ -52,7 +52,7 @@ def create_magnetic_entry(
     irated: float,
     package: str,
 ) -> Dict:
-    """Create a magnetic (inductor) EAS document."""
+    """Create a magnetic (inductor) PEAS document."""
     nom = inductance
     return {
         "inputs": {
