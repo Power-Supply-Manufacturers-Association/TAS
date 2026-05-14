@@ -1,129 +1,181 @@
 {
-    "inputs": {
-        "designRequirements": {
-            "name": "Buck 12V to 5V @ 3A",
-            "topology": "Buck Converter",
-            "inputVoltage": { "minimum": 10.0, "nominal": 12.0, "maximum": 14.0 },
-            "outputVoltage": { "nominal": 5.0 },
-            "outputCurrent": { "nominal": 3.0 },
-            "efficiencyTarget": 0.92,
-            "operatingMode": "CCM",
-            "modulationType": "PWM",
-            "controlMode": "Voltage Mode"
-        },
-        "operatingPoints": [
-            {
-                "name": "Full Load Vin_nom",
-                "conditions": {
-                    "ambientTemperature": 25.0,
-                    "inputVoltage": 12.0,
-                    "outputCurrent": 3.0
-                },
-                "switchingFrequency": 500000,
-                "dutyCycle": 0.417,
-                "operatingMode": "CCM",
-                "waveforms": {
-                    "inductorCurrent": {
-                        "processed": {
-                            "label": "Triangular",
-                            "peakToPeak": 0.6,
-                            "offset": 3.0,
-                            "dutyCycle": 0.417
-                        }
-                    },
-                    "switchVoltage": {
-                        "processed": {
-                            "label": "Rectangular",
-                            "peakToPeak": 12.0,
-                            "offset": 6.0,
-                            "dutyCycle": 0.417
-                        }
-                    }
-                }
-            }
-        ]
-    },
-    "components": {
-        "magnetics": [
-            {
-                "name": "L1",
-                "role": "mainInductor",
-                "summary": {
-                    "magnetizingInductance": 22e-6,
-                    "coreShape": "Coilcraft XAL5030",
-                    "coreMaterial": "Metal composite",
-                    "windingLosses": 0.12,
-                    "coreLosses": 0.05
-                }
-            }
-        ],
-        "semiconductors": [
-            {
-                "name": "Q1",
-                "role": "highSideSwitch",
-                "summary": {
-                    "partNumber": "BSC010N04LS",
-                    "deviceType": "mosfet",
-                    "technology": "Si",
-                    "voltageRating": 40,
-                    "currentRating": 100,
-                    "onResistance": 0.001,
-                    "totalGateCharge": 48e-9
-                }
-            },
-            {
-                "name": "D1",
-                "role": "freewheelDiode",
-                "summary": {
-                    "partNumber": "SS34",
-                    "deviceType": "diode",
-                    "technology": "Si",
-                    "voltageRating": 40,
-                    "currentRating": 3,
-                    "forwardVoltage": 0.5
-                }
-            }
-        ],
-        "capacitors": [
-            {
-                "name": "Cout",
-                "role": "outputCapacitor",
-                "quantity": 3,
-                "summary": {
-                    "capacitance": 22e-6,
-                    "voltageRating": 10.0,
-                    "esr": 0.003,
-                    "esrFrequency": 500000,
-                    "technology": "MLCC X5R"
-                }
-            }
-        ]
-    },
-    "outputs": [
+  "inputs": {
+    "designRequirements": {
+      "efficiency": 0.92,
+      "inputType": "dc",
+      "inputVoltage": {
+        "minimum": 10.0,
+        "nominal": 12.0,
+        "maximum": 14.0
+      },
+      "switchingFrequency": {
+        "nominal": 500000.0
+      },
+      "outputs": [
         {
-            "operatingPointName": "Full Load Vin_nom",
-            "origin": "analytical",
-            "methodUsed": "Proteus converter-designer",
-            "losses": {
-                "coreLosses": 0.05,
-                "windingLosses": 0.12,
-                "switchConduction": 0.009,
-                "switchSwitching": 0.15,
-                "diodeConduction": 0.25,
-                "capacitorEsr": 0.01,
-                "total": 0.59
-            },
-            "stresses": {
-                "switchVoltageMax": 14,
-                "switchVoltageRating": 40,
-                "switchVoltageMargin": 0.65
-            },
-            "kpis": {
-                "efficiency": 0.962,
-                "outputRipple": 0.020,
-                "inputPower": 15.59,
-                "outputPower": 15.0
-            }
+          "name": "5V",
+          "voltage": {
+            "nominal": 5.0,
+            "minimum": 4.9,
+            "maximum": 5.1
+          },
+          "regulation": "voltage"
         }
+      ]
+    },
+    "operatingPoints": [
+      {
+        "name": "full_load_Vin_nom",
+        "inputVoltage": 12.0,
+        "ambientTemperature": 25.0,
+        "outputs": [
+          {
+            "name": "5V",
+            "current": 3.0
+          }
+        ]
+      },
+      {
+        "name": "full_load_Vin_min",
+        "inputVoltage": 10.0,
+        "ambientTemperature": 25.0,
+        "outputs": [
+          {
+            "name": "5V",
+            "current": 3.0
+          }
+        ]
+      },
+      {
+        "name": "full_load_Vin_max",
+        "inputVoltage": 14.0,
+        "ambientTemperature": 25.0,
+        "outputs": [
+          {
+            "name": "5V",
+            "current": 3.0
+          }
+        ]
+      }
     ]
+  },
+  "topology": {
+    "stages": [
+      {
+        "name": "power_stage",
+        "role": "switchingCell",
+        "inputPort": {
+          "type": "dcBus",
+          "wire": "Vin"
+        },
+        "outputPorts": [
+          {
+            "type": "dcOutput",
+            "wire": "Vout"
+          }
+        ],
+        "circuit": {
+          "components": [
+            {
+              "name": "Q1",
+              "data": "TAS/data/mosfets.ndjson?partNumber=BSC010N04LS"
+            },
+            {
+              "name": "D1",
+              "data": "TAS/data/diodes.ndjson?partNumber=SS34"
+            },
+            {
+              "name": "L1",
+              "data": "TAS/data/magnetics.ndjson?partNumber=XAL5030-223MEC"
+            },
+            {
+              "name": "C_in",
+              "data": "TAS/data/capacitors.ndjson?placeholder=C_in"
+            },
+            {
+              "name": "C_out",
+              "data": "TAS/data/capacitors.ndjson?placeholder=C_out"
+            }
+          ],
+          "connections": [
+            {
+              "name": "sw_node",
+              "kind": "wire",
+              "endpoints": [
+                {
+                  "component": "Q1",
+                  "pin": "S"
+                },
+                {
+                  "component": "D1",
+                  "pin": "K"
+                },
+                {
+                  "component": "L1",
+                  "pin": "1"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "name": "controller",
+        "role": "control",
+        "circuit": {
+          "components": [
+            {
+              "name": "U1",
+              "data": "TAS/data/controllers.ndjson?placeholder=U1"
+            }
+          ],
+          "connections": []
+        },
+        "senses": [
+          {
+            "wire": "Vout",
+            "signal": "voltage"
+          }
+        ],
+        "drives": [
+          {
+            "component": "Q1",
+            "signal": "gate"
+          }
+        ]
+      }
+    ],
+    "interStageCircuit": [
+      {
+        "name": "Vin",
+        "kind": "externalPort",
+        "direction": "input",
+        "endpoints": [
+          {
+            "component": "C_in",
+            "pin": "1"
+          },
+          {
+            "component": "Q1",
+            "pin": "D"
+          }
+        ]
+      },
+      {
+        "name": "Vout",
+        "kind": "externalPort",
+        "direction": "output",
+        "endpoints": [
+          {
+            "component": "L1",
+            "pin": "2"
+          },
+          {
+            "component": "C_out",
+            "pin": "1"
+          }
+        ]
+      }
+    ]
+  }
 }

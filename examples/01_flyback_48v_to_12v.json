@@ -1,390 +1,121 @@
 {
-    "inputs": {
-        "designRequirements": {
-            "name": "Flyback 48V to 12V @ 2A Isolated",
-            "topology": "Flyback Converter",
-            "inputVoltage": { "minimum": 36.0, "nominal": 48.0, "maximum": 60.0 },
-            "outputVoltage": { "nominal": 12.0 },
-            "outputCurrent": { "nominal": 2.0 },
-            "outputPower": { "nominal": 24.0 },
-            "efficiencyTarget": 0.88,
-            "isolationVoltage": 1500.0,
-            "operatingMode": "CCM",
-            "modulationType": "PWM",
-            "controlMode": "Peak Current Mode",
-            "maximumDutyCycle": 0.5,
-            "ambientTemperature": { "nominal": 25.0, "maximum": 50.0 }
-        },
-        "operatingPoints": [
-            {
-                "name": "Full Load Vin_nom",
-                "conditions": {
-                    "ambientTemperature": 25.0,
-                    "inputVoltage": 48.0,
-                    "outputCurrent": 2.0
-                },
-                "switchingFrequency": 100000,
-                "dutyCycle": 0.35,
-                "operatingMode": "CCM"
-            },
-            {
-                "name": "Full Load Vin_min",
-                "conditions": {
-                    "ambientTemperature": 25.0,
-                    "inputVoltage": 36.0,
-                    "outputCurrent": 2.0
-                },
-                "switchingFrequency": 100000,
-                "dutyCycle": 0.45,
-                "operatingMode": "CCM"
-            },
-            {
-                "name": "Full Load Vin_max",
-                "conditions": {
-                    "ambientTemperature": 25.0,
-                    "inputVoltage": 60.0,
-                    "outputCurrent": 2.0
-                },
-                "switchingFrequency": 100000,
-                "dutyCycle": 0.27,
-                "operatingMode": "CCM"
-            }
-        ]
+  "inputs": {
+    "designRequirements": {
+      "efficiency": 0.88,
+      "inputType": "dc",
+      "inputVoltage": { "minimum": 36.0, "nominal": 48.0, "maximum": 60.0 },
+      "switchingFrequency": { "nominal": 100000 },
+      "isolationVoltage": 1500,
+      "outputs": [
+        { "name": "12V", "voltage": { "nominal": 12.0, "minimum": 11.76, "maximum": 12.24 }, "regulation": "voltage" }
+      ]
     },
-    "components": {
-        "componentList": [
-            {
-                "name": "T1",
-                "role": "mainTransformer",
-                "pins": ["pri_dot", "pri_undot", "sec_dot", "sec_undot"],
-                "data": {
-                    "inputs": {
-                        "designRequirements": {
-                            "magnetizingInductance": { "nominal": 200e-6 },
-                            "turnsRatios": [{ "nominal": 4.0 }]
-                        },
-                        "operatingPoints": []
-                    },
-                    "magnetic": {
-                        "core": {
-                            "functionalDescription": {
-                                "type": "two-piece set",
-                                "shape": "E 25/13/7",
-                                "material": "N87",
-                                "gapping": [{ "type": "subtractive", "length": 0.0005 }]
-                            },
-                            "manufacturerInfo": { "name": "TDK", "reference": "B66311G0500X187" },
-                            "distributorsInfo": [{ "name": "Digi-Key", "cost": 1.85 }]
-                        },
-                        "coil": {
-                            "functionalDescription": [
-                                {
-                                    "name": "primary",
-                                    "numberTurns": 28,
-                                    "numberParallels": 1,
-                                    "wire": { "type": "litz", "name": "Litz 20x0.1mm" },
-                                    "isolationSide": "primary"
-                                },
-                                {
-                                    "name": "secondary",
-                                    "numberTurns": 7,
-                                    "numberParallels": 2,
-                                    "wire": { "type": "litz", "name": "Litz 40x0.1mm" },
-                                    "isolationSide": "secondary"
-                                }
-                            ]
-                        },
-                        "manufacturerInfo": { "name": "Custom" }
-                    },
-                    "outputs": {
-                        "coreLosses": { "coreLosses": 0.35 },
-                        "windingLosses": { "windingLosses": 0.45 },
-                        "leakageInductance": { "leakageInductancePerWinding": [{ "nominal": 2e-6 }] },
-                        "magnetizingInductance": { "magnetizingInductance": { "nominal": 200e-6 } }
-                    }
-                }
-            },
-            {
-                "name": "Q1",
-                "role": "primarySwitch",
-                "pins": ["drain", "gate", "source"],
-                "data": {
-                    "inputs": { "designRequirements": {} },
-                    "semiconductor": {
-                        "manufacturerInfo": {
-                            "name": "Infineon",
-                            "reference": "IPD65R420CFD",
-                            "datasheetInfo": {
-                                "part": { "partNumber": "IPD65R420CFD", "deviceType": "mosfet", "technology": "Si", "subType": "nChannel", "case": "TO-252" },
-                                "electrical": {
-                                    "drainSourceVoltage": 650,
-                                    "continuousDrainCurrent": 5.5,
-                                    "onResistance": 0.42,
-                                    "totalGateCharge": 9.3e-9,
-                                    "gateSourceVoltageMax": 20
-                                },
-                                "thermal": {
-                                    "thermalResistanceJunctionCase": 5.0,
-                                    "thermalResistanceJunctionAmbient": 62
-                                }
-                            }
-                        },
-                        "distributorsInfo": [{ "name": "Digi-Key", "cost": 0.95 }]
-                    },
-                    "outputs": {}
-                }
-            },
-            {
-                "name": "D1",
-                "role": "outputRectifier",
-                "pins": ["anode", "cathode"],
-                "data": {
-                    "inputs": { "designRequirements": {} },
-                    "semiconductor": {
-                        "manufacturerInfo": {
-                            "name": "STMicroelectronics",
-                            "reference": "STPS8L40B",
-                            "datasheetInfo": {
-                                "part": { "partNumber": "STPS8L40B", "deviceType": "diode", "technology": "Si", "subType": "schottky", "case": "D-PAK" },
-                                "electrical": {
-                                    "reverseVoltage": 40,
-                                    "forwardCurrent": 8,
-                                    "forwardVoltage": 0.5
-                                },
-                                "thermal": {
-                                    "thermalResistanceJunctionCase": 3.0
-                                }
-                            }
-                        },
-                        "distributorsInfo": [{ "name": "Digi-Key", "cost": 0.65 }]
-                    },
-                    "outputs": {}
-                }
-            },
-            {
-                "name": "Cout",
-                "role": "outputCapacitor",
-                "quantity": 2,
-                "pins": ["positive", "negative"],
-                "data": {
-                    "inputs": { "designRequirements": {} },
-                    "capacitor": {
-                        "functionalDescription": {
-                            "type": "Electrolytic Polymer",
-                            "capacitance": 220e-6,
-                            "voltageRating": 25.0
-                        },
-                        "manufacturerInfo": {
-                            "name": "Panasonic",
-                            "datasheetInfo": {
-                                "electrical": {
-                                    "capacitance": 220e-6,
-                                    "voltageRating": 25.0,
-                                    "esr": 0.015,
-                                    "esrFrequency": 100000,
-                                    "rippleCurrent": 3.5
-                                }
-                            }
-                        },
-                        "distributorsInfo": [{ "name": "Digi-Key", "cost": 0.45 }]
-                    },
-                    "outputs": {}
-                }
-            },
-            {
-                "name": "Cin",
-                "role": "inputCapacitor",
-                "pins": ["positive", "negative"],
-                "data": {
-                    "inputs": { "designRequirements": {} },
-                    "capacitor": {
-                        "functionalDescription": {
-                            "type": "Electrolytic Aluminum",
-                            "capacitance": 100e-6,
-                            "voltageRating": 100.0
-                        },
-                        "manufacturerInfo": {
-                            "datasheetInfo": {
-                                "electrical": {
-                                    "capacitance": 100e-6,
-                                    "voltageRating": 100.0,
-                                    "esr": 0.05,
-                                    "esrFrequency": 100000
-                                }
-                            }
-                        }
-                    },
-                    "outputs": {}
-                }
-            },
-            {
-                "name": "Rsense",
-                "role": "currentSenseResistor",
-                "pins": ["1", "2"],
-                "data": {
-                    "inputs": { "designRequirements": {} },
-                    "resistor": {
-                        "manufacturerInfo": {
-                            "datasheetInfo": {
-                                "electrical": {
-                                    "resistance": 0.5,
-                                    "tolerance": 0.01,
-                                    "powerRating": 0.25
-                                }
-                            }
-                        }
-                    },
-                    "outputs": {}
-                }
-            }
-        ],
-        "netlist": {
-            "nodes": ["Vin", "sw_node", "pri_gnd", "sec_dot_node", "out", "sec_gnd", "gate_drive", "sense_node"],
-            "connections": [
-                { "component": "Cin", "pin": "positive", "node": "Vin" },
-                { "component": "Cin", "pin": "negative", "node": "pri_gnd" },
-
-                { "component": "T1", "pin": "pri_dot", "node": "Vin" },
-                { "component": "T1", "pin": "pri_undot", "node": "sw_node" },
-                { "component": "T1", "pin": "sec_dot", "node": "sec_dot_node" },
-                { "component": "T1", "pin": "sec_undot", "node": "sec_gnd" },
-
-                { "component": "Q1", "pin": "drain", "node": "sw_node" },
-                { "component": "Q1", "pin": "gate", "node": "gate_drive" },
-                { "component": "Q1", "pin": "source", "node": "sense_node" },
-
-                { "component": "Rsense", "pin": "1", "node": "sense_node" },
-                { "component": "Rsense", "pin": "2", "node": "pri_gnd" },
-
-                { "component": "D1", "pin": "anode", "node": "sec_dot_node" },
-                { "component": "D1", "pin": "cathode", "node": "out" },
-
-                { "component": "Cout", "pin": "positive", "node": "out" },
-                { "component": "Cout", "pin": "negative", "node": "sec_gnd" }
-            ]
-        },
-        "circuit": {
-            "title": "Flyback 48V to 12V @ 2A — ngspice netlist",
-            "elements": [
-                {
-                    "name": "Vin",
-                    "type": "voltageSource",
-                    "nodes": ["Vin", "pri_gnd"],
-                    "value": 48.0
-                },
-                {
-                    "name": "Cin",
-                    "type": "capacitor",
-                    "nodes": ["Vin", "pri_gnd"],
-                    "value": 100e-6,
-                    "eas": { "category": "capacitors", "partNumber": "UPW1H102MHD" }
-                },
-                {
-                    "name": "Lpri",
-                    "type": "inductor",
-                    "nodes": ["Vin", "sw_node"],
-                    "value": 200e-6,
-                    "parameters": { "ic": 0 }
-                },
-                {
-                    "name": "Lsec",
-                    "type": "inductor",
-                    "nodes": ["sec_dot_node", "sec_gnd"],
-                    "value": 12.5e-6,
-                    "parameters": { "ic": 0 }
-                },
-                {
-                    "name": "K1",
-                    "type": "coupling",
-                    "nodes": [],
-                    "value": 0.997,
-                    "coupledInductors": ["Lpri", "Lsec"]
-                },
-                {
-                    "name": "Q1",
-                    "type": "mosfet",
-                    "nodes": ["sw_node", "gate_drive", "sense_node", "sense_node"],
-                    "value": null,
-                    "model": "NMOS_IPD65R420CFD",
-                    "eas": { "category": "mosfets", "partNumber": "IPD65R420CFD" }
-                },
-                {
-                    "name": "D1",
-                    "type": "diode",
-                    "nodes": ["sec_dot_node", "out"],
-                    "value": null,
-                    "model": "STPS8L40B",
-                    "eas": { "category": "diodes", "partNumber": "STPS8L40B" }
-                },
-                {
-                    "name": "Cout",
-                    "type": "capacitor",
-                    "nodes": ["out", "sec_gnd"],
-                    "value": 220e-6,
-                    "eas": { "category": "capacitors", "partNumber": "EEUFR1E221" }
-                },
-                {
-                    "name": "Rsense",
-                    "type": "resistor",
-                    "nodes": ["sense_node", "pri_gnd"],
-                    "value": 0.5
-                },
-                {
-                    "name": "Rload",
-                    "type": "resistor",
-                    "nodes": ["out", "sec_gnd"],
-                    "value": 6.0
-                }
-            ],
-            "models": [
-                {
-                    "name": "NMOS_IPD65R420CFD",
-                    "kind": "model",
-                    "text": ".model NMOS_IPD65R420CFD NMOS level=3 vto=3.5 kp=2.4 rd=0.42 cgs=0.8e-9 cgd=0.05e-9"
-                },
-                {
-                    "name": "STPS8L40B",
-                    "kind": "model",
-                    "text": ".model STPS8L40B D is=5e-6 n=1.05 rs=0.02 cj0=150e-12 vj=0.5 m=0.4 tt=8e-9 bv=40 ibv=1e-3"
-                }
-            ],
-            "simulationCommands": [
-                ".tran 10n 2m 1.8m 10n UIC",
-                ".option RELTOL=1e-4 ABSTOL=1e-9 VNTOL=1e-6"
-            ]
-        }
-    },
-    "outputs": [
-        {
-            "operatingPointName": "Full Load Vin_nom",
-            "origin": "analytical",
-            "methodUsed": "Proteus converter-designer",
-            "losses": {
-                "coreLosses": 0.35,
-                "windingLosses": 0.45,
-                "switchConduction": 0.12,
-                "switchSwitching": 0.40,
-                "diodeConduction": 0.60,
-                "clamp": 0.10,
-                "gateDrive": 0.01,
-                "controller": 0.02,
-                "capacitorEsr": 0.05,
-                "total": 2.10
-            },
-            "stresses": {
-                "switchVoltageMax": 160,
-                "switchVoltageRating": 650,
-                "switchVoltageMargin": 0.75,
-                "diodeVoltageMax": 28,
-                "diodeVoltageRating": 40,
-                "diodeVoltageMargin": 0.30
-            },
-            "kpis": {
-                "efficiency": 0.920,
-                "outputRipple": 0.050,
-                "outputPower": 24.0,
-                "inputPower": 26.1
-            }
-        }
+    "operatingPoints": [
+      { "name": "full_load_Vin_nom", "inputVoltage": 48.0, "ambientTemperature": 25.0,
+        "outputs": [ { "name": "12V", "power": 24.0 } ] },
+      { "name": "full_load_Vin_min", "inputVoltage": 36.0, "ambientTemperature": 25.0,
+        "outputs": [ { "name": "12V", "power": 24.0 } ] },
+      { "name": "full_load_Vin_max", "inputVoltage": 60.0, "ambientTemperature": 25.0,
+        "outputs": [ { "name": "12V", "power": 24.0 } ] }
     ]
+  },
+
+  "topology": {
+    "stages": [
+      {
+        "name": "inverter",
+        "role": "inverter",
+        "inputPort":  { "type": "dcBus", "wire": "Vin" },
+        "outputPorts": [ { "type": "hfAc", "wire": "sw_node" } ],
+        "circuit": {
+          "components": [
+            { "name": "Q1", "data": "TAS/data/mosfets.ndjson?partNumber=C3M0032120K" },
+            { "name": "C_in", "data": "TAS/data/capacitors.ndjson?partNumber=B32774" }
+          ],
+          "connections": [
+            { "name": "drain", "kind": "wire",
+              "endpoints": [ { "component": "Q1", "pin": "D" }, { "component": "C_in", "pin": "1" } ] }
+          ]
+        }
+      },
+
+      {
+        "name": "transformer",
+        "role": "isolation",
+        "inputPort":  { "type": "hfAc", "wire": "sw_node" },
+        "outputPorts": [ { "type": "hfAc", "wire": "sec", "name": "12V" } ],
+        "circuit": {
+          "components": [
+            { "name": "T1", "data": "TAS/data/transformers.ndjson?partNumber=FLY-48-12-24W" }
+          ],
+          "connections": [
+            { "name": "K_T1", "kind": "coupling", "couplingCoefficient": 0.995,
+              "endpoints": [ { "component": "T1" }, { "component": "T1" } ] }
+          ]
+        }
+      },
+
+      {
+        "name": "rectifier",
+        "role": "outputRectifier",
+        "inputPort":  { "type": "hfAc", "wire": "sec" },
+        "outputPorts": [ { "type": "pulsatingDc", "wire": "rect_out" } ],
+        "circuit": {
+          "components": [
+            { "name": "D1", "data": "TAS/data/diodes.ndjson?partNumber=STPS20H100C" }
+          ],
+          "connections": [
+            { "name": "anode", "kind": "wire",
+              "endpoints": [ { "component": "D1", "pin": "A" }, { "component": "D1", "pin": "K" } ] }
+          ]
+        }
+      },
+
+      {
+        "name": "filter",
+        "role": "outputFilter",
+        "inputPort":  { "type": "pulsatingDc", "wire": "rect_out" },
+        "outputPorts": [ { "type": "dcOutput", "wire": "Vout" } ],
+        "circuit": {
+          "components": [
+            { "name": "C_out", "data": "TAS/data/capacitors.ndjson?partNumber=EEE-FK1V471P" }
+          ],
+          "connections": [
+            { "name": "cap_top", "kind": "wire",
+              "endpoints": [ { "component": "C_out", "pin": "1" }, { "component": "C_out", "pin": "2" } ] }
+          ]
+        }
+      },
+
+      {
+        "name": "controller",
+        "role": "control",
+        "circuit": {
+          "components": [
+            { "name": "U1", "data": "TAS/data/controllers.ndjson?partNumber=UCC28C44" }
+          ],
+          "connections": []
+        },
+        "senses": [
+          { "wire": "Vout", "signal": "voltage" }
+        ],
+        "drives": [
+          { "component": "Q1", "signal": "gate" }
+        ]
+      }
+    ],
+
+    "interStageCircuit": [
+      { "name": "Vin",  "kind": "externalPort", "direction": "input",
+        "endpoints": [ { "component": "C_in", "pin": "2" }, { "component": "Q1", "pin": "S" } ] },
+      { "name": "Vout", "kind": "externalPort", "direction": "output",
+        "endpoints": [ { "component": "C_out", "pin": "1" }, { "component": "C_out", "pin": "2" } ] },
+      { "name": "sw_node", "kind": "wire",
+        "endpoints": [ { "component": "Q1", "pin": "D" }, { "component": "T1", "pin": "P1" } ] },
+      { "name": "sec", "kind": "wire",
+        "endpoints": [ { "component": "T1", "pin": "S1" }, { "component": "D1", "pin": "A" } ] },
+      { "name": "rect_out", "kind": "wire",
+        "endpoints": [ { "component": "D1", "pin": "K" }, { "component": "C_out", "pin": "1" } ] }
+    ]
+  }
 }

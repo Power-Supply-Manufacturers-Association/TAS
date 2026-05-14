@@ -31,7 +31,7 @@ from referencing.jsonschema import DRAFT202012
 
 REPO = Path(__file__).resolve().parents[1]
 SCHEMA_DIR = REPO / "schemas"
-EXAMPLES_DIR = REPO / "examples" / "v2"
+EXAMPLES_DIR = REPO / "examples"
 
 SCHEMA_NAMES = ["TAS", "inputs", "topology", "outputs", "circuit", "utils"]
 
