@@ -2,5 +2,10 @@
 *_pre_excel*
 backups/
 
+# Local-only safety backups produced by scripts/port_part_libraries.py.
+data/*.v1.backup.ndjson
+data/quarantine.ndjson.pre-port-*
+data/quarantine.ndjson.corrupted-*
+
 __pycache__/
 *.pyc
