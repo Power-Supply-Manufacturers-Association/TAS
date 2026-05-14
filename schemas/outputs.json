@@ -2,9 +2,153 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "http://openconverters.com/schemas/TAS/outputs.json",
   "title": "TAS outputs",
-  "description": "",
+  "description": "Computed/measured results for the design. Per-design metrics plus per-operating-point performance broken down by stage and per output rail.",
   "type": "object",
   "additionalProperties": false,
-  "properties": {},
-  "$defs": {}
+  "properties": {
+    "metrics": { "$ref": "#/$defs/metrics" },
+    "operatingPoints": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/operatingPointResult" }
+    }
+  },
+
+  "$defs": {
+
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Per-design figures, independent of operating point. SI units (m\u00b3, kg, m\u00b2).",
+      "properties": {
+        "volume": { "type": "number", "minimum": 0 },
+        "mass": { "type": "number", "minimum": 0 },
+        "footprint": { "type": "number", "minimum": 0 }
+      }
+    },
+
+    "operatingPointResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Matches inputs.operatingPoints[].name."
+        },
+        "efficiency": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 1
+        },
+        "switchingFrequency": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Actual fsw at this point, Hz."
+        },
+        "inputCurrent": { "$ref": "#/$defs/inputCurrentResult" },
+        "achievedPowerFactor": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 1,
+          "description": "Achieved input power factor at this OP. Only meaningful for AC inputs."
+        },
+        "achievedHoldUpTime": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Achieved hold-up time at this OP, s. Only meaningful for AC inputs."
+        },
+        "outputResults": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/outputResult" }
+        },
+        "stageResults": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/stageResult" }
+        }
+      }
+    },
+
+    "inputCurrentResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Input-current characterization at this OP, A.",
+      "properties": {
+        "rms": { "type": "number", "minimum": 0 },
+        "peak": { "type": "number", "minimum": 0 },
+        "ripplePkPk": { "type": "number", "minimum": 0 }
+      }
+    },
+
+    "outputResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name"],
+      "description": "Per-output-rail measured results at this OP.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Matches inputs.designRequirements.outputs[].name."
+        },
+        "voltageMean": {
+          "type": "number",
+          "description": "Mean output voltage, V (signed for polarity)."
+        },
+        "voltageRipplePkPk": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Output-voltage ripple peak-to-peak, V."
+        },
+        "currentMean": {
+          "type": "number",
+          "description": "Mean output current, A."
+        }
+      }
+    },
+
+    "stageResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stage", "loss"],
+      "properties": {
+        "stage": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Matches topology.stages[].name."
+        },
+        "loss": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Total dissipation in this stage at this operating point, W."
+        },
+        "dutyCycle": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "exclusiveMaximum": 1,
+          "description": "Steady-state duty cycle achieved by the controller for this stage at this OP. Outcome of regulation, not an input."
+        },
+        "componentResults": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/componentResult" }
+        }
+      }
+    },
+
+    "componentResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["component"],
+      "properties": {
+        "component": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Matches a component.name inside the stage's circuit."
+        },
+        "loss": { "type": "number", "minimum": 0, "description": "Dissipation, W." },
+        "temperature": { "type": "number", "description": "Hot-spot temperature, \u00b0C." }
+      }
+    }
+
+  }
 }

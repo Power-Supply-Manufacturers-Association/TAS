@@ -1,207 +1,203 @@
 {
-    "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "http://openconverters.com/schemas/TAS/topology.json",
-    "title": "topology",
-    "description": "",
-    "type": "object",
-    "additionalProperties": false,
-    "required": ["components", "circuit"],
-    "properties": {
-        "components": {
-            "type": "array",
-            "minItems": 1,
-            "description": "All components used in this converter. Each entry is a thin envelope around an PEAS document, carrying the in-design context (refdes name, role, optional pins/notes) that does not belong inside the PEAS doc itself.",
-            "items": { "$ref": "#/$defs/component" }
-        },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "http://openconverters.com/schemas/TAS/topology.json",
+  "title": "TAS topology",
+  "description": "How the converter is built. A tree of stages (one circuit each) plus the inter-stage connections that wire them together. The root stage takes the converter input; leaves produce regulated outputs. Branching happens at stages with multiple outputPorts (typically isolation in multi-output converters).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["stages", "interStageCircuit"],
+  "properties": {
+    "stages": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/stage" }
+    },
+    "interStageCircuit": {
+      "type": "array",
+      "description": "Connections that cross stage boundaries: the wires named by stage ports, magnetic couplings spanning stages (rare), and the converter's externalPorts (Vin+, Vout-, GND, EN, FB).",
+      "items": { "$ref": "./circuit.json#/$defs/connection" }
+    }
+  },
 
-        "circuit": {
-            "type": "array",
-            "description": "All connections between components: wires (electrical nets shared by 2+ pins), couplings (magnetic coupling between windings), and externalPorts (terminals of the converter to the outside world). Discriminated by the `kind` field. Parasitic L/C/R are NOT a kind — they are modelled as real components in the components array, so they appear in the BOM.",
-            "items": { "$ref": "#/$defs/connection" }
-        },
+  "$defs": {
 
-        "simulation": {
-            "$ref": "#/$defs/simulation",
-            "description": "Optional SPICE-specific overrides: model definitions, simulation commands, per-component parameter overrides. Pure topology documents (not yet simulated) omit this entirely."
+    "stage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "role", "circuit"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Identifier unique within this topology (e.g. 'PFC', 'LLC_inverter', 'output_5V')."
+        },
+        "role": { "$ref": "#/$defs/stageRole" },
+        "phaseCount": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 1,
+          "description": "Number of interleaved physical phases sharing one logical stage and one controller. >1 only meaningful for switching stages (pfc, switchingCell, inverter)."
+        },
+        "inputPort": { "$ref": "#/$defs/port" },
+        "outputPorts": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/port" }
+        },
+        "circuit": { "$ref": "./circuit.json" },
+        "senses": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/sense" }
+        },
+        "drives": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/drive" }
         }
-
+      },
+      "allOf": [
+        {
+          "$comment": "Power-chain stages need ports; control stages need senses/drives instead.",
+          "if": { "properties": { "role": { "const": "control" } }, "required": ["role"] },
+          "then": {
+            "required": ["senses", "drives"],
+            "not": {
+              "anyOf": [
+                { "required": ["inputPort"] },
+                { "required": ["outputPorts"] },
+                { "required": ["phaseCount"] }
+              ]
+            }
+          },
+          "else": {
+            "required": ["inputPort", "outputPorts"],
+            "not": {
+              "anyOf": [
+                { "required": ["senses"] },
+                { "required": ["drives"] }
+              ]
+            }
+          }
+        },
+        {
+          "$comment": "Only isolation may have more than one output port (multi-output secondaries).",
+          "if": {
+            "properties": { "role": { "not": { "const": "isolation" } } },
+            "required": ["role"]
+          },
+          "then": {
+            "properties": {
+              "outputPorts": { "maxItems": 1 }
+            }
+          }
+        }
+      ]
     },
 
-    "$defs": {
+    "stageRole": {
+      "type": "string",
+      "enum": [
+        "lineFilter",
+        "rectifier",
+        "pfc",
+        "bulkStorage",
+        "switchingCell",
+        "inverter",
+        "isolation",
+        "outputRectifier",
+        "outputFilter",
+        "control"
+      ],
+      "description": "Functional role. Cascade type-signatures: lineFilter acLine\u2192acLine; rectifier acLine\u2192pulsatingDc; pfc pulsatingDc\u2192dcBus; bulkStorage dcBus\u2192dcBus; switchingCell dcBus\u2192dcBus (non-isolated DC-DC); inverter dcBus\u2192hfAc (owns the resonant tank for LLC/SRC, per Maksimovi\u0107); isolation hfAc\u2192hfAc[] (branch point for multi-output); outputRectifier hfAc\u2192pulsatingDc; outputFilter pulsatingDc\u2192dcOutput; control has no power-chain position."
+    },
 
-        "component": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": ["name", "data"],
-            "properties": {
-                "name": {
-                    "type": "string",
-                    "minLength": 1,
-                    "description": "Reference designator unique within this converter (e.g. 'Q1', 'D1', 'L_pri', 'C_in', 'R_sense'). Connection endpoints refer to components by this name."
-                },
-                "role": {
-                    "type": "string",
-                    "enum": [
-                        "mainInductor", "resonantInductor", "pfcInductor", "filterInductor",
-                        "mainTransformer", "gateTransformer", "currentTransformer",
-                        "highSideSwitch", "lowSideSwitch", "primarySwitch", "secondarySwitch",
-                        "auxiliarySwitch", "clampSwitch", "synchronousRectifier", "pfcSwitch",
-                        "outputRectifier", "freewheelDiode", "clampDiode", "boostDiode",
-                        "inputCapacitor", "outputCapacitor", "bulkCapacitor", "resonantCapacitor",
-                        "bootstrapCapacitor", "decouplingCapacitor", "snubberCapacitor", "clampCapacitor",
-                        "currentSenseResistor", "gateResistor", "feedbackResistor",
-                        "bleederResistor", "snubberResistor", "clampResistor",
-                        "controller"
-                    ],
-                    "description": "What this component does in this specific converter. Contextual to the design — the same MOSFET part number could be a highSideSwitch in one converter and a lowSideSwitch in another, so role cannot live inside the PEAS document. Notes: PSFB/totem-pole bridge switches use primarySwitch/secondarySwitch (primary H-bridge), highSideSwitch/lowSideSwitch (secondary or fast-leg), or synchronousRectifier (slow-leg diode-mode FETs) with usageNotes for clarification. ACF auxiliary switch = auxiliarySwitch. Controller ICs (LLC, QR, CrM controllers) = controller."
-                },
-                "data": {
-                    "description": "The component itself. Either a full PEAS document inline, or a URI string into a TAS data file. Always identify by partNumber when using URIs (e.g. 'TAS/data/mosfets.ndjson?partNumber=C3M0032120K'); never by line number, since NDJSON files may be reordered.",
-                    "oneOf": [
-                        { "$ref": "http://openconverters.com/schemas/PEAS/peas.json" },
-                        { "type": "string", "minLength": 1 }
-                    ]
-                }
-            }
+    "port": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "wire"],
+      "properties": {
+        "type": { "$ref": "#/$defs/portType" },
+        "wire": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Name of the boundary wire. Must appear both in this stage's circuit.connections (so internal endpoints can reference it) and in topology.interStageCircuit (so the upstream/downstream stage's port can reference the same name)."
         },
-
-        "connection": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": ["name", "endpoints"],
-            "properties": {
-                "name": {
-                    "type": "string",
-                    "minLength": 1,
-                    "description": "Connection name. For wires this is the node name (e.g. 'sw_node', 'Vbus', 'gnd'). For couplings, a unique magnetic-coupling identifier (e.g. 'K_main'). For externalPorts, the terminal name (e.g. 'Vin+', 'Vout-', 'EN')."
-                },
-                "kind": {
-                    "type": "string",
-                    "enum": ["wire", "coupling", "externalPort"],
-                    "default": "wire",
-                    "description": "wire = purely internal electrical net; 2+ pins share a node. coupling = magnetic coupling between inductor windings (no shared node — translates to a SPICE K-element). externalPort = an electrical net that ALSO terminates at an external converter terminal (Vin/Vout/GND/EN/FB). An externalPort is a wire — it carries the same 2+ internal pins that a `wire` would, plus the connection name doubles as the external terminal label. Do NOT create both a `wire` and an `externalPort` for the same net; pick one."
-                },
-                "endpoints": {
-                    "type": "array",
-                    "minItems": 2,
-                    "description": "List of (component, pin) endpoints connected by this entry. A wire on a 3-pin SW node has 3 endpoints. A coupling between two windings has 2 endpoints with no pin field (the entire winding is coupled). Order is not significant.",
-                    "items": {
-                        "type": "object",
-                        "additionalProperties": false,
-                        "required": ["component"],
-                        "properties": {
-                            "component": {
-                                "type": "string",
-                                "minLength": 1,
-                                "description": "Refers to a component.name in topology.components."
-                            },
-                            "pin": {
-                                "type": "string",
-                                "minLength": 1,
-                                "description": "Pin on the referenced component. Required for kind = wire / externalPort. Omit for kind = coupling, where the connection is to the whole winding."
-                            }
-                        }
-                    }
-                },
-                "parameters": {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "description": "Connection-specific extras. The set of meaningful keys depends on the connection kind.",
-                    "properties": {
-                        "coupling": {
-                            "type": "number",
-                            "minimum": 0,
-                            "maximum": 1,
-                            "description": "Magnetic coupling coefficient k for kind=coupling. 1.0 = ideal, 0.999 = tightly coupled transformer, 0.5 = loose coupling. REQUIRED when kind=coupling."
-                        },
-                        "direction": {
-                            "type": "string",
-                            "enum": ["input", "output", "bidirectional"],
-                            "description": "For kind=externalPort: whether the converter sources, sinks, or both at this terminal."
-                        }
-                    }
-                }
-            },
-
-            "allOf": [
-                {
-                    "$comment": "Couplings must specify their k factor.",
-                    "if": {
-                        "properties": { "kind": { "const": "coupling" } },
-                        "required": ["kind"]
-                    },
-                    "then": {
-                        "required": ["parameters"],
-                        "properties": {
-                            "parameters": { "required": ["coupling"] }
-                        }
-                    }
-                },
-                {
-                    "$comment": "Wire and externalPort endpoints must name a pin. Coupling endpoints may omit it (whole-winding link).",
-                    "if": {
-                        "anyOf": [
-                            { "not": { "required": ["kind"] } },
-                            { "properties": { "kind": { "enum": ["wire", "externalPort"] } } }
-                        ]
-                    },
-                    "then": {
-                        "properties": {
-                            "endpoints": {
-                                "items": { "required": ["component", "pin"] }
-                            }
-                        }
-                    }
-                }
-            ]
-        },
-
-        "simulation": {
-            "type": "object",
-            "additionalProperties": false,
-            "description": "SPICE-specific data needed to run a simulation against this topology. Optional — converters that have not been simulated yet omit this block. Keeping it under topology (rather than at TAS root) makes it clear that the simulation describes THIS topology, not a sibling concept.",
-            "properties": {
-                "models": {
-                    "type": "array",
-                    "description": "SPICE .model and .subckt definitions referenced by elementOverrides[].model.",
-                    "items": {
-                        "type": "object",
-                        "additionalProperties": false,
-                        "required": ["name", "kind", "text"],
-                        "properties": {
-                            "name": { "type": "string", "minLength": 1, "description": "Model/subcircuit name as referenced in elementOverrides." },
-                            "kind": { "type": "string", "enum": ["model", "subckt"], "description": ".model statement or .subckt block." },
-                            "text": { "type": "string", "minLength": 1, "description": "Raw SPICE text of the .model or .subckt definition." }
-                        }
-                    }
-                },
-                "simulationCommands": {
-                    "type": "array",
-                    "items": { "type": "string", "minLength": 1 },
-                    "description": "SPICE directives: .tran, .ac, .op, .param, .ic, .lib, etc."
-                },
-                "elementOverrides": {
-                    "type": "object",
-                    "description": "Per-component SPICE overrides keyed by component.name. Only present for components whose simulation behaviour cannot be inferred from the PEAS document alone. NOTE: there is no `value` override here on purpose — component values come from the PEAS doc and are the single source of truth. Only model and parameters overrides are allowed.",
-                    "additionalProperties": {
-                        "type": "object",
-                        "additionalProperties": false,
-                        "properties": {
-                            "model": {
-                                "type": "string",
-                                "minLength": 1,
-                                "description": "Name of a model defined in simulation.models[] (or an externally available .lib name)."
-                            },
-                            "parameters": {
-                                "type": "object",
-                                "additionalProperties": { "type": ["number", "string"] },
-                                "description": "Extra SPICE parameters (initial conditions, temperature coefficients, etc.) e.g. {\"ic\": 0, \"tc1\": 0.003}."
-                            }
-                        }
-                    }
-                }
-            }
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Port label, used to disambiguate when a stage has multiple outputPorts (e.g. 'sec_5V', 'sec_12V' on an isolation stage)."
         }
+      }
+    },
 
+    "portType": {
+      "type": "string",
+      "enum": [
+        "acLine",
+        "pulsatingDc",
+        "dcBus",
+        "hfAc",
+        "dcOutput"
+      ],
+      "description": "acLine = mains-frequency AC. pulsatingDc = rectified, unfiltered. dcBus = filtered DC (regulated or not). hfAc = switching-frequency AC (transformer or resonant tank). dcOutput = final regulated DC output."
+    },
+
+    "sense": {
+      "oneOf": [
+        { "$ref": "#/$defs/componentSense" },
+        { "$ref": "#/$defs/wireSense" }
+      ]
+    },
+
+    "componentSense": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["component", "signal"],
+      "properties": {
+        "component": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Name of the component being sensed (e.g. a sense resistor, a thermistor)."
+        },
+        "signal": {
+          "type": "string",
+          "enum": ["current", "voltage", "temperature"]
+        }
+      }
+    },
+
+    "wireSense": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["wire", "signal"],
+      "properties": {
+        "wire": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Name of the wire whose voltage is sensed (e.g. 'Vout' for output feedback)."
+        },
+        "signal": {
+          "type": "string",
+          "enum": ["voltage"]
+        }
+      }
+    },
+
+    "drive": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["component", "signal"],
+      "properties": {
+        "component": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Name of the component being driven (typically a switch or driver IC)."
+        },
+        "signal": {
+          "type": "string",
+          "enum": ["gate", "enable"]
+        }
+      }
     }
+
+  }
 }

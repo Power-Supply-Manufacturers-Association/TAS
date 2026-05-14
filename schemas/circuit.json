@@ -1,0 +1,156 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "http://openconverters.com/schemas/TAS/circuit.json",
+  "title": "TAS circuit",
+  "description": "A sub-netlist: components plus the connections (wires, couplings, externalPorts) between them. Reused at every scope: each stage owns one circuit; topology.interStageCircuit is a connection-only circuit (components array is empty).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["components", "connections"],
+  "properties": {
+    "components": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/component" }
+    },
+    "connections": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/connection" }
+    }
+  },
+
+  "$defs": {
+
+    "component": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "data"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference designator unique within the entire converter (e.g. 'Q1', 'L_pri', 'C_in'). Connection endpoints refer to components by this name."
+        },
+        "data": {
+          "description": "The component itself: an inline PEAS document, or a URI string into a TAS data file (e.g. 'TAS/data/mosfets.ndjson?partNumber=C3M0032120K').",
+          "oneOf": [
+            { "$ref": "http://openconverters.com/schemas/PEAS/peas.json" },
+            { "type": "string", "minLength": 1 }
+          ]
+        },
+        "simulationOverride": { "$ref": "#/$defs/simulationOverride" }
+      }
+    },
+
+    "simulationOverride": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Per-component SPICE override. Used when the part's simulation behaviour cannot be inferred from the PEAS document. Component values themselves are never overridden here \u2014 they come from PEAS.",
+      "properties": {
+        "model": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Name of a model declared in TAS.simulation.models[] (or an externally available .lib name)."
+        },
+        "parameters": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/spiceParameter" }
+        }
+      }
+    },
+
+    "spiceParameter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "value"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "value": { "type": ["number", "string"] }
+      }
+    },
+
+    "connection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "kind", "endpoints"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Net name (for wire/externalPort) or coupling identifier (for coupling). Unique within the entire converter."
+        },
+        "kind": {
+          "type": "string",
+          "enum": ["wire", "coupling", "externalPort"],
+          "description": "wire = internal electrical net shared by 2+ pins. coupling = magnetic coupling between windings (no shared node, maps to a SPICE K-element). externalPort = a wire that also terminates at an external converter terminal; its name doubles as the terminal label."
+        },
+        "endpoints": {
+          "type": "array",
+          "minItems": 2,
+          "items": { "$ref": "#/$defs/endpoint" }
+        },
+        "couplingCoefficient": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 1,
+          "description": "k for kind=coupling. Required when kind=coupling, forbidden otherwise."
+        },
+        "direction": {
+          "type": "string",
+          "enum": ["input", "output", "bidirectional"],
+          "description": "For kind=externalPort: whether the converter sources, sinks, or both at this terminal. Required when kind=externalPort, forbidden otherwise."
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "kind": { "const": "coupling" } }, "required": ["kind"] },
+          "then": {
+            "required": ["couplingCoefficient"],
+            "properties": {
+              "endpoints": {
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["component"],
+                  "properties": {
+                    "component": { "type": "string", "minLength": 1 }
+                  }
+                }
+              }
+            }
+          },
+          "else": {
+            "not": { "required": ["couplingCoefficient"] },
+            "properties": {
+              "endpoints": {
+                "items": { "required": ["component", "pin"] }
+              }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "kind": { "const": "externalPort" } }, "required": ["kind"] },
+          "then": { "required": ["direction"] },
+          "else": { "not": { "required": ["direction"] } }
+        }
+      ]
+    },
+
+    "endpoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["component"],
+      "properties": {
+        "component": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Refers to a component.name."
+        },
+        "pin": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Pin on the referenced component. Required for kind=wire/externalPort, forbidden for kind=coupling."
+        }
+      }
+    }
+
+  }
+}

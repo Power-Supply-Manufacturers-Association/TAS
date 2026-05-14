@@ -1,3 +1,6 @@
 *.bak
 *_pre_excel*
 backups/
+
+__pycache__/
+*.pyc
