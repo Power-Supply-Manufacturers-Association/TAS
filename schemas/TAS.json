@@ -2,13 +2,10 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "http://openconverters.com/schemas/TAS/TAS.json",
   "title": "TAS",
-  "description": "Topology Agnostic Structure (TAS) v2 \u2014 describes a complete power converter design as three sections: inputs (the spec the converter must satisfy), topology (how it is built), outputs (how it performs). Mirrors the same three-section pattern that PEAS / MAS / SAS / CAS / RAS use for individual components. Replaces v1's components.json + circuit.json + designVariants[] + paretoFront.",
+  "description": "Topology Agnostic Structure (TAS) v2 \u2014 a complete power converter design as four sections: inputs (the spec the converter must satisfy), topology (how it is built, as a tree of stages), outputs (how it performs), simulation (optional SPICE artefacts used to produce the outputs).",
   "type": "object",
   "additionalProperties": false,
-  "required": [
-    "inputs",
-    "topology"
-  ],
+  "required": ["inputs", "topology"],
   "properties": {
     "inputs": {
       "$ref": "./inputs.json",
@@ -16,11 +13,58 @@
     },
     "topology": {
       "$ref": "./topology.json",
-      "description": "Components used in the converter plus the circuit graph that wires them."
+      "description": "Stages and their interconnections."
     },
     "outputs": {
       "$ref": "./outputs.json",
-      "description": "Computed/measured results: per-design metrics (cost/volume/mass/footprint) plus per-operating-point losses, stresses, KPIs."
+      "description": "Computed/measured results: per-design metrics plus per-operating-point losses, stresses, and per-stage breakdowns."
+    },
+    "simulation": {
+      "$ref": "#/$defs/simulation",
+      "description": "Global SPICE artefacts (model definitions, simulation commands). Per-component overrides live on the component itself, not here."
     }
+  },
+
+  "$defs": {
+
+    "simulation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "models": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/spiceModel" }
+        },
+        "commands": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/spiceCommand" }
+        }
+      }
+    },
+
+    "spiceModel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "kind", "text"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "kind": { "type": "string", "enum": ["model", "subckt"] },
+        "text": { "type": "string", "minLength": 1 }
+      }
+    },
+
+    "spiceCommand": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["text"],
+      "properties": {
+        "text": {
+          "type": "string",
+          "pattern": "^\\.",
+          "description": "SPICE directive starting with '.' (e.g. '.tran 1u 10m', '.ac dec 50 1 1Meg')."
+        }
+      }
+    }
+
   }
 }

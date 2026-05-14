@@ -1,86 +1,178 @@
 {
-    "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "http://openconverters.com/schemas/TAS/inputs.json",
-    "title": "TAS inputs",
-    "description": "Design specification (the contract the converter must meet) plus operating points (specific test conditions within that contract). Flat \u2014 no designRequirements wrapper. All values in SI units (V, A, W, \u00b0C, Hz). The fields here are REQUIREMENTS only \u2014 design choices like modulationType / controlMode / operatingMode are not inputs, they are decisions made by the design pipeline.",
-    "type": "object",
-    "additionalProperties": false,
-    "properties": {
-        "operatingPoints": {
-            "description": "Data describing the operating points",
-            "title": "operatingPoints",
-            "type": "array",
-            "items": {
-                "$ref": "#/$defs/operatingPoint"
-            },
-            "minItems": 1
-        },
-        "designRequirements": {
-            "description": "Data describing the design requirements",
-            "title": "designRequirements",
-            "$ref": "#/$defs/designRequirements"
-        },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "http://openconverters.com/schemas/TAS/inputs.json",
+  "title": "TAS inputs",
+  "description": "Design specification (the contract the converter must meet) plus operating points (specific test conditions within that contract). All values in SI units (V, A, W, \u00b0C, Hz, s). Fields here are REQUIREMENTS only \u2014 design choices like modulationType / controlMode are decisions made by the design pipeline, not inputs.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["operatingPoints", "designRequirements"],
+  "properties": {
+    "operatingPoints": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/operatingPoint" }
     },
-    "required": [
-        "operatingPoints",
-        "designRequirements"
-    ],
+    "designRequirements": { "$ref": "#/$defs/designRequirements" }
+  },
 
-    "$defs": {
-        "designRequirements": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-                "efficiency"
-            ],
-            "properties": {
-                "efficiency": {
-                    "type": "number",
-                    "minimum": 0,
-                    "maximum": 1,
-                    "description": "Target efficiency as a fraction (0.94 = 94%)."
-                }
-            }
+  "$defs": {
+
+    "designRequirements": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["efficiency", "inputType", "inputVoltage", "outputs"],
+      "properties": {
+        "efficiency": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 1,
+          "description": "Target efficiency as a fraction (0.94 = 94%)."
         },
-        "operatingPoint": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-                "name",
-                "inputVoltage",
-                "outputCurrent",
-                "outputPower",
-                "switchingFrequency",
-                "ambientTemperature"
-            ],
-            "description": "A single test condition. All fields are scalars (not ranges) \u2014 this is one specific point in the spec envelope.",
-            "properties": {
-                "name": {
-                    "type": "string",
-                    "minLength": 1,
-                    "description": "Identifier unique within this inputs document (e.g. 'full load Vin_min'). Used to join with outputs.operatingPoints[]."
-                },
-                "inputVoltage": {
-                    "type": "number",
-                    "description": "Vin at this point, V."
-                },
-                "outputCurrent": {
-                    "type": "number",
-                    "description": "Iout at this point, A. Provide either outputCurrent or outputPower."
-                },
-                "outputPower": {
-                    "type": "number",
-                    "description": "Pout at this point, W."
-                },
-                "switchingFrequency": {
-                    "$ref": "./utils.json#/$defs/dimensionWithTolerance",
-                    "description": "Switching frequency constraint in Hz. Three usage modes: (1) {nominal: 350e3} = fixed-frequency design pinned at 350 kHz; (2) {minimum: 50e3, maximum: 250e3} = the design must operate within this range \u2014 used for variable-frequency topologies (LLC, COT, hysteretic) or to exclude EMC-sensitive bands (AM 530\u20131700 kHz, audio <20 kHz, ISM bands); (3) omit entirely = the agent picks freely. The per-operating-point ACTUAL fsw at each test condition is reported in outputs.operatingPoints[].kpis.switchingFrequency, not here. Test conditions are (Vin, Iout/Pout, Tamb) only."
-                },
-                "ambientTemperature": {
-                    "type": "number",
-                    "description": "Tamb at this point, \u00b0C."
-                }
-            }
+        "inputType": {
+          "type": "string",
+          "enum": ["dc", "acSinglePhase", "acThreePhase"],
+          "description": "Source type. Selects whether input rectifier / PFC stages are needed."
+        },
+        "inputVoltage": {
+          "$ref": "./utils.json#/$defs/dimensionWithTolerance",
+          "description": "Allowed input-voltage range, V. For AC inputs this is RMS line voltage."
+        },
+        "lineFrequency": {
+          "$ref": "./utils.json#/$defs/dimensionWithTolerance",
+          "description": "AC line frequency, Hz. Required iff inputType is AC; forbidden for dc."
+        },
+        "outputs": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/outputRequirement" },
+          "description": "Output rails the converter must produce. Multi-output supplies list each rail."
+        },
+        "switchingFrequency": {
+          "$ref": "./utils.json#/$defs/dimensionWithTolerance",
+          "description": "Design-wide switching-frequency constraint, Hz. {nominal} = fixed-frequency design; {minimum, maximum} = allowed range (variable-frequency topologies, EMC band exclusion); omit entirely = pipeline picks freely. The actual fsw at each operating point is reported in outputs, not here."
+        },
+        "isolationVoltage": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Required galvanic isolation working voltage, V RMS, between input and outputs. Presence of this field implies isolation is required; omit if non-isolated is acceptable."
+        },
+        "powerFactorMinimum": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 1,
+          "description": "Minimum required input power factor (AC inputs only). Drives active-PFC stage decision. Forbidden for dc inputType."
+        },
+        "bidirectional": {
+          "type": "boolean",
+          "description": "If true, topology must support reverse power flow (drives synchronous rectification / 4-quadrant switch choices)."
+        },
+        "holdUpTimeMinimum": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Minimum hold-up time after loss of AC input, s. Pushes architecture toward two-stage (PFC + DC-DC with bulk cap). AC inputs only; forbidden for dc."
         }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "inputType": { "const": "dc" } }, "required": ["inputType"] },
+          "then": {
+            "not": {
+              "anyOf": [
+                { "required": ["lineFrequency"] },
+                { "required": ["powerFactorMinimum"] },
+                { "required": ["holdUpTimeMinimum"] }
+              ]
+            }
+          },
+          "else": {
+            "required": ["lineFrequency"]
+          }
+        }
+      ]
+    },
+
+    "outputRequirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "voltage", "regulation"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Identifier unique within designRequirements.outputs[]. Used to join with operatingPoint.outputs[] and outputs.json results."
+        },
+        "voltage": {
+          "$ref": "./utils.json#/$defs/dimensionWithTolerance",
+          "description": "Nominal output voltage with tolerance, V. Use a negative nominal for negative rails (polarity is encoded in sign)."
+        },
+        "regulation": {
+          "type": "string",
+          "enum": ["voltage", "current", "both"],
+          "description": "Regulation mode. 'both' covers CC/CV chargers."
+        }
+      }
+    },
+
+    "operatingPoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "inputVoltage", "ambientTemperature", "outputs"],
+      "description": "A single test condition: scalar Vin, Tamb, and per-output load specification.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Identifier unique within this inputs document (e.g. 'full_load_Vin_min'). Used to join with outputs.operatingPoints[]."
+        },
+        "inputVoltage": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Vin at this point, V (RMS for AC)."
+        },
+        "ambientTemperature": {
+          "type": "number",
+          "description": "Tamb at this point, \u00b0C."
+        },
+        "outputs": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/operatingPointOutput" },
+          "description": "Per-output load condition. One entry per designRequirements.outputs[] rail (matched by name)."
+        }
+      }
+    },
+
+    "operatingPointOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name"],
+      "description": "Load condition for one output rail at one operating point. Provide exactly one of current or power; voltage is an optional setpoint override (programmable supplies, CC/CV charger phases).",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Must match a designRequirements.outputs[].name."
+        },
+        "voltage": {
+          "type": "number",
+          "description": "Output voltage setpoint at this OP, V. Omit to use the nominal from designRequirements."
+        },
+        "current": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Load current at this OP, A. Provide exactly one of current or power."
+        },
+        "power": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Load power at this OP, W. Provide exactly one of current or power."
+        }
+      },
+      "oneOf": [
+        { "required": ["current"], "not": { "required": ["power"] } },
+        { "required": ["power"], "not": { "required": ["current"] } }
+      ]
     }
+
+  }
 }
