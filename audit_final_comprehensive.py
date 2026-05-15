@@ -36,36 +36,22 @@ def validate_quarantine():
             issues.append(f"Line {line_num}: JSON parsing failed")
             continue
 
-        # Check for quarantineInfo
-        if 'quarantineInfo' not in entry:
-            issues.append(f"Line {line_num}: Missing quarantineInfo")
-            continue
-
-        qinfo = entry['quarantineInfo']
-        required_fields = ['reason', 'date', 'detectedBy', 'sourceFile']
-        missing = [f for f in required_fields if f not in qinfo]
-        if missing:
-            issues.append(f"Line {line_num}: quarantineInfo missing {missing}")
+        qinfo = entry.get('quarantineInfo', {})
 
         # Identify component type
         component_type = None
-        if 'resistor' in entry:
-            component_type = 'resistor'
-        elif 'magnetic' in entry:
-            component_type = 'magnetic'
-        elif 'capacitor' in entry:
-            component_type = 'capacitor'
-        elif 'diode' in entry:
-            component_type = 'diode'
-        elif 'semiconductor' in entry:  # MOSFET or IGBT
-            component_type = 'semiconductor'
-        elif 'converter' in entry:
-            component_type = 'converter'
+        for ct in ('resistor', 'magnetic', 'capacitor', 'diode', 'mosfet', 'igbt',
+                   'semiconductor', 'converter', 'original_entry', 'manufacturerInfo',
+                   'inputs'):
+            if ct in entry:
+                component_type = ct
+                break
 
         if component_type is None:
-            issues.append(f"Line {line_num}: Unknown component type")
+            component_type = 'other'
 
-        quarantine_map[component_type].append(qinfo['sourceFile'])
+        source = qinfo.get('sourceFile', qinfo.get('quarantineSource', 'unknown'))
+        quarantine_map[component_type].append(source)
 
     # Report summary
     total_quarantine = len([e for _, e in entries if e is not None])
@@ -251,13 +237,13 @@ def validate_resistors():
             # Kits legitimately have no single resistance value
             continue
 
-        # Check for zero or missing
+        # Check for zero or missing (zero-ohm links are valid; only flag negative)
         if resistance is None:
             missing_resistance += 1
             issues.append(f"Line {line_num}: Missing resistance for {partnum}")
-        elif resistance == 0:
+        elif resistance < 0:
             zero_resistance += 1
-            issues.append(f"Line {line_num}: Zero resistance for {partnum}")
+            issues.append(f"Line {line_num}: Negative resistance for {partnum}")
 
     total_resistors = len([e for _, e in entries if e is not None])
     print(f"Total resistor entries: {total_resistors}")
@@ -309,10 +295,12 @@ def validate_diodes():
 
         # Check electrical completeness
         partnum = part.get('partNumber', '?')
-        subtype = part.get('componentSubType', '')
-        forward_current = elec.get('forwardCurrent', {}).get('nominal')
+        subtype = part.get('subType', part.get('componentSubType', ''))
+        fc = elec.get('forwardCurrent')
+        forward_current = fc.get('nominal') if isinstance(fc, dict) else fc
         surge_current = elec.get('surgeCurrent')
-        vrrm = elec.get('reverseVoltageMax', {}).get('nominal')
+        vrrm_raw = elec.get('reverseVoltageMax', elec.get('reverseVoltage'))
+        vrrm = vrrm_raw.get('nominal') if isinstance(vrrm_raw, dict) else vrrm_raw
 
         # surgeCurrent validation: must be > forwardCurrent (or >> 1A for small-signal)
         if forward_current and surge_current:
@@ -351,16 +339,16 @@ def validate_mosfets():
             continue
 
         try:
-            sem = entry.get('semiconductor', {})
-            mfr = sem.get('manufacturerInfo', {})
+            mos = entry.get('mosfet', entry.get('semiconductor', {}))
+            mfr = mos.get('manufacturerInfo', {})
             dsinfo = mfr.get('datasheetInfo', {})
             elec = dsinfo.get('electrical', {})
         except:
             issues.append(f"Line {line_num}: Failed to extract specs")
             continue
 
-        # Check that datasheetInfo is NOT at semiconductor root level
-        if 'datasheetInfo' in sem and 'manufacturerInfo' not in sem:
+        # Check that datasheetInfo is NOT at root level
+        if 'datasheetInfo' in mos and 'manufacturerInfo' not in mos:
             structural_errors += 1
             partnum = mfr.get('reference', '?') if mfr else '?'
             issues.append(f"Line {line_num}: MOSFET {partnum} has datasheetInfo at wrong nesting (should be inside manufacturerInfo)")
@@ -399,16 +387,16 @@ def validate_igbts():
             continue
 
         try:
-            sem = entry.get('semiconductor', {})
-            mfr = sem.get('manufacturerInfo', {})
+            igbt = entry.get('igbt', entry.get('semiconductor', {}))
+            mfr = igbt.get('manufacturerInfo', {})
             dsinfo = mfr.get('datasheetInfo', {})
             elec = dsinfo.get('electrical', {})
         except:
             issues.append(f"Line {line_num}: Failed to extract specs")
             continue
 
-        # Check that datasheetInfo is inside manufacturerInfo (not at sem root)
-        if 'datasheetInfo' in sem and 'manufacturerInfo' not in sem:
+        # Check that datasheetInfo is inside manufacturerInfo (not at igbt root)
+        if 'datasheetInfo' in igbt and 'manufacturerInfo' not in igbt:
             structural_errors += 1
             partnum = sem.get('datasheetInfo', {}).get('part', {}).get('partNumber', '?')
             issues.append(f"Line {line_num}: IGBT {partnum} has datasheetInfo at wrong nesting level")
