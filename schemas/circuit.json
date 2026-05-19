@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "http://openconverters.com/schemas/TAS/circuit.json",
+  "$id": "https://psma.com/tas/circuit.json",
   "title": "TAS circuit",
   "description": "A sub-netlist: components plus the connections (wires, couplings, externalPorts) between them. Reused at every scope: each stage owns one circuit; topology.interStageCircuit is a connection-only circuit (components array is empty).",
   "type": "object",
@@ -32,7 +32,7 @@
         "data": {
           "description": "The component itself: an inline PEAS document, or a URI string into a TAS data file (e.g. 'TAS/data/mosfets.ndjson?partNumber=C3M0032120K').",
           "oneOf": [
-            { "$ref": "http://openconverters.com/schemas/PEAS/peas.json" },
+            { "$ref": "https://psma.com/peas/peas.json" },
             { "type": "string", "minLength": 1 }
           ]
         },

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "http://openconverters.com/schemas/TAS/utils.json",
+  "$id": "https://psma.com/tas/utils.json",
   "title": "TAS utils",
   "description": "Shared primitive types used across TAS schemas.",
   "$defs": {

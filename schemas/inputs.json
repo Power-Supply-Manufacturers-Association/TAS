@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "http://openconverters.com/schemas/TAS/inputs.json",
+  "$id": "https://psma.com/tas/inputs.json",
   "title": "TAS inputs",
   "description": "Design specification (the contract the converter must meet) plus operating points (specific test conditions within that contract). All values in SI units (V, A, W, \u00b0C, Hz, s). Fields here are REQUIREMENTS only \u2014 design choices like modulationType / controlMode are decisions made by the design pipeline, not inputs.",
   "type": "object",
