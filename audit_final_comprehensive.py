@@ -387,7 +387,10 @@ def validate_igbts():
             continue
 
         try:
-            igbt = entry.get('igbt', entry.get('semiconductor', {}))
+            # Handle both direct {"igbt": {...}} and wrapped {"semiconductor": {"igbt": {...}}} formats
+            igbt = entry.get('igbt', {})
+            if not igbt and 'semiconductor' in entry:
+                igbt = entry['semiconductor'].get('igbt', {})
             mfr = igbt.get('manufacturerInfo', {})
             dsinfo = mfr.get('datasheetInfo', {})
             elec = dsinfo.get('electrical', {})
