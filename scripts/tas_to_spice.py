@@ -257,6 +257,9 @@ def _collect_wires(topology: dict[str, Any]) -> list[dict[str, Any]]:
 def _assign_nets(
     components: dict[str, dict[str, Any]],
     wires: list[dict[str, Any]],
+    *,
+    drives: list[dict[str, Any]] | None = None,
+    senses: list[dict[str, Any]] | None = None,
 ) -> dict[tuple[str, str], str]:
     """Return ``(component, pin) → net_name`` for every pin in the design.
 
@@ -265,8 +268,18 @@ def _assign_nets(
     so callers can declare ground explicitly without manufacturing a
     bespoke net.
 
-    Pins that do not appear in any wire raise — every component pin must
-    be explicitly connected.
+    Pins implied by controller ``drives`` / ``senses`` declarations are
+    auto-assigned synthetic nets (``{component}_gate`` / ``{component}_{signal}``)
+    when not already covered by an explicit wire. This lets the producer
+    omit singleton stub wires for control/sense signals (which would
+    violate the TAS schema's ``minItems: 2`` on connection.endpoints) and
+    rely on the authoritative ``drives``/``senses`` declarations instead.
+    The synthetic net name matches the legacy ``{Q}_gate`` convention so
+    downstream gate-PULSE wiring is unchanged.
+
+    Pins that do not appear in any wire and are not implied by
+    drives/senses raise — every component pin must be explicitly
+    connected.
     """
     nets: dict[tuple[str, str], str] = {}
     for w in wires:
@@ -282,6 +295,29 @@ def _assign_nets(
                     f"and {net!r}"
                 )
             nets[key] = net
+
+    # Auto-synthesize nets for control/sense pins declared on controller
+    # stages. The gate pin of a driven mosfet is "G"; the conventional
+    # net name is "{component}_gate" so the existing gate-PULSE
+    # emission ("V_gate_<sw> <gate_net> ...") continues to work.
+    for d in (drives or []):
+        comp = d.get("component")
+        signal = d.get("signal", "gate")
+        if comp is None:
+            continue
+        pin = "G" if signal == "gate" else d.get("pin", signal)
+        key = (comp, pin)
+        if key not in nets:
+            nets[key] = f"{comp}_{signal}"
+    for s in (senses or []):
+        comp = s.get("component")
+        signal = s.get("signal")
+        pin = s.get("pin")
+        if comp is None or pin is None:
+            continue
+        key = (comp, pin)
+        if key not in nets:
+            nets[key] = f"{comp}_{signal or pin}"
 
     # Detect dangling pins
     expected_pins = _expected_pins(components)
@@ -300,6 +336,7 @@ _FIXED_PINS: dict[str, tuple[str, ...]] = {
     "diode":      ("A", "K"),
     "capacitor":  ("1", "2"),
     "resistor":   ("1", "2"),
+    "terminal":   ("1",),
 }
 
 
@@ -309,14 +346,23 @@ def _expected_pins(components: dict[str, dict[str, Any]]) -> set[tuple[str, str]
     for name, comp in components.items():
         category = _category_of(comp)
         if category == "magnetic":
-            pins = comp.get("pins")
-            if pins is None:
-                # single-winding inductor: pins 1 and 2
-                pins = ("1", "2")
-            for p in pins:
-                out.add((name, p))
+            # Magnetic pin sets are derived from observed connection
+            # endpoints — there is no schema-level enumeration. A
+            # single-winding inductor's pins ("1", "2") and a multi-
+            # winding transformer's pins ("<winding>.<idx>") are
+            # discovered by _spice_lines_for_component when it walks
+            # the nets dict. Integrity of the pin set is enforced at
+            # emission time (single-winding requires exactly "1"/"2",
+            # multi-winding requires all dotted names).
+            continue
         elif category == "controller":
             continue  # controllers have no SPICE pins
+        elif category == "terminal":
+            # Board terminals model the external boundary; their single
+            # pin appears in an externalPort connection. No SPICE element
+            # is emitted (the writer treats terminals as ideal shorts to
+            # the external net), so the pin set is just ("1",).
+            out.add((name, "1"))
         else:
             for p in _FIXED_PINS[category]:
                 out.add((name, p))
@@ -340,6 +386,7 @@ def _category_of(comp: dict[str, Any]) -> str:
         "resistors":   "resistor",
         "magnetics":   "magnetic",
         "controllers": "controller",
+        "terminals":   "terminal",
     }.get(stem, "unknown")
 
 
@@ -366,6 +413,13 @@ def _emit_component(
 
     if category == "controller":
         return []  # controllers have no SPICE element
+
+    if category == "terminal":
+        # Board terminals model the external boundary as an ideal short
+        # to the external net. No SPICE element is emitted — the
+        # terminal's single pin is bound to the externalPort net by
+        # _assign_nets and that is sufficient for simulation.
+        return []
 
     # Mosfets and diodes carry no scalar value — model name is enough
     # — so they need neither a data URL nor an inline value.
@@ -420,9 +474,31 @@ def _emit_component(
         return [f"{ref} {n1} {n2} {val:.6e}"]
 
     if category == "magnetic":
-        pins = comp.get("pins")
+        # Derive pin set from observed connection endpoints. The
+        # pin-name convention is the source of truth for winding
+        # structure: dotted names ("<winding>.<idx>") => multi-winding
+        # transformer; bare "1"/"2" => single-winding inductor.
+        pins = sorted(p for (c, p) in nets if c == name)
         if not pins:
-            # single-winding inductor
+            raise TasToSpiceError(
+                f"Magnetic {name!r}: no connections found — every "
+                f"magnetic must be wired into at least one net"
+            )
+        dotted = [p for p in pins if "." in p]
+        bare = [p for p in pins if "." not in p]
+        if dotted and bare:
+            raise TasToSpiceError(
+                f"Magnetic {name!r}: mixed pin naming — {bare!r} "
+                f"(bare) with {dotted!r} (dotted). Single-winding "
+                f"uses '1'/'2'; multi-winding uses '<winding>.<idx>'"
+            )
+        if not dotted:
+            # single-winding inductor — require both pins wired
+            if set(bare) != {"1", "2"}:
+                raise TasToSpiceError(
+                    f"Magnetic {name!r}: single-winding requires pins "
+                    f"'1' and '2', got {bare!r}"
+                )
             n1, n2 = nets[(name, "1")], nets[(name, "2")]
             val = entry.get("_inline_value", None)
             if val is None:
@@ -430,7 +506,18 @@ def _emit_component(
             ref = _spice_refdes(name, "L")
             return [f"{ref} {n1} {n2} {val:.6e}"]
         # multi-winding: one L per winding + pairwise K statements.
-        windings = sorted({p.split(".")[0] for p in pins})
+        # Each winding must expose pins ".1" and ".2".
+        windings = sorted({p.split(".")[0] for p in dotted})
+        for w in windings:
+            expected = {f"{w}.1", f"{w}.2"}
+            present = {p for p in dotted if p.split(".")[0] == w}
+            missing = expected - present
+            if missing:
+                raise TasToSpiceError(
+                    f"Magnetic {name!r}: winding {w!r} missing pins "
+                    f"{sorted(missing)!r} — multi-winding requires "
+                    f"both '.1' and '.2' on every winding"
+                )
         # Inline path: spice_to_tas readback emits ``inductances`` (one
         # per winding, sorted-label order) and ``coupling`` (scalar k
         # applied to every pair) on the component itself, so no NDJSON
@@ -442,7 +529,7 @@ def _emit_component(
                 raise TasToSpiceError(
                     f"Magnetic {name!r}: 'inductances' has "
                     f"{len(inline_Ls)} entries but {len(windings)} "
-                    f"windings declared via 'pins'"
+                    f"windings derived from connection endpoints"
                 )
             if inline_k is None:
                 raise TasToSpiceError(
@@ -571,11 +658,14 @@ def _emit_testbench(
     period = 1.0 / fsw
     pulse_w = period * 0.5
     components = _index_components(topology)
-    nets = _assign_nets(components, _collect_wires(topology))
+    controllers = _index_controllers(topology)
+    drives = [d for ctrl in controllers for d in ctrl.get("drives", [])]
+    senses = [s for ctrl in controllers for s in ctrl.get("senses", [])]
+    nets = _assign_nets(components, _collect_wires(topology),
+                        drives=drives, senses=senses)
     pre.append("")
     pre.append("* Gate drives (50% duty per switch — naive)")
     seen: set[str] = set()
-    controllers = _index_controllers(topology)
     if controllers:
         switches_to_drive = [
             d["component"]
@@ -635,7 +725,10 @@ def tas_to_spice(
 
     components = _index_components(topology)
     wires = _collect_wires(topology)
-    nets = _assign_nets(components, wires)
+    controllers = _index_controllers(topology)
+    drives = [d for ctrl in controllers for d in ctrl.get("drives", [])]
+    senses = [s for ctrl in controllers for s in ctrl.get("senses", [])]
+    nets = _assign_nets(components, wires, drives=drives, senses=senses)
 
     body: list[str] = []
     body.append(f".model {_DEFAULT_SWITCH_MODEL} SW VT=2.5 VH=0.5 RON=0.01 ROFF=1Meg")

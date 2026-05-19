@@ -530,20 +530,19 @@ def _transformer_component(
         tuples.append((label, L, n1, n2))
     tuples.sort(key=lambda t: t[0])
 
-    pins_list = []
     pin_map: dict[tuple[str, str], str] = {}
     inductances: list[float] = []
     for label, L, n1, n2 in tuples:
-        pins_list.append(f"{label}.1")
-        pins_list.append(f"{label}.2")
         pin_map[(name, f"{label}.1")] = n1
         pin_map[(name, f"{label}.2")] = n2
         inductances.append(L)
 
+    # No 'pins' field: writer/consumers derive the pin set from observed
+    # connection endpoints. The pin-name convention is preserved in
+    # pin_map (and thus in the synthesised wires).
     comp = {
         "name": name,
         "category": "magnetic",
-        "pins": pins_list,
         "inductances": inductances,
         "coupling": coupling,
     }
