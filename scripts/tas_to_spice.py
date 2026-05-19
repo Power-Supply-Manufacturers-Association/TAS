@@ -324,6 +324,11 @@ def _expected_pins(components: dict[str, dict[str, Any]]) -> set[tuple[str, str]
 
 
 def _category_of(comp: dict[str, Any]) -> str:
+    # Prefer explicit category field (set by spice_to_tas reader); fall back to
+    # data URL path inference for writer-native TAS docs.
+    explicit = comp.get("category")
+    if explicit:
+        return explicit
     url = comp.get("data", "")
     # `TAS/data/<cat>.ndjson?...`
     path = urlparse(url).path
@@ -358,13 +363,35 @@ def _emit_component(
 ) -> list[str]:
     """Return one or more SPICE deck lines for ``comp``."""
     category = _category_of(comp)
-    url = comp["data"]
 
     if category == "controller":
         return []  # controllers have no SPICE element
 
-    ndjson, qs = _parse_data_url(url, name)
-    entry = _lookup(ndjson, qs, name)
+    # Mosfets and diodes carry no scalar value — model name is enough
+    # — so they need neither a data URL nor an inline value.
+    if category in ("mosfet", "diode"):
+        entry: dict[str, Any] = {}
+    elif "value" in comp:
+        # Inline value path: skip TAS lookup. Used by readback round-
+        # trips (spice_to_tas emits TAS with values inline since the
+        # SPICE deck has no part number to resolve).
+        inline = float(comp["value"])
+        entry = {"_inline_value": inline}
+    elif category == "magnetic" and "inductances" in comp:
+        # Multi-winding inline path: per-winding ``inductances`` list +
+        # ``coupling`` scalar live on the component itself. Lookup is
+        # skipped; the magnetic branch below reads them directly off
+        # ``comp``.
+        entry = {}
+    else:
+        url = comp.get("data")
+        if not url:
+            raise TasToSpiceError(
+                f"Component {name!r}: needs either a 'data' URL or an "
+                f"inline 'value' field — no fallback"
+            )
+        ndjson, qs = _parse_data_url(url, name)
+        entry = _lookup(ndjson, qs, name)
 
     if category == "mosfet":
         nd, ns, ng = nets[(name, "D")], nets[(name, "S")], nets[(name, "G")]
@@ -378,13 +405,17 @@ def _emit_component(
 
     if category == "capacitor":
         n1, n2 = nets[(name, "1")], nets[(name, "2")]
-        val = capacitance_of(entry)
+        val = entry.get("_inline_value", None)
+        if val is None:
+            val = capacitance_of(entry)
         ref = _spice_refdes(name, "C")
         return [f"{ref} {n1} {n2} {val:.6e}"]
 
     if category == "resistor":
         n1, n2 = nets[(name, "1")], nets[(name, "2")]
-        val = resistance_of(entry)
+        val = entry.get("_inline_value", None)
+        if val is None:
+            val = resistance_of(entry)
         ref = _spice_refdes(name, "R")
         return [f"{ref} {n1} {n2} {val:.6e}"]
 
@@ -393,30 +424,60 @@ def _emit_component(
         if not pins:
             # single-winding inductor
             n1, n2 = nets[(name, "1")], nets[(name, "2")]
-            val = inductance_of(entry)
+            val = entry.get("_inline_value", None)
+            if val is None:
+                val = inductance_of(entry)
             ref = _spice_refdes(name, "L")
             return [f"{ref} {n1} {n2} {val:.6e}"]
-        # multi-winding: one L per winding + pairwise K statements
+        # multi-winding: one L per winding + pairwise K statements.
         windings = sorted({p.split(".")[0] for p in pins})
-        L_values = winding_inductances_of(entry)
-        if len(L_values) < len(windings):
-            raise TasToSpiceError(
-                f"Magnetic {name!r}: {len(windings)} windings declared but "
-                f"entry has only {len(L_values)} inductance values"
-            )
+        # Inline path: spice_to_tas readback emits ``inductances`` (one
+        # per winding, sorted-label order) and ``coupling`` (scalar k
+        # applied to every pair) on the component itself, so no NDJSON
+        # lookup is needed.
+        inline_Ls = comp.get("inductances")
+        inline_k = comp.get("coupling")
+        if inline_Ls is not None:
+            if len(inline_Ls) != len(windings):
+                raise TasToSpiceError(
+                    f"Magnetic {name!r}: 'inductances' has "
+                    f"{len(inline_Ls)} entries but {len(windings)} "
+                    f"windings declared via 'pins'"
+                )
+            if inline_k is None:
+                raise TasToSpiceError(
+                    f"Magnetic {name!r}: 'inductances' provided but "
+                    f"'coupling' is missing — no fallback"
+                )
+            L_values = [float(x) for x in inline_Ls]
+            k_value = float(inline_k)
+        else:
+            if "_inline_value" in entry:
+                raise TasToSpiceError(
+                    f"Magnetic {name!r}: scalar inline 'value' not "
+                    f"supported for multi-winding magnetics — use "
+                    f"'inductances' list + 'coupling' scalar instead"
+                )
+            L_values = winding_inductances_of(entry)
+            k_value = 0.999
+            if len(L_values) < len(windings):
+                raise TasToSpiceError(
+                    f"Magnetic {name!r}: {len(windings)} windings declared but "
+                    f"entry has only {len(L_values)} inductance values"
+                )
         lines: list[str] = []
         for i, w in enumerate(windings):
             n1 = nets[(name, f"{w}.1")]
             n2 = nets[(name, f"{w}.2")]
             lines.append(f"L{name}_{w} {n1} {n2} {L_values[i]:.6e}")
-        # All-pairs coupling at k≈0.999 (matches MKF convention)
+        # All-pairs coupling
         k_idx = 0
         for i in range(len(windings)):
             for j in range(i + 1, len(windings)):
                 k_idx += 1
                 lines.append(
                     f"K{name}_{k_idx} L{name}_{windings[i]} "
-                    f"L{name}_{windings[j]} 9.990000e-01"
+                    f"L{name}_{windings[j]} {k_value:.6e}"
                 )
         return lines
 
@@ -503,6 +564,10 @@ def _emit_testbench(
         pre.append(f"R_load_{out_name} {out_name} 0 {Rload:.6e}")
 
     # Gate drives — one independent PULSE per switch the controllers drive.
+    # If no controller stage is present (e.g. readback from spice_to_tas),
+    # fall back to enumerating every mosfet component and driving each
+    # independently — same naive 50% PWM. This keeps the round-trip
+    # SPICE→TAS→SPICE closed even when the controller is lost.
     period = 1.0 / fsw
     pulse_w = period * 0.5
     components = _index_components(topology)
@@ -510,17 +575,27 @@ def _emit_testbench(
     pre.append("")
     pre.append("* Gate drives (50% duty per switch — naive)")
     seen: set[str] = set()
-    for ctrl in _index_controllers(topology):
-        for d in ctrl.get("drives", []):
-            sw = d["component"]
-            if sw in seen:
-                continue
-            seen.add(sw)
-            gate_net = nets[(sw, "G")]
-            pre.append(
-                f"V_gate_{sw} {gate_net} 0 PULSE(0 5 0 10n 10n "
-                f"{pulse_w:.6e} {period:.6e})"
-            )
+    controllers = _index_controllers(topology)
+    if controllers:
+        switches_to_drive = [
+            d["component"]
+            for ctrl in controllers
+            for d in ctrl.get("drives", [])
+        ]
+    else:
+        switches_to_drive = [
+            name for name, comp in components.items()
+            if _category_of(comp) == "mosfet"
+        ]
+    for sw in switches_to_drive:
+        if sw in seen:
+            continue
+        seen.add(sw)
+        gate_net = nets[(sw, "G")]
+        pre.append(
+            f"V_gate_{sw} {gate_net} 0 PULSE(0 5 0 10n 10n "
+            f"{pulse_w:.6e} {period:.6e})"
+        )
 
     foot: list[str] = [
         "",
