@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "http://openconverters.com/schemas/TAS/outputs.json",
+  "$id": "https://psma.com/tas/outputs.json",
   "title": "TAS outputs",
   "description": "Computed/measured results for the design. Per-design metrics plus per-operating-point performance broken down by stage and per output rail.",
   "type": "object",

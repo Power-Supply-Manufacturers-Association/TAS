@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "http://openconverters.com/schemas/TAS/topology.json",
+  "$id": "https://psma.com/tas/topology.json",
   "title": "TAS topology",
   "description": "How the converter is built. A tree of stages (one circuit each) plus the inter-stage connections that wire them together. The root stage takes the converter input; leaves produce regulated outputs. Branching happens at stages with multiple outputPorts (typically isolation in multi-output converters).",
   "type": "object",

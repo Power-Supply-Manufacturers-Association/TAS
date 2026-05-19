@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "http://openconverters.com/schemas/TAS/TAS.json",
+  "$id": "https://psma.com/tas/TAS.json",
   "title": "TAS",
   "description": "Topology Agnostic Structure (TAS) v2 \u2014 a complete power converter design as four sections: inputs (the spec the converter must satisfy), topology (how it is built, as a tree of stages), outputs (how it performs), simulation (optional SPICE artefacts used to produce the outputs).",
   "type": "object",
