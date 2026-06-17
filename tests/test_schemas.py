@@ -16,7 +16,7 @@ Covers:
       - coupling endpoint with pin (forbidden)
       - wire/externalPort with couplingCoefficient (forbidden)
       - externalPort without direction (required)
-      - simulation command without leading dot
+      - simulator-agnostic analysis with unknown type / missing required field
       - dimensionWithTolerance with no fields
 """
 
@@ -31,9 +31,12 @@ from referencing.jsonschema import DRAFT202012
 
 REPO = Path(__file__).resolve().parents[1]
 SCHEMA_DIR = REPO / "schemas"
+CIAS_SCHEMA_DIR = REPO.parent / "CIAS" / "schemas"
+PEAS_SCHEMA_DIR = REPO.parent / "PEAS" / "schemas"
 EXAMPLES_DIR = REPO / "examples"
 
-SCHEMA_NAMES = ["TAS", "inputs", "topology", "outputs", "circuit", "utils"]
+TAS_SCHEMA_NAMES = ["TAS", "inputs", "outputs", "utils", "topology"]
+CIAS_SCHEMA_NAMES = ["CIAS"]
 
 
 # ---------------------------------------------------------------------------
@@ -42,33 +45,40 @@ SCHEMA_NAMES = ["TAS", "inputs", "topology", "outputs", "circuit", "utils"]
 
 @pytest.fixture(scope="session")
 def schemas():
-    """Load every schema by $id."""
+    """Load TAS, CIAS and PEAS schemas by $id."""
     out = {}
-    for name in SCHEMA_NAMES:
+    for name in TAS_SCHEMA_NAMES:
         s = json.loads((SCHEMA_DIR / f"{name}.json").read_text())
+        out[s["$id"]] = s
+    for name in CIAS_SCHEMA_NAMES:
+        s = json.loads((CIAS_SCHEMA_DIR / f"{name}.json").read_text())
+        out[s["$id"]] = s
+    for path in PEAS_SCHEMA_DIR.rglob("*.json"):
+        s = json.loads(path.read_text())
         out[s["$id"]] = s
     return out
 
 
 @pytest.fixture(scope="session")
 def registry(schemas):
-    """Registry with all TAS schemas + a stub for the external PEAS schema."""
+    """Registry with TAS + CIAS + PEAS schemas."""
     resources = [
         (sid, Resource(contents=s, specification=DRAFT202012))
         for sid, s in schemas.items()
     ]
-    # Stub the external PEAS schema so $refs resolve in tests without a network call.
-    resources.append((
-        "http://openconverters.com/schemas/PEAS/peas.json",
-        Resource(contents={"type": "object"}, specification=DRAFT202012),
-    ))
+    # Stub the external PEAS peas.json root so component $refs resolve.
+    if "https://psma.com/peas/peas.json" not in schemas:
+        resources.append((
+            "https://psma.com/peas/peas.json",
+            Resource(contents={"type": "object"}, specification=DRAFT202012),
+        ))
     return Registry().with_resources(resources)
 
 
 @pytest.fixture(scope="session")
 def tas_validator(schemas, registry):
     return Draft202012Validator(
-        schemas["http://openconverters.com/schemas/TAS/TAS.json"],
+        schemas["https://psma.com/tas/TAS.json"],
         registry=registry,
     )
 
@@ -102,14 +112,25 @@ def assert_invalid(validator, doc, *, contains=None):
 # Schema-level tests
 # ---------------------------------------------------------------------------
 
-@pytest.mark.parametrize("name", SCHEMA_NAMES)
-def test_schema_parses(name):
+@pytest.mark.parametrize("name", TAS_SCHEMA_NAMES)
+def test_tas_schema_parses(name):
     json.loads((SCHEMA_DIR / f"{name}.json").read_text())
 
 
-@pytest.mark.parametrize("name", SCHEMA_NAMES)
-def test_schema_meta_valid(schemas, name):
-    sid = f"http://openconverters.com/schemas/TAS/{name}.json"
+@pytest.mark.parametrize("name", CIAS_SCHEMA_NAMES)
+def test_cias_schema_parses(name):
+    json.loads((CIAS_SCHEMA_DIR / f"{name}.json").read_text())
+
+
+@pytest.mark.parametrize("name", TAS_SCHEMA_NAMES)
+def test_tas_schema_meta_valid(schemas, name):
+    sid = f"https://psma.com/tas/{name}.json"
+    Draft202012Validator.check_schema(schemas[sid])
+
+
+@pytest.mark.parametrize("name", CIAS_SCHEMA_NAMES)
+def test_cias_schema_meta_valid(schemas, name):
+    sid = f"https://psma.com/cias/{name}.json"
     Draft202012Validator.check_schema(schemas[sid])
 
 
@@ -160,24 +181,89 @@ def test_dimension_with_tolerance_requires_at_least_one_field(tas_validator, fly
 
 
 # ---------------------------------------------------------------------------
-# topology.json — stage role conditionals
+# topology.json — stage variants (oneOf: power / isolation / virtual+physical control)
 # ---------------------------------------------------------------------------
 
-def test_control_stage_cannot_have_input_port(tas_validator, flyback_doc):
-    ctrl = next(s for s in flyback_doc["topology"]["stages"] if s["role"] == "control")
-    ctrl["inputPort"] = {"type": "dcBus", "wire": "Vin"}
+def _ctrl(flyback_doc):
+    return next(s for s in flyback_doc["topology"]["stages"] if s["role"] == "control")
+
+
+def test_virtual_control_is_logical(tas_validator, flyback_doc):
+    # the flyback controller is a virtualControl: senses/drives, no circuit, no ports
+    ctrl = _ctrl(flyback_doc)
+    assert ctrl["controlImplementation"] == "virtual"
+    assert "circuit" not in ctrl
+    assert_valid(tas_validator, flyback_doc)
+
+
+def test_virtual_control_cannot_have_circuit(tas_validator, flyback_doc):
+    ctrl = _ctrl(flyback_doc)
+    ctrl["circuit"] = {"name": "x", "ports": [], "components": [], "connections": []}
     assert_invalid(tas_validator, flyback_doc)
 
 
-def test_control_stage_cannot_have_output_ports(tas_validator, flyback_doc):
-    ctrl = next(s for s in flyback_doc["topology"]["stages"] if s["role"] == "control")
-    ctrl["outputPorts"] = [{"type": "dcBus", "wire": "x"}]
+def test_virtual_control_cannot_have_input_port(tas_validator, flyback_doc):
+    ctrl = _ctrl(flyback_doc)
+    ctrl["inputPort"] = {"port": "x", "type": "dcBus"}
     assert_invalid(tas_validator, flyback_doc)
 
 
-def test_control_stage_requires_senses_and_drives(tas_validator, flyback_doc):
-    ctrl = next(s for s in flyback_doc["topology"]["stages"] if s["role"] == "control")
+def test_virtual_control_requires_senses_and_drives(tas_validator, flyback_doc):
+    ctrl = _ctrl(flyback_doc)
     del ctrl["senses"]
+    assert_invalid(tas_validator, flyback_doc)
+
+
+def test_virtual_control_may_reference_a_model(tas_validator, flyback_doc):
+    ctrl = _ctrl(flyback_doc)
+    ctrl["model"] = "type3-compensator"
+    assert_valid(tas_validator, flyback_doc)
+
+
+def test_physical_control_valid(tas_validator, flyback_doc):
+    # swap the virtual controller for a physical one: a real brick, ports typed 'control'
+    stages = flyback_doc["topology"]["stages"]
+    idx = next(i for i, s in enumerate(stages) if s["role"] == "control")
+    stages[idx] = {
+        "name": "controller", "role": "control", "controlImplementation": "physical",
+        "circuit": {
+            "name": "uc-controller",
+            "ports": [{"name": "fb"}, {"name": "gate"}],
+            "components": [{"name": "U1", "data": "TAS/data/controllers.ndjson?partNumber=UCC28C44"}],
+            "connections": [
+                {"name": "f", "endpoints": [{"component": "U1", "pin": "FB"}, {"port": "fb"}]},
+                {"name": "g", "endpoints": [{"component": "U1", "pin": "OUT"}, {"port": "gate"}]},
+            ],
+        },
+        "ports": [
+            {"port": "fb", "type": "control"},
+            {"port": "gate", "type": "control"},
+        ],
+    }
+    # wire the controller gate to the switch's exposed gate port
+    flyback_doc["topology"]["interStageConnections"].append({
+        "name": "gate_drive", "kind": "wire",
+        "endpoints": [{"stage": "controller", "port": "gate"}, {"stage": "inverter", "port": "gate"}],
+    })
+    assert_valid(tas_validator, flyback_doc)
+
+
+def test_physical_control_cannot_have_drives(tas_validator, flyback_doc):
+    stages = flyback_doc["topology"]["stages"]
+    idx = next(i for i, s in enumerate(stages) if s["role"] == "control")
+    stages[idx] = {
+        "name": "controller", "role": "control", "controlImplementation": "physical",
+        "circuit": {"name": "c", "ports": [{"name": "g"}],
+                    "components": [{"name": "U1", "data": "x"}],
+                    "connections": [{"name": "n", "endpoints": [{"component": "U1", "pin": "O"}, {"port": "g"}]}]},
+        "ports": [{"port": "g", "type": "control"}],
+        "drives": [{"stage": "inverter", "component": "Q1", "signal": "gate"}],
+    }
+    assert_invalid(tas_validator, flyback_doc)
+
+
+def test_unknown_control_implementation_rejected(tas_validator, flyback_doc):
+    _ctrl(flyback_doc)["controlImplementation"] = "telepathic"
     assert_invalid(tas_validator, flyback_doc)
 
 
@@ -190,20 +276,21 @@ def test_power_stage_must_have_input_and_output_ports(tas_validator, flyback_doc
 
 def test_power_stage_cannot_have_senses(tas_validator, flyback_doc):
     inv = flyback_doc["topology"]["stages"][0]
-    inv["senses"] = [{"wire": "Vout", "signal": "voltage"}]
+    inv["senses"] = [{"net": "Vout", "signal": "voltage"}]
     assert_invalid(tas_validator, flyback_doc)
 
 
-def test_only_isolation_may_have_multiple_output_ports(tas_validator, flyback_doc):
-    # adding a 2nd output port to the inverter (role=inverter) → invalid
+def test_power_stage_cannot_have_multiple_outputs(tas_validator, flyback_doc):
+    # a single-output power stage uses outputPort; an outputPorts array is isolation-only
     inv = flyback_doc["topology"]["stages"][0]
-    inv["outputPorts"].append({"type": "hfAc", "wire": "extra"})
+    inv["outputPorts"] = [inv["outputPort"], {"port": "extra", "type": "hfAc"}]
+    del inv["outputPort"]
     assert_invalid(tas_validator, flyback_doc)
 
 
 def test_isolation_can_have_multiple_output_ports(tas_validator, flyback_doc):
     iso = next(s for s in flyback_doc["topology"]["stages"] if s["role"] == "isolation")
-    iso["outputPorts"].append({"type": "hfAc", "wire": "sec_5V", "name": "5V"})
+    iso["outputPorts"].append({"port": "sec2", "type": "hfAc"})
     assert_valid(tas_validator, flyback_doc)
 
 
@@ -223,102 +310,124 @@ def test_phase_count_must_be_at_least_one(tas_validator, flyback_doc):
 
 
 # ---------------------------------------------------------------------------
-# circuit.json — connection kind conditionals
+# CIAS.json (via a stage's brick) — connection / endpoint rules
 # ---------------------------------------------------------------------------
 
 def _add_conn(flyback_doc, conn):
     flyback_doc["topology"]["stages"][0]["circuit"]["connections"].append(conn)
 
 
-def test_coupling_requires_coupling_coefficient(tas_validator, flyback_doc):
+def test_connection_needs_at_least_two_endpoints(tas_validator, flyback_doc):
+    _add_conn(flyback_doc, {"name": "dangling", "endpoints": [{"component": "Q1", "pin": "G"}]})
+    assert_invalid(tas_validator, flyback_doc)
+
+
+def test_wire_endpoint_must_be_pin_or_port(tas_validator, flyback_doc):
+    # a bare {component} endpoint matches neither pinEndpoint nor portEndpoint
     _add_conn(flyback_doc, {
-        "name": "K_bad", "kind": "coupling",
+        "name": "net_bad",
         "endpoints": [{"component": "Q1"}, {"component": "C_in"}],
     })
     assert_invalid(tas_validator, flyback_doc)
 
 
-def test_coupling_endpoint_must_not_have_pin(tas_validator, flyback_doc):
+def test_wire_endpoint_may_expose_a_port(tas_validator, flyback_doc):
+    # a portEndpoint is a valid endpoint (it exposes the net at a brick terminal)
     _add_conn(flyback_doc, {
-        "name": "K_bad", "kind": "coupling", "couplingCoefficient": 0.99,
-        "endpoints": [{"component": "Q1", "pin": "D"}, {"component": "C_in", "pin": "1"}],
+        "name": "extra_net",
+        "endpoints": [{"component": "C_in", "pin": "1"}, {"port": "sw"}],
     })
-    assert_invalid(tas_validator, flyback_doc)
+    assert_valid(tas_validator, flyback_doc)
 
 
-def test_wire_endpoint_requires_pin(tas_validator, flyback_doc):
+def test_connection_rejects_unknown_field(tas_validator, flyback_doc):
+    # coupling is gone: a couplingCoefficient (or any extra key) is rejected
     _add_conn(flyback_doc, {
-        "name": "net_bad", "kind": "wire",
-        "endpoints": [{"component": "Q1"}, {"component": "C_in"}],
-    })
-    assert_invalid(tas_validator, flyback_doc)
-
-
-def test_wire_cannot_have_coupling_coefficient(tas_validator, flyback_doc):
-    _add_conn(flyback_doc, {
-        "name": "net_bad", "kind": "wire", "couplingCoefficient": 0.5,
-        "endpoints": [{"component": "Q1", "pin": "D"}, {"component": "C_in", "pin": "1"}],
-    })
-    assert_invalid(tas_validator, flyback_doc)
-
-
-def test_external_port_requires_direction(tas_validator, flyback_doc):
-    flyback_doc["topology"]["interStageCircuit"].append({
-        "name": "EN", "kind": "externalPort",
-        "endpoints": [{"component": "Q1", "pin": "G"}, {"component": "Q1", "pin": "S"}],
-    })
-    assert_invalid(tas_validator, flyback_doc)
-
-
-def test_wire_cannot_have_direction(tas_validator, flyback_doc):
-    _add_conn(flyback_doc, {
-        "name": "net_bad", "kind": "wire", "direction": "input",
-        "endpoints": [{"component": "Q1", "pin": "D"}, {"component": "C_in", "pin": "1"}],
-    })
-    assert_invalid(tas_validator, flyback_doc)
-
-
-def test_coupling_coefficient_range(tas_validator, flyback_doc):
-    base = {
-        "name": "K_x", "kind": "coupling",
-        "endpoints": [{"component": "Q1"}, {"component": "C_in"}],
-    }
-    for k in (-0.1, 0, 1.1):
-        flyback_doc["topology"]["stages"][0]["circuit"]["connections"] = [
-            dict(base, couplingCoefficient=k)
-        ]
-        assert_invalid(tas_validator, flyback_doc)
-
-
-def test_unknown_connection_kind_rejected(tas_validator, flyback_doc):
-    _add_conn(flyback_doc, {
-        "name": "x", "kind": "telepathy",
+        "name": "net_bad", "couplingCoefficient": 0.5,
         "endpoints": [{"component": "Q1", "pin": "D"}, {"component": "C_in", "pin": "1"}],
     })
     assert_invalid(tas_validator, flyback_doc)
 
 
 # ---------------------------------------------------------------------------
-# TAS.json — simulation block
+# topology.json — inter-stage connection variants (stage-qualified endpoints)
+# ---------------------------------------------------------------------------
+
+def test_external_net_requires_direction(tas_validator, flyback_doc):
+    flyback_doc["topology"]["interStageConnections"].append({
+        "name": "EN", "kind": "externalPort",
+        "endpoints": [{"stage": "inverter", "port": "dc+"}],
+    })
+    assert_invalid(tas_validator, flyback_doc)
+
+
+def test_internal_net_cannot_have_direction(tas_validator, flyback_doc):
+    flyback_doc["topology"]["interStageConnections"].append({
+        "name": "bad", "kind": "wire", "direction": "input",
+        "endpoints": [{"stage": "inverter", "port": "sw"}, {"stage": "transformer", "port": "pri"}],
+    })
+    assert_invalid(tas_validator, flyback_doc)
+
+
+def test_inter_stage_endpoint_must_be_stage_qualified(tas_validator, flyback_doc):
+    # a brick-local {component, pin} endpoint is rejected at the inter-stage scope
+    flyback_doc["topology"]["interStageConnections"].append({
+        "name": "bad", "kind": "wire",
+        "endpoints": [{"component": "Q1", "pin": "D"}, {"component": "C_in", "pin": "1"}],
+    })
+    assert_invalid(tas_validator, flyback_doc)
+
+
+def test_inter_stage_coupling_kind_rejected(tas_validator, flyback_doc):
+    # coupling is no longer a valid inter-stage kind (coupling lives inside a PEAS part)
+    flyback_doc["topology"]["interStageConnections"].append({
+        "name": "K_cross", "kind": "coupling", "couplingCoefficient": 0.5,
+        "endpoints": [{"stage": "inverter", "component": "Q1"}, {"stage": "transformer", "component": "T1"}],
+    })
+    assert_invalid(tas_validator, flyback_doc)
+
+
+# ---------------------------------------------------------------------------
+# TAS.json — simulator-agnostic simulation block
 # ---------------------------------------------------------------------------
 
 def test_simulation_block_valid(tas_validator, flyback_doc):
     flyback_doc["simulation"] = {
-        "models": [{"name": "Q1_model", "kind": "subckt", "text": ".subckt Q1 d g s\n.ends"}],
-        "commands": [{"text": ".tran 1u 10m"}, {"text": ".ic V(Vout)=12"}],
+        "analyses": [
+            {"type": "transient", "stopTime": 0.01, "maximumTimeStep": 1e-6},
+            {"type": "ac", "sweep": "decade", "startFrequency": 1, "stopFrequency": 1e6, "pointsPerInterval": 50},
+        ],
+        "models": [
+            {"name": "Q1_model", "format": "spice-subcircuit", "definition": ".subckt Q1 d g s\n.ends"},
+        ],
+        "overrides": [
+            {"stage": "inverter", "component": "Q1", "model": "Q1_model", "parameters": [{"name": "Rds_on", "value": 0.032}]},
+        ],
     }
     assert_valid(tas_validator, flyback_doc)
 
 
-def test_simulation_command_must_start_with_dot(tas_validator, flyback_doc):
-    flyback_doc["simulation"] = {"commands": [{"text": "tran 1u 10m"}]}
+def test_analysis_requires_known_type(tas_validator, flyback_doc):
+    # An analysis with an unknown type matches none of the oneOf variants.
+    flyback_doc["simulation"] = {"analyses": [{"type": "montecarlo"}]}
     assert_invalid(tas_validator, flyback_doc)
 
 
-def test_spice_model_kind_enum(tas_validator, flyback_doc):
+def test_transient_requires_stop_time(tas_validator, flyback_doc):
+    flyback_doc["simulation"] = {"analyses": [{"type": "transient", "maximumTimeStep": 1e-6}]}
+    assert_invalid(tas_validator, flyback_doc)
+
+
+def test_simulation_model_format_enum(tas_validator, flyback_doc):
     flyback_doc["simulation"] = {
-        "models": [{"name": "x", "kind": "macromodel", "text": "..."}]
+        "models": [{"name": "x", "format": "macromodel", "definition": "..."}]
     }
+    assert_invalid(tas_validator, flyback_doc)
+
+
+def test_simulation_rejects_raw_spice_commands(tas_validator, flyback_doc):
+    # The old SPICE-specific 'commands' key is gone; the block is closed.
+    flyback_doc["simulation"] = {"commands": [{"text": ".tran 1u 10m"}]}
     assert_invalid(tas_validator, flyback_doc)
 
 

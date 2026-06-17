@@ -9,6 +9,7 @@ record in a covered file does not validate.
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 
 import pytest
@@ -21,6 +22,9 @@ PROTEUS = REPO.parent
 DATA = REPO / "data"
 EXAMPLES = REPO / "examples"
 SCHEMA_DIR = REPO / "schemas"
+
+sys.path.insert(0, str(REPO / "scripts"))
+from validate_topology import validate_tas, validate_cias_brick  # noqa: E402
 
 # ---------------------------------------------------------------------------
 # Registry for non-TAS part-library schemas (mirrors port_part_libraries.py).
@@ -79,19 +83,28 @@ def _build_full_registry() -> Registry:
 
 
 def _build_tas_registry() -> Registry:
-    """TAS-only registry plus the PEAS stub used by tests/test_schemas.py."""
+    """TAS + CIAS + PEAS registry for validating TAS converter documents."""
     schemas = {}
-    for name in ("TAS", "inputs", "topology", "outputs", "circuit", "utils"):
+    for name in ("TAS", "inputs", "outputs", "utils", "topology"):
         s = json.loads((SCHEMA_DIR / f"{name}.json").read_text())
+        schemas[s["$id"]] = s
+    cias_dir = REPO.parent / "CIAS" / "schemas"
+    for name in ("CIAS",):
+        s = json.loads((cias_dir / f"{name}.json").read_text())
+        schemas[s["$id"]] = s
+    peas_dir = REPO.parent / "PEAS" / "schemas"
+    for path in peas_dir.rglob("*.json"):
+        s = json.loads(path.read_text())
         schemas[s["$id"]] = s
     resources = [
         (sid, Resource(contents=s, specification=DRAFT202012))
         for sid, s in schemas.items()
     ]
-    resources.append((
-        "http://openconverters.com/schemas/PEAS/peas.json",
-        Resource(contents={"type": "object"}, specification=DRAFT202012),
-    ))
+    if "https://psma.com/peas/peas.json" not in schemas:
+        resources.append((
+            "https://psma.com/peas/peas.json",
+            Resource(contents={"type": "object"}, specification=DRAFT202012),
+        ))
     return Registry().with_resources(resources)
 
 
@@ -117,6 +130,13 @@ def part_library_validators():
 def tas_validator():
     reg = _build_tas_registry()
     schema = json.loads((SCHEMA_DIR / "TAS.json").read_text())
+    return Draft202012Validator(schema, registry=reg)
+
+
+@pytest.fixture(scope="session")
+def cias_validator():
+    reg = _build_tas_registry()
+    schema = json.loads((REPO.parent / "CIAS" / "schemas" / "CIAS.json").read_text())
     return Draft202012Validator(schema, registry=reg)
 
 
@@ -170,6 +190,59 @@ def test_part_library_records_validate(part_library_validators, fname):
         f"{n} records in {fname}, {len(fails)} failed:\n"
         + _summarise_failures(fails)
     )
+
+
+# ---------------------------------------------------------------------------
+# CIAS brick library
+# ---------------------------------------------------------------------------
+
+
+def test_circuit_bricks_validate(cias_validator):
+    path = DATA / "circuits.ndjson"
+    if not path.exists():
+        pytest.skip("circuits.ndjson not present")
+    fails: list[tuple[int, str]] = []
+    n = 0
+    for ln, rec in _iter_ndjson(path):
+        n += 1
+        errs = list(cias_validator.iter_errors(rec))
+        if errs:
+            fails.append((ln, f"{errs[0].message} @ {list(errs[0].absolute_path)}"))
+    assert not fails, (
+        f"{n} CIAS bricks, {len(fails)} failed:\n"
+        + _summarise_failures(fails)
+    )
+
+
+# ---------------------------------------------------------------------------
+# Referential integrity (cross-checks JSON Schema cannot express)
+# ---------------------------------------------------------------------------
+
+
+def test_bricks_referential_integrity():
+    path = DATA / "circuits.ndjson"
+    if not path.exists():
+        pytest.skip("circuits.ndjson not present")
+    fails: list[tuple[int, str]] = []
+    for ln, brick in _iter_ndjson(path):
+        for e in validate_cias_brick(brick, where=f"{brick.get('name')}"):
+            fails.append((ln, e))
+    assert not fails, "brick integrity errors:\n" + _summarise_failures(fails)
+
+
+@pytest.mark.parametrize("path", sorted(EXAMPLES.glob("*.json")))
+def test_example_referential_integrity(path):
+    doc = json.loads(path.read_text())
+    errs, _notes = validate_tas(doc)
+    assert not errs, f"{path.name} integrity errors:\n" + "\n".join(f"  - {e}" for e in errs)
+
+
+def test_integrity_catches_dangling_reference():
+    # sanity: the validator must FAIL on a broken doc, not just pass clean ones
+    doc = json.loads((EXAMPLES / "01_flyback_48v_to_12v.json").read_text())
+    doc["topology"]["stages"][0]["inputPort"]["port"] = "does_not_exist"
+    errs, _ = validate_tas(doc)
+    assert errs
 
 
 # ---------------------------------------------------------------------------

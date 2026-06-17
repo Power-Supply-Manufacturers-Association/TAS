@@ -25,97 +25,105 @@
       {
         "name": "inverter",
         "role": "inverter",
-        "inputPort":  { "type": "dcBus", "wire": "Vin" },
-        "outputPorts": [ { "type": "hfAc", "wire": "sw_node" } ],
         "circuit": {
+          "name": "primary-switch",
+          "ports": [ { "name": "dc+" }, { "name": "dc-" }, { "name": "sw" }, { "name": "gate" } ],
           "components": [
-            { "name": "Q1", "data": "TAS/data/mosfets.ndjson?partNumber=C3M0032120K" },
+            { "name": "Q1",   "data": "TAS/data/mosfets.ndjson?partNumber=C3M0032120K" },
             { "name": "C_in", "data": "TAS/data/capacitors.ndjson?partNumber=B32774" }
           ],
           "connections": [
-            { "name": "drain", "kind": "wire",
-              "endpoints": [ { "component": "Q1", "pin": "D" }, { "component": "C_in", "pin": "1" } ] }
+            { "name": "dc_pos",   "endpoints": [ { "component": "Q1", "pin": "D" }, { "component": "C_in", "pin": "1" }, { "port": "dc+" } ] },
+            { "name": "switched", "endpoints": [ { "component": "Q1", "pin": "S" }, { "port": "sw" } ] },
+            { "name": "dc_neg",   "endpoints": [ { "component": "C_in", "pin": "2" }, { "port": "dc-" } ] },
+            { "name": "gate",     "endpoints": [ { "component": "Q1", "pin": "G" }, { "port": "gate" } ] }
           ]
-        }
+        },
+        "inputPort":  { "port": "dc+", "type": "dcBus" },
+        "outputPort": { "port": "sw",  "type": "hfAc" }
       },
 
       {
         "name": "transformer",
         "role": "isolation",
-        "inputPort":  { "type": "hfAc", "wire": "sw_node" },
-        "outputPorts": [ { "type": "hfAc", "wire": "sec", "name": "12V" } ],
         "circuit": {
+          "name": "flyback-transformer",
+          "ports": [ { "name": "pri" }, { "name": "sec" }, { "name": "sec_rtn" } ],
           "components": [
             { "name": "T1", "data": "TAS/data/transformers.ndjson?partNumber=FLY-48-12-24W" }
           ],
           "connections": [
-            { "name": "K_T1", "kind": "coupling", "couplingCoefficient": 0.995,
-              "endpoints": [ { "component": "T1" }, { "component": "T1" } ] }
+            { "name": "primary",   "endpoints": [ { "component": "T1", "pin": "P1" }, { "port": "pri" } ] },
+            { "name": "secondary", "endpoints": [ { "component": "T1", "pin": "S1" }, { "port": "sec" } ] },
+            { "name": "sec_return","endpoints": [ { "component": "T1", "pin": "S2" }, { "port": "sec_rtn" } ] }
           ]
-        }
+        },
+        "inputPort":   { "port": "pri", "type": "hfAc" },
+        "outputPorts": [ { "port": "sec", "type": "hfAc" } ]
       },
 
       {
         "name": "rectifier",
         "role": "outputRectifier",
-        "inputPort":  { "type": "hfAc", "wire": "sec" },
-        "outputPorts": [ { "type": "pulsatingDc", "wire": "rect_out" } ],
         "circuit": {
+          "name": "single-diode-rectifier",
+          "ports": [ { "name": "ac_in" }, { "name": "dc_out" } ],
           "components": [
             { "name": "D1", "data": "TAS/data/diodes.ndjson?partNumber=STPS20H100C" }
           ],
           "connections": [
-            { "name": "anode", "kind": "wire",
-              "endpoints": [ { "component": "D1", "pin": "A" }, { "component": "D1", "pin": "K" } ] }
+            { "name": "anode",   "endpoints": [ { "component": "D1", "pin": "A" }, { "port": "ac_in" } ] },
+            { "name": "cathode", "endpoints": [ { "component": "D1", "pin": "K" }, { "port": "dc_out" } ] }
           ]
-        }
+        },
+        "inputPort":  { "port": "ac_in",  "type": "hfAc" },
+        "outputPort": { "port": "dc_out", "type": "pulsatingDc" }
       },
 
       {
         "name": "filter",
         "role": "outputFilter",
-        "inputPort":  { "type": "pulsatingDc", "wire": "rect_out" },
-        "outputPorts": [ { "type": "dcOutput", "wire": "Vout" } ],
-        "circuit": {
-          "components": [
-            { "name": "C_out", "data": "TAS/data/capacitors.ndjson?partNumber=EEE-FK1V471P" }
-          ],
-          "connections": [
-            { "name": "cap_top", "kind": "wire",
-              "endpoints": [ { "component": "C_out", "pin": "1" }, { "component": "C_out", "pin": "2" } ] }
-          ]
-        }
+        "circuit": "TAS/data/circuits.ndjson?name=lc-output-filter",
+        "inputPort":  { "port": "in",  "type": "pulsatingDc" },
+        "outputPort": { "port": "out", "type": "dcOutput" }
       },
 
       {
         "name": "controller",
         "role": "control",
-        "circuit": {
-          "components": [
-            { "name": "U1", "data": "TAS/data/controllers.ndjson?partNumber=UCC28C44" }
-          ],
-          "connections": []
-        },
+        "controlImplementation": "virtual",
         "senses": [
-          { "wire": "Vout", "signal": "voltage" }
+          { "net": "Vout", "signal": "voltage" }
         ],
         "drives": [
-          { "component": "Q1", "signal": "gate" }
+          { "stage": "inverter", "component": "Q1", "signal": "gate" }
         ]
       }
     ],
 
-    "interStageCircuit": [
+    "interStageConnections": [
       { "name": "Vin",  "kind": "externalPort", "direction": "input",
-        "endpoints": [ { "component": "C_in", "pin": "2" }, { "component": "Q1", "pin": "S" } ] },
+        "endpoints": [ { "stage": "inverter", "port": "dc+" } ] },
+      { "name": "GND_in", "kind": "externalPort", "direction": "input",
+        "endpoints": [ { "stage": "inverter", "port": "dc-" } ] },
       { "name": "Vout", "kind": "externalPort", "direction": "output",
-        "endpoints": [ { "component": "C_out", "pin": "1" }, { "component": "C_out", "pin": "2" } ] },
+        "endpoints": [ { "stage": "filter", "port": "out" } ] },
       { "name": "sw_node", "kind": "wire",
-        "endpoints": [ { "component": "Q1", "pin": "D" }, { "component": "T1", "pin": "P1" } ] },
+        "endpoints": [ { "stage": "inverter", "port": "sw" }, { "stage": "transformer", "port": "pri" } ] },
       { "name": "sec", "kind": "wire",
-        "endpoints": [ { "component": "T1", "pin": "S1" }, { "component": "D1", "pin": "A" } ] },
+        "endpoints": [ { "stage": "transformer", "port": "sec" }, { "stage": "rectifier", "port": "ac_in" } ] },
       { "name": "rect_out", "kind": "wire",
-        "endpoints": [ { "component": "D1", "pin": "K" }, { "component": "C_out", "pin": "1" } ] }
+        "endpoints": [ { "stage": "rectifier", "port": "dc_out" }, { "stage": "filter", "port": "in" } ] }
+    ]
+  },
+
+  "simulation": {
+    "analyses": [
+      { "type": "transient", "stopTime": 0.002, "maximumTimeStep": 1e-7 }
+    ],
+    "stimulus": [
+      { "stage": "inverter", "component": "Q1", "signal": "gate",
+        "waveform": { "type": "pwm", "frequency": 100000, "dutyCycle": 0.4 } }
     ]
   }
 }

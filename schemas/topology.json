@@ -1,50 +1,124 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "http://openconverters.com/schemas/TAS/topology.json",
+  "$id": "https://psma.com/tas/topology.json",
   "title": "TAS topology",
-  "description": "How the converter is built. A tree of stages (one circuit each) plus the inter-stage connections that wire them together. The root stage takes the converter input; leaves produce regulated outputs. Branching happens at stages with multiple outputPorts (typically isolation in multi-output converters).",
+  "description": "How a converter's minimal simulatable circuit is assembled from CIAS bricks (the Lego layer). A tree of stages — each instantiates one CIAS brick and adds the usage the brick itself does not carry (role/why, the electrical type of each exposed terminal, and control I/O) — plus the inter-stage connections that wire the bricks' terminals to each other and to the converter's external terminals. References into a brick are stage-qualified ({stage, port} / {stage, component}), exactly as a SPICE parent references a subckt instance's nodes.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["stages", "interStageCircuit"],
+  "required": ["stages", "interStageConnections"],
   "properties": {
     "stages": {
       "type": "array",
       "minItems": 1,
       "items": { "$ref": "#/$defs/stage" }
     },
-    "interStageCircuit": {
+    "interStageConnections": {
       "type": "array",
-      "description": "Connections that cross stage boundaries: the wires named by stage ports, magnetic couplings spanning stages (rare), and the converter's externalPorts (Vin+, Vout-, GND, EN, FB).",
-      "items": { "$ref": "./circuit.json#/$defs/connection" }
+      "description": "Nets that wire stage terminals together, expose converter external terminals (Vin/Vout/GND), or magnetically couple windings across bricks.",
+      "items": { "$ref": "#/$defs/interStageConnection" }
     }
   },
 
   "$defs": {
 
     "stage": {
+      "title": "stage",
+      "$comment": "Closed variants discriminated by role (and, for control, by controlImplementation). Cascade type-signatures (power chain): lineFilter acLine→acLine; rectifier acLine→pulsatingDc; pfc pulsatingDc→dcBus; bulkStorage dcBus→dcBus; switchingCell dcBus→dcBus (non-isolated DC-DC); inverter dcBus→hfAc (owns the resonant tank for LLC/SRC, per Maksimović); isolation hfAc→hfAc[] (branch point for multi-output); outputRectifier hfAc→pulsatingDc; outputFilter pulsatingDc→dcOutput; control senses and drives the power chain (virtual = software/behavioural, physical = real controller circuitry).",
+      "oneOf": [
+        { "$ref": "#/$defs/powerStage" },
+        { "$ref": "#/$defs/isolationStage" },
+        { "$ref": "#/$defs/virtualControl" },
+        { "$ref": "#/$defs/physicalControl" }
+      ]
+    },
+
+    "powerStage": {
+      "title": "powerStage",
+      "description": "A single-input, single-output power-chain stage. Instantiates a CIAS brick and types its input and output terminals.",
       "type": "object",
       "additionalProperties": false,
-      "required": ["name", "role", "circuit"],
+      "required": ["name", "role", "circuit", "inputPort", "outputPort"],
       "properties": {
         "name": {
           "type": "string",
           "minLength": 1,
-          "description": "Identifier unique within this topology (e.g. 'PFC', 'LLC_inverter', 'output_5V')."
+          "description": "Stage instance name, unique within this topology (e.g. 'inverter', 'PFC')."
         },
-        "role": { "$ref": "#/$defs/stageRole" },
+        "role": {
+          "type": "string",
+          "enum": [
+            "lineFilter",
+            "rectifier",
+            "pfc",
+            "bulkStorage",
+            "switchingCell",
+            "inverter",
+            "outputRectifier",
+            "outputFilter"
+          ],
+          "description": "Functional role of a single-output power-chain stage."
+        },
         "phaseCount": {
           "type": "integer",
           "minimum": 1,
           "default": 1,
           "description": "Number of interleaved physical phases sharing one logical stage and one controller. >1 only meaningful for switching stages (pfc, switchingCell, inverter)."
         },
-        "inputPort": { "$ref": "#/$defs/port" },
+        "circuit": { "$ref": "#/$defs/circuitRef" },
+        "inputPort": { "$ref": "#/$defs/portBinding" },
+        "outputPort": { "$ref": "#/$defs/portBinding" }
+      }
+    },
+
+    "isolationStage": {
+      "title": "isolationStage",
+      "description": "The galvanic-isolation branch point (transformer brick). The only stage that may fan out to multiple typed output terminals (multi-output secondaries).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "role", "circuit", "inputPort", "outputPorts"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Stage instance name, unique within this topology (e.g. 'transformer')."
+        },
+        "role": { "const": "isolation" },
+        "phaseCount": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 1,
+          "description": "Number of interleaved physical phases sharing one logical stage and one controller."
+        },
+        "circuit": { "$ref": "#/$defs/circuitRef" },
+        "inputPort": { "$ref": "#/$defs/portBinding" },
         "outputPorts": {
           "type": "array",
           "minItems": 1,
-          "items": { "$ref": "#/$defs/port" }
+          "description": "One or more typed output terminals (multi-output secondaries each get a binding).",
+          "items": { "$ref": "#/$defs/portBinding" }
+        }
+      }
+    },
+
+    "virtualControl": {
+      "title": "virtualControl",
+      "description": "A software / behavioural controller: it senses converter signals and drives switches LOGICALLY (no electrical circuit, no terminals). The control law may be carried by an optional model reference. Use for closed-loop simulation without modelling the controller silicon. May coexist with simulation.stimulus (open-loop): a stimulus on a switch takes precedence over a drive for that switch.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "role", "controlImplementation", "senses", "drives"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Stage instance name, unique within this topology (e.g. 'controller')."
         },
-        "circuit": { "$ref": "./circuit.json" },
+        "role": { "const": "control" },
+        "controlImplementation": { "const": "virtual" },
+        "model": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional name of a control-law entry in simulation.models[] (e.g. a behavioural / state-space / digital-controller model) that implements this controller."
+        },
         "senses": {
           "type": "array",
           "items": { "$ref": "#/$defs/sense" }
@@ -53,110 +127,89 @@
           "type": "array",
           "items": { "$ref": "#/$defs/drive" }
         }
-      },
-      "allOf": [
-        {
-          "$comment": "Power-chain stages need ports; control stages need senses/drives instead.",
-          "if": { "properties": { "role": { "const": "control" } }, "required": ["role"] },
-          "then": {
-            "required": ["senses", "drives"],
-            "not": {
-              "anyOf": [
-                { "required": ["inputPort"] },
-                { "required": ["outputPorts"] },
-                { "required": ["phaseCount"] }
-              ]
-            }
-          },
-          "else": {
-            "required": ["inputPort", "outputPorts"],
-            "not": {
-              "anyOf": [
-                { "required": ["senses"] },
-                { "required": ["drives"] }
-              ]
-            }
-          }
-        },
-        {
-          "$comment": "Only isolation may have more than one output port (multi-output secondaries).",
-          "if": {
-            "properties": { "role": { "not": { "const": "isolation" } } },
-            "required": ["role"]
-          },
-          "then": {
-            "properties": {
-              "outputPorts": { "maxItems": 1 }
-            }
-          }
-        }
-      ]
+      }
     },
 
-    "stageRole": {
-      "type": "string",
-      "enum": [
-        "lineFilter",
-        "rectifier",
-        "pfc",
-        "bulkStorage",
-        "switchingCell",
-        "inverter",
-        "isolation",
-        "outputRectifier",
-        "outputFilter",
-        "control"
-      ],
-      "description": "Functional role. Cascade type-signatures: lineFilter acLine\u2192acLine; rectifier acLine\u2192pulsatingDc; pfc pulsatingDc\u2192dcBus; bulkStorage dcBus\u2192dcBus; switchingCell dcBus\u2192dcBus (non-isolated DC-DC); inverter dcBus\u2192hfAc (owns the resonant tank for LLC/SRC, per Maksimovi\u0107); isolation hfAc\u2192hfAc[] (branch point for multi-output); outputRectifier hfAc\u2192pulsatingDc; outputFilter pulsatingDc\u2192dcOutput; control has no power-chain position."
-    },
-
-    "port": {
+    "physicalControl": {
+      "title": "physicalControl",
+      "description": "A real controller circuit (controller IC + passives) as a CIAS brick, wired ELECTRICALLY into the converter via interStageConnections like any other stage. Its terminals are typed (typically 'control' for gate-drive / feedback / enable signal nets). It does NOT use logical senses/drives — the wiring is the connection.",
       "type": "object",
       "additionalProperties": false,
-      "required": ["type", "wire"],
+      "required": ["name", "role", "controlImplementation", "circuit", "ports"],
       "properties": {
-        "type": { "$ref": "#/$defs/portType" },
-        "wire": {
-          "type": "string",
-          "minLength": 1,
-          "description": "Name of the boundary wire. Must appear both in this stage's circuit.connections (so internal endpoints can reference it) and in topology.interStageCircuit (so the upstream/downstream stage's port can reference the same name)."
-        },
         "name": {
           "type": "string",
           "minLength": 1,
-          "description": "Port label, used to disambiguate when a stage has multiple outputPorts (e.g. 'sec_5V', 'sec_12V' on an isolation stage)."
+          "description": "Stage instance name, unique within this topology."
+        },
+        "role": { "const": "control" },
+        "controlImplementation": { "const": "physical" },
+        "circuit": { "$ref": "#/$defs/circuitRef" },
+        "ports": {
+          "type": "array",
+          "minItems": 1,
+          "description": "Typed terminals of the controller brick, wired via interStageConnections (e.g. a 'control'-typed gate-drive output to a switch's exposed gate port).",
+          "items": { "$ref": "#/$defs/portBinding" }
         }
       }
     },
 
+    "circuitRef": {
+      "title": "circuitRef",
+      "description": "The CIAS brick this stage instantiates: an inline CIAS document, or a URI string into a brick library (e.g. 'TAS/data/circuits.ndjson?name=half-bridge').",
+      "oneOf": [
+        { "$ref": "https://psma.com/cias/CIAS.json" },
+        { "type": "string", "minLength": 1 }
+      ]
+    },
+
+    "portBinding": {
+      "title": "portBinding",
+      "description": "Types one terminal of the stage's CIAS brick with its electrical role in the power chain. The direction is implied by where the binding sits (inputPort vs outputPort).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["port", "type"],
+      "properties": {
+        "port": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Refers to a port.name on this stage's CIAS brick."
+        },
+        "type": { "$ref": "#/$defs/portType" }
+      }
+    },
+
     "portType": {
+      "title": "portType",
       "type": "string",
-      "enum": [
-        "acLine",
-        "pulsatingDc",
-        "dcBus",
-        "hfAc",
-        "dcOutput"
-      ],
-      "description": "acLine = mains-frequency AC. pulsatingDc = rectified, unfiltered. dcBus = filtered DC (regulated or not). hfAc = switching-frequency AC (transformer or resonant tank). dcOutput = final regulated DC output."
+      "enum": ["acLine", "pulsatingDc", "dcBus", "hfAc", "dcOutput", "control"],
+      "description": "acLine = mains-frequency AC. pulsatingDc = rectified, unfiltered. dcBus = filtered DC (regulated or not). hfAc = switching-frequency AC (transformer or resonant tank). dcOutput = final regulated DC output. control = a signal-level net (gate drive, feedback, enable) for a physical controller."
     },
 
     "sense": {
+      "title": "sense",
       "oneOf": [
         { "$ref": "#/$defs/componentSense" },
-        { "$ref": "#/$defs/wireSense" }
+        { "$ref": "#/$defs/netSense" }
       ]
     },
 
     "componentSense": {
+      "title": "componentSense",
+      "description": "Senses a quantity at a component inside a stage's brick (e.g. a sense resistor's current, a thermistor's temperature).",
       "type": "object",
       "additionalProperties": false,
-      "required": ["component", "signal"],
+      "required": ["stage", "component", "signal"],
       "properties": {
+        "stage": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Stage instance whose brick contains the sensed component."
+        },
         "component": {
           "type": "string",
           "minLength": 1,
-          "description": "Name of the component being sensed (e.g. a sense resistor, a thermistor)."
+          "description": "component.name within that stage's brick."
         },
         "signal": {
           "type": "string",
@@ -165,15 +218,17 @@
       }
     },
 
-    "wireSense": {
+    "netSense": {
+      "title": "netSense",
+      "description": "Senses the voltage of an inter-stage net (e.g. 'Vout' for output feedback).",
       "type": "object",
       "additionalProperties": false,
-      "required": ["wire", "signal"],
+      "required": ["net", "signal"],
       "properties": {
-        "wire": {
+        "net": {
           "type": "string",
           "minLength": 1,
-          "description": "Name of the wire whose voltage is sensed (e.g. 'Vout' for output feedback)."
+          "description": "Name of an interStageConnection whose voltage is sensed."
         },
         "signal": {
           "type": "string",
@@ -183,18 +238,101 @@
     },
 
     "drive": {
+      "title": "drive",
+      "description": "Drives a switch or driver inside a stage's brick (the closed-loop control link). For open-loop runs the same switch can instead be driven by simulation.stimulus.",
       "type": "object",
       "additionalProperties": false,
-      "required": ["component", "signal"],
+      "required": ["stage", "component", "signal"],
       "properties": {
+        "stage": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Stage instance whose brick contains the driven component."
+        },
         "component": {
           "type": "string",
           "minLength": 1,
-          "description": "Name of the component being driven (typically a switch or driver IC)."
+          "description": "component.name within that stage's brick (typically a switch or driver IC)."
         },
         "signal": {
           "type": "string",
           "enum": ["gate", "enable"]
+        }
+      }
+    },
+
+    "interStageConnection": {
+      "title": "interStageConnection",
+      "$comment": "Two closed variants discriminated by kind. wire = an internal net joining stage terminals. externalPort = a net that also terminates at a converter terminal (Vin/Vout/GND). (No coupling variant: magnetic coupling lives inside a single multi-winding PEAS component, never across bricks.)",
+      "oneOf": [
+        { "$ref": "#/$defs/internalNet" },
+        { "$ref": "#/$defs/externalNet" }
+      ]
+    },
+
+    "internalNet": {
+      "title": "internalNet",
+      "description": "An internal net joining 2+ stage terminals.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "kind", "endpoints"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Net name, unique within this topology."
+        },
+        "kind": { "const": "wire" },
+        "endpoints": {
+          "type": "array",
+          "minItems": 2,
+          "items": { "$ref": "#/$defs/stagePortEndpoint" }
+        }
+      }
+    },
+
+    "externalNet": {
+      "title": "externalNet",
+      "description": "A net that also terminates at an external converter terminal; its name doubles as the terminal label (Vin, Vout, GND, EN, FB).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "kind", "direction", "endpoints"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Net name; also the external terminal label."
+        },
+        "kind": { "const": "externalPort" },
+        "direction": {
+          "type": "string",
+          "enum": ["input", "output", "bidirectional"],
+          "description": "Whether the converter sources, sinks, or both at this terminal."
+        },
+        "endpoints": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/stagePortEndpoint" }
+        }
+      }
+    },
+
+    "stagePortEndpoint": {
+      "title": "stagePortEndpoint",
+      "description": "References a terminal of a stage's brick: stageInstance.port.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stage", "port"],
+      "properties": {
+        "stage": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Stage instance name."
+        },
+        "port": {
+          "type": "string",
+          "minLength": 1,
+          "description": "port.name on that stage's CIAS brick."
         }
       }
     }
