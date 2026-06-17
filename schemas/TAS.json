@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://psma.com/tas/TAS.json",
   "title": "TAS",
-  "description": "Topology Agnostic Structure (TAS) v2 \u2014 a complete power converter design as four sections: inputs (the spec the converter must satisfy), topology (how it is built, as a tree of stages), outputs (how it performs), simulation (optional SPICE artefacts used to produce the outputs).",
+  "description": "Topology Agnostic Structure (TAS) v2 — the minimum simulatable power-converter circuit (the SPICE analogy is a complete deck: CIAS bricks instantiated as stages, wired at their terminals, with stimulus and analyses). Four sections: inputs (the spec it must satisfy), topology (the Lego assembly of CIAS bricks into stages), outputs (how it performs), simulation (simulator-agnostic stimulus + analyses). A full product converter would add more CIAS bricks (protection, aux, housekeeping) at a converter level above TAS — out of scope here.",
   "type": "object",
   "additionalProperties": false,
   "required": ["inputs", "topology"],
@@ -13,7 +13,7 @@
     },
     "topology": {
       "$ref": "./topology.json",
-      "description": "Stages and their interconnections."
+      "description": "The Lego assembly: stages (each instantiating one CIAS brick) and the inter-stage connections that wire them."
     },
     "outputs": {
       "$ref": "./outputs.json",
@@ -21,7 +21,7 @@
     },
     "simulation": {
       "$ref": "#/$defs/simulation",
-      "description": "Global SPICE artefacts (model definitions, simulation commands). Per-component overrides live on the component itself, not here."
+      "description": "Simulator-agnostic analysis setup: which analyses to run, model-library entries, and per-component model bindings/overrides keyed by CIAS component name. Translatable to SPICE, PLECS, Modelica, etc."
     }
   },
 
@@ -30,38 +30,288 @@
     "simulation": {
       "type": "object",
       "additionalProperties": false,
+      "description": "Simulator-agnostic simulation setup. Carries WHAT to analyse and WHICH models to bind — never simulator-specific command syntax.",
       "properties": {
+        "analyses": {
+          "type": "array",
+          "description": "Analyses to run on the converter.",
+          "items": { "$ref": "#/$defs/analysis" }
+        },
         "models": {
           "type": "array",
-          "items": { "$ref": "#/$defs/spiceModel" }
+          "description": "Model-library entries referenced by component bindings. Each is tagged with its format so any simulator backend can select the entries it understands.",
+          "items": { "$ref": "#/$defs/simulationModel" }
         },
-        "commands": {
+        "overrides": {
           "type": "array",
-          "items": { "$ref": "#/$defs/spiceCommand" }
+          "description": "Per-component model bindings / parameter overrides, keyed stage-qualified ({stage, component}). Used when a part's simulation behaviour cannot be inferred from its PEAS data.",
+          "items": { "$ref": "#/$defs/componentModel" }
+        },
+        "stimulus": {
+          "type": "array",
+          "description": "Open-loop drive: directly imposes a waveform on a switch/driver (its gate or enable), bypassing any controlStage. Lets the same TAS run open-loop (stimulus) or closed-loop (controlStage) — the two may coexist; a stimulus on a switch takes precedence over a drive for that switch.",
+          "items": { "$ref": "#/$defs/stimulus" }
         }
       }
     },
 
-    "spiceModel": {
+    "stimulus": {
+      "title": "stimulus",
+      "description": "One open-loop drive applied to a switch/driver inside a stage's CIAS brick.",
       "type": "object",
       "additionalProperties": false,
-      "required": ["name", "kind", "text"],
+      "required": ["stage", "component", "signal", "waveform"],
       "properties": {
-        "name": { "type": "string", "minLength": 1 },
-        "kind": { "type": "string", "enum": ["model", "subckt"] },
-        "text": { "type": "string", "minLength": 1 }
+        "stage": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Stage instance whose brick contains the driven component."
+        },
+        "component": {
+          "type": "string",
+          "minLength": 1,
+          "description": "component.name within that stage's brick (a switch or driver)."
+        },
+        "signal": {
+          "type": "string",
+          "enum": ["gate", "enable"]
+        },
+        "waveform": { "$ref": "#/$defs/waveform" }
       }
     },
 
-    "spiceCommand": {
+    "waveform": {
+      "title": "waveform",
+      "$comment": "Simulator-agnostic drive waveform. Closed variants discriminated by type; a translator maps each to its simulator's source primitive (e.g. pwm → a pulse V-source, constant → a DC level).",
+      "oneOf": [
+        { "$ref": "#/$defs/pwmWaveform" },
+        { "$ref": "#/$defs/constantWaveform" }
+      ]
+    },
+
+    "pwmWaveform": {
+      "title": "pwmWaveform",
+      "description": "A fixed-frequency PWM gate drive.",
       "type": "object",
       "additionalProperties": false,
-      "required": ["text"],
+      "required": ["type", "frequency", "dutyCycle"],
       "properties": {
-        "text": {
+        "type": { "const": "pwm" },
+        "frequency": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Switching frequency, in Hz."
+        },
+        "dutyCycle": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Duty cycle, 0..1."
+        },
+        "phase": {
+          "type": "number",
+          "description": "Phase offset, in degrees (e.g. 180 for the complementary leg, or for interleaving)."
+        },
+        "deadTime": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Dead time before turn-on, in seconds."
+        }
+      }
+    },
+
+    "constantWaveform": {
+      "title": "constantWaveform",
+      "description": "A constant logic/DC level (e.g. tie an enable high).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "value"],
+      "properties": {
+        "type": { "const": "constant" },
+        "value": {
+          "type": "number",
+          "description": "Constant level (logic 0/1, or a DC voltage)."
+        }
+      }
+    },
+
+    "analysis": {
+      "title": "analysis",
+      "$comment": "Simulator-agnostic analysis request. One of four closed variants discriminated by type. A translator maps each to its simulator's native directive (e.g. transient → SPICE .tran, PLECS Transient block).",
+      "oneOf": [
+        { "$ref": "#/$defs/transientAnalysis" },
+        { "$ref": "#/$defs/acAnalysis" },
+        { "$ref": "#/$defs/dcSweepAnalysis" },
+        { "$ref": "#/$defs/operatingPointAnalysis" }
+      ]
+    },
+
+    "transientAnalysis": {
+      "title": "transientAnalysis",
+      "description": "Time-domain analysis over a fixed window.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "stopTime"],
+      "properties": {
+        "type": { "const": "transient" },
+        "startTime": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Start of the recorded window, in seconds (default 0)."
+        },
+        "stopTime": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Stop time, in seconds."
+        },
+        "maximumTimeStep": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Maximum solver time step, in seconds."
+        }
+      }
+    },
+
+    "acAnalysis": {
+      "title": "acAnalysis",
+      "description": "Small-signal frequency-domain sweep.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "sweep", "startFrequency", "stopFrequency", "pointsPerInterval"],
+      "properties": {
+        "type": { "const": "ac" },
+        "sweep": {
           "type": "string",
-          "pattern": "^\\.",
-          "description": "SPICE directive starting with '.' (e.g. '.tran 1u 10m', '.ac dec 50 1 1Meg')."
+          "enum": ["decade", "octave", "linear"],
+          "description": "Frequency-axis spacing."
+        },
+        "startFrequency": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Start frequency, in Hz."
+        },
+        "stopFrequency": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Stop frequency, in Hz."
+        },
+        "pointsPerInterval": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Points per decade/octave, or total points for a linear sweep."
+        }
+      }
+    },
+
+    "dcSweepAnalysis": {
+      "title": "dcSweepAnalysis",
+      "description": "Sweep a DC source value and record the operating point at each step.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "sweptComponent", "start", "stop", "step"],
+      "properties": {
+        "type": { "const": "dcSweep" },
+        "sweptComponent": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Name of the component (CIAS topology) whose source value is swept (e.g. an input voltage/current source)."
+        },
+        "start": {
+          "type": "number",
+          "description": "Sweep start value, in the source's SI unit (V or A)."
+        },
+        "stop": {
+          "type": "number",
+          "description": "Sweep stop value, in the source's SI unit."
+        },
+        "step": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Sweep increment, in the source's SI unit."
+        }
+      }
+    },
+
+    "operatingPointAnalysis": {
+      "title": "operatingPointAnalysis",
+      "description": "Solve the steady-state DC operating point only.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type"],
+      "properties": {
+        "type": { "const": "operatingPoint" }
+      }
+    },
+
+    "simulationModel": {
+      "title": "simulationModel",
+      "description": "One model-library entry. The format tag lets a translator select the entries it understands; the same logical model may appear once per format.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "format", "definition"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Model name, referenced by componentModel.model."
+        },
+        "format": {
+          "type": "string",
+          "enum": ["spice-model", "spice-subcircuit", "modelica", "verilog-a", "plecs", "table"],
+          "description": "Format/dialect of the definition payload, so a simulator backend can pick the entries it understands."
+        },
+        "definition": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The model text in the given format, or a URI to a model file."
+        }
+      }
+    },
+
+    "componentModel": {
+      "title": "componentModel",
+      "description": "Binds a model and/or parameter overrides to one component inside a stage's CIAS brick.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stage", "component"],
+      "properties": {
+        "stage": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Stage instance whose brick contains the component."
+        },
+        "component": {
+          "type": "string",
+          "minLength": 1,
+          "description": "component.name within that stage's brick this binding applies to."
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Name of an entry in simulation.models[] (or an external library model) to bind to this component."
+        },
+        "parameters": {
+          "type": "array",
+          "description": "Agnostic name/value parameter overrides applied to the bound model.",
+          "items": { "$ref": "#/$defs/modelParameter" }
+        }
+      }
+    },
+
+    "modelParameter": {
+      "title": "modelParameter",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "value"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Parameter name (model-specific)."
+        },
+        "value": {
+          "type": ["number", "string"],
+          "description": "Parameter value (numeric, or a string expression / engineering-notation literal)."
         }
       }
     }

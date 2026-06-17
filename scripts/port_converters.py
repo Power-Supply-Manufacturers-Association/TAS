@@ -91,12 +91,12 @@ def build_validator() -> Draft202012Validator:
     ]
     # Stub the external PEAS schema (same trick as tests/test_schemas.py).
     resources.append((
-        "http://openconverters.com/schemas/PEAS/peas.json",
+        "https://psma.com/peas/peas.json",
         Resource(contents={"type": "object"}, specification=DRAFT202012),
     ))
     registry = Registry().with_resources(resources)
     return Draft202012Validator(
-        schemas["http://openconverters.com/schemas/TAS/TAS.json"],
+        schemas["https://psma.com/tas/TAS.json"],
         registry=registry,
     )
 

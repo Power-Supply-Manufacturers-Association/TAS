@@ -3,60 +3,16 @@
     "designRequirements": {
       "efficiency": 0.92,
       "inputType": "dc",
-      "inputVoltage": {
-        "minimum": 10.0,
-        "nominal": 12.0,
-        "maximum": 14.0
-      },
-      "switchingFrequency": {
-        "nominal": 500000.0
-      },
+      "inputVoltage": { "minimum": 10.0, "nominal": 12.0, "maximum": 14.0 },
+      "switchingFrequency": { "nominal": 500000.0 },
       "outputs": [
-        {
-          "name": "5V",
-          "voltage": {
-            "nominal": 5.0,
-            "minimum": 4.9,
-            "maximum": 5.1
-          },
-          "regulation": "voltage"
-        }
+        { "name": "5V", "voltage": { "nominal": 5.0, "minimum": 4.9, "maximum": 5.1 }, "regulation": "voltage" }
       ]
     },
     "operatingPoints": [
-      {
-        "name": "full_load_Vin_nom",
-        "inputVoltage": 12.0,
-        "ambientTemperature": 25.0,
-        "outputs": [
-          {
-            "name": "5V",
-            "current": 3.0
-          }
-        ]
-      },
-      {
-        "name": "full_load_Vin_min",
-        "inputVoltage": 10.0,
-        "ambientTemperature": 25.0,
-        "outputs": [
-          {
-            "name": "5V",
-            "current": 3.0
-          }
-        ]
-      },
-      {
-        "name": "full_load_Vin_max",
-        "inputVoltage": 14.0,
-        "ambientTemperature": 25.0,
-        "outputs": [
-          {
-            "name": "5V",
-            "current": 3.0
-          }
-        ]
-      }
+      { "name": "full_load_Vin_nom", "inputVoltage": 12.0, "ambientTemperature": 25.0, "outputs": [ { "name": "5V", "current": 3.0 } ] },
+      { "name": "full_load_Vin_min", "inputVoltage": 10.0, "ambientTemperature": 25.0, "outputs": [ { "name": "5V", "current": 3.0 } ] },
+      { "name": "full_load_Vin_max", "inputVoltage": 14.0, "ambientTemperature": 25.0, "outputs": [ { "name": "5V", "current": 3.0 } ] }
     ]
   },
   "topology": {
@@ -64,118 +20,51 @@
       {
         "name": "power_stage",
         "role": "switchingCell",
-        "inputPort": {
-          "type": "dcBus",
-          "wire": "Vin"
-        },
-        "outputPorts": [
-          {
-            "type": "dcOutput",
-            "wire": "Vout"
-          }
-        ],
         "circuit": {
+          "name": "buck-cell",
+          "ports": [ { "name": "in" }, { "name": "out" }, { "name": "gnd" }, { "name": "gate" } ],
           "components": [
-            {
-              "name": "Q1",
-              "data": "TAS/data/mosfets.ndjson?partNumber=BSC010N04LS"
-            },
-            {
-              "name": "D1",
-              "data": "TAS/data/diodes.ndjson?partNumber=SS34"
-            },
-            {
-              "name": "L1",
-              "data": "TAS/data/magnetics.ndjson?partNumber=XAL5030-223MEC"
-            },
-            {
-              "name": "C_in",
-              "data": "TAS/data/capacitors.ndjson?placeholder=C_in"
-            },
-            {
-              "name": "C_out",
-              "data": "TAS/data/capacitors.ndjson?placeholder=C_out"
-            }
+            { "name": "Q1",    "data": "TAS/data/mosfets.ndjson?partNumber=BSC010N04LS" },
+            { "name": "D1",    "data": "TAS/data/diodes.ndjson?partNumber=SS34" },
+            { "name": "L1",    "data": "TAS/data/magnetics.ndjson?partNumber=XAL5030-223MEC" },
+            { "name": "C_in",  "data": "TAS/data/capacitors.ndjson?placeholder=C_in" },
+            { "name": "C_out", "data": "TAS/data/capacitors.ndjson?placeholder=C_out" }
           ],
           "connections": [
-            {
-              "name": "sw_node",
-              "kind": "wire",
-              "endpoints": [
-                {
-                  "component": "Q1",
-                  "pin": "S"
-                },
-                {
-                  "component": "D1",
-                  "pin": "K"
-                },
-                {
-                  "component": "L1",
-                  "pin": "1"
-                }
-              ]
-            }
+            { "name": "vin",     "endpoints": [ { "component": "Q1", "pin": "D" }, { "component": "C_in", "pin": "1" }, { "port": "in" } ] },
+            { "name": "sw_node", "endpoints": [ { "component": "Q1", "pin": "S" }, { "component": "D1", "pin": "K" }, { "component": "L1", "pin": "1" } ] },
+            { "name": "vout",    "endpoints": [ { "component": "L1", "pin": "2" }, { "component": "C_out", "pin": "1" }, { "port": "out" } ] },
+            { "name": "return",  "endpoints": [ { "component": "D1", "pin": "A" }, { "component": "C_in", "pin": "2" }, { "component": "C_out", "pin": "2" }, { "port": "gnd" } ] },
+            { "name": "gate",    "endpoints": [ { "component": "Q1", "pin": "G" }, { "port": "gate" } ] }
           ]
-        }
+        },
+        "inputPort":  { "port": "in",  "type": "dcBus" },
+        "outputPort": { "port": "out", "type": "dcOutput" }
       },
       {
         "name": "controller",
         "role": "control",
-        "circuit": {
-          "components": [
-            {
-              "name": "U1",
-              "data": "TAS/data/controllers.ndjson?placeholder=U1"
-            }
-          ],
-          "connections": []
-        },
-        "senses": [
-          {
-            "wire": "Vout",
-            "signal": "voltage"
-          }
-        ],
-        "drives": [
-          {
-            "component": "Q1",
-            "signal": "gate"
-          }
-        ]
+        "controlImplementation": "virtual",
+        "senses": [ { "net": "Vout", "signal": "voltage" } ],
+        "drives": [ { "stage": "power_stage", "component": "Q1", "signal": "gate" } ]
       }
     ],
-    "interStageCircuit": [
-      {
-        "name": "Vin",
-        "kind": "externalPort",
-        "direction": "input",
-        "endpoints": [
-          {
-            "component": "C_in",
-            "pin": "1"
-          },
-          {
-            "component": "Q1",
-            "pin": "D"
-          }
-        ]
-      },
-      {
-        "name": "Vout",
-        "kind": "externalPort",
-        "direction": "output",
-        "endpoints": [
-          {
-            "component": "L1",
-            "pin": "2"
-          },
-          {
-            "component": "C_out",
-            "pin": "1"
-          }
-        ]
-      }
+    "interStageConnections": [
+      { "name": "Vin",  "kind": "externalPort", "direction": "input",
+        "endpoints": [ { "stage": "power_stage", "port": "in" } ] },
+      { "name": "GND",  "kind": "externalPort", "direction": "input",
+        "endpoints": [ { "stage": "power_stage", "port": "gnd" } ] },
+      { "name": "Vout", "kind": "externalPort", "direction": "output",
+        "endpoints": [ { "stage": "power_stage", "port": "out" } ] }
+    ]
+  },
+  "simulation": {
+    "analyses": [
+      { "type": "transient", "stopTime": 0.0005, "maximumTimeStep": 2e-8 }
+    ],
+    "stimulus": [
+      { "stage": "power_stage", "component": "Q1", "signal": "gate",
+        "waveform": { "type": "pwm", "frequency": 500000, "dutyCycle": 0.42 } }
     ]
   }
 }

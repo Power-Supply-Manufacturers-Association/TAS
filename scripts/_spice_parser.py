@@ -1,5 +1,9 @@
 """Minimal ngspice deck parser.
 
+NOTE: used by the OUTDATED spice_to_tas.py / tas_to_spice.py (pre-Lego TAS
+model). The SPICE parsing here is model-agnostic, but its callers emit/read
+the old topology shape — see docs/schema.md for the current CIAS/TAS model.
+
 Targets the deterministic output of MKF's ``generate_ngspice_circuit``.
 Not a full SPICE-3 parser — we only handle the subset MKF emits today:
 

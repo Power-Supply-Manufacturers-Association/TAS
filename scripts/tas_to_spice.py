@@ -1,10 +1,23 @@
 #!/usr/bin/env python3
-"""TAS topology + inputs → ngspice deck.
+# ============================================================================
+# OUTDATED — targets the PRE-LEGO TAS model; needs porting before reuse.
+# Since the CIAS/TAS redesign:
+#   * topology.interStageCircuit            -> topology.interStageConnections
+#   * stage.circuit is now a CIAS BRICK (inline or a "...?name=..." URI string)
+#     with its own ports[]; brick names are LOCAL -> SPICE nodes must be
+#     namespaced per stage to avoid collisions across reused bricks.
+#   * stage ports: inputPort/outputPorts {type,wire} -> portBinding {port,type}
+#     referencing brick ports; control is virtualControl | physicalControl.
+#   * inter-stage endpoints: {component,pin} -> stage-qualified {stage,port}.
+#   * simulation is now simulator-AGNOSTIC (analyses/models/stimulus),
+#     not SPICE spiceModel/spiceCommand.
+# See docs/schema.md and CIAS/schemas/CIAS.json for the current model.
+# ============================================================================
+"""TAS topology + inputs -> ngspice deck.
 
-Topology-agnostic writer. Reads a TAS ``topology`` document (the
-structure: stages, components, interStageCircuit) and a TAS ``inputs``
-document (operating points, designRequirements) and emits a flat ngspice
-netlist suitable for transient simulation.
+Topology writer. Reads a TAS ``topology`` document (stages, each owning a
+CIAS brick, plus interStageConnections) and a TAS ``inputs`` document
+(operating points, designRequirements) and emits a flat ngspice netlist.
 
 Component values are resolved by following each component's ``data`` URL
 to the corresponding ``TAS/data/*.ndjson`` entry. URLs with a

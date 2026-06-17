@@ -2,22 +2,10 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://psma.com/tas/utils.json",
   "title": "TAS utils",
-  "description": "Shared primitive types used across TAS schemas.",
+  "description": "Shared primitive types used across TAS schemas. dimensionWithTolerance is re-exported from PEAS for backward compatibility.",
   "$defs": {
     "dimensionWithTolerance": {
-      "type": "object",
-      "additionalProperties": false,
-      "description": "A scalar value expressed as nominal and/or a [minimum, maximum] range. At least one of nominal/minimum/maximum must be present.",
-      "properties": {
-        "nominal": { "type": "number" },
-        "minimum": { "type": "number" },
-        "maximum": { "type": "number" }
-      },
-      "anyOf": [
-        { "required": ["nominal"] },
-        { "required": ["minimum"] },
-        { "required": ["maximum"] }
-      ]
+      "$ref": "https://psma.com/peas/utils.json#/$defs/dimensionWithTolerance"
     }
   }
 }

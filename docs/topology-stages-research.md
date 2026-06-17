@@ -1,5 +1,9 @@
 # Stage-based topology decomposition — literature review
 
+> **Historical research artifact.** This document captures the literature review that
+> *informed* the stage design; it does not describe the current schema. For the live
+> CIAS/TAS model (bricks, stages, agnostic simulation), see [`schema.md`](schema.md).
+
 Background research before extending TAS to break a converter topology into named stages
 (e.g. *EMI filter → rectifier → PFC → bulk → inverter → isolation → output rectifier → output filter*).
 

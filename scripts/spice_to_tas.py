@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
-"""SPICE → TAS topology reader.
+# ============================================================================
+# OUTDATED — emits the PRE-LEGO TAS model; needs porting before reuse.
+# It produces stages with inline circuit.components/connections and an
+# `interStageCircuit`. The current model instead is: stage.circuit = a CIAS
+# brick (with ports[]), `interStageConnections` with stage-qualified
+# {stage,port} endpoints, portBinding{port,type}, virtual/physical control,
+# and an agnostic `simulation` block. See docs/schema.md + CIAS/schemas/CIAS.json.
+# ============================================================================
+"""SPICE -> TAS topology reader.
 
 Inverse of ``tas_to_spice.py``. Parses an ngspice deck (the kind
 emitted by either MKF's ``generate_ngspice_circuit`` or this repo's
