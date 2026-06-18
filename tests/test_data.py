@@ -110,19 +110,26 @@ def _build_tas_registry() -> Registry:
 
 @pytest.fixture(scope="session")
 def part_library_validators():
-    """{file_basename: (discriminator, Draft202012Validator)}."""
+    """{file_basename: (discriminator_path, Draft202012Validator)}.
+
+    The discriminator path is the chain of keys to unwrap before validating
+    against the family schema. Under the v2 model semiconductors carry a
+    two-level wrap ``{"semiconductor": {"mosfet": ...}}`` (the ``semiconductor``
+    branch is a full SAS document), while magnetics/capacitors/resistors keep
+    a single-level wrap.
+    """
     reg = _build_full_registry()
     out = {}
-    for fname, disc, repo, schema_file in [
-        ("mosfets.ndjson",    "mosfet",    "SAS", "mosfet.json"),
-        ("diodes.ndjson",     "diode",     "SAS", "diode.json"),
-        ("igbts.ndjson",      "igbt",      "SAS", "igbt.json"),
-        ("capacitors.ndjson", "capacitor", "CAS", "capacitor.json"),
-        ("resistors.ndjson",  "resistor",  "RAS", "resistor.json"),
-        ("magnetics.ndjson",  "magnetic",  "MAS", "magnetic.json"),
+    for fname, disc_path, repo, schema_file in [
+        ("mosfets.ndjson",    ["semiconductor", "mosfet"], "SAS", "mosfet.json"),
+        ("diodes.ndjson",     ["semiconductor", "diode"],  "SAS", "diode.json"),
+        ("igbts.ndjson",      ["semiconductor", "igbt"],   "SAS", "igbt.json"),
+        ("capacitors.ndjson", ["capacitor"],               "CAS", "capacitor.json"),
+        ("resistors.ndjson",  ["resistor"],                "RAS", "resistor.json"),
+        ("magnetics.ndjson",  ["magnetic"],                "MAS", "magnetic.json"),
     ]:
         schema = json.loads((PROTEUS / repo / "schemas" / schema_file).read_text())
-        out[fname] = (disc, Draft202012Validator(schema, registry=reg))
+        out[fname] = (disc_path, Draft202012Validator(schema, registry=reg))
     return out
 
 
@@ -174,15 +181,23 @@ def test_part_library_records_validate(part_library_validators, fname):
     path = DATA / fname
     if not path.exists():
         pytest.skip(f"{fname} not present")
-    disc, validator = part_library_validators[fname]
+    disc_path, validator = part_library_validators[fname]
     fails: list[tuple[int, str]] = []
     n = 0
     for ln, rec in _iter_ndjson(path):
         n += 1
-        if not isinstance(rec, dict) or list(rec.keys()) != [disc]:
-            fails.append((ln, f"top-level keys != [{disc!r}]: {sorted(rec) if isinstance(rec, dict) else type(rec)}"))
+        body = rec
+        bad = False
+        for depth, key in enumerate(disc_path):
+            if not isinstance(body, dict) or list(body.keys()) != [key]:
+                expected = "/".join(disc_path[: depth + 1])
+                got = sorted(body) if isinstance(body, dict) else type(body)
+                fails.append((ln, f"keys at {expected!r} != [{key!r}]: {got}"))
+                bad = True
+                break
+            body = body[key]
+        if bad:
             continue
-        body = rec[disc]
         errs = list(validator.iter_errors(body))
         if errs:
             fails.append((ln, f"{errs[0].message} @ {list(errs[0].absolute_path)}"))
