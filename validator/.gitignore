@@ -1,0 +1,4 @@
+# CMake build tree + FetchContent dependencies (nlohmann/json, pybind11, UnitTest++)
+build/
+__pycache__/
+*.pyc
