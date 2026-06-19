@@ -252,12 +252,79 @@ def _collect_wires(topology: dict[str, Any]) -> list[dict[str, Any]]:
     Each wire dict has at minimum ``name`` and ``endpoints`` (list of
     ``{component, pin}``). interStage wires may additionally have
     ``kind='externalPort'`` and ``direction`` for boundary signals.
+
+    v2 format: stage circuit connections may include port-endpoint entries
+    (``{"port": "portname"}``) that reference stage boundary ports declared in
+    interStageConnections (endpoints ``{"stage": ..., "port": ...}``). These
+    are resolved here: for each stage port endpoint in a circuit connection, the
+    global net name assigned by interStageConnections is substituted, expanding
+    the wire to cover all component pins connected via that port.
     """
-    wires: list[dict[str, Any]] = []
+    # Accept both old (interStageCircuit) and new (interStageConnections) key names.
+    inter = topology.get("interStageConnections") or topology.get("interStageCircuit", [])
+
+    # Detect v2 format: interStageConnections uses {stage, port} endpoints.
+    is_v2 = any(
+        "stage" in ep
+        for conn in inter
+        for ep in conn.get("endpoints", [])
+    )
+
+    if is_v2:
+        # Build (stage_name, port_name) -> global_net_name map from interStageConnections.
+        stage_port_to_net: dict[tuple[str, str], str] = {}
+        for conn in inter:
+            net_name = conn.get("name", "")
+            for ep in conn.get("endpoints", []):
+                sname = ep.get("stage")
+                pname = ep.get("port")
+                if sname and pname:
+                    stage_port_to_net[(sname, pname)] = net_name
+
+        wires: list[dict[str, Any]] = []
+        for stage in topology.get("stages", []):
+            sname = stage.get("name", "")
+            for conn in stage.get("circuit", {}).get("connections", []):
+                # Resolve port endpoints to global net names.
+                has_port_ep = any("port" in ep and "component" not in ep for ep in conn.get("endpoints", []))
+                if not has_port_ep:
+                    wires.append({**conn, "_origin": f"stage:{sname}"})
+                    continue
+                # Determine the global net name for this connection by looking up
+                # any port endpoint in the interStageConnections map.
+                port_eps = [ep for ep in conn.get("endpoints", []) if "port" in ep and "component" not in ep]
+                # Use the connection's own name as net name; if a port maps to an
+                # interStage wire, use that global name instead (the interStage wire
+                # name is what SPICE sees as the node).
+                global_net = conn.get("name", "")
+                for pep in port_eps:
+                    pname = pep.get("port", "")
+                    mapped = stage_port_to_net.get((sname, pname))
+                    if mapped:
+                        global_net = mapped
+                        break
+                # Emit a wire with only the component-pin endpoints (skip port endpoints)
+                # but renamed to the global net.
+                comp_eps = [ep for ep in conn.get("endpoints", []) if "component" in ep]
+                if comp_eps:
+                    wires.append({
+                        **conn,
+                        "name": global_net,
+                        "endpoints": comp_eps,
+                        "_origin": f"stage:{sname}",
+                    })
+        # Emit interStageConnections wires too (for externalPort detection etc.)
+        # These have {stage, port} endpoints; the net-assignment loop will skip them.
+        for conn in inter:
+            wires.append({**conn, "_origin": "interStage"})
+        return wires
+
+    # v1 path: flat {component, pin} endpoints everywhere.
+    wires = []
     for stage in topology.get("stages", []):
         for conn in stage.get("circuit", {}).get("connections", []):
             wires.append({**conn, "_origin": f"stage:{stage['name']}"})
-    for conn in topology.get("interStageCircuit", []):
+    for conn in inter:
         wires.append({**conn, "_origin": "interStage"})
     return wires
 
@@ -299,8 +366,15 @@ def _assign_nets(
         wname = w.get("name")
         if not wname:
             raise TasToSpiceError(f"Wire has no 'name': {w}")
-        net = "0" if wname == "GND" else wname
+        # Case-insensitive: both "GND" (from interStageConnections) and
+        # "gnd" (from isolated stage circuit connections) map to SPICE node 0.
+        net = "0" if wname.upper() == "GND" else wname
         for ep in w.get("endpoints", []):
+            # v2 port-endpoint connections (e.g. {"port": "in"}) have no
+            # "component" key — they reference a stage boundary port, not a
+            # real component pin. Skip them; they have no SPICE representation.
+            if "component" not in ep:
+                continue
             key = (ep["component"], ep["pin"])
             if key in nets and nets[key] != net:
                 raise TasToSpiceError(
@@ -591,7 +665,9 @@ def _emit_component(
 
 def _external_ports(topology: dict[str, Any]) -> dict[str, dict[str, Any]]:
     out: dict[str, dict[str, Any]] = {"input": {}, "output": {}}
-    for w in topology.get("interStageCircuit", []):
+    # Accept both old (interStageCircuit) and new (interStageConnections) key names.
+    inter = topology.get("interStageConnections") or topology.get("interStageCircuit", [])
+    for w in inter:
         if w.get("kind") != "externalPort":
             continue
         direction = w.get("direction")
