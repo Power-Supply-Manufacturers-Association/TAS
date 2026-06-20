@@ -35,6 +35,17 @@ void check_point(const json& pt, int idx, const json& dims, const std::string& m
         return;
     }
 
+    // CHECK: inductance magnitude — dimension-free unit-error guard (uH/mH/H).
+    // Real wound magnetics top out near ~10 H; nothing in a catalog reaches 100 H.
+    if (*L > thr::MAG_L_MAGNITUDE_IMP)
+        emit(out, ctx, "MAG_L_MAGNITUDE", Severity::Impossible, *L, thr::MAG_L_MAGNITUDE_IMP,
+             tag + fmt("inductance implausibly large (likely uH/H unit error) [H]", *L,
+                       thr::MAG_L_MAGNITUDE_IMP));
+    else if (*L > thr::MAG_L_MAGNITUDE_SUS)
+        emit(out, ctx, "MAG_L_MAGNITUDE", Severity::Suspicious, *L, thr::MAG_L_MAGNITUDE_SUS,
+             tag + fmt("inductance very large for a discrete magnetic [H]", *L,
+                       thr::MAG_L_MAGNITUDE_SUS));
+
     auto DCR = scalar_at(pt, {"dcResistance"});
     auto Isat = scalar_at(pt, {"saturationCurrentPeak"});
     auto srf = scalar_at(pt, {"selfResonantFrequency"});

@@ -110,7 +110,7 @@ std::vector<std::string> PartValidator::check_codes() {
         "GEN_TEMP_ORDER",
         // magnetics
         "MAG_DCR_GEOM", "MAG_DCR_PER_H", "MAG_ISAT_POWER", "MAG_SRF_L", "MAG_SRF_SANE",
-        "MAG_ENERGY_DENSITY", "MAG_L_TOLERANCE", "MAG_RATED_LE_SAT",
+        "MAG_ENERGY_DENSITY", "MAG_L_TOLERANCE", "MAG_L_MAGNITUDE", "MAG_RATED_LE_SAT",
         // capacitors
         "CAP_POSITIVITY", "CAP_MAGNITUDE", "CAP_TOLERANCE", "CAP_DF_BOUNDS", "CAP_ESR_C",
         "CAP_ENERGY_DENSITY", "CAP_LEAKAGE_CV", "CAP_INSULATION_RC",

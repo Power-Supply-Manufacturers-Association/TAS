@@ -48,6 +48,11 @@ inline constexpr double CAP_ENERGY_DENSITY_SUS_ALUM = 0.1e6;  // 0.1 J/cm^3
 inline constexpr double CAP_ENERGY_DENSITY_SUS_TANT = 9e6;    // 9 J/cm^3
 inline constexpr double CAP_ENERGY_DENSITY_SUS_FILM = 0.3e6;  // 0.3 J/cm^3
 inline constexpr double CAP_ENERGY_DENSITY_SUS_CERAMIC = 0.5e6;  // 0.5 J/cm^3 (non-advanced)
+// Inductance magnitude [H] — dimension-free sanity catching uH/mH/H unit slips.
+// The largest practical wound inductors are ~10 H; nothing in a parts catalog
+// reaches 100 H (most power magnetics are uH-mH).
+inline constexpr double MAG_L_MAGNITUDE_IMP = 100.0;     // > 100 H impossible
+inline constexpr double MAG_L_MAGNITUDE_SUS = 1.0;       // > 1 H suspicious
 // Capacitance magnitude [F] — dimension-free sanity that catches uF/F unit
 // errors (e.g. a 100 F MLCC/electrolytic). Only supercapacitors exceed ~1 F;
 // the largest commercial EDLC is ~3400 F.
