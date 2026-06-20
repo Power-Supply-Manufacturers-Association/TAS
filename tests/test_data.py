@@ -126,6 +126,7 @@ def part_library_validators():
         ("igbts.ndjson",      ["semiconductor", "igbt"],   "SAS", "igbt.json"),
         ("capacitors.ndjson", ["capacitor"],               "CAS", "capacitor.json"),
         ("resistors.ndjson",  ["resistor"],                "RAS", "resistor.json"),
+        ("varistors.ndjson",  ["varistor"],                "RAS", "varistor.json"),
         ("magnetics.ndjson",  ["magnetic"],                "MAS", "magnetic.json"),
     ]:
         schema = json.loads((PROTEUS / repo / "schemas" / schema_file).read_text())
@@ -175,7 +176,8 @@ def _summarise_failures(fails: list[tuple[int, str]], cap: int = 5) -> str:
 
 @pytest.mark.parametrize("fname", [
     "mosfets.ndjson", "diodes.ndjson", "igbts.ndjson",
-    "capacitors.ndjson", "resistors.ndjson", "magnetics.ndjson",
+    "capacitors.ndjson", "resistors.ndjson", "varistors.ndjson",
+    "magnetics.ndjson",
 ])
 def test_part_library_records_validate(part_library_validators, fname):
     path = DATA / fname
