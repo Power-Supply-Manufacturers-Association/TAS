@@ -21,7 +21,7 @@ import tas_validator  # noqa: E402
 
 DATA = HERE.parent / "data"
 FILES = ["magnetics", "capacitors", "resistors", "diodes", "mosfets", "igbts"]
-DATE = "2026-06-19"
+DATE = "2026-06-20"
 APPLY = "--apply" in sys.argv
 
 # Surgical scope: quarantine ONLY records whose impossibility is unambiguous data
@@ -37,6 +37,7 @@ CORRUPTION_CODES = {
     "MAG_ISAT_POWER",       # corrupt saturationCurrentPeak (Isat^2*DCR in kW range)
     "MAG_ENERGY_DENSITY",   # same corrupt Isat -> impossible stored-energy density
     "MAG_L_TOLERANCE",      # inductance min>nominal / max<nominal ordering
+    "MAG_SRF_L",            # SRF*sqrt(L) exceeds physical limit
     "RES_POWER_SIZE",       # power rating impossible for the stated body size
     "MOS_CHARGE_HIERARCHY", # Qgs+Qgd > total Qg
 }
