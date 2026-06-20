@@ -71,6 +71,20 @@ void check_capacitors(const json& datasheet, const Ctx& ctx, std::vector<Finding
     if (V && *V <= 0)
         emit(out, ctx, "CAP_POSITIVITY", Severity::Impossible, *V, 0, "ratedVoltage <= 0");
 
+    // CHECK: capacitance magnitude — dimension-free unit-error guard. Only
+    // supercapacitors exceed ~1 F, so a 100 F MLCC/electrolytic is a uF/F slip.
+    if (C && *C > 0) {
+        bool super = tech_has(tech, "supercapacitor") || tech_has(tech, "edlc");
+        double imp = super ? thr::CAP_MAGNITUDE_SUPER_IMP : thr::CAP_MAGNITUDE_IMP;
+        double sus = super ? thr::CAP_MAGNITUDE_SUPER_SUS : thr::CAP_MAGNITUDE_SUS;
+        if (*C > imp)
+            emit(out, ctx, "CAP_MAGNITUDE", Severity::Impossible, *C, imp,
+                 fmt("capacitance implausibly large (likely uF/F unit error) [F]", *C, imp));
+        else if (*C > sus)
+            emit(out, ctx, "CAP_MAGNITUDE", Severity::Suspicious, *C, sus,
+                 fmt("capacitance large for a non-supercapacitor [F]", *C, sus));
+    }
+
     // CHECK: capacitance tolerance ordering.
     if (elec->contains("capacitance") && (*elec)["capacitance"].is_object()) {
         const json& cc = (*elec)["capacitance"];

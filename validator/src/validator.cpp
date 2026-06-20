@@ -112,8 +112,8 @@ std::vector<std::string> PartValidator::check_codes() {
         "MAG_DCR_GEOM", "MAG_DCR_PER_H", "MAG_ISAT_POWER", "MAG_SRF_L", "MAG_SRF_SANE",
         "MAG_ENERGY_DENSITY", "MAG_L_TOLERANCE", "MAG_RATED_LE_SAT",
         // capacitors
-        "CAP_POSITIVITY", "CAP_TOLERANCE", "CAP_DF_BOUNDS", "CAP_ESR_C", "CAP_ENERGY_DENSITY",
-        "CAP_LEAKAGE_CV", "CAP_INSULATION_RC",
+        "CAP_POSITIVITY", "CAP_MAGNITUDE", "CAP_TOLERANCE", "CAP_DF_BOUNDS", "CAP_ESR_C",
+        "CAP_ENERGY_DENSITY", "CAP_LEAKAGE_CV", "CAP_INSULATION_RC",
         // resistors
         "RES_R_RANGE", "RES_POWER_SIZE", "RES_MAXV_SIZE", "RES_POWER_V_R", "RES_TEMPCO",
         "RES_TOLERANCE",

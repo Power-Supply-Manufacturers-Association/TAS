@@ -48,6 +48,13 @@ inline constexpr double CAP_ENERGY_DENSITY_SUS_ALUM = 0.1e6;  // 0.1 J/cm^3
 inline constexpr double CAP_ENERGY_DENSITY_SUS_TANT = 9e6;    // 9 J/cm^3
 inline constexpr double CAP_ENERGY_DENSITY_SUS_FILM = 0.3e6;  // 0.3 J/cm^3
 inline constexpr double CAP_ENERGY_DENSITY_SUS_CERAMIC = 0.5e6;  // 0.5 J/cm^3 (non-advanced)
+// Capacitance magnitude [F] — dimension-free sanity that catches uF/F unit
+// errors (e.g. a 100 F MLCC/electrolytic). Only supercapacitors exceed ~1 F;
+// the largest commercial EDLC is ~3400 F.
+inline constexpr double CAP_MAGNITUDE_IMP = 10.0;        // non-super: > 10 F impossible
+inline constexpr double CAP_MAGNITUDE_SUS = 1.0;         // non-super: > 1 F suspicious
+inline constexpr double CAP_MAGNITUDE_SUPER_IMP = 1e5;   // supercap: > 100 kF impossible
+inline constexpr double CAP_MAGNITUDE_SUPER_SUS = 5e3;   // supercap: > 5 kF suspicious
 // Dissipation factor (tan delta) upper bounds by dielectric family.
 inline constexpr double CAP_DF_CERAMIC_NPO = 0.001;
 inline constexpr double CAP_DF_CERAMIC_X7R = 0.025;
