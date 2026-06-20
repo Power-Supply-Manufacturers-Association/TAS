@@ -209,6 +209,56 @@ def test_part_library_records_validate(part_library_validators, fname):
     )
 
 
+def _manufacturer_ref(rec):
+    """(name, reference) reached through the 1-level (capacitor/magnetic/...) or
+    2-level (semiconductor/{mosfet,diode,igbt}) discriminator wrap, or None."""
+    if not isinstance(rec, dict) or len(rec) != 1:
+        return None
+    body = next(iter(rec.values()))
+    if not isinstance(body, dict):
+        return None
+    mi = body.get("manufacturerInfo")
+    if not isinstance(mi, dict):
+        for v in body.values():
+            if isinstance(v, dict) and isinstance(v.get("manufacturerInfo"), dict):
+                mi = v["manufacturerInfo"]
+                break
+    if not isinstance(mi, dict):
+        return None
+    name, ref = mi.get("name"), mi.get("reference")
+    return (name, ref) if name and ref else None
+
+
+@pytest.mark.parametrize("fname", [
+    "mosfets.ndjson", "diodes.ndjson", "igbts.ndjson",
+    "capacitors.ndjson", "resistors.ndjson", "varistors.ndjson",
+    "magnetics.ndjson",
+])
+def test_part_library_references_unique(fname):
+    """No (manufacturer, reference) may appear more than once in a part library.
+
+    Append-only imports have historically stacked several conflicting records
+    under one part number; schema validation cannot catch that because it checks
+    each record independently. This guards against re-accumulation."""
+    path = DATA / fname
+    if not path.exists():
+        pytest.skip(f"{fname} not present")
+    first: dict[tuple, int] = {}
+    dups: list[tuple[int, str]] = []
+    for ln, rec in _iter_ndjson(path):
+        key = _manufacturer_ref(rec)
+        if key is None:
+            continue
+        if key in first:
+            dups.append((ln, f"{key[0]} {key[1]!r} also at line {first[key]}"))
+        else:
+            first[key] = ln
+    assert not dups, (
+        f"{fname}: {len(dups)} duplicate (manufacturer, reference) records:\n"
+        + _summarise_failures(dups)
+    )
+
+
 # ---------------------------------------------------------------------------
 # CIAS brick library
 # ---------------------------------------------------------------------------
