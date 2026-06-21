@@ -37,21 +37,27 @@ A real power converter design involves dozens of interrelated decisions scattere
 │    outputVoltage: { nominal: 12 }  outputCurrent: { nominal: 2 } │
 │    efficiencyTarget: 0.88                                        │
 │                                                                  │
-│  COMPONENTS — what you build with                                │
-│    T1: E25/13/7 N87 transformer  ← full MAS/PEAS document        │
-│    Q1: IPD65R420CFD 650V MOSFET  ← full SAS/PEAS document        │
-│    D1: STPS8L40B Schottky        ← full SAS/PEAS document        │
-│    Cout: 2× 220µF polymer        ← full CAS/PEAS document        │
-│    Netlist: pin-to-node connections                              │
+│  TOPOLOGY — how you build it                                     │
+│    stages[]: each instantiates one CIAS brick (a .subckt)        │
+│      switchingCell → half-bridge brick                           │
+│        Qh,Ql: IPD65R420CFD MOSFETs ← SAS/PEAS via brick component│
+│      isolation    → transformer brick                            │
+│        T1: E25/13/7 N87            ← MAS/PEAS via brick component │
+│      outputFilter → rectifier+cap brick (D1 SAS, Cout CAS)       │
+│    interStageConnections[]: wire the stage ports together        │
 │                                                                  │
 │  OUTPUTS — what you computed                                     │
 │    losses: { core: 0.4W, winding: 0.6W, switch: 1.1W, ... }    │
 │    kpis: { efficiency: 0.921, outputRipple: 0.045 }             │
 │    stresses: { switchVoltageMargin: 0.48, ... }                  │
+│                                                                  │
+│  SIMULATION (optional) — stimulus + analyses, simulator-agnostic │
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-Only `inputs` is required — a TAS document can represent just a spec (inputs only), a partial design (inputs + components), or a fully analyzed design (all three sections).
+`inputs` and `topology` are required; `outputs` and `simulation` are optional —
+so a TAS document can be just a spec + intended assembly, or a fully analyzed
+design with results and a simulation setup.
 
 ### The Component Database
 
@@ -85,14 +91,28 @@ python3 scripts/component_query.py magnetics --min-inductance 10e-6 --min-isat 5
 
 TAS uses [JSON Schema 2020-12](https://json-schema.org/draft/2020-12/schema). All schemas are in `schemas/`.
 
+TAS is a **v2** schema model: a converter is a tree of **stages**, each
+instantiating one [CIAS](https://github.com/Power-Supply-Manufacturers-Association/CIAS)
+circuit brick, wired together — analogous to a complete SPICE deck. (The schema
+files are the source of truth; older prose describing a flat
+`components`/`netlist` model is obsolete.)
+
 ```
 schemas/
-├── TAS.json         Root document — inputs (required), components, outputs (optional)
-├── inputs.json      Design requirements + operating points
-├── outputs.json     Loss breakdown, stress analysis, KPIs
-├── components.json  Component list (PEAS references) + circuit netlist
-└── utils.json       Shared types: dimensionWithTolerance, signalDescriptor
+├── TAS.json         Root — required: inputs, topology; optional: outputs, simulation
+├── inputs.json      Design requirements + operating points (the spec to satisfy)
+├── topology.json    stages[] + interStageConnections[] — the assembly of CIAS bricks
+├── outputs.json     Per-design metrics + per-operating-point losses/stresses
+└── utils.json       Shared types
 ```
+
+- **`topology.json`** — `stages[]` (variants: `powerStage`, `isolationStage`,
+  `virtualControl`, `physicalControl`) plus `interStageConnections[]`. Each power
+  stage references a CIAS brick (`circuitRef`), binds its ports (`portBinding` /
+  `portType`), and control stages carry `sense`/`drive` instead of power ports.
+- **`simulation`** (in `TAS.json`) — simulator-agnostic stimulus + analyses
+  (transient / ac / dcSweep / operatingPoint), model-library entries, and
+  per-component model bindings/overrides. Translatable to SPICE, PLECS, etc.
 
 ### TAS sits at the top of the PEAS hierarchy
 
