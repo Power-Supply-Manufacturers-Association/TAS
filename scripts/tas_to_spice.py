@@ -199,7 +199,15 @@ def capacitance_of(entry: dict[str, Any]) -> float:
 
 
 def inductance_of(entry: dict[str, Any]) -> float:
-    return _nominal(_electrical(entry)["inductance"], "inductance")
+    el = _electrical(entry)
+    if isinstance(el, list):
+        if len(el) != 1:
+            raise TasToSpiceError(
+                f"inductance_of requires a single-winding entry; "
+                f"got {len(el)} windings — use winding_inductances_of() for multi-winding parts"
+            )
+        el = el[0]
+    return _nominal(el["inductance"], "inductance")
 
 
 def resistance_of(entry: dict[str, Any]) -> float:
@@ -713,12 +721,16 @@ def _emit_testbench(
             )
 
     ports = _external_ports(topology)
-    if len(ports["input"]) != 1:
+    # GND is a mandatory reference potential in every topology and appears as an
+    # "input" externalPort by convention — it is NOT an independent signal input.
+    # Strip it before the count check so circuits with {Vin, GND} still pass.
+    _signal_inputs = {k: v for k, v in ports["input"].items() if k.upper() != "GND"}
+    if len(_signal_inputs) != 1:
         raise TasToSpiceError(
-            f"Expected exactly 1 input externalPort, found "
-            f"{list(ports['input'])}"
+            f"Expected exactly 1 input externalPort (excluding GND), found "
+            f"{list(_signal_inputs)}"
         )
-    input_wire = next(iter(ports["input"]))
+    input_wire = next(iter(_signal_inputs))
     if len(ports["output"]) < 1:
         raise TasToSpiceError("No output externalPort found")
 
