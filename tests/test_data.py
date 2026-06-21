@@ -44,7 +44,7 @@ def _build_full_registry() -> Registry:
     pure $ref schemas (e.g. CAS/utils.json -> PEAS/utils.json)."""
     by_id: dict[str, dict] = {}
     by_path: dict[Path, dict] = {}
-    for repo_name in ("PEAS", "SAS", "CAS", "RAS", "MAS"):
+    for repo_name in ("PEAS", "SAS", "CAS", "RAS", "MAS", "CTAS", "CONAS"):
         repo_dir = PROTEUS / repo_name / "schemas"
         if not repo_dir.is_dir():
             continue
@@ -128,6 +128,7 @@ def part_library_validators():
         ("resistors.ndjson",  ["resistor"],                "RAS", "resistor.json"),
         ("varistors.ndjson",  ["varistor"],                "RAS", "varistor.json"),
         ("magnetics.ndjson",  ["magnetic"],                "MAS", "magnetic.json"),
+        ("controllers.ndjson", ["controller"],             "CTAS", "controller.json"),
     ]:
         schema = json.loads((PROTEUS / repo / "schemas" / schema_file).read_text())
         out[fname] = (disc_path, Draft202012Validator(schema, registry=reg))
@@ -177,7 +178,7 @@ def _summarise_failures(fails: list[tuple[int, str]], cap: int = 5) -> str:
 @pytest.mark.parametrize("fname", [
     "mosfets.ndjson", "diodes.ndjson", "igbts.ndjson",
     "capacitors.ndjson", "resistors.ndjson", "varistors.ndjson",
-    "magnetics.ndjson",
+    "magnetics.ndjson", "controllers.ndjson",
 ])
 def test_part_library_records_validate(part_library_validators, fname):
     path = DATA / fname
@@ -232,7 +233,7 @@ def _manufacturer_ref(rec):
 @pytest.mark.parametrize("fname", [
     "mosfets.ndjson", "diodes.ndjson", "igbts.ndjson",
     "capacitors.ndjson", "resistors.ndjson", "varistors.ndjson",
-    "magnetics.ndjson",
+    "magnetics.ndjson", "controllers.ndjson",
 ])
 def test_part_library_references_unique(fname):
     """No (manufacturer, reference) may appear more than once in a part library.

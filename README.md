@@ -14,7 +14,7 @@ TAS is a JSON schema standard for describing power converter designs end-to-end:
 | Diodes | 9,097 | Nexperia | 35.2% |
 | IGBTs | 2,092 | STMicroelectronics | 22.3% |
 | Magnetics | 19,222 | Würth Elektronik | 33.1% |
-| Controllers | 387 | onsemi | 18.6% |
+| Controllers | 1,336 | onsemi | — |
 | Converters | 101 | — | — |
 | **Active Total** | **64,097** | — | — |
 | Quarantine | 2,493 | — | — |
@@ -71,7 +71,7 @@ design with results and a simulation setup.
 | `capacitors.ndjson` | 20,932 | MLCC, electrolytic, film, polymer — dissipationFactor as fraction | Würth Elektronik 18.7% |
 | `resistors.ndjson` | 7,476 | Sense, feedback, snubber, current-sense types | Vishay 20.6% |
 | `magnetics.ndjson` | 19,222 | Power inductors, RF inductors, transformers, chokes | Würth Elektronik 33.1% |
-| `controllers.ndjson` | 387 | PWM/LLC controllers, gate drivers | onsemi 18.6% |
+| `controllers.ndjson` | 1,336 | PWM/multiphase/LLC/PFC/sync-rect controllers, gate drivers, references, sense amps — **validated against CTAS `controller.json`** | onsemi |
 | `converters.ndjson` | 101 | Full converter TAS documents (reference designs) | — |
 | `quarantine.ndjson` | 2,493 | Parts with verified data errors, excluded from queries | — |
 
@@ -180,6 +180,34 @@ X7R typical DF = 0.025 (not 2.5). This was a systematic error in early database 
   }
 }
 ```
+
+**Controller structure (CTAS path):**
+```json
+{
+  "controller": {
+    "manufacturerInfo": {
+      "name": "Texas Instruments",
+      "reference": "UCC256301",
+      "datasheetInfo": {
+        "part": { "partNumber": "UCC256301", "deviceType": "controller" },
+        "function": { "category": "llcController", "intendedTopologies": ["llcResonantConverter"] },
+        "electrical": { "gateDrive": { "sourceCurrentPeak": 0.5, "sinkCurrentPeak": 1.0 } }
+      }
+    }
+  }
+}
+```
+Each `controllers.ndjson` record is a single-key `{ "controller": { … } }` wrap validated against
+[`CTAS/schemas/controller.json`](../CTAS/schemas/controller.json) by `tests/test_data.py`. The
+required discriminator is `manufacturerInfo.datasheetInfo.function.category` (a `controllerCategory`
+value: `pwmController`, `multiphaseController`, `llcController`, `pfcController`,
+`syncRectifierController`, `gateDriver`, `digitalController`, `shuntRegulator`, …). Category-specific
+electricals live in optional sub-objects under `electrical` (`gateDrive`, `isolation`, `currentMode`,
+`shuntReference`, `hotSwap`, …). The legacy freeform records were migrated by
+`scripts/port_controllers.py`; parts that are not control ICs (modules, EEPROMs, LDOs) went to
+`controllers.quarantine_nonctrl.ndjson`, controllers with no determinable category to
+`controllers.quarantine_sparse.ndjson`, and the verbatim original to
+`controllers.pre-ctas.backup.ndjson`.
 
 **Wurth magnetics structure (WE-Aplan path, different from standard SAS):**
 ```json
