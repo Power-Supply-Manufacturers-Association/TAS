@@ -51,7 +51,24 @@
           "type": "array",
           "description": "Open-loop drive: directly imposes a waveform on a switch/driver (its gate or enable), bypassing any controlStage. Lets the same TAS run open-loop (stimulus) or closed-loop (controlStage) — the two may coexist; a stimulus on a switch takes precedence over a drive for that switch.",
           "items": { "$ref": "#/$defs/stimulus" }
+        },
+        "initialConditions": {
+          "type": "array",
+          "description": "Initial transient state: nodes that begin pre-charged to a given voltage at t=0 rather than being solved from a cold DC operating point. Simulator-agnostic — a SPICE backend realises these as .ic plus a use-initial-conditions transient; other backends as initial-state assignments. Needed by converters whose steady state is unreachable from a cold start: e.g. resonant tanks whose series capacitors leave the DC operating point ill-conditioned, or active synchronous rectifiers that cannot self-start into a 0 V output.",
+          "items": { "$ref": "#/$defs/initialCondition" }
         }
+      }
+    },
+
+    "initialCondition": {
+      "title": "initialCondition",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["node", "voltage"],
+      "description": "One node's initial voltage at t=0.",
+      "properties": {
+        "node": { "type": "string", "description": "Node to initialise — an inter-stage connection name or external-port name (e.g. the output port)." },
+        "voltage": { "type": "number", "description": "Initial node voltage at t=0, in volts." }
       }
     },
 
