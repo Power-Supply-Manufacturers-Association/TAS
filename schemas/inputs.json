@@ -146,7 +146,7 @@
       "type": "object",
       "additionalProperties": false,
       "required": ["name"],
-      "description": "Load condition for one output rail at one operating point. Provide exactly one of current or power; voltage is an optional setpoint override (programmable supplies, CC/CV charger phases).",
+      "description": "Load condition for one output rail at one operating point: the converter's output-side boundary condition (the dual of inputVoltage), so it lives here per operating point — NOT a converter stage. Provide exactly one of current or power (the load magnitude); voltage is an optional setpoint override (programmable supplies, CC/CV charger phases); loadType selects the small-signal behaviour.",
       "properties": {
         "name": {
           "type": "string",
@@ -166,6 +166,12 @@
           "type": "number",
           "exclusiveMinimum": 0,
           "description": "Load power at this OP, W. Provide exactly one of current or power."
+        },
+        "loadType": {
+          "type": "string",
+          "enum": ["resistive", "constantCurrent", "constantPower"],
+          "default": "resistive",
+          "description": "Small-signal behaviour of the load at this operating point. 'resistive' = R = V^2/P (or V/I) — the conventional design/sim default; 'constantCurrent' = ideal current sink; 'constantPower' = constant-power load (CPL: negative incremental resistance dv/di<0, the classic downstream-regulated-converter instability case). Magnitude comes from current/power above. Omit → 'resistive'. Battery and downstream-converter loads need additional parameters (OCV+R_int / a converter reference) and will be added as a discriminated variant when required."
         }
       },
       "oneOf": [
