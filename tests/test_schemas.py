@@ -56,6 +56,11 @@ def schemas():
     for path in PEAS_SCHEMA_DIR.rglob("*.json"):
         s = json.loads(path.read_text())
         out[s["$id"]] = s
+    aas_dir = REPO.parent / "AAS" / "schemas"
+    if aas_dir.is_dir():
+        for path in aas_dir.rglob("*.json"):
+            s = json.loads(path.read_text())
+            out[s["$id"]] = s
     return out
 
 

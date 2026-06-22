@@ -44,7 +44,7 @@ def _build_full_registry() -> Registry:
     pure $ref schemas (e.g. CAS/utils.json -> PEAS/utils.json)."""
     by_id: dict[str, dict] = {}
     by_path: dict[Path, dict] = {}
-    for repo_name in ("PEAS", "SAS", "CAS", "RAS", "MAS", "CTAS", "CONAS"):
+    for repo_name in ("PEAS", "SAS", "CAS", "RAS", "MAS", "CTAS", "CONAS", "AAS"):
         repo_dir = PROTEUS / repo_name / "schemas"
         if not repo_dir.is_dir():
             continue
@@ -96,6 +96,11 @@ def _build_tas_registry() -> Registry:
     for path in peas_dir.rglob("*.json"):
         s = json.loads(path.read_text())
         schemas[s["$id"]] = s
+    aas_dir = REPO.parent / "AAS" / "schemas"
+    if aas_dir.is_dir():
+        for path in aas_dir.rglob("*.json"):
+            s = json.loads(path.read_text())
+            schemas[s["$id"]] = s
     resources = [
         (sid, Resource(contents=s, specification=DRAFT202012))
         for sid, s in schemas.items()
@@ -129,6 +134,7 @@ def part_library_validators():
         ("varistors.ndjson",  ["varistor"],                "RAS", "varistor.json"),
         ("magnetics.ndjson",  ["magnetic"],                "MAS", "magnetic.json"),
         ("controllers.ndjson", ["controller"],             "CTAS", "controller.json"),
+        ("analog_ics.ndjson", ["analog"],                  "AAS", "AAS.json"),
     ]:
         schema = json.loads((PROTEUS / repo / "schemas" / schema_file).read_text())
         out[fname] = (disc_path, Draft202012Validator(schema, registry=reg))
@@ -178,7 +184,7 @@ def _summarise_failures(fails: list[tuple[int, str]], cap: int = 5) -> str:
 @pytest.mark.parametrize("fname", [
     "mosfets.ndjson", "diodes.ndjson", "igbts.ndjson",
     "capacitors.ndjson", "resistors.ndjson", "varistors.ndjson",
-    "magnetics.ndjson", "controllers.ndjson",
+    "magnetics.ndjson", "controllers.ndjson", "analog_ics.ndjson",
 ])
 def test_part_library_records_validate(part_library_validators, fname):
     path = DATA / fname
@@ -233,7 +239,7 @@ def _manufacturer_ref(rec):
 @pytest.mark.parametrize("fname", [
     "mosfets.ndjson", "diodes.ndjson", "igbts.ndjson",
     "capacitors.ndjson", "resistors.ndjson", "varistors.ndjson",
-    "magnetics.ndjson", "controllers.ndjson",
+    "magnetics.ndjson", "controllers.ndjson", "analog_ics.ndjson",
 ])
 def test_part_library_references_unique(fname):
     """No (manufacturer, reference) may appear more than once in a part library.
