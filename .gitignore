@@ -9,3 +9,7 @@ data/quarantine.ndjson.corrupted-*
 
 __pycache__/
 *.pyc
+
+# librarian/ — local-only missing-field enrichment system (Postgres-backed ticket
+# queue + nightly DigiKey/Mouser+Sonnet loop). Runs only on this machine; never committed.
+/librarian/
