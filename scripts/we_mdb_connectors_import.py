@@ -4,8 +4,10 @@ Source: /tmp/we_connectors.csv (mdb-export of 'WE - Electromechanical Components
 The complete WE connector catalog (4,142 parts) with rated current/voltage/pins/pitch/temp/
 impedance/contact-R. Relaxed CONAS: partNumber + family + ratedCurrentPerContact required.
 """
-import csv, json, re, os
-SRC="/tmp/we_connectors.csv"; OUT="/home/alf/PSMA/TAS/staging/we"; os.makedirs(OUT,exist_ok=True)
+import csv, json, re, os, sys
+SRC=sys.argv[1] if len(sys.argv)>1 else "/tmp/we_connectors.csv"
+TAG=sys.argv[2] if len(sys.argv)>2 else "mdb"
+OUT="/home/alf/PSMA/TAS/staging/we"; os.makedirs(OUT,exist_ok=True)
 
 def num(s):
     if not s: return None
@@ -26,7 +28,7 @@ def metres(s):
 FAMILY=[("terminal block","terminalBlock"),("board-to-board","boardToBoard"),
         ("wire-to-board","wireToBoard"),("fpc","fpcFfc"),("coaxial","rf"),
         ("circular","circular"),("input/output","dataInterface"),
-        ("dc power jack","power"),("led","wireToBoard")]
+        ("dc power jack","power"),("led","wireToBoard"),("redcube","power")]
 def family_of(cat):
     c=(cat or "").lower()
     for frag,fam in FAMILY:
@@ -112,7 +114,7 @@ def main():
             rec["quarantineReason"]="incomplete WE connector (MDB); missing: "+"; ".join(map(str,missing))+" (2026-06-24)"
             inc.append(rec)
         else: mains.append(rec)
-    for nm,recs in [("mdb.main",mains),("mdb.incomplete",inc)]:
+    for nm,recs in [(TAG+".main",mains),(TAG+".incomplete",inc)]:
         with open(f"{OUT}/{nm}.ndjson","w") as fo:
             for r in recs: fo.write(json.dumps(r,ensure_ascii=False)+"\n")
     print(json.dumps({"rows":len(rows),"main":len(mains),"incomplete":len(inc)}))
