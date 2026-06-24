@@ -27,6 +27,8 @@ FetchContent_MakeAvailable(json pybind11)
 # --- core library (pure C++, no Python) --------------------------------------
 add_library(tas_validator_core STATIC
   src/helpers.cpp
+  src/eseries.cpp
+  src/corpus.cpp
   src/validator.cpp
   src/magnetics.cpp
   src/capacitors.cpp
@@ -37,7 +39,8 @@ add_library(tas_validator_core STATIC
   src/bjts.cpp
   src/varistors.cpp
   src/connectors.cpp
-  src/analog.cpp)
+  src/analog.cpp
+  src/controllers.cpp)
 target_include_directories(tas_validator_core PUBLIC
   "${CMAKE_CURRENT_SOURCE_DIR}/include")
 target_link_libraries(tas_validator_core PUBLIC nlohmann_json::nlohmann_json)

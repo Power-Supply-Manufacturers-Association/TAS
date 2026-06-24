@@ -15,17 +15,6 @@
 #include <string>
 
 namespace tas {
-namespace {
-
-std::string fmt(const std::string& s, double a, double b = 0) {
-    std::ostringstream os;
-    os << s << " (value=" << a;
-    if (b != 0) os << ", threshold=" << b;
-    os << ")";
-    return os.str();
-}
-
-}  // namespace
 
 void check_bjts(const json& datasheet, const Ctx& ctx, std::vector<Finding>& out,
                 std::vector<std::string>& skipped) {
@@ -45,10 +34,14 @@ void check_bjts(const json& datasheet, const Ctx& ctx, std::vector<Finding>& out
     if (Ic && std::fabs(*Ic) <= 0)
         emit(out, ctx, "BJT_POSITIVITY", Severity::Impossible, *Ic, 0, "collectorCurrent == 0");
 
-    // CHECK: VCE(sat) range.
+    // CHECK: VCE(sat) range. Zero saturation voltage is impossible (was silently
+    // accepted by the old `v > 0` guard).
     if (Vcesat) {
         double v = std::fabs(*Vcesat);
-        if (v > 0 && (v < thr::BJT_VCESAT_IMP_LO || v > thr::BJT_VCESAT_IMP_HI))
+        if (v <= 0)
+            emit(out, ctx, "BJT_VCESAT_RANGE", Severity::Impossible, v, 0,
+                 "saturationVoltage == 0");
+        else if (v < thr::BJT_VCESAT_IMP_LO || v > thr::BJT_VCESAT_IMP_HI)
             emit(out, ctx, "BJT_VCESAT_RANGE", Severity::Impossible, v, 0,
                  fmt("|Vce(sat)| outside (0.01,5) V", v));
         else if (v > thr::BJT_VCESAT_SUS_HI)

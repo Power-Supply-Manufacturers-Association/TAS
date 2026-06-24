@@ -28,7 +28,9 @@ json to_json(const py::object& obj) {
         return json::parse(obj.cast<std::string>());
     }
     py::object dumps = py::module_::import("json").attr("dumps");
-    std::string text = dumps(obj).cast<std::string>();
+    // allow_nan=False so NaN/Infinity are rejected at serialization (they are not
+    // valid JSON and would otherwise slip past scalar()'s isfinite guard).
+    std::string text = dumps(obj, py::arg("allow_nan") = false).cast<std::string>();
     return json::parse(text);
 }
 
@@ -64,13 +66,37 @@ PYBIND11_MODULE(tas_validator, m) {
         .def_readonly("valid", &Verdict::valid)
         .def_readonly("findings", &Verdict::findings)
         .def_readonly("skipped", &Verdict::skipped)
+        .def_readonly("completeness", &Verdict::completeness)
         .def("__repr__", [](const Verdict& v) {
             return "<Verdict valid=" + std::string(v.valid ? "True" : "False") + " findings=" +
                    std::to_string(v.findings.size()) + ">";
         });
 
+    py::class_<CorpusFinding>(m, "CorpusFinding")
+        .def_readonly("index", &CorpusFinding::index)
+        .def_readonly("code", &CorpusFinding::code)
+        .def_readonly("reference", &CorpusFinding::reference)
+        .def_readonly("message", &CorpusFinding::message)
+        .def_readonly("value", &CorpusFinding::value)
+        .def_readonly("score", &CorpusFinding::score)
+        .def("__repr__", [](const CorpusFinding& f) {
+            return "<CorpusFinding " + f.code + " #" + std::to_string(f.index) + ": " + f.message +
+                   ">";
+        });
+
     m.def("validate", &do_validate, py::arg("record"),
           "Validate one part record (dict or JSON string). Returns a Verdict.");
+    m.def(
+        "validate_corpus",
+        [](const py::iterable& records) {
+            std::vector<json> recs;
+            for (const py::handle& h : records)
+                recs.push_back(to_json(py::reinterpret_borrow<py::object>(h)));
+            return validate_corpus(recs);
+        },
+        py::arg("records"),
+        "Batch-screen a list of records for cohort statistical outliers. Returns "
+        "[CorpusFinding, ...].");
     m.def(
         "validate_json",
         [](const std::string& text) {

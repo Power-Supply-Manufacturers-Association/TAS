@@ -12,17 +12,6 @@
 #include <string>
 
 namespace tas {
-namespace {
-
-std::string fmt(const std::string& s, double a, double b = 0) {
-    std::ostringstream os;
-    os << s << " (value=" << a;
-    if (b != 0) os << ", threshold=" << b;
-    os << ")";
-    return os.str();
-}
-
-}  // namespace
 
 void check_varistors(const json& datasheet, const Ctx& ctx, std::vector<Finding>& out,
                      std::vector<std::string>& skipped) {
@@ -93,6 +82,28 @@ void check_varistors(const json& datasheet, const Ctx& ctx, std::vector<Finding>
     if (auto cap = scalar_at(*elec, {"capacitance"}))
         if (*cap <= 0)
             emit(out, ctx, "VAR_CAPACITANCE", Severity::Impossible, *cap, 0, "capacitance <= 0");
+
+    // CHECK (NEW): clamping current must not exceed the peak surge rating.
+    if (auto Iclamp = scalar_at(*elec, {"clampingCurrent"})) {
+        if (*Iclamp <= 0)
+            emit(out, ctx, "VAR_POSITIVITY", Severity::Impossible, *Iclamp, 0,
+                 "clampingCurrent <= 0");
+        else if (Ipp && *Ipp > 0 && *Iclamp > *Ipp)
+            emit(out, ctx, "VAR_CLAMP_CURRENT", Severity::Impossible, *Iclamp, *Ipp,
+                 fmt("clampingCurrent exceeds peakSurgeCurrent", *Iclamp, *Ipp));
+    }
+
+    // CHECK (NEW): surge-energy rating positivity + magnitude (largest real ~1080 J).
+    if (auto E = scalar_at(*elec, {"energyAbsorption"})) {
+        if (*E <= 0)
+            emit(out, ctx, "VAR_POSITIVITY", Severity::Impossible, *E, 0, "energyAbsorption <= 0");
+        else if (*E > thr::VAR_ENERGY_IMP)
+            emit(out, ctx, "VAR_ENERGY_RANGE", Severity::Impossible, *E, thr::VAR_ENERGY_IMP,
+                 fmt("energyAbsorption exceeds any MOV [J]", *E, thr::VAR_ENERGY_IMP));
+        else if (*E > thr::VAR_ENERGY_SUS)
+            emit(out, ctx, "VAR_ENERGY_RANGE", Severity::Suspicious, *E, thr::VAR_ENERGY_SUS,
+                 fmt("energyAbsorption very high [J]", *E, thr::VAR_ENERGY_SUS));
+    }
 }
 
 }  // namespace tas

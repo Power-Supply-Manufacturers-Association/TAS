@@ -35,6 +35,10 @@ struct Verdict {
     bool valid = true;                 // false iff any finding is Impossible
     std::vector<Finding> findings;     // all fired checks (Suspicious + Impossible)
     std::vector<std::string> skipped;  // check codes skipped for missing input data
+    // Fraction of the family's core datasheet fields that are present (0..1), or
+    // -1 if no manifest exists for the component. A non-binary authenticity signal:
+    // a near-empty fabricated record scores low. Does NOT affect `valid`.
+    double completeness = -1.0;
 };
 
 // Context threaded into every per-family check.
@@ -73,6 +77,23 @@ public:
     static std::vector<std::string> check_codes();
 };
 
+// A corpus-level finding: produced by validate_corpus, which screens a whole batch
+// of records for anomalies invisible to per-record validation.
+struct CorpusFinding {
+    std::size_t index = 0;    // index into the input records vector
+    std::string code;         // e.g. "GEN_COHORT_OUTLIER"
+    std::string reference;    // the offending part's reference
+    std::string message;
+    double value = 0.0;       // the outlier value
+    double score = 0.0;       // robust z-score (Iglewicz-Hoaglin) that tripped it
+};
+
+// Batch screen: within each (manufacturer, component) cohort, flag a numeric field
+// value that is a robust-z (median/MAD) outlier far from its cohort mates — a typo
+// or fabricated value that per-record physics bounds pass. SCREENING only; this is
+// kept entirely separate from validate() so the per-record contract is unchanged.
+std::vector<CorpusFinding> validate_corpus(const std::vector<json>& records);
+
 // --- per-family check entry points (implemented in the matching .cpp) ---------
 // Each appends Findings for fired checks and skipped-codes for missing inputs.
 void check_magnetics(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
@@ -85,5 +106,6 @@ void check_bjts(const json& datasheet, const Ctx&, std::vector<Finding>&, std::v
 void check_varistors(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
 void check_connectors(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
 void check_analog(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
+void check_controllers(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
 
 }  // namespace tas

@@ -3,6 +3,7 @@
 //   electrical.{capacitance,ratedVoltage,dissipationFactor,esr,leakageCurrent,
 //               insulationResistance}, part.technology,
 //   mechanical.shape.volume (or mechanical.dimensions).
+#include "tas_validator/eseries.hpp"
 #include "tas_validator/helpers.hpp"
 #include "tas_validator/thresholds.hpp"
 #include "tas_validator/validator.hpp"
@@ -13,17 +14,13 @@
 namespace tas {
 namespace {
 
-std::string fmt(const std::string& s, double a, double b = 0) {
-    std::ostringstream os;
-    os << s << " (value=" << a;
-    if (b != 0) os << ", threshold=" << b;
-    os << ")";
-    return os.str();
-}
-
 // Dissipation-factor ceiling for a normalised technology token.
 double df_ceiling(const std::string& t) {
-    if (tech_has(t, "npo") || tech_has(t, "c0g") || tech_has(t, "classi")) return thr::CAP_DF_CERAMIC_NPO;
+    // Ceramic class-1 (C0G/NP0). Cover NP0-with-zero and "Class 1"/"Class I" forms
+    // so a class-1 part is not given the looser X7R ceiling.
+    if (tech_has(t, "npo") || tech_has(t, "np0") || tech_has(t, "c0g") ||
+        tech_has(t, "classi") || tech_has(t, "class1"))
+        return thr::CAP_DF_CERAMIC_NPO;
     if (tech_has(t, "y5v") || tech_has(t, "z5u")) return thr::CAP_DF_CERAMIC_Y5V;
     if (tech_has(t, "x7r") || tech_has(t, "x5r") || tech_has(t, "mlcc") || tech_has(t, "ceramic"))
         return thr::CAP_DF_CERAMIC_X7R;
@@ -97,11 +94,19 @@ void check_capacitors(const json& datasheet, const Ctx& ctx, std::vector<Finding
             emit(out, ctx, "CAP_TOLERANCE", Severity::Impossible, *mx, *nom, "capacitance maximum < nominal");
     }
 
-    // CHECK: dissipation factor bounds.
+    // CHECK: dissipation factor bounds. DF>=1 is physically possible for cold/HF
+    // aluminum electrolytics, so it is SUSPICIOUS (not IMPOSSIBLE); only DF<0 or a
+    // grossly-large DF is impossible.
     if (auto df = scalar_at(*elec, {"dissipationFactor"})) {
-        if (*df < 0 || *df >= 1.0)
-            emit(out, ctx, "CAP_DF_BOUNDS", Severity::Impossible, *df, 1.0,
-                 fmt("dissipation factor outside [0,1)", *df));
+        if (*df < 0)
+            emit(out, ctx, "CAP_DF_BOUNDS", Severity::Impossible, *df, 0,
+                 fmt("dissipation factor < 0", *df));
+        else if (*df >= 10.0)
+            emit(out, ctx, "CAP_DF_BOUNDS", Severity::Impossible, *df, 10.0,
+                 fmt("dissipation factor implausibly large", *df, 10.0));
+        else if (*df >= 1.0)
+            emit(out, ctx, "CAP_DF_BOUNDS", Severity::Suspicious, *df, 1.0,
+                 fmt("dissipation factor >= 1 (only cold/HF electrolytics)", *df, 1.0));
         else {
             double ceil = df_ceiling(tech);
             if (*df > ceil)
@@ -135,6 +140,10 @@ void check_capacitors(const json& datasheet, const Ctx& ctx, std::vector<Finding
     // CHECK (NEW): leakage current vs C*V (charge bled per second).
     if (C && V && *C > 0 && *V > 0) {
         if (auto leak = scalar_at(*elec, {"leakageCurrent"})) {
+            if (*leak < 0) {
+                emit(out, ctx, "CAP_POSITIVITY", Severity::Impossible, *leak, 0,
+                     "leakageCurrent < 0");
+            }
             double per_cv = *leak / (*C * *V);  // 1/s
             if (per_cv > thr::CAP_LEAKAGE_PER_CV_IMP)
                 emit(out, ctx, "CAP_LEAKAGE_CV", Severity::Impossible, per_cv,
@@ -160,11 +169,16 @@ void check_capacitors(const json& datasheet, const Ctx& ctx, std::vector<Finding
         }
     }
 
-    // CHECK (NEW): insulation time constant Riso*C.
+    // CHECK (NEW): insulation time constant Riso*C. The low bound applies only to
+    // BULK caps (C > 1 uF); ceramics legitimately compute sub-second RC. A negative
+    // insulation resistance is impossible.
     if (C && *C > 0) {
         if (auto riso = scalar_at(*elec, {"insulationResistance"})) {
+            if (*riso < 0)
+                emit(out, ctx, "CAP_POSITIVITY", Severity::Impossible, *riso, 0,
+                     "insulationResistance < 0");
             double rc = *riso * *C;  // seconds
-            if (rc < thr::CAP_RC_SECONDS_SUS_LOW)
+            if (rc >= 0 && *C > thr::CAP_RC_GATE_FARAD && rc < thr::CAP_RC_SECONDS_SUS_LOW)
                 emit(out, ctx, "CAP_INSULATION_RC", Severity::Suspicious, rc,
                      thr::CAP_RC_SECONDS_SUS_LOW, fmt("Riso*C suspiciously short [s]", rc,
                                                       thr::CAP_RC_SECONDS_SUS_LOW));
@@ -172,6 +186,27 @@ void check_capacitors(const json& datasheet, const Ctx& ctx, std::vector<Finding
                 emit(out, ctx, "CAP_INSULATION_RC", Severity::Suspicious, rc,
                      thr::CAP_RC_SECONDS_SUS_HIGH, fmt("Riso*C suspiciously long [s]", rc,
                                                        thr::CAP_RC_SECONDS_SUS_HIGH));
+        }
+    }
+
+    // CHECK (NEW, anti-synthesis): the nominal capacitance should land on an IEC
+    // 60063 E-series preferred value, and not be over-precise. SUSPICIOUS only —
+    // a real-vs-fabricated signal, not a physics bound.
+    if (const json* cf = at(*elec, "capacitance")) {
+        std::optional<double> cnom;
+        if (cf->is_number())
+            cnom = cf->get<double>();
+        else if (cf->is_object() && cf->contains("nominal") && (*cf)["nominal"].is_number())
+            cnom = (*cf)["nominal"].get<double>();
+        if (cnom && *cnom > 0) {
+            if (!eseries::on_grid(*cnom))
+                emit(out, ctx, "CAP_E_SERIES", Severity::Suspicious, *cnom, 0,
+                     fmt("capacitance is not an IEC 60063 E-series preferred value [F]", *cnom));
+            if (eseries::sig_figs(*cnom) > 4)
+                emit(out, ctx, "GEN_OVERPRECISION", Severity::Suspicious, *cnom, 0,
+                     fmt("capacitance nominal carries more significant figures than a preferred "
+                         "value [F]",
+                         *cnom));
         }
     }
 }

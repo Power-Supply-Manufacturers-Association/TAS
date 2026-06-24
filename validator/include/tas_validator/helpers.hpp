@@ -53,9 +53,20 @@ std::optional<double> scalar(const json* field, const std::string& path);
 // error/skip path label.
 std::optional<double> scalar_at(const json& node, const std::vector<std::string>& path);
 
-// Volume in m^3 from three linear dimensions in metres. nullopt if any is
-// absent; throws if any present dimension is malformed or <= 0.
+// Volume in m^3 from three linear dimensions in metres. nullopt if any is absent
+// OR non-positive (the caller may emit its own finding for a bad dimension);
+// throws MalformedField only if a present dimension is the wrong TYPE.
 std::optional<double> box_volume_m3(const json& mechanical_dims_or_node);
+
+// True if `dims` is an object with a present length/width/height that is <= 0.
+// Lets a family check surface a bad dimension as a finding instead of aborting.
+bool has_nonpositive_dimension(const json& dims);
+
+// Format a finding message: "<msg> (value=<a>)" or, with the 3-arg overload,
+// "<msg> (value=<a>, threshold=<b>)". Two overloads (not a default arg) so a
+// genuine threshold of 0 is still printed — no in-band sentinel.
+std::string fmt(const std::string& msg, double value);
+std::string fmt(const std::string& msg, double value, double threshold);
 
 // Normalise a technology / material string to a lowercase, punctuation-stripped
 // token for bucket lookups (e.g. "Alum. Electrolytic" -> "alumelectrolytic",

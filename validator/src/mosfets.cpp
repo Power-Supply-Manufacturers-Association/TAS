@@ -15,17 +15,6 @@
 #include <string>
 
 namespace tas {
-namespace {
-
-std::string fmt(const std::string& s, double a, double b = 0) {
-    std::ostringstream os;
-    os << s << " (value=" << a;
-    if (b != 0) os << ", threshold=" << b;
-    os << ")";
-    return os.str();
-}
-
-}  // namespace
 
 void check_mosfets(const json& datasheet, const Ctx& ctx, std::vector<Finding>& out,
                    std::vector<std::string>& skipped) {
@@ -41,10 +30,12 @@ void check_mosfets(const json& datasheet, const Ctx& ctx, std::vector<Finding>& 
     auto coss = scalar_at(*elec, {"outputCapacitance"});
     auto crss = scalar_at(*elec, {"reverseTransferCapacitance"});
     if (ciss && coss && crss) {
-        if (!(*ciss > *coss && *coss > *crss && *crss > 0))
-            emit(out, ctx, "MOS_CAP_HIERARCHY", Severity::Impossible, 0, 0,
-                 fmt("capacitance order violated: require Ciss>Coss>Crss>0; Ciss=", *ciss) +
-                     fmt(" Coss=", *coss) + fmt(" Crss=", *crss));
+        if (!(*ciss > *coss && *coss > *crss && *crss > 0)) {
+            std::ostringstream m;
+            m << "capacitance order violated: require Ciss>Coss>Crss>0; Ciss=" << *ciss
+              << " Coss=" << *coss << " Crss=" << *crss;
+            emit(out, ctx, "MOS_CAP_HIERARCHY", Severity::Impossible, *crss, 0, m.str());
+        }
     } else {
         skipped.push_back("MOS_CAP_HIERARCHY");
     }
@@ -71,13 +62,17 @@ void check_mosfets(const json& datasheet, const Ctx& ctx, std::vector<Finding>& 
         auto nom = scalar_at(*vthf, {"nominal"});
         auto mn = scalar_at(*vthf, {"minimum"});
         auto mx = scalar_at(*vthf, {"maximum"});
-        // Ordering invariant in magnitude: |min| <= |nominal| <= |max|.
-        if (nom && mn && std::fabs(*mn) > std::fabs(*nom) + 1e-9)
-            emit(out, ctx, "MOS_VTH_WINDOW", Severity::Impossible, *mn, *nom,
-                 "|Vth minimum| > |nominal|");
-        if (nom && mx && std::fabs(*mx) < std::fabs(*nom) - 1e-9)
-            emit(out, ctx, "MOS_VTH_WINDOW", Severity::Impossible, *mx, *nom,
-                 "|Vth maximum| < |nominal|");
+        // Ordering: nominal must lie within the [min,max] bracket. Convention-
+        // agnostic — P-channel datasheets label Vth min/max by magnitude in some
+        // catalog records and by signed value in others, so neither pure signed nor
+        // pure magnitude ordering is correct. We flag only a nominal outside the
+        // bracket, which is a true error under either convention.
+        if (nom && mn && mx) {
+            double lo = std::min(*mn, *mx), hi = std::max(*mn, *mx);
+            if (*nom < lo - 1e-9 || *nom > hi + 1e-9)
+                emit(out, ctx, "MOS_VTH_WINDOW", Severity::Impossible, *nom, 0,
+                     "Vth nominal outside [minimum, maximum] bracket");
+        }
         double lo = thr::MOS_VTH_SI_LO, hi = thr::MOS_VTH_SI_HI;
         if (tech_has(tech, "sic")) { lo = thr::MOS_VTH_SIC_LO; hi = thr::MOS_VTH_SIC_HI; }
         else if (tech_has(tech, "gan")) { lo = thr::MOS_VTH_GAN_LO; hi = thr::MOS_VTH_GAN_HI; }
@@ -92,16 +87,36 @@ void check_mosfets(const json& datasheet, const Ctx& ctx, std::vector<Finding>& 
         skipped.push_back("MOS_VTH_WINDOW");
     }
 
-    // CHECK (NEW): gate drive headroom |Vgs(max)| > |Vth(max)|.
+    // CHECK: gate-drive coherence (SUSPICIOUS, never IMPOSSIBLE). The old check
+    // compared abs-max Vgs to Vth(max) and mass-invalidated real ROHM/Infineon SiC
+    // parts whose gateThresholdVoltage field is polluted with the recommended gate-
+    // DRIVE window (~15 V), not the true ~3 V threshold. The correct invariant uses
+    // the Rds(on) test drive (onResistanceVgs): it must exceed |Vth(max)| and stay
+    // within |gateSourceVoltageMax|.
     auto vgsmax = scalar_at(*elec, {"gateSourceVoltageMax"});
-    if (vgsmax && vthf) {
+    auto vdrive = scalar_at(*elec, {"onResistanceVgs"});
+    if (vdrive && vthf) {
         auto vthmax = scalar_at(*vthf, {"maximum"});
         if (!vthmax) vthmax = scalar_at(*vthf, {"nominal"});
-        if (vthmax && std::fabs(*vgsmax) <= std::fabs(*vthmax))
-            emit(out, ctx, "MOS_VGS_VS_VTH", Severity::Impossible, *vgsmax, *vthmax,
-                 fmt("|gateSourceVoltageMax| <= |Vth(max)|: device could never fully enhance",
-                     *vgsmax, *vthmax));
+        if (vthmax && std::fabs(*vdrive) <= std::fabs(*vthmax))
+            emit(out, ctx, "MOS_VGS_VS_VTH", Severity::Suspicious, std::fabs(*vdrive),
+                 std::fabs(*vthmax),
+                 fmt("onResistanceVgs <= |Vth(max)|: Rds(on) drive could not enhance the device",
+                     std::fabs(*vdrive), std::fabs(*vthmax)));
     }
+    if (vdrive && vgsmax && std::fabs(*vdrive) > std::fabs(*vgsmax) + 1e-9)
+        emit(out, ctx, "MOS_VGS_VS_VTH", Severity::Suspicious, std::fabs(*vdrive),
+             std::fabs(*vgsmax),
+             fmt("onResistanceVgs exceeds |gateSourceVoltageMax| (drive above abs-max rating)",
+                 std::fabs(*vdrive), std::fabs(*vgsmax)));
+
+    // CHECK: pulsed drain current must be >= continuous (magnitude — P-ch negative).
+    auto idc = scalar_at(*elec, {"continuousDrainCurrent"});
+    auto ipulse = scalar_at(*elec, {"pulsedDrainCurrent"});
+    if (idc && ipulse && std::fabs(*ipulse) + 1e-9 < std::fabs(*idc))
+        emit(out, ctx, "MOS_IPULSE_VS_IDC", Severity::Impossible, *ipulse, *idc,
+             fmt("|pulsedDrainCurrent| < |continuousDrainCurrent|", std::fabs(*ipulse),
+                 std::fabs(*idc)));
 
     // CHECK (NEW): body-diode / reverse-conduction forward drop.
     if (auto vf = scalar_at(*elec, {"bodyDiodeForwardVoltage"})) {
@@ -118,9 +133,11 @@ void check_mosfets(const json& datasheet, const Ctx& ctx, std::vector<Finding>& 
         double pmax = (*tjmax - 25.0) / *rthjc;  // case held at 25 C
         if (pmax > 0) {
             double ratio = *pdiss / pmax;
-            if (ratio > thr::MOS_PTHERMAL_RATIO_SUS || ratio < 1.0 / thr::MOS_PTHERMAL_RATIO_SUS)
+            // Upper bound only: datasheets often rate Pdiss at an elevated case
+            // temperature (giving ratio < 1), so the lower bound was a false-positive.
+            if (ratio > thr::MOS_PTHERMAL_RATIO_SUS)
                 emit(out, ctx, "MOS_POWER_THERMAL", Severity::Suspicious, *pdiss, pmax,
-                     fmt("powerDissipation inconsistent with (Tjmax-25)/Rth(j-c) [W]", *pdiss, pmax));
+                     fmt("powerDissipation exceeds thermal limit (Tjmax-25)/Rth(j-c) [W]", *pdiss, pmax));
         }
     }
 

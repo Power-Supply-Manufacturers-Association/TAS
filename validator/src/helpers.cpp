@@ -3,6 +3,7 @@
 
 #include <cctype>
 #include <cmath>
+#include <sstream>
 
 namespace tas {
 
@@ -49,9 +50,31 @@ std::optional<double> box_volume_m3(const json& dims) {
     auto w = scalar_at(dims, {"width"});
     auto h = scalar_at(dims, {"height"});
     if (!l || !w || !h) return std::nullopt;
-    if (*l <= 0 || *w <= 0 || *h <= 0)
-        throw MalformedField("dimensions: non-positive length/width/height");
+    // A non-positive dimension is bad data, not a fatal type error: return nullopt
+    // so the volume-dependent check skips while the caller surfaces it as a finding.
+    if (*l <= 0 || *w <= 0 || *h <= 0) return std::nullopt;
     return (*l) * (*w) * (*h);
+}
+
+bool has_nonpositive_dimension(const json& dims) {
+    if (!dims.is_object()) return false;
+    for (const char* k : {"length", "width", "height"}) {
+        auto v = scalar_at(dims, {k});  // throws MalformedField on wrong type (intended)
+        if (v && *v <= 0) return true;
+    }
+    return false;
+}
+
+std::string fmt(const std::string& msg, double value) {
+    std::ostringstream os;
+    os << msg << " (value=" << value << ")";
+    return os.str();
+}
+
+std::string fmt(const std::string& msg, double value, double threshold) {
+    std::ostringstream os;
+    os << msg << " (value=" << value << ", threshold=" << threshold << ")";
+    return os.str();
 }
 
 std::string norm_tech(const json* field) {

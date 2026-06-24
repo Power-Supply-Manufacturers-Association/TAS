@@ -11,17 +11,6 @@
 #include <string>
 
 namespace tas {
-namespace {
-
-std::string fmt(const std::string& s, double a, double b = 0) {
-    std::ostringstream os;
-    os << s << " (value=" << a;
-    if (b != 0) os << ", threshold=" << b;
-    os << ")";
-    return os.str();
-}
-
-}  // namespace
 
 void check_diodes(const json& datasheet, const Ctx& ctx, std::vector<Finding>& out,
                   std::vector<std::string>& skipped) {
@@ -30,7 +19,12 @@ void check_diodes(const json& datasheet, const Ctx& ctx, std::vector<Finding>& o
         skipped.push_back("DIO_*");
         return;
     }
-    std::string tech = norm_tech(at(datasheet, "part", "technology"));
+    // Device type lives in part.subType (schottky/sicSchottky/tvs/zener/ultrafast/
+    // esd/rectifier...); part.technology only ever carries Si/SiC in the catalog.
+    // Combine both so the type-specific branches (Schottky Vf band, Qrr-majority)
+    // actually fire instead of being dead code.
+    std::string tech = norm_tech(at(datasheet, "part", "technology")) +
+                       norm_tech(at(datasheet, "part", "subType"));
     bool majority = tech_has(tech, "schottky") || tech_has(tech, "gan");
     // TVS / Zener parts: the "forwardVoltage" field stores the clamp/breakdown
     // voltage (tens of volts), not a PN forward drop. Detect by the TVS-only
@@ -48,6 +42,10 @@ void check_diodes(const json& datasheet, const Ctx& ctx, std::vector<Finding>& o
         emit(out, ctx, "DIO_POSITIVITY", Severity::Impossible, *Vr, 0, "reverseVoltage <= 0");
     if (If && *If <= 0)
         emit(out, ctx, "DIO_POSITIVITY", Severity::Impossible, *If, 0, "forwardCurrent <= 0");
+    if (auto ilk = scalar_at(*elec, {"reverseLeakageCurrent"}))
+        if (*ilk < 0)
+            emit(out, ctx, "DIO_POSITIVITY", Severity::Impossible, *ilk, 0,
+                 "reverseLeakageCurrent < 0");
 
     // CHECK (NEW): forward-voltage range by technology (skipped for TVS/Zener,
     // whose forwardVoltage field carries clamp/breakdown voltage).
@@ -57,14 +55,14 @@ void check_diodes(const json& datasheet, const Ctx& ctx, std::vector<Finding>& o
         if (*Vf < thr::DIO_VF_HARD_LO || *Vf > thr::DIO_VF_HARD_HI) {
             emit(out, ctx, "DIO_VF_RANGE", Severity::Impossible, *Vf, 0,
                  fmt("forwardVoltage outside (0.05,5) V", *Vf));
-        } else if (tech_has(tech, "schottky")) {
-            if (*Vf > thr::DIO_VF_SCHOTTKY_HI)
-                emit(out, ctx, "DIO_VF_RANGE", Severity::Suspicious, *Vf, thr::DIO_VF_SCHOTTKY_HI,
-                     fmt("forwardVoltage high for Schottky", *Vf, thr::DIO_VF_SCHOTTKY_HI));
-        } else if (tech_has(tech, "sic")) {
+        } else if (tech_has(tech, "sic")) {  // SiC (incl. sicSchottky) — wider Vf band
             if (*Vf < thr::DIO_VF_SIC_LO || *Vf > thr::DIO_VF_SIC_HI)
                 emit(out, ctx, "DIO_VF_RANGE", Severity::Suspicious, *Vf, 0,
                      fmt("forwardVoltage outside SiC band", *Vf));
+        } else if (tech_has(tech, "schottky")) {  // silicon Schottky — low Vf
+            if (*Vf < thr::DIO_VF_SCHOTTKY_LO || *Vf > thr::DIO_VF_SCHOTTKY_HI)
+                emit(out, ctx, "DIO_VF_RANGE", Severity::Suspicious, *Vf, 0,
+                     fmt("forwardVoltage outside Schottky band", *Vf));
         } else {  // assume Si PN
             if (*Vf < thr::DIO_VF_SI_LO || *Vf > thr::DIO_VF_SI_HI)
                 emit(out, ctx, "DIO_VF_RANGE", Severity::Suspicious, *Vf, 0,
@@ -72,6 +70,23 @@ void check_diodes(const json& datasheet, const Ctx& ctx, std::vector<Finding>& o
         }
     } else {
         skipped.push_back("DIO_VF_RANGE");
+    }
+
+    // CHECK (NEW, cross-parameter): TVS voltage ordering. The working (standoff)
+    // voltage sits below the 1 mA breakdown, which sits below the surge clamp.
+    if (tvs) {
+        auto vso = scalar_at(*elec, {"standoffVoltage"});
+        auto vbr = scalar_at(*elec, {"breakdownVoltage"});
+        auto vcl = scalar_at(*elec, {"clampingVoltage"});
+        if (vso && vcl && *vso > 0 && *vcl > 0 && *vso >= *vcl)
+            emit(out, ctx, "DIO_TVS_ORDERING", Severity::Impossible, *vso, *vcl,
+                 fmt("standoffVoltage >= clampingVoltage", *vso, *vcl));
+        if (vso && vbr && *vso > 0 && *vbr > 0 && *vbr < *vso)
+            emit(out, ctx, "DIO_TVS_ORDERING", Severity::Impossible, *vbr, *vso,
+                 fmt("breakdownVoltage < standoffVoltage", *vbr, *vso));
+        if (vbr && vcl && *vbr > 0 && *vcl > 0 && *vcl < *vbr)
+            emit(out, ctx, "DIO_TVS_ORDERING", Severity::Impossible, *vcl, *vbr,
+                 fmt("clampingVoltage < breakdownVoltage", *vcl, *vbr));
     }
 
     // CHECK (NEW): surge current must exceed continuous forward current.

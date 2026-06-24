@@ -2,6 +2,7 @@
 // Resistor physics checks. `datasheet` is the datasheetInfo object:
 //   electrical.{resistance,tolerance,temperatureCoefficient,powerRating,maxVoltage},
 //   part.technology, mechanical.{length,width,height}.
+#include "tas_validator/eseries.hpp"
 #include "tas_validator/helpers.hpp"
 #include "tas_validator/thresholds.hpp"
 #include "tas_validator/validator.hpp"
@@ -11,17 +12,6 @@
 #include <string>
 
 namespace tas {
-namespace {
-
-std::string fmt(const std::string& s, double a, double b = 0) {
-    std::ostringstream os;
-    os << s << " (value=" << a;
-    if (b != 0) os << ", threshold=" << b;
-    os << ")";
-    return os.str();
-}
-
-}  // namespace
 
 void check_resistors(const json& datasheet, const Ctx& ctx, std::vector<Finding>& out,
                      std::vector<std::string>& skipped) {
@@ -39,11 +29,12 @@ void check_resistors(const json& datasheet, const Ctx& ctx, std::vector<Finding>
     auto L = mech ? scalar_at(*mech, {"length"}) : std::nullopt;
     auto W = mech ? scalar_at(*mech, {"width"}) : std::nullopt;
 
-    // CHECK: resistance range.
+    // CHECK: resistance range. resistance == 0 is a real 0-ohm jumper/link (Yageo
+    // YC-series arrays, many vendors), so only a NEGATIVE resistance is impossible.
     if (R) {
-        if (*R <= 0)
-            emit(out, ctx, "RES_R_RANGE", Severity::Impossible, *R, 0, "resistance <= 0");
-        else if (*R < thr::RES_R_MIN_SUS)
+        if (*R < 0)
+            emit(out, ctx, "RES_R_RANGE", Severity::Impossible, *R, 0, "resistance < 0");
+        else if (*R > 0 && *R < thr::RES_R_MIN_SUS)
             emit(out, ctx, "RES_R_RANGE", Severity::Suspicious, *R, thr::RES_R_MIN_SUS,
                  fmt("resistance below manufacturable floor [ohm]", *R, thr::RES_R_MIN_SUS));
         else if (*R > thr::RES_R_MAX_SUS)
@@ -52,6 +43,12 @@ void check_resistors(const json& datasheet, const Ctx& ctx, std::vector<Finding>
     } else {
         skipped.push_back("RES_R_RANGE");
     }
+
+    // CHECK: positivity of the power and voltage ratings (were silently accepted).
+    if (P && *P <= 0)
+        emit(out, ctx, "RES_POWER_SIZE", Severity::Impossible, *P, 0, "powerRating <= 0");
+    if (Vmax && *Vmax <= 0)
+        emit(out, ctx, "RES_MAXV_SIZE", Severity::Impossible, *Vmax, 0, "maxVoltage <= 0");
 
     // CHECK: power dissipation density over footprint.
     if (P && L && W && *L > 0 && *W > 0) {
@@ -80,14 +77,10 @@ void check_resistors(const json& datasheet, const Ctx& ctx, std::vector<Finding>
                  fmt("maxVoltage/length implies high field [V/m]", field, thr::RES_FIELD_VPM_SUS));
     }
 
-    // CHECK (NEW): P = V^2/R consistency. Implied power at rated voltage should
-    // not greatly exceed the power rating.
-    if (Vmax && R && P && *R > 0 && *P > 0) {
-        double implied = (*Vmax) * (*Vmax) / *R;
-        if (implied > *P * thr::RES_PVR_RATIO_SUS)
-            emit(out, ctx, "RES_POWER_V_R", Severity::Suspicious, implied, *P,
-                 fmt("maxVoltage^2/R far exceeds powerRating [W]", implied, *P));
-    }
+    // (Removed RES_POWER_V_R: maxVoltage^2/R >> powerRating is normal for high-ohm
+    // voltage-limited resistors, and ~76% of catalog parts back-compute maxVoltage as
+    // sqrt(P*R) so the field carries no independent information. Real-vs-synthetic
+    // discrimination for resistors belongs to the E-series preferred-value check.)
 
     // CHECK (NEW): temperature coefficient magnitude.
     if (auto tc = scalar_at(*elec, {"temperatureCoefficient"})) {
@@ -103,6 +96,31 @@ void check_resistors(const json& datasheet, const Ctx& ctx, std::vector<Finding>
         else if (*tol > thr::RES_TOL_MAX_SUS)
             emit(out, ctx, "RES_TOLERANCE", Severity::Suspicious, *tol, thr::RES_TOL_MAX_SUS,
                  fmt("tolerance fraction very large", *tol, thr::RES_TOL_MAX_SUS));
+    }
+
+    // CHECK (NEW, anti-synthesis): the nominal resistance should land on an IEC
+    // 60063 E-series preferred value, and not carry more significant figures than a
+    // real preferred value. Skip sub-0.1 ohm sense/shunt parts (non-E-series by
+    // design). SUSPICIOUS only — a real-vs-fabricated signal, not a physics bound.
+    if (const json* rf = at(*elec, "resistance")) {
+        std::optional<double> rnom;
+        if (rf->is_number())
+            rnom = rf->get<double>();
+        else if (rf->is_object() && rf->contains("nominal") && (*rf)["nominal"].is_number())
+            rnom = (*rf)["nominal"].get<double>();
+        std::string tech = norm_tech(at(datasheet, "part", "technology"));
+        bool sense = tech_has(tech, "shunt") || tech_has(tech, "current") ||
+                     tech_has(tech, "sense");
+        if (rnom && *rnom >= 0.1 && !sense) {
+            if (!eseries::on_grid(*rnom))
+                emit(out, ctx, "RES_E_SERIES", Severity::Suspicious, *rnom, 0,
+                     fmt("resistance is not an IEC 60063 E-series preferred value [ohm]", *rnom));
+            if (eseries::sig_figs(*rnom) > 4)
+                emit(out, ctx, "GEN_OVERPRECISION", Severity::Suspicious, *rnom, 0,
+                     fmt("resistance nominal carries more significant figures than a preferred "
+                         "value [ohm]",
+                         *rnom));
+        }
     }
 }
 

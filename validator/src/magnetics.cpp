@@ -2,6 +2,7 @@
 // Magnetics physics checks. `datasheet` is the datasheetInfo object; its
 // `electrical` member is an ARRAY of operating points (inductor/transformer
 // windings), so every check runs per op-point and tags findings with the index.
+#include "tas_validator/eseries.hpp"
 #include "tas_validator/helpers.hpp"
 #include "tas_validator/thresholds.hpp"
 #include "tas_validator/validator.hpp"
@@ -12,14 +13,6 @@
 
 namespace tas {
 namespace {
-
-std::string fmt(const std::string& s, double a, double b = 0) {
-    std::ostringstream os;
-    os << s << " (value=" << a;
-    if (b != 0) os << ", threshold=" << b;
-    os << ")";
-    return os.str();
-}
 
 void check_point(const json& pt, int idx, const json& dims, const std::string& material,
                  const Ctx& ctx, std::vector<Finding>& out, std::vector<std::string>& skipped) {
@@ -46,6 +39,28 @@ void check_point(const json& pt, int idx, const json& dims, const std::string& m
              tag + fmt("inductance very large for a discrete magnetic [H]", *L,
                        thr::MAG_L_MAGNITUDE_SUS));
 
+    // CHECK (anti-synthesis): power-inductor inductance should be an E-series
+    // preferred value (gated to L >= 1 uH; sub-uH ferrite beads / RF chip inductors
+    // are characterised by impedance, not a preferred L). SUSPICIOUS only.
+    if (*L >= 1e-6 && pt.contains("inductance")) {
+        const json& lf = pt["inductance"];
+        std::optional<double> lnom;
+        if (lf.is_number())
+            lnom = lf.get<double>();
+        else if (lf.is_object() && lf.contains("nominal") && lf["nominal"].is_number())
+            lnom = lf["nominal"].get<double>();
+        if (lnom && *lnom > 0) {
+            if (!eseries::on_grid(*lnom))
+                emit(out, ctx, "MAG_E_SERIES", Severity::Suspicious, *lnom, 0,
+                     tag + fmt("inductance is not an E-series preferred value [H]", *lnom));
+            if (eseries::sig_figs(*lnom) > 4)
+                emit(out, ctx, "GEN_OVERPRECISION", Severity::Suspicious, *lnom, 0,
+                     tag + fmt("inductance nominal carries more significant figures than a "
+                               "preferred value [H]",
+                               *lnom));
+        }
+    }
+
     auto DCR = scalar_at(pt, {"dcResistance"});
     auto Isat = scalar_at(pt, {"saturationCurrentPeak"});
     auto srf = scalar_at(pt, {"selfResonantFrequency"});
@@ -65,6 +80,11 @@ void check_point(const json& pt, int idx, const json& dims, const std::string& m
         }
         vol = box_volume_m3(dims);
     }
+    // A non-positive dimension is bad data — surface it (box_volume_m3 now returns
+    // nullopt instead of throwing, so the other checks still run for this part).
+    if (has_nonpositive_dimension(dims))
+        emit(out, ctx, "MAG_DIM_NONPOSITIVE", Severity::Suspicious, 0, 0,
+             tag + "a mechanical dimension (length/width/height) is <= 0");
 
     // The DCR geometric/material ratios assume a wound POWER inductor. For
     // ferrite beads and nH-scale RF chip inductors (L < 1 uH, characterised by
@@ -110,18 +130,26 @@ void check_point(const json& pt, int idx, const json& dims, const std::string& m
                  tag + fmt("Isat^2*DCR suspiciously high [W]", p, thr::MAG_ISAT_POWER_SUS));
     }
 
-    // CHECK 4: SRF * sqrt(L), plus SRF sanity floor.
+    // CHECK 4: SRF sanity + SRF*sqrt(L) parasitic-resonance bound. srf<=0 is a
+    // placeholder (skip, not impossible); the band is (1 kHz, 1e11 Hz]. The IMP
+    // tier on SRF*sqrt(L) is gated to L>1nH (mirrors the SUS branch) so tiny
+    // high-SRF chip beads / common-mode chokes are not wrongly invalidated.
     if (srf) {
-        if (*srf <= 0 || *srf < thr::MAG_SRF_FLOOR_HZ)
+        if (*srf <= 0) {
+            skipped.push_back("MAG_SRF_SANE");
+        } else if (*srf < thr::MAG_SRF_FLOOR_HZ || *srf > thr::MAG_SRF_CEIL_HZ) {
             emit(out, ctx, "MAG_SRF_SANE", Severity::Impossible, *srf, thr::MAG_SRF_FLOOR_HZ,
-                 tag + fmt("self-resonant frequency below 1 kHz / non-positive", *srf));
-        double prod = (*srf) * std::sqrt(*L);
-        if (prod > thr::MAG_SRF_L_IMP)
-            emit(out, ctx, "MAG_SRF_L", Severity::Impossible, prod, thr::MAG_SRF_L_IMP,
-                 tag + fmt("SRF*sqrt(L) impossibly high", prod, thr::MAG_SRF_L_IMP));
-        else if (prod > thr::MAG_SRF_L_SUS && *L > 1e-9)
-            emit(out, ctx, "MAG_SRF_L", Severity::Suspicious, prod, thr::MAG_SRF_L_SUS,
-                 tag + fmt("SRF*sqrt(L) suspiciously high", prod, thr::MAG_SRF_L_SUS));
+                 tag + fmt("self-resonant frequency outside (1 kHz, 1e11 Hz]", *srf));
+        }
+        if (*srf > 0) {
+            double prod = (*srf) * std::sqrt(*L);
+            if (prod > thr::MAG_SRF_L_IMP && *L > 1e-9)
+                emit(out, ctx, "MAG_SRF_L", Severity::Impossible, prod, thr::MAG_SRF_L_IMP,
+                     tag + fmt("SRF*sqrt(L) impossibly high", prod, thr::MAG_SRF_L_IMP));
+            else if (prod > thr::MAG_SRF_L_SUS && *L > 1e-9)
+                emit(out, ctx, "MAG_SRF_L", Severity::Suspicious, prod, thr::MAG_SRF_L_SUS,
+                     tag + fmt("SRF*sqrt(L) suspiciously high", prod, thr::MAG_SRF_L_SUS));
+        }
     }
 
     // CHECK 5 (NEW): stored-energy density E = 1/2 L Isat^2 over device volume.
@@ -159,12 +187,22 @@ void check_point(const json& pt, int idx, const json& dims, const std::string& m
                  thr::MAG_L_TOL_RATIO_SUS, tag + "inductance tolerance band very wide");
     }
 
-    // CHECK 7 (NEW): rated current must not exceed saturation current.
-    if (Isat && pt.contains("ratedCurrents") && pt["ratedCurrents"].is_array()) {
+    // CHECK 7: rated current vs saturation current. ratedCurrents elements are
+    // bare numbers in the live catalog (or {rms|current} objects). ~20% of real
+    // parts legitimately have rated>Isat (RMS-thermal vs peak L-drop spec), so
+    // only a gross ratio is a unit error.
+    if (Isat && *Isat > 0 && pt.contains("ratedCurrents") && pt["ratedCurrents"].is_array()) {
         for (const auto& rc : pt["ratedCurrents"]) {
-            auto irms = scalar_at(rc, {"rms"});
-            if (!irms) irms = scalar_at(rc, {"current"});
-            if (irms && *irms > *Isat)
+            std::optional<double> irms;
+            if (rc.is_number()) irms = scalar(&rc, "ratedCurrents[]");
+            else { irms = scalar_at(rc, {"rms"}); if (!irms) irms = scalar_at(rc, {"current"}); }
+            if (!irms || *irms <= 0) continue;
+            double r = *irms / *Isat;
+            if (r > thr::MAG_RATED_ISAT_IMP)
+                emit(out, ctx, "MAG_RATED_LE_SAT", Severity::Impossible, *irms, *Isat,
+                     tag + fmt("rated current grossly exceeds saturation current (unit error?)",
+                               *irms, *Isat));
+            else if (r > thr::MAG_RATED_ISAT_SUS)
                 emit(out, ctx, "MAG_RATED_LE_SAT", Severity::Suspicious, *irms, *Isat,
                      tag + fmt("rated current exceeds saturation current", *irms, *Isat));
         }

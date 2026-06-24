@@ -21,14 +21,6 @@
 namespace tas {
 namespace {
 
-std::string fmt(const std::string& s, double a, double b = 0) {
-    std::ostringstream os;
-    os << s << " (value=" << a;
-    if (b != 0) os << ", threshold=" << b;
-    os << ")";
-    return os.str();
-}
-
 bool is_amplifier(const std::string& c) {
     return c == "operationalAmplifier" || c == "buffer" || c == "differenceAmplifier" ||
            c == "instrumentationAmplifier" || c == "programmableGainAmplifier" || c == "sampleHold";
@@ -53,6 +45,8 @@ void check_supply(const json& elec, const Ctx& ctx, std::vector<Finding>& out) {
     auto hi = scalar_at(elec, {"supply", "maximumSupplyVoltage"});
     if (lo && *lo <= 0)
         emit(out, ctx, "ANA_SUPPLY", Severity::Impossible, *lo, 0, "minimumSupplyVoltage <= 0");
+    if (hi && *hi <= 0)  // was silently accepted when no minimum was present
+        emit(out, ctx, "ANA_SUPPLY", Severity::Impossible, *hi, 0, "maximumSupplyVoltage <= 0");
     if (lo && hi && *lo > *hi)
         emit(out, ctx, "ANA_SUPPLY", Severity::Impossible, *lo, *hi,
              fmt("minimumSupplyVoltage > maximumSupplyVoltage", *lo, *hi));
@@ -64,14 +58,22 @@ void check_supply(const json& elec, const Ctx& ctx, std::vector<Finding>& out) {
             emit(out, ctx, "ANA_SUPPLY", Severity::Suspicious, *hi, thr::ANA_SUPPLY_SUS,
                  fmt("maximumSupplyVoltage high for an analog IC [V]", *hi, thr::ANA_SUPPLY_SUS));
     }
-    if (auto iq = scalar_at(elec, {"supply", "quiescentCurrentPerChannel"}))
+    if (auto iq = scalar_at(elec, {"supply", "quiescentCurrentPerChannel"})) {
         if (*iq < 0)
             emit(out, ctx, "ANA_SUPPLY", Severity::Impossible, *iq, 0,
                  "quiescentCurrentPerChannel < 0");
+        else if (*iq > thr::ANA_IQ_IMP)
+            emit(out, ctx, "ANA_SUPPLY", Severity::Impossible, *iq, thr::ANA_IQ_IMP,
+                 fmt("quiescentCurrentPerChannel implausibly high [A]", *iq, thr::ANA_IQ_IMP));
+        else if (*iq > thr::ANA_IQ_SUS)
+            emit(out, ctx, "ANA_SUPPLY", Severity::Suspicious, *iq, thr::ANA_IQ_SUS,
+                 fmt("quiescentCurrentPerChannel high for an analog channel [A]", *iq,
+                     thr::ANA_IQ_SUS));
+    }
 }
 
-// Shared DC-input + channel-count checks (amplifiers + comparators).
-void check_dc_input(const json& elec, const Ctx& ctx, std::vector<Finding>& out) {
+// Channel-count sanity (>=1, not absurd) — shared by all AAS subtypes.
+void check_channels(const json& elec, const Ctx& ctx, std::vector<Finding>& out) {
     if (auto nch = scalar_at(elec, {"numberOfChannels"})) {
         if (*nch < 1 || *nch > thr::ANA_CHANNELS_IMP)
             emit(out, ctx, "ANA_CHANNELS", Severity::Impossible, *nch, thr::ANA_CHANNELS_IMP,
@@ -80,6 +82,11 @@ void check_dc_input(const json& elec, const Ctx& ctx, std::vector<Finding>& out)
             emit(out, ctx, "ANA_CHANNELS", Severity::Suspicious, *nch, thr::ANA_CHANNELS_SUS,
                  fmt("numberOfChannels unusually high", *nch));
     }
+}
+
+// Shared DC-input + channel-count checks (amplifiers + comparators).
+void check_dc_input(const json& elec, const Ctx& ctx, std::vector<Finding>& out) {
+    check_channels(elec, ctx, out);
     if (auto vos = scalar_at(elec, {"inputOffsetVoltage"})) {
         double a = std::fabs(*vos);
         if (a > thr::ANA_VOS_IMP)
@@ -129,6 +136,33 @@ void check_amplifier(const json& elec, const Ctx& ctx, std::vector<Finding>& out
             emit(out, ctx, "ANA_GBW", Severity::Suspicious, *gbw, thr::ANA_GBW_SUS,
                  fmt("gainBandwidthProduct very high [Hz]", *gbw, thr::ANA_GBW_SUS));
     }
+    // CHECK (NEW): gain windows / ordering (InAmp / diff-amp / PGA).
+    auto gmin = scalar_at(elec, {"minimumGain"});
+    auto gmax = scalar_at(elec, {"maximumGain"});
+    if (gmin && gmax && *gmin > *gmax)
+        emit(out, ctx, "ANA_GAIN_ORDER", Severity::Impossible, *gmin, *gmax,
+             fmt("minimumGain > maximumGain", *gmin, *gmax));
+    if (gmin && *gmin <= 0)
+        emit(out, ctx, "ANA_GAIN_ORDER", Severity::Impossible, *gmin, 0, "minimumGain <= 0");
+    if (auto g = scalar_at(elec, {"gain"}))
+        if (*g <= 0)
+            emit(out, ctx, "ANA_GAIN_ORDER", Severity::Impossible, *g, 0, "gain <= 0");
+    if (auto ge = scalar_at(elec, {"gainError"}))
+        if (*ge < 0 || *ge > 1.0)
+            emit(out, ctx, "ANA_GAIN_ORDER", Severity::Suspicious, *ge, 1.0,
+                 fmt("gainError outside [0,1] (fraction of full scale)", *ge, 1.0));
+
+    // CHECK (NEW, cross-parameter): slew-rate / GBW coherence. Real op-amps span
+    // SR/GBW ~ 0.23..23 V; outside a wide band the two specs were likely invented
+    // independently of each other.
+    auto sr2 = scalar_at(elec, {"slewRate"});
+    auto gbw2 = scalar_at(elec, {"gainBandwidthProduct"});
+    if (sr2 && gbw2 && *sr2 > 0 && *gbw2 > 0) {
+        double ratio = *sr2 / *gbw2;
+        if (ratio < thr::ANA_SR_GBW_LO || ratio > thr::ANA_SR_GBW_HI)
+            emit(out, ctx, "ANA_SLEW_GBW", Severity::Suspicious, ratio, 0,
+                 fmt("slewRate/GBW ratio outside typical 0.05..100 V", ratio));
+    }
 }
 
 void check_comparator(const json& elec, const Ctx& ctx, std::vector<Finding>& out) {
@@ -149,6 +183,7 @@ void check_comparator(const json& elec, const Ctx& ctx, std::vector<Finding>& ou
 
 void check_converter(const json& elec, const Ctx& ctx, std::vector<Finding>& out) {
     check_supply(elec, ctx, out);
+    check_channels(elec, ctx, out);
     if (auto res = scalar_at(elec, {"resolution"})) {
         if (*res < 1 || *res > thr::CONV_RES_IMP)
             emit(out, ctx, "CONV_RES", Severity::Impossible, *res, thr::CONV_RES_IMP,
@@ -170,10 +205,14 @@ void check_converter(const json& elec, const Ctx& ctx, std::vector<Finding>& out
                      fmt(std::string(k) + " very high [Sps]", *rate, thr::CONV_RATE_SUS));
         }
     }
-    if (auto vref = scalar_at(elec, {"referenceVoltage"}))
-        if (*vref <= 0 || *vref > thr::ANA_SUPPLY_IMP)
-            emit(out, ctx, "CONV_VREF", Severity::Impossible, *vref, 0,
+    if (auto vref = scalar_at(elec, {"referenceVoltage"})) {
+        if (*vref <= 0 || *vref > thr::CONV_VREF_IMP)
+            emit(out, ctx, "CONV_VREF", Severity::Impossible, *vref, thr::CONV_VREF_IMP,
                  fmt("referenceVoltage out of range [V]", *vref));
+        else if (*vref > thr::CONV_VREF_SUS)
+            emit(out, ctx, "CONV_VREF", Severity::Suspicious, *vref, thr::CONV_VREF_SUS,
+                 fmt("referenceVoltage high [V]", *vref));
+    }
     if (auto snr = scalar_at(elec, {"dynamics", "signalToNoiseRatio"}))
         if (*snr < 0 || *snr > thr::ANA_DB_IMP)
             emit(out, ctx, "CONV_SNR", Severity::Impossible, *snr, thr::ANA_DB_IMP,
@@ -182,6 +221,7 @@ void check_converter(const json& elec, const Ctx& ctx, std::vector<Finding>& out
 
 void check_switch(const json& elec, const Ctx& ctx, std::vector<Finding>& out) {
     check_supply(elec, ctx, out);
+    check_channels(elec, ctx, out);
     if (auto ron = scalar_at(elec, {"onResistance"})) {
         if (*ron <= 0 || *ron > thr::SW_RON_IMP)
             emit(out, ctx, "SW_RON", Severity::Impossible, *ron, thr::SW_RON_IMP,

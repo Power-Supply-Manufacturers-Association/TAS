@@ -14,17 +14,6 @@
 #include <string>
 
 namespace tas {
-namespace {
-
-std::string fmt(const std::string& s, double a, double b = 0) {
-    std::ostringstream os;
-    os << s << " (value=" << a;
-    if (b != 0) os << ", threshold=" << b;
-    os << ")";
-    return os.str();
-}
-
-}  // namespace
 
 void check_connectors(const json& datasheet, const Ctx& ctx, std::vector<Finding>& out,
                       std::vector<std::string>& skipped) {
@@ -82,6 +71,10 @@ void check_connectors(const json& datasheet, const Ctx& ctx, std::vector<Finding
         if (*ir <= 0)
             emit(out, ctx, "CONN_INSULATION_R", Severity::Impossible, *ir, 0,
                  "insulationResistance <= 0");
+        else if (*ir < thr::CONN_INSULATION_IMP_LO)
+            emit(out, ctx, "CONN_INSULATION_R", Severity::Impossible, *ir, thr::CONN_INSULATION_IMP_LO,
+                 fmt("insulationResistance below 1 Ohm (a short, not an insulator) [Ohm]", *ir,
+                     thr::CONN_INSULATION_IMP_LO));
         else if (*ir < thr::CONN_INSULATION_SUS_LO)
             emit(out, ctx, "CONN_INSULATION_R", Severity::Suspicious, *ir, thr::CONN_INSULATION_SUS_LO,
                  fmt("insulationResistance low for an insulator [Ohm]", *ir, thr::CONN_INSULATION_SUS_LO));
@@ -89,6 +82,8 @@ void check_connectors(const json& datasheet, const Ctx& ctx, std::vector<Finding
 
     // CHECK: clearance must hold off the rated voltage in air (3 kV/mm).
     auto clearance = scalar_at(*elec, {"clearance"});
+    if (clearance && *clearance <= 0)
+        emit(out, ctx, "CONN_POSITIVITY", Severity::Impossible, *clearance, 0, "clearance <= 0");
     if (clearance && V && *V > 0 && *clearance > 0) {
         double min_clearance = *V / thr::CONN_AIR_DIELECTRIC_VPM;  // metres
         if (*clearance < min_clearance)
@@ -99,7 +94,9 @@ void check_connectors(const json& datasheet, const Ctx& ctx, std::vector<Finding
 
     // CHECK: creepage (surface path) must be >= clearance (air path).
     if (auto creepage = scalar_at(*elec, {"creepage"})) {
-        if (clearance && *creepage > 0 && *creepage < *clearance)
+        if (*creepage <= 0)
+            emit(out, ctx, "CONN_POSITIVITY", Severity::Impossible, *creepage, 0, "creepage <= 0");
+        else if (clearance && *clearance > 0 && *creepage < *clearance)
             emit(out, ctx, "CONN_CREEPAGE_CLEARANCE", Severity::Impossible, *creepage, *clearance,
                  fmt("creepage < clearance (surface path shorter than air path) [m]", *creepage,
                      *clearance));
@@ -107,7 +104,10 @@ void check_connectors(const json& datasheet, const Ctx& ctx, std::vector<Finding
 
     // CHECK: dielectric withstanding (proof) voltage must exceed the working voltage.
     if (auto dwv = scalar_at(*elec, {"dielectricWithstandingVoltage"})) {
-        if (V && *dwv > 0 && *dwv < *V)
+        if (*dwv <= 0)
+            emit(out, ctx, "CONN_POSITIVITY", Severity::Impossible, *dwv, 0,
+                 "dielectricWithstandingVoltage <= 0");
+        else if (V && *dwv < *V)
             emit(out, ctx, "CONN_DWV_VS_RATED", Severity::Impossible, *dwv, *V,
                  fmt("dielectricWithstandingVoltage below ratedVoltage [V]", *dwv, *V));
     }

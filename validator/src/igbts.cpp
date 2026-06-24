@@ -10,17 +10,6 @@
 #include <string>
 
 namespace tas {
-namespace {
-
-std::string fmt(const std::string& s, double a, double b = 0) {
-    std::ostringstream os;
-    os << s << " (value=" << a;
-    if (b != 0) os << ", threshold=" << b;
-    os << ")";
-    return os.str();
-}
-
-}  // namespace
 
 void check_igbts(const json& datasheet, const Ctx& ctx, std::vector<Finding>& out,
                  std::vector<std::string>& skipped) {
@@ -41,14 +30,39 @@ void check_igbts(const json& datasheet, const Ctx& ctx, std::vector<Finding>& ou
         emit(out, ctx, "IGBT_POSITIVITY", Severity::Impossible, *Ic, 0,
              "continuousCollectorCurrent <= 0");
 
-    // CHECK (NEW): Vce(sat) range.
+    // CHECK (NEW): magnitude sanity. Catches PN-digit-leak / unit-slip garbage
+    // (a 16,000,000 A part passed before). Largest real module Ic ~3.6 kA, Vces ~4.5 kV.
+    if (Ic && *Ic > 0) {
+        if (*Ic > thr::IGBT_IC_IMP)
+            emit(out, ctx, "IGBT_IC_RANGE", Severity::Impossible, *Ic, thr::IGBT_IC_IMP,
+                 fmt("continuousCollectorCurrent implausibly high [A]", *Ic, thr::IGBT_IC_IMP));
+        else if (*Ic > thr::IGBT_IC_SUS)
+            emit(out, ctx, "IGBT_IC_RANGE", Severity::Suspicious, *Ic, thr::IGBT_IC_SUS,
+                 fmt("continuousCollectorCurrent very high [A]", *Ic, thr::IGBT_IC_SUS));
+    }
+    if (Vces && *Vces > 0) {
+        if (*Vces > thr::IGBT_VCES_IMP)
+            emit(out, ctx, "IGBT_VCES_RANGE", Severity::Impossible, *Vces, thr::IGBT_VCES_IMP,
+                 fmt("collectorEmitterVoltage implausibly high [V]", *Vces, thr::IGBT_VCES_IMP));
+        else if (*Vces > thr::IGBT_VCES_SUS)
+            emit(out, ctx, "IGBT_VCES_RANGE", Severity::Suspicious, *Vces, thr::IGBT_VCES_SUS,
+                 fmt("collectorEmitterVoltage very high [V]", *Vces, thr::IGBT_VCES_SUS));
+    }
+
+    // CHECK (NEW): Vce(sat) range. The SUS upper ceiling is Vces-dependent —
+    // 1600-1700 V parts legitimately reach ~7 V Vce(sat).
     if (Vcesat) {
-        if (*Vcesat < thr::IGBT_VCESAT_HARD_LO || *Vcesat > thr::IGBT_VCESAT_HARD_HI)
+        if (*Vcesat < thr::IGBT_VCESAT_HARD_LO || *Vcesat > thr::IGBT_VCESAT_HARD_HI) {
             emit(out, ctx, "IGBT_VCESAT_RANGE", Severity::Impossible, *Vcesat, 0,
                  fmt("Vce(sat) outside (0.3,8) V", *Vcesat));
-        else if (*Vcesat < thr::IGBT_VCESAT_SUS_LO || *Vcesat > thr::IGBT_VCESAT_SUS_HI)
-            emit(out, ctx, "IGBT_VCESAT_RANGE", Severity::Suspicious, *Vcesat, 0,
-                 fmt("Vce(sat) outside typical (0.8,4.5) V", *Vcesat));
+        } else {
+            double sus_hi = (Vces && *Vces > thr::IGBT_VCESAT_HV_VCES)
+                                ? thr::IGBT_VCESAT_SUS_HI_HV
+                                : thr::IGBT_VCESAT_SUS_HI;
+            if (*Vcesat < thr::IGBT_VCESAT_SUS_LO || *Vcesat > sus_hi)
+                emit(out, ctx, "IGBT_VCESAT_RANGE", Severity::Suspicious, *Vcesat, sus_hi,
+                     fmt("Vce(sat) outside typical range for rated Vces", *Vcesat, sus_hi));
+        }
     } else {
         skipped.push_back("IGBT_VCESAT_RANGE");
     }
@@ -57,6 +71,15 @@ void check_igbts(const json& datasheet, const Ctx& ctx, std::vector<Finding>& ou
     if (Vces && Vcesat && *Vcesat >= *Vces)
         emit(out, ctx, "IGBT_VCESAT_VS_VCES", Severity::Impossible, *Vcesat, *Vces,
              fmt("Vce(sat) >= rated collectorEmitterVoltage", *Vcesat, *Vces));
+
+    // CHECK (NEW, cross-parameter): Vce(sat)/Vces ratio band. Catches a part whose
+    // Vce(sat) and Vces are each individually plausible but jointly incoherent.
+    if (Vces && Vcesat && *Vces > 0 && *Vcesat > 0) {
+        double ratio = *Vcesat / *Vces;
+        if (ratio < thr::IGBT_VCESAT_RATIO_LO || ratio > thr::IGBT_VCESAT_RATIO_HI)
+            emit(out, ctx, "IGBT_VCESAT_RATIO", Severity::Suspicious, ratio, 0,
+                 fmt("Vce(sat)/Vces ratio outside typical 0.0003..0.02", ratio));
+    }
 }
 
 }  // namespace tas

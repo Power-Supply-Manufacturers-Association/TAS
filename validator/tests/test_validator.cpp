@@ -153,6 +153,207 @@ SUITE(Semiconductors) {
     }
 }
 
+// Regression tests for the 2026-06-24 recalibration (P0/P1/P2).
+SUITE(Recalibration) {
+    // MOS-1: a real SiC MOSFET whose gateThresholdVoltage carries the recommended
+    // gate-DRIVE window (9/15/19.5 V) must NOT be invalidated.
+    TEST(SicDriveWindowVthNotInvalid) {
+        json p = json::parse(R"json({"semiconductor":{"mosfet":{"manufacturerInfo":{
+          "reference":"SCT60","datasheetInfo":{"part":{"technology":"SiC"},
+          "electrical":{"gateSourceVoltageMax":18,"onResistanceVgs":15,
+            "gateThresholdVoltage":{"minimum":9,"nominal":15,"maximum":19.5}}}}}}})json");
+        Verdict v = V.validate(p);
+        CHECK(v.valid);
+        CHECK(!has(v, "MOS_VGS_VS_VTH", Severity::Impossible));
+    }
+
+    // MOS-2: P-channel Vth labelled by magnitude (min -2, max -4) is valid; a
+    // nominal outside the [min,max] bracket is impossible (convention-agnostic).
+    TEST(PchannelVthBracketOk) {
+        json p = json::parse(R"json({"semiconductor":{"mosfet":{"manufacturerInfo":{
+          "reference":"IRF5305","datasheetInfo":{"part":{"technology":"Si"},
+          "electrical":{"gateThresholdVoltage":{"minimum":-2.0,"nominal":-3.0,"maximum":-4.0}}}}}}})json");
+        CHECK(!has(V.validate(p), "MOS_VTH_WINDOW", Severity::Impossible));
+    }
+    TEST(VthNominalOutsideBracketImpossible) {
+        json p = json::parse(R"json({"semiconductor":{"mosfet":{"manufacturerInfo":{
+          "reference":"X","datasheetInfo":{"part":{"technology":"Si"},
+          "electrical":{"gateThresholdVoltage":{"minimum":2.0,"nominal":6.0,"maximum":4.0}}}}}}})json");
+        CHECK(has(V.validate(p), "MOS_VTH_WINDOW", Severity::Impossible));
+    }
+
+    // IGBT-1: PN-digit-leak garbage current is caught.
+    TEST(IgbtGarbageCurrentImpossible) {
+        json p = json::parse(R"json({"semiconductor":{"igbt":{"manufacturerInfo":{
+          "reference":"FD16001200","datasheetInfo":{"electrical":{
+            "collectorEmitterVoltage":1200,"continuousCollectorCurrent":16001200}}}}}})json");
+        Verdict v = V.validate(p);
+        CHECK(has(v, "IGBT_IC_RANGE", Severity::Impossible));
+        CHECK(!v.valid);
+    }
+
+    // A 0-ohm jumper (resistance == 0) is a real part, not a violation.
+    TEST(ZeroOhmJumperValid) {
+        json p = json::parse(R"json({"resistor":{"manufacturerInfo":{"reference":"YC162-JR-070RL",
+          "datasheetInfo":{"electrical":{"resistance":0.0,"powerRating":0.0625}}}}})json");
+        Verdict v = V.validate(p);
+        CHECK(v.valid);
+        CHECK(!has(v, "RES_R_RANGE", Severity::Impossible));
+    }
+    TEST(NegativeResistanceImpossible) {
+        json p = json::parse(R"json({"resistor":{"manufacturerInfo":{"reference":"X",
+          "datasheetInfo":{"electrical":{"resistance":-5.0}}}}})json");
+        CHECK(has(V.validate(p), "RES_R_RANGE", Severity::Impossible));
+    }
+
+    // DIO-1: device type from part.subType re-enables the Schottky band.
+    TEST(SchottkyDetectedFromSubType) {
+        json p = json::parse(R"json({"semiconductor":{"diode":{"manufacturerInfo":{
+          "reference":"X","datasheetInfo":{"part":{"technology":"Si","subType":"schottky"},
+          "electrical":{"reverseVoltage":40,"forwardCurrent":3,"forwardVoltage":0.35}}}}}})json");
+        // 0.35 V is fine for a Schottky (band 0.2..1.3) but would trip the Si-PN LO (0.4).
+        CHECK(!has(V.validate(p), "DIO_VF_RANGE", Severity::Suspicious));
+    }
+}
+
+SUITE(AntiSynthesis) {
+    // Provenance warning fires on every part that lacks a provenance trail.
+    TEST(ProvenanceMissingWarns) {
+        json p = json::parse(R"json({"resistor":{"manufacturerInfo":{"reference":"X",
+          "datasheetInfo":{"electrical":{"resistance":1000}}}}})json");
+        Verdict v = V.validate(p);
+        CHECK(has(v, "GEN_PROVENANCE_MISSING", Severity::Suspicious));
+        CHECK(v.valid);  // a warning must not invalidate
+    }
+    TEST(ProvenancePresentNoWarning) {
+        json p = json::parse(R"json({"resistor":{"manufacturerInfo":{"reference":"X",
+          "datasheetInfo":{"provenance":[{"source":"manufacturerDatasheet"}],
+          "electrical":{"resistance":1000}}}}})json");
+        CHECK(!has_code(V.validate(p), "GEN_PROVENANCE_MISSING"));
+    }
+    // Cross-family contamination: an inductor filed as a connector.
+    TEST(FamilyMismatchWarns) {
+        json p = json::parse(R"json({"connector":{"manufacturerInfo":{"reference":"X",
+          "datasheetInfo":{"part":{"description":"SMD power inductor 10 uH shielded"},
+          "electrical":{"ratedVoltage":50}}}}})json");
+        CHECK(has(V.validate(p), "GEN_FAMILY_MISMATCH", Severity::Suspicious));
+    }
+    TEST(MultiDiscriminatorImpossible) {
+        json p = json::parse(R"json({"magnetic":{},"capacitor":{}})json");
+        CHECK(has(V.validate(p), "GEN_MULTI_DISCRIMINATOR", Severity::Impossible));
+    }
+
+    // P3: IEC 60063 E-series preferred-value membership (resistors / capacitors).
+    TEST(EseriesPreferredValueOk) {
+        json p = json::parse(R"json({"resistor":{"manufacturerInfo":{"reference":"X",
+          "datasheetInfo":{"electrical":{"resistance":4700.0}}}}})json");
+        CHECK(!has_code(V.validate(p), "RES_E_SERIES"));
+    }
+    TEST(EseriesOffGridFlags) {
+        json p = json::parse(R"json({"resistor":{"manufacturerInfo":{"reference":"X",
+          "datasheetInfo":{"electrical":{"resistance":9400.0}}}}})json");
+        Verdict v = V.validate(p);
+        CHECK(has(v, "RES_E_SERIES", Severity::Suspicious));
+        CHECK(v.valid);  // anti-synthesis signal must not invalidate
+    }
+    TEST(EseriesShuntAllowlisted) {
+        json p = json::parse(R"json({"resistor":{"manufacturerInfo":{"reference":"X",
+          "datasheetInfo":{"electrical":{"resistance":0.008}}}}})json");
+        CHECK(!has_code(V.validate(p), "RES_E_SERIES"));  // sub-0.1 ohm shunt skipped
+    }
+    TEST(EseriesCapFloatBoundaryOk) {
+        // 10 uF stored with float error (9.999...e-6) must read as on-grid.
+        json p = json::parse(R"json({"capacitor":{"manufacturerInfo":{"reference":"X",
+          "datasheetInfo":{"electrical":{"capacitance":9.999999999999999e-06,"ratedVoltage":50}}}}})json");
+        CHECK(!has_code(V.validate(p), "CAP_E_SERIES"));
+    }
+    TEST(OverPrecisionFlags) {
+        json p = json::parse(R"json({"resistor":{"manufacturerInfo":{"reference":"X",
+          "datasheetInfo":{"electrical":{"resistance":4701.23}}}}})json");
+        CHECK(has(V.validate(p), "GEN_OVERPRECISION", Severity::Suspicious));
+    }
+
+    // P4: cross-parameter physics correlations.
+    TEST(TvsVoltageOrderingImpossible) {
+        json p = json::parse(R"json({"semiconductor":{"diode":{"manufacturerInfo":{
+          "reference":"X","datasheetInfo":{"part":{"subType":"esd"},
+          "electrical":{"standoffVoltage":24.0,"clampingVoltage":24.0}}}}}})json");
+        CHECK(has(V.validate(p), "DIO_TVS_ORDERING", Severity::Impossible));
+    }
+    TEST(IgbtVcesatRatioIncoherent) {
+        // Vces=100, Vcesat=4: each individually plausible, ratio 0.04 is incoherent.
+        json p = json::parse(R"json({"semiconductor":{"igbt":{"manufacturerInfo":{
+          "reference":"X","datasheetInfo":{"electrical":{
+            "collectorEmitterVoltage":100,"collectorEmitterSaturation":4.0}}}}}})json");
+        CHECK(has(V.validate(p), "IGBT_VCESAT_RATIO", Severity::Suspicious));
+    }
+    TEST(SlewGbwIncoherent) {
+        json p = json::parse(R"json({"operationalAmplifier":{"manufacturerInfo":{
+          "reference":"X","datasheetInfo":{"electrical":{"slewRate":10,"gainBandwidthProduct":1e6}}}}})json");
+        CHECK(has(V.validate(p), "ANA_SLEW_GBW", Severity::Suspicious));
+    }
+}
+
+SUITE(Controllers) {  // CTAS structural invariants
+    TEST(UvloOrderImpossible) {
+        json p = json::parse(R"json({"controller":{"manufacturerInfo":{"reference":"X",
+          "datasheetInfo":{"function":{"category":"pwmController"},
+          "electrical":{"uvlo":[{"startThreshold":8,"stopThreshold":12}]}}}}})json");
+        Verdict v = V.validate(p);
+        CHECK(has(v, "CTL_UVLO_ORDER", Severity::Impossible));
+        CHECK(!v.valid);
+    }
+    TEST(IsolationOrderImpossible) {
+        json p = json::parse(R"json({"controller":{"manufacturerInfo":{"reference":"X",
+          "datasheetInfo":{"function":{"category":"isolatedGateDriver"},
+          "electrical":{"isolation":{"workingVoltage":1500,"withstandVoltageRms":5000,"surgeVoltage":3000}}}}}})json");
+        CHECK(has(V.validate(p), "CTL_ISO_ORDER", Severity::Impossible));
+    }
+    TEST(PhaseCountImpossible) {
+        json p = json::parse(R"json({"controller":{"manufacturerInfo":{"reference":"X",
+          "datasheetInfo":{"function":{"category":"multiphaseController","channelCount":4,"maxPhaseCount":2}}}}})json");
+        CHECK(has(V.validate(p), "CTL_PHASE_COUNT", Severity::Impossible));
+    }
+    TEST(GoodControllerValid) {
+        json p = json::parse(R"json({"controller":{"manufacturerInfo":{"reference":"UCC28730",
+          "datasheetInfo":{"function":{"category":"pwmController"},
+          "electrical":{"uvlo":[{"startThreshold":21,"stopThreshold":8.5}],
+          "referenceVoltage":{"nominal":4.04}}}}}})json");
+        Verdict v = V.validate(p);
+        CHECK(v.valid);
+        CHECK(!has_code(v, "CTL_UVLO_ORDER"));
+    }
+}
+
+SUITE(Corpus) {
+    // A wildly-out-of-cohort value (1 GOhm among kOhm parts of the same series) is
+    // surfaced by the batch screen.
+    TEST(CohortOutlierDetected) {
+        std::vector<json> recs;
+        const double vals[] = {1000, 1100, 1200, 1300, 1500, 1600, 1800, 2000, 2200, 2400};
+        for (double R : vals) {
+            json r = json::parse(R"json({"resistor":{"manufacturerInfo":{"name":"ACME","reference":"R",
+              "datasheetInfo":{"part":{"series":"S"},"electrical":{"powerRating":0.1}}}}})json");
+            r["resistor"]["manufacturerInfo"]["datasheetInfo"]["electrical"]["resistance"] = R;
+            recs.push_back(r);
+        }
+        json bad = json::parse(R"json({"resistor":{"manufacturerInfo":{"name":"ACME","reference":"BAD",
+          "datasheetInfo":{"part":{"series":"S"},"electrical":{"resistance":1.0e9,"powerRating":0.1}}}}})json");
+        recs.push_back(bad);
+        auto f = validate_corpus(recs);
+        CHECK(std::any_of(f.begin(), f.end(), [](const CorpusFinding& c) {
+            return c.reference == "BAD" && c.code == "GEN_COHORT_OUTLIER";
+        }));
+    }
+    TEST(SmallCohortNotScreened) {
+        std::vector<json> recs;  // below MIN_COHORT -> no findings
+        for (int i = 0; i < 3; ++i)
+            recs.push_back(json::parse(R"json({"resistor":{"manufacturerInfo":{"name":"ACME",
+              "datasheetInfo":{"electrical":{"resistance":1000.0}}}}})json"));
+        CHECK(validate_corpus(recs).empty());
+    }
+}
+
 SUITE(Framework) {
     TEST(UnknownDiscriminatorThrows) {
         CHECK_THROW(V.validate(json::parse(R"json({"widget": {}})json")), std::invalid_argument);
