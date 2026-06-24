@@ -84,5 +84,6 @@ void check_igbts(const json& datasheet, const Ctx&, std::vector<Finding>&, std::
 void check_bjts(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
 void check_varistors(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
 void check_connectors(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
+void check_analog(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
 
 }  // namespace tas

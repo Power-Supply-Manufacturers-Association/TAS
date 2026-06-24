@@ -168,4 +168,25 @@ inline constexpr double CONN_INSULATION_SUS_LO = 1.0e6;
 // V / this; a smaller clearance would arc over (IMPOSSIBLE).
 inline constexpr double CONN_AIR_DIELECTRIC_VPM = 3.0e6;
 
+// ---- Analog ICs (AAS) -------------------------------------------------------
+// Shared amplifier-family bounds. Sources: TI/ADI op-amp portfolios (GBW 50 MHz–8 GHz,
+// OPA855; slew to ~3500 V/µs, EL5102), CMRR/PSRR typ 60–140 dB, Vos chopper µV to ~10 mV.
+// |input/output offset|, V: precision µV–mV, but open-loop/high-speed buffers (e.g. TI BUF802)
+// spec ~0.8 V; only a rail-scale offset is physically impossible.
+inline constexpr double ANA_VOS_IMP = 2.0, ANA_VOS_SUS = 0.1;
+inline constexpr double ANA_SLEW_IMP = 1.0e12, ANA_SLEW_SUS = 5.0e10;  // slew rate, V/s
+inline constexpr double ANA_DB_IMP = 200.0, ANA_DB_SUS_HI = 180.0, ANA_DB_SUS_LO = 20.0;  // CMRR/PSRR/gain dB
+inline constexpr double ANA_VNOISE_SUS_LO = 1.0e-10, ANA_VNOISE_SUS_HI = 1.0e-5;  // V/sqrt(Hz)
+inline constexpr double ANA_SUPPLY_IMP = 1000.0, ANA_SUPPLY_SUS = 100.0;  // total supply V
+inline constexpr double ANA_CHANNELS_IMP = 256.0, ANA_CHANNELS_SUS = 64.0;
+inline constexpr double ANA_GBW_IMP = 1.0e11, ANA_GBW_SUS = 2.0e10;    // GBW, Hz (max ~8 GHz)
+inline constexpr double ANA_IBIAS_SUS = 1.0;                           // |input bias current|, A
+// Comparator propagation delay [s]: fastest ~0.5 ns, slow ~µs.
+inline constexpr double CMP_TPD_IMP = 1.0e-3, CMP_TPD_SUS_HI = 1.0e-4, CMP_TPD_SUS_LO = 1.0e-10;
+// ADC/DAC: resolution bits (to 32, ENOB ~20), sample/update rate [Sps] (RF to a few GSPS).
+inline constexpr double CONV_RES_IMP = 40.0, CONV_RES_SUS = 32.0;
+inline constexpr double CONV_RATE_IMP = 1.0e12, CONV_RATE_SUS = 1.0e11;
+// Analog switch / mux on-resistance [Ohm]: ~0.3 Ω to ~kΩ.
+inline constexpr double SW_RON_IMP = 1.0e6, SW_RON_SUS = 1.0e4;
+
 }  // namespace tas::thr

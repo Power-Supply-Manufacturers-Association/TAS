@@ -36,7 +36,8 @@ add_library(tas_validator_core STATIC
   src/igbts.cpp
   src/bjts.cpp
   src/varistors.cpp
-  src/connectors.cpp)
+  src/connectors.cpp
+  src/analog.cpp)
 target_include_directories(tas_validator_core PUBLIC
   "${CMAKE_CURRENT_SOURCE_DIR}/include")
 target_link_libraries(tas_validator_core PUBLIC nlohmann_json::nlohmann_json)

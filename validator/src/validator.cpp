@@ -96,9 +96,20 @@ Verdict PartValidator::validate(const json& part) const {
             throw std::invalid_argument(
                 "semiconductor record has no mosfet/diode/igbt/bjt sub-object");
     } else {
-        throw std::invalid_argument(
-            "no known component discriminator "
-            "(magnetic/capacitor/resistor/varistor/connector/semiconductor)");
+        // AAS analog ICs: top-level discriminator is the subtype name.
+        static const char* AAS[] = {
+            "operationalAmplifier", "comparator", "instrumentationAmplifier",
+            "differenceAmplifier", "programmableGainAmplifier", "buffer", "sampleHold",
+            "analogSwitch", "multiplexer", "adc", "dac", "multiplier", "integrator", "summer"};
+        const char* hit = nullptr;
+        for (const char* k : AAS)
+            if (part.contains(k)) { hit = k; break; }
+        if (hit != nullptr)
+            run(hit, part[hit], &check_analog);
+        else
+            throw std::invalid_argument(
+                "no known component discriminator (magnetic/capacitor/resistor/varistor/"
+                "connector/semiconductor/analog-AAS)");
     }
 
     for (const auto& f : v.findings)
@@ -141,6 +152,10 @@ std::vector<std::string> PartValidator::check_codes() {
         "CONN_POSITIVITY", "CONN_CURRENT_RANGE", "CONN_VOLTAGE_RANGE", "CONN_CONTACT_RESISTANCE",
         "CONN_INSULATION_R", "CONN_CLEARANCE_BREAKDOWN", "CONN_CREEPAGE_CLEARANCE",
         "CONN_DWV_VS_RATED",
+        // analog ICs (AAS)
+        "ANA_CHANNELS", "ANA_VOS", "ANA_IBIAS", "ANA_SUPPLY", "ANA_CMRR", "ANA_PSRR",
+        "ANA_OL_GAIN", "ANA_SLEW", "ANA_VNOISE", "ANA_GBW", "CMP_TPD", "CMP_HYST",
+        "CONV_RES", "CONV_RATE", "CONV_VREF", "CONV_SNR", "SW_RON", "SW_LEAK",
     };
 }
 
