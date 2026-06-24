@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """WE Passive 'Resistors' table -> RAS resistor NDJSON (NEW PNs only)."""
-import csv, json, re
+import csv, datetime, json, re
 SRC="/tmp/we_res.csv"; OUT="/home/alf/PSMA/TAS/staging/we"
 def num(s):
     if not s: return None
@@ -63,6 +63,7 @@ def main():
             v=metres(row.get(col))
             if v is not None: mech[k]={"nominal":round(v,9)}
         if mech: di["mechanical"]={"dimensions":mech} if False else mech
+    di["provenance"]=[{"source":"manufacturerDatabase","sourceName":"WE - Passive Components.mdb","retrievedDate":datetime.date.today().isoformat()}]
         mi={"name":"Würth Elektronik","reference":pn,"status":"production","datasheetInfo":di,
             "datasheetUrl":f"https://www.we-online.com/components/products/datasheet/{pn}.pdf"}
         out.append({"resistor":{"manufacturerInfo":mi}})

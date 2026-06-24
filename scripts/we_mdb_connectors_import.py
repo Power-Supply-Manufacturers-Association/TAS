@@ -4,7 +4,7 @@ Source: /tmp/we_connectors.csv (mdb-export of 'WE - Electromechanical Components
 The complete WE connector catalog (4,142 parts) with rated current/voltage/pins/pitch/temp/
 impedance/contact-R. Relaxed CONAS: partNumber + family + ratedCurrentPerContact required.
 """
-import csv, json, re, os, sys
+import csv, datetime, json, re, os, sys
 SRC=sys.argv[1] if len(sys.argv)>1 else "/tmp/we_connectors.csv"
 TAG=sys.argv[2] if len(sys.argv)>2 else "mdb"
 OUT="/home/alf/PSMA/TAS/staging/we"; os.makedirs(OUT,exist_ok=True)
@@ -92,6 +92,7 @@ def convert(row):
         else: fam=None; extra_missing="dataInterface without interfaceStandard"
     elif fam is not None:
         di["familyDetails"]={"family":fam}
+    di["provenance"]=[{"source":"manufacturerDatabase","sourceName":"WE - Electromechanical Components.mdb","retrievedDate":datetime.date.today().isoformat()}]
     mi={"name":"Würth Elektronik","reference":pn,"status":"production","datasheetInfo":di}
     url=(row.get("ComponentLink2URL","") or "").strip()
     if url.startswith("http"): mi["datasheetUrl"]=url

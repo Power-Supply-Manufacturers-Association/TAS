@@ -3,7 +3,7 @@
 Mirrors the existing WE magnetic shape in TAS (datasheetInfo.electrical[{subtype:inductor,...}]
 + Dummy core/coil stubs to satisfy MAS). Only NEW part numbers (not already in magnetics.ndjson).
 """
-import csv, json, re, os
+import csv, datetime, json, re, os
 SRC="/tmp/we_ind.csv"; OUT="/home/alf/PSMA/TAS/staging/we"; os.makedirs(OUT,exist_ok=True)
 def num(s):
     if not s: return None
@@ -64,6 +64,7 @@ def convert(row):
     if mech: di["mechanical"]=mech
     tmin=num(row.get("Min Operating Temperature")); tmax=num(row.get("Max Operating Temperature"))
     if tmin is not None and tmax is not None: di["thermal"]={"operatingTemperature":{"minimum":tmin,"maximum":tmax}}
+    di["provenance"]=[{"source":"manufacturerDatabase","sourceName":"WE - Passive Components.mdb","retrievedDate":datetime.date.today().isoformat()}]
     mi={"name":"Würth Elektronik","reference":pn,"status":"production","datasheetInfo":di}
     if row.get("Match Code","").strip(): mi["family"]=row["Match Code"].strip()
     mi["datasheetUrl"]=f"https://www.we-online.com/components/products/datasheet/{pn}.pdf"
