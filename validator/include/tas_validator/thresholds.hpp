@@ -133,4 +133,39 @@ inline constexpr double DIO_VFIF_RATIO_SUS = 2.0;
 inline constexpr double IGBT_VCESAT_HARD_LO = 0.3, IGBT_VCESAT_HARD_HI = 8.0;  // IMP outside
 inline constexpr double IGBT_VCESAT_SUS_LO = 0.8, IGBT_VCESAT_SUS_HI = 4.5;
 
+// ---- BJTs -------------------------------------------------------------------
+// Reason about MAGNITUDES (PNP parts carry negative VCEO/IC/VCEsat).
+// VCE(sat) [V]: low-VCEsat parts ~50 mV, power BJTs up to ~1-2 V.
+inline constexpr double BJT_VCESAT_IMP_LO = 0.01, BJT_VCESAT_IMP_HI = 5.0;  // IMP outside
+inline constexpr double BJT_VCESAT_SUS_HI = 2.0;                            // SUS above
+// DC current gain hFE: typ 10-500; Darlingtons reach ~30000.
+inline constexpr double BJT_HFE_SUS_LO = 5.0, BJT_HFE_SUS_HI = 5.0e4;
+// Transition frequency fT [Hz]: audio BJTs ~1 MHz, RF/SiGe up to ~hundreds of GHz.
+inline constexpr double BJT_FT_SUS_LO = 1.0e5, BJT_FT_SUS_HI = 1.0e12;
+
+// ---- Varistors (MOV) --------------------------------------------------------
+// Ordering: MCOV < varistorVoltage(V_1mA) < clampingVoltage. (MCOV stays below
+// the 1 mA conduction knee; the clamp at rated surge current is above it.)
+// Clamping ratio V_C / V_1mA (≈VCR): typically 1.5-4.
+inline constexpr double VAR_CLAMP_RATIO_SUS_LO = 1.2, VAR_CLAMP_RATIO_SUS_HI = 5.0;
+// Non-linearity exponent alpha: MOV typ 15-50; must be >1 to be a varistor.
+inline constexpr double VAR_ALPHA_IMP_LO = 1.0;
+inline constexpr double VAR_ALPHA_SUS_LO = 10.0, VAR_ALPHA_SUS_HI = 100.0;
+// Peak surge current [A]: large station arresters reach ~100 kA.
+inline constexpr double VAR_SURGE_SUS = 2.0e5, VAR_SURGE_IMP = 1.0e6;
+
+// ---- Connectors -------------------------------------------------------------
+// Rated current per contact [A]: signal mA up to busbar power contacts ~hundreds A.
+inline constexpr double CONN_CURRENT_SUS = 250.0, CONN_CURRENT_IMP = 2000.0;
+// Rated voltage [V]: HV connectors reach tens of kV.
+inline constexpr double CONN_VOLTAGE_SUS = 5.0e4, CONN_VOLTAGE_IMP = 1.0e5;
+// Mated-pair contact resistance [Ohm]: power ~0.15 mOhm, signal up to ~0.1 Ohm.
+inline constexpr double CONN_RCONTACT_SUS_LO = 1.0e-5, CONN_RCONTACT_SUS_HI = 1.0;
+inline constexpr double CONN_RCONTACT_IMP_HI = 100.0;  // not a conducting contact above this
+// Insulation resistance [Ohm]: should be >= MOhm (typ GOhm).
+inline constexpr double CONN_INSULATION_SUS_LO = 1.0e6;
+// Air dielectric strength [V/m] = 3 kV/mm: minimum clearance for ratedVoltage is
+// V / this; a smaller clearance would arc over (IMPOSSIBLE).
+inline constexpr double CONN_AIR_DIELECTRIC_VPM = 3.0e6;
+
 }  // namespace tas::thr

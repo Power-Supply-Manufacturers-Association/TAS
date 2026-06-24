@@ -82,17 +82,23 @@ Verdict PartValidator::validate(const json& part) const {
         run("capacitor", part["capacitor"], &check_capacitors);
     } else if (part.contains("resistor")) {
         run("resistor", part["resistor"], &check_resistors);
+    } else if (part.contains("varistor")) {
+        run("varistor", part["varistor"], &check_varistors);
+    } else if (part.contains("connector")) {
+        run("connector", part["connector"], &check_connectors);
     } else if (part.contains("semiconductor")) {
         const json& semi = part["semiconductor"];
         if (semi.contains("mosfet")) run("mosfet", semi["mosfet"], &check_mosfets);
         else if (semi.contains("diode")) run("diode", semi["diode"], &check_diodes);
         else if (semi.contains("igbt")) run("igbt", semi["igbt"], &check_igbts);
+        else if (semi.contains("bjt")) run("bjt", semi["bjt"], &check_bjts);
         else
             throw std::invalid_argument(
-                "semiconductor record has no mosfet/diode/igbt sub-object");
+                "semiconductor record has no mosfet/diode/igbt/bjt sub-object");
     } else {
         throw std::invalid_argument(
-            "no known component discriminator (magnetic/capacitor/resistor/semiconductor)");
+            "no known component discriminator "
+            "(magnetic/capacitor/resistor/varistor/connector/semiconductor)");
     }
 
     for (const auto& f : v.findings)
@@ -125,6 +131,16 @@ std::vector<std::string> PartValidator::check_codes() {
         "DIO_CJ_VR",
         // igbts
         "IGBT_POSITIVITY", "IGBT_VCESAT_RANGE", "IGBT_VCESAT_VS_VCES",
+        // bjts
+        "BJT_POSITIVITY", "BJT_VCESAT_RANGE", "BJT_VCESAT_VS_VCEO", "BJT_HFE_RANGE",
+        "BJT_VCBO_VS_VCEO", "BJT_FT_RANGE",
+        // varistors
+        "VAR_POSITIVITY", "VAR_MCOV_VS_VNOM", "VAR_CLAMP_VS_VNOM", "VAR_CLAMP_RATIO",
+        "VAR_NONLINEARITY", "VAR_SURGE_RANGE", "VAR_CAPACITANCE",
+        // connectors
+        "CONN_POSITIVITY", "CONN_CURRENT_RANGE", "CONN_VOLTAGE_RANGE", "CONN_CONTACT_RESISTANCE",
+        "CONN_INSULATION_R", "CONN_CLEARANCE_BREAKDOWN", "CONN_CREEPAGE_CLEARANCE",
+        "CONN_DWV_VS_RATED",
     };
 }
 

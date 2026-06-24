@@ -81,5 +81,8 @@ void check_resistors(const json& datasheet, const Ctx&, std::vector<Finding>&, s
 void check_mosfets(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
 void check_diodes(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
 void check_igbts(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
+void check_bjts(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
+void check_varistors(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
+void check_connectors(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
 
 }  // namespace tas
