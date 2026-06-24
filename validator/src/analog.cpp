@@ -195,14 +195,32 @@ void check_switch(const json& elec, const Ctx& ctx, std::vector<Finding>& out) {
             emit(out, ctx, "SW_LEAK", Severity::Impossible, *leak, 0, "offLeakageCurrent < 0");
 }
 
+void check_multiplier(const json& elec, const Ctx& ctx, std::vector<Finding>& out) {
+    check_supply(elec, ctx, out);
+    if (auto sf = scalar_at(elec, {"scaleFactor"}))
+        if (*sf <= 0)
+            emit(out, ctx, "MULT_SCALE", Severity::Impossible, *sf, 0, "scaleFactor <= 0");
+    if (auto te = scalar_at(elec, {"totalError"}))
+        if (*te < 0 || *te > 1.0)
+            emit(out, ctx, "MULT_ERROR", Severity::Impossible, *te, 1.0,
+                 fmt("totalError outside [0,1] (fraction of full scale)", *te));
+    if (auto bw = scalar_at(elec, {"bandwidth"})) {
+        if (*bw <= 0)
+            emit(out, ctx, "MULT_BW", Severity::Impossible, *bw, 0, "bandwidth <= 0");
+        else if (*bw > 1.0e10)
+            emit(out, ctx, "MULT_BW", Severity::Impossible, *bw, 1.0e10,
+                 fmt("bandwidth implausibly high for an analog multiplier [Hz]", *bw, 1.0e10));
+    }
+}
+
 }  // namespace
 
 void check_analog(const json& datasheet, const Ctx& ctx, std::vector<Finding>& out,
                   std::vector<std::string>& skipped) {
     const json* elec = at(datasheet, "electrical");
     const std::string& c = ctx.component;
-    // Behavioral blocks carry no electrical specs — nothing physical to check.
-    if (c == "integrator" || c == "summer" || c == "multiplier") {
+    // Behavioral-only blocks carry no electrical specs — nothing physical to check.
+    if (c == "integrator" || c == "summer") {
         skipped.push_back("ANA_BEHAVIORAL");
         return;
     }
@@ -214,6 +232,7 @@ void check_analog(const json& datasheet, const Ctx& ctx, std::vector<Finding>& o
     else if (c == "comparator") check_comparator(*elec, ctx, out);
     else if (c == "adc" || c == "dac") check_converter(*elec, ctx, out);
     else if (c == "analogSwitch" || c == "multiplexer") check_switch(*elec, ctx, out);
+    else if (c == "multiplier") check_multiplier(*elec, ctx, out);
     else skipped.push_back("ANA_UNKNOWN_SUBTYPE");
 }
 

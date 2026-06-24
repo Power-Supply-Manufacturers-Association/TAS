@@ -156,6 +156,7 @@ std::vector<std::string> PartValidator::check_codes() {
         "ANA_CHANNELS", "ANA_VOS", "ANA_IBIAS", "ANA_SUPPLY", "ANA_CMRR", "ANA_PSRR",
         "ANA_OL_GAIN", "ANA_SLEW", "ANA_VNOISE", "ANA_GBW", "CMP_TPD", "CMP_HYST",
         "CONV_RES", "CONV_RATE", "CONV_VREF", "CONV_SNR", "SW_RON", "SW_LEAK",
+        "MULT_SCALE", "MULT_ERROR", "MULT_BW",
     };
 }
 
