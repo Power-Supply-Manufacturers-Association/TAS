@@ -129,6 +129,7 @@ def part_library_validators():
         ("mosfets.ndjson",    ["semiconductor", "mosfet"], "SAS", "mosfet.json"),
         ("diodes.ndjson",     ["semiconductor", "diode"],  "SAS", "diode.json"),
         ("igbts.ndjson",      ["semiconductor", "igbt"],   "SAS", "igbt.json"),
+        ("bjts.ndjson",       ["semiconductor", "bjt"],    "SAS", "bjt.json"),
         ("capacitors.ndjson", ["capacitor"],               "CAS", "capacitor.json"),
         ("resistors.ndjson",  ["resistor"],                "RAS", "resistor.json"),
         ("varistors.ndjson",  ["varistor"],                "RAS", "varistor.json"),
@@ -182,7 +183,7 @@ def _summarise_failures(fails: list[tuple[int, str]], cap: int = 5) -> str:
 
 
 @pytest.mark.parametrize("fname", [
-    "mosfets.ndjson", "diodes.ndjson", "igbts.ndjson",
+    "mosfets.ndjson", "diodes.ndjson", "igbts.ndjson", "bjts.ndjson",
     "capacitors.ndjson", "resistors.ndjson", "varistors.ndjson",
     "magnetics.ndjson", "controllers.ndjson", "analog_ics.ndjson",
 ])
@@ -237,7 +238,7 @@ def _manufacturer_ref(rec):
 
 
 @pytest.mark.parametrize("fname", [
-    "mosfets.ndjson", "diodes.ndjson", "igbts.ndjson",
+    "mosfets.ndjson", "diodes.ndjson", "igbts.ndjson", "bjts.ndjson",
     "capacitors.ndjson", "resistors.ndjson", "varistors.ndjson",
     "magnetics.ndjson", "controllers.ndjson", "analog_ics.ndjson",
 ])
