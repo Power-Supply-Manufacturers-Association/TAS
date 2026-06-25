@@ -13,3 +13,9 @@ __pycache__/
 # librarian/ — local-only missing-field enrichment system (Postgres-backed ticket
 # queue + nightly DigiKey/Mouser+Sonnet loop). Runs only on this machine; never committed.
 /librarian/
+
+# Local-only scrape/import scratch & rescued raw vendor pulls — regenerable, never committed.
+.playwright-mcp/
+/data/sources/
+/data/staging/*/
+/staging/*/
