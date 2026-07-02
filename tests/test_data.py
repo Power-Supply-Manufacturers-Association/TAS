@@ -44,7 +44,7 @@ def _build_full_registry() -> Registry:
     pure $ref schemas (e.g. CAS/utils.json -> PEAS/utils.json)."""
     by_id: dict[str, dict] = {}
     by_path: dict[Path, dict] = {}
-    for repo_name in ("PEAS", "SAS", "CAS", "RAS", "MAS", "CTAS", "CONAS", "AAS"):
+    for repo_name in ("PEAS", "SAS", "CAS", "RAS", "MAS", "CTAS", "CONAS", "AAS", "TBAS"):
         repo_dir = PROTEUS / repo_name / "schemas"
         if not repo_dir.is_dir():
             continue

@@ -255,4 +255,178 @@ inline constexpr double CTL_TJMAX_SUS = 175.0, CTL_TJMAX_IMP = 250.0;
 // maxPhaseCount [count]: real max 20 (Renesas RAA228228).
 inline constexpr double CTL_PHASE_SUS = 20.0, CTL_PHASE_IMP = 32.0;
 
+// ---- Time bases (TBAS: oscillator / timer / latch) --------------------------
+// Fractional-frequency quantities (stability, aging, tolerance, pull range,
+// timing accuracy) are DIMENSIONLESS fractions per the TBAS schema (1 ppm =
+// 1e-6). Bounds from the July-2026 vendor-catalog research pass; every
+// IMPOSSIBLE floor sits >10x beyond published best-in-class so a future
+// record-breaking part lands SUSPICIOUS, never IMPOSSIBLE.
+//
+// Oscillator output frequency windows by technology [Hz]:
+// Standard AT-cut quartz fundamental 8-50 MHz (TXC/NDK/Kyocera catalogs);
+// inverted-mesa HFF fundamentals reach ~250 MHz (NDK NX2016SF); 3rd/5th/7th
+// overtones extend to ~500 MHz lab-grade -> 800 MHz IMP ceiling for any bare
+// quartz resonator, 350 MHz IMP for a declared fundamental, 66 MHz SUS for a
+// fundamental above the standard-AT range. A declared overtone below 25 MHz
+// makes no sense (fundamental territory). Tuning-fork quartz bottoms at the
+// kHz watch class -> < 1 kHz IMP.
+inline constexpr double TB_F_QUARTZ_IMP = 800.0e6;
+inline constexpr double TB_F_QUARTZ_FUND_IMP = 350.0e6;
+inline constexpr double TB_F_QUARTZ_FUND_SUS = 66.0e6;
+inline constexpr double TB_F_QUARTZ_OT_MIN_SUS = 25.0e6;
+inline constexpr double TB_F_QUARTZ_MIN_IMP = 1.0e3;
+// Ceramic resonators (Murata CERALOCK, TDK FCR): catalog span ~400 kHz-50 MHz
+// -> outside 100 kHz-100 MHz SUS, > 200 MHz IMP.
+inline constexpr double TB_F_CERAMIC_SUS_LO = 100.0e3, TB_F_CERAMIC_SUS_HI = 100.0e6;
+inline constexpr double TB_F_CERAMIC_IMP = 200.0e6;
+// Packaged XO / VCXO / programmable (incl. PLL multiplication): differential
+// parts reach 1.5 GHz (SiTime SiT9501; Skyworks Si545 to 1.5 GHz) -> 1.5 GHz
+// SUS, 2 GHz IMP.
+inline constexpr double TB_F_XO_IMP = 2.0e9, TB_F_XO_SUS = 1.5e9;
+// MEMS: SiTime catalog ceiling 725 MHz (SiT9501 family) -> SUS above; 1 GHz IMP.
+// A MEMS resonator below 1 Hz does not exist -> IMP.
+inline constexpr double TB_F_MEMS_IMP = 1.0e9, TB_F_MEMS_SUS = 725.0e6;
+inline constexpr double TB_F_MEMS_MIN_IMP = 1.0;
+// Silicon RC: fastest catalog part 170 MHz (ADI/Linear LTC6905) -> SUS above;
+// 500 MHz IMP.
+inline constexpr double TB_F_SIRC_IMP = 500.0e6, TB_F_SIRC_SUS = 170.0e6;
+// OCXO: catalog parts top out ~200 MHz (Rakon/Wenzel high-frequency OCXOs)
+// -> 220 MHz SUS, 1 GHz IMP.
+inline constexpr double TB_F_OCXO_IMP = 1.0e9, TB_F_OCXO_SUS = 220.0e6;
+//
+// Frequency stability over temperature (+/- fraction) by technology:
+// Plain quartz crystal / XO: tightest catalog cuts +/-5 ppm (Epson TSX-3225
+// grades); sub-0.5 ppm without compensation is TCXO physics -> IMP. Loose
+// consumer parts +/-100 ppm -> > 200 ppm SUS.
+inline constexpr double TB_STAB_XTAL_IMP = 0.5e-6;
+inline constexpr double TB_STAB_XTAL_SUS_LO = 5.0e-6, TB_STAB_XTAL_SUS_HI = 200.0e-6;
+// TCXO: best published hybrids +/-20 ppb (Rakon HPXO/mercury-class) -> 50 ppb
+// SUS floor, 5 ppb IMP; > 10 ppm is not a TCXO.
+inline constexpr double TB_STAB_TCXO_IMP = 0.005e-6;
+inline constexpr double TB_STAB_TCXO_SUS_LO = 0.05e-6, TB_STAB_TCXO_SUS_HI = 10.0e-6;
+// OCXO: best double-oven parts +/-0.2 ppb (Oscilloquartz/Morion DOCXO) ->
+// 1 ppb SUS floor, 0.2 ppb IMP; > 0.5 ppm is not oven-stabilised.
+inline constexpr double TB_STAB_OCXO_IMP = 0.0002e-6;
+inline constexpr double TB_STAB_OCXO_SUS_LO = 0.001e-6, TB_STAB_OCXO_SUS_HI = 0.5e-6;
+// MEMS: best TCXO-class MEMS +/-0.5 ppm (SiTime Elite SiT5711) -> SUS floor
+// there, 50 ppb IMP; plain MEMS XO tops at +/-50 ppm -> > 100 ppm SUS.
+inline constexpr double TB_STAB_MEMS_IMP = 0.05e-6;
+inline constexpr double TB_STAB_MEMS_SUS_LO = 0.5e-6, TB_STAB_MEMS_SUS_HI = 100.0e-6;
+// Silicon RC oscillators are %-class: best trimmed parts ~0.5% over temp
+// (TI LMK6C class reaches ~50 ppm but is MEMS-assisted; pure RC SiT/LTC ~0.5-2%)
+// -> < 0.5% SUS, < 500 ppm IMP, > 5% SUS.
+inline constexpr double TB_STAB_SIRC_IMP = 500.0e-6;
+inline constexpr double TB_STAB_SIRC_SUS_LO = 5000.0e-6, TB_STAB_SIRC_SUS_HI = 0.05;
+// Ceramic resonators are %-class (Murata CERALOCK +/-0.2-0.5%): < 100 ppm IMP,
+// > 5% SUS.
+inline constexpr double TB_STAB_CERAMIC_IMP = 100.0e-6;
+inline constexpr double TB_STAB_CERAMIC_SUS_HI = 0.05;
+//
+// Aging per year (fraction/yr) by technology:
+// Quartz crystal / XO / VCXO: typical first-year 1-5 ppm (Abracon/ECS);
+// < 0.1 ppm/yr needs an oven, > 30 ppm/yr is broken-seal territory -> IMP both.
+inline constexpr double TB_AGE_XTAL_IMP_LO = 0.1e-6, TB_AGE_XTAL_IMP_HI = 30.0e-6;
+inline constexpr double TB_AGE_XTAL_SUS_LO = 1.0e-6, TB_AGE_XTAL_SUS_HI = 10.0e-6;
+// TCXO: premium parts 0.5-1 ppm/yr (Rakon/NDK) -> < 0.2 SUS, < 0.05 IMP.
+inline constexpr double TB_AGE_TCXO_IMP_LO = 0.05e-6;
+inline constexpr double TB_AGE_TCXO_SUS_LO = 0.2e-6, TB_AGE_TCXO_SUS_HI = 5.0e-6;
+// OCXO: best published ~0.01-0.05 ppm/yr (Oscilloquartz 8607-class) ->
+// < 0.01 SUS, < 0.0005 IMP; > 1 ppm/yr is not an OCXO.
+inline constexpr double TB_AGE_OCXO_IMP_LO = 0.0005e-6;
+inline constexpr double TB_AGE_OCXO_SUS_LO = 0.01e-6, TB_AGE_OCXO_SUS_HI = 1.0e-6;
+// MEMS: SiTime specs +/-0.5-1 ppm first year -> < 0.05 SUS, < 0.01 IMP.
+inline constexpr double TB_AGE_MEMS_IMP_LO = 0.01e-6;
+inline constexpr double TB_AGE_MEMS_SUS_LO = 0.05e-6;
+//
+// RMS phase jitter [s] (12 kHz-20 MHz-class integration band): best published
+// 40-70 fs (SiTime SiT9501 70 fs; Microchip VC-714 40 fs) -> 25 fs SUS floor,
+// 5 fs IMP (thermal floor). Silicon RC is orders worse: best ~1-10 ps ->
+// < 5 ps SUS, < 500 fs IMP. A single-ended CMOS output below 100 fs is
+// marketing, not measurement -> SUS.
+inline constexpr double TB_JIT_IMP = 5.0e-15, TB_JIT_SUS = 25.0e-15;
+inline constexpr double TB_JIT_SIRC_IMP = 500.0e-15, TB_JIT_SIRC_SUS = 5.0e-12;
+inline constexpr double TB_JIT_CMOS_SUS = 100.0e-15;
+//
+// Startup time [s] by class:
+// Quartz MHz XO/VCXO/TCXO: typical 2-10 ms, fastest ~1 ms -> < 200 us SUS,
+// < 50 us IMP (a quartz resonator cannot ring up that fast), > 100 ms SUS.
+inline constexpr double TB_START_XO_IMP = 50.0e-6;
+inline constexpr double TB_START_XO_SUS_LO = 200.0e-6, TB_START_XO_SUS_HI = 0.1;
+// 32.768 kHz tuning-fork class (f < 100 kHz): Q ~ 50k-90k needs 0.1-1 s
+// (Micro Crystal/Epson app notes) -> < 0.1 s SUS, < 10 ms IMP, > 5 s SUS.
+inline constexpr double TB_START_KHZ_F = 100.0e3;
+inline constexpr double TB_START_KHZ_IMP = 0.01;
+inline constexpr double TB_START_KHZ_SUS_LO = 0.1, TB_START_KHZ_SUS_HI = 5.0;
+// OCXO warm-up: minutes (IQD/Rakon 1-5 min typical) -> < 30 s SUS, < 1 s IMP
+// (the oven cannot thermally settle), > 30 min SUS.
+inline constexpr double TB_START_OCXO_IMP = 1.0;
+inline constexpr double TB_START_OCXO_SUS_LO = 30.0, TB_START_OCXO_SUS_HI = 1800.0;
+// MEMS: SiTime specs 1-10 ms typical, fastest ~300 us -> < 100 us SUS,
+// < 1 us IMP, > 50 ms SUS.
+inline constexpr double TB_START_MEMS_IMP = 1.0e-6;
+inline constexpr double TB_START_MEMS_SUS_LO = 100.0e-6, TB_START_MEMS_SUS_HI = 0.05;
+// Silicon RC: us-class (LTC6905 ~100 us; SiT8021-class RC starts ~1 us) ->
+// < 100 ns IMP, > 10 ms SUS.
+inline constexpr double TB_START_SIRC_IMP = 100.0e-9, TB_START_SIRC_SUS_HI = 0.01;
+//
+// Supply / power cross-checks:
+// OCXO oven power: steady-state 0.3-1.5 W (IQD OCXOP, Rakon ROX) -> a steady
+// currentConsumption under 30 mA cannot keep an oven hot: IMP. warmupPower
+// (peak, W): typical 1.5-5 W -> < 0.5 W or > 10 W SUS, < 100 mW IMP.
+inline constexpr double TB_OCXO_I_IMP = 0.030;
+inline constexpr double TB_OCXO_WARMUP_IMP = 0.1;
+inline constexpr double TB_OCXO_WARMUP_SUS_LO = 0.5, TB_OCXO_WARMUP_SUS_HI = 10.0;
+// Any packaged oscillator: lowest published draw ~1 uA (SiTime SiT1569
+// 32 kHz TCXO-class, Micro Crystal RV modules) -> < 0.1 uA IMP.
+inline constexpr double TB_OSC_I_MIN_IMP = 1.0e-7;
+//
+// Pull range (+/- fraction): quartz VCXO catalogs span +/-25..200 ppm
+// (Abracon/Renesas); > 200 ppm SUS, > 1000 ppm IMP (varactor pull cannot bend
+// quartz that far), < 10 ppm SUS (not usefully pullable). MEMS DCXOs reach
+// +/-1600 ppm (SiTime SiT3907) -> SUS above, 3200 ppm IMP.
+inline constexpr double TB_PULL_VCXO_IMP = 1000.0e-6;
+inline constexpr double TB_PULL_VCXO_SUS_HI = 200.0e-6, TB_PULL_VCXO_SUS_LO = 10.0e-6;
+inline constexpr double TB_PULL_MEMS_IMP = 3200.0e-6, TB_PULL_MEMS_SUS = 1600.0e-6;
+//
+// Output type vs frequency: single-ended CMOS tops out ~250 MHz (SiTime/
+// Abracon catalog filters) -> SUS above, 500 MHz IMP. Differential formats
+// (LVDS/LVPECL/HCSL) below 1 MHz make no catalog sense -> SUS.
+inline constexpr double TB_CMOS_F_IMP = 500.0e6, TB_CMOS_F_SUS = 250.0e6;
+inline constexpr double TB_DIFF_F_MIN_SUS = 1.0e6;
+//
+// 32.768 kHz watch-crystal class: tolerance is +/-10/+/-20 ppm (Epson FC-135,
+// Micro Crystal CC7V) -> < 5 ppm at exactly 32768 Hz SUS.
+inline constexpr double TB_WATCH_F = 32768.0;
+inline constexpr double TB_WATCH_TOL_SUS = 5.0e-6;
+// Initial frequency tolerance upper sanity, any class: > 10% is not a
+// frequency-control product.
+inline constexpr double TB_TOL_SUS = 0.1;
+//
+// Timers (555 class): bipolar NE555 (TI/onsemi) 4.5-16 V, <= 500 kHz astable,
+// 1-3% initial accuracy; CMOS TLC555/LMC555 (TI) 1.5-15 V (2.1-3 MHz),
+// 0.5-2% accuracy. IMP bounds sit beyond any published successor.
+inline constexpr double TB_TMR_BIP_F_IMP = 5.0e6, TB_TMR_BIP_F_SUS = 500.0e3;
+inline constexpr double TB_TMR_BIP_V_IMP_LO = 3.0, TB_TMR_BIP_V_IMP_HI = 20.0;
+inline constexpr double TB_TMR_BIP_V_SUS_LO = 4.5, TB_TMR_BIP_V_SUS_HI = 16.0;
+inline constexpr double TB_TMR_CMOS_F_IMP = 10.0e6, TB_TMR_CMOS_F_SUS = 3.0e6;
+inline constexpr double TB_TMR_CMOS_V_IMP_LO = 1.0, TB_TMR_CMOS_V_IMP_HI = 20.0;
+inline constexpr double TB_TMR_CMOS_V_SUS_LO = 1.5, TB_TMR_CMOS_V_SUS_HI = 15.0;
+inline constexpr double TB_TMR_ACC_IMP_LO = 0.001;  // < 0.1% initial: RC timers can't
+inline constexpr double TB_TMR_BIP_ACC_SUS_LO = 0.01, TB_TMR_CMOS_ACC_SUS_LO = 0.005;
+inline constexpr double TB_TMR_ACC_SUS_HI = 0.1;
+inline constexpr double TB_TMR_CH_SUS = 4.0;  // 556 is 2; quad timers exist, > 4 SUS
+//
+// Latches (discrete SR logic, 74HC279 class): tPD ~13-25 ns HC, ~2-5 ns
+// AUC/LVC; sub-100 ps discrete logic does not exist -> IMP; < 1 ns or > 1 us
+// SUS. Logic supply windows 0.8-18 V (AUP to 4000B) -> outside 0.5-20 V SUS.
+inline constexpr double TB_LATCH_TPD_IMP = 100.0e-12;
+inline constexpr double TB_LATCH_TPD_SUS_LO = 1.0e-9, TB_LATCH_TPD_SUS_HI = 1.0e-6;
+inline constexpr double TB_LATCH_V_SUS_LO = 0.5, TB_LATCH_V_SUS_HI = 20.0;
+//
+// Behavioral atoms (design intent, not physics claims — light bounds only):
+// an ideal oscillator above 10 GHz or a monostable one-shot longer than an
+// hour is almost certainly a unit slip.
+inline constexpr double TB_BEH_OSC_F_SUS = 10.0e9;
+inline constexpr double TB_BEH_TMR_ONTIME_SUS = 3600.0;
+
 }  // namespace tas::thr

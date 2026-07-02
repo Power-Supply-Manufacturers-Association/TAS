@@ -107,5 +107,13 @@ void check_varistors(const json& datasheet, const Ctx&, std::vector<Finding>&, s
 void check_connectors(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
 void check_analog(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
 void check_controllers(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
+// Time bases (TBAS): the timeBase wrap dispatches on the oscillator/timer/latch
+// sub-discriminator (ctx.component carries the subtype).
+void check_oscillators(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
+void check_timers(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
+void check_latches(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
+// Light unit-slip screening of the ideal `behavioral` atom (a TBAS record may be
+// a part-less behavioral-only document, so this runs even without datasheetInfo).
+void check_time_base_behavioral(const json& behavioral, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
 
 }  // namespace tas

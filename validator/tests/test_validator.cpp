@@ -53,6 +53,45 @@ json good_cap() {
       }}}})json");
 }
 
+// A real-shaped, physically sane MEMS oscillator (SiTime SiT8008, 25 MHz —
+// TBAS/examples/mems-oscillator-25mhz.json values).
+json good_oscillator() {
+    return json::parse(R"json({"timeBase": {"oscillator": {"manufacturerInfo": {
+      "name": "SiTime", "reference": "SiT8008BI-73-33E-25.000000", "datasheetInfo": {
+        "part": {"partNumber": "SiT8008BI-73-33E-25.000000", "package": "2016 4-pad"},
+        "electrical": {"technology": "mems", "frequency": 25000000.0, "outputType": "cmos",
+                       "frequencyStability": 2.5e-05, "agingPerYear": 1e-06,
+                       "rmsPhaseJitter": 1.1e-12, "jitterBandLow": 12000.0,
+                       "jitterBandHigh": 20000000.0, "startupTime": 0.005,
+                       "dutyCycle": {"minimum": 0.45, "maximum": 0.55},
+                       "enableFunction": "outputEnable",
+                       "supply": {"minimumSupplyVoltage": 2.25, "maximumSupplyVoltage": 3.63,
+                                  "currentConsumption": 0.0038}},
+        "thermal": {"operatingTemperature": {"minimum": -40, "maximum": 85}},
+        "provenance": [{"source": "manufacturerDatasheet"}]
+      }}}}})json");
+}
+
+// A real-shaped bare watch crystal (Würth 830502587, 32.768 kHz —
+// TBAS/examples/watch-crystal-32768.json values).
+json good_crystal() {
+    return json::parse(R"json({"timeBase": {"oscillator": {"manufacturerInfo": {
+      "name": "Würth Elektronik", "reference": "830502587", "datasheetInfo": {
+        "part": {"partNumber": "830502587", "package": "3215"},
+        "electrical": {"technology": "quartzCrystal", "frequency": 32768.0,
+                       "mode": "fundamental", "outputType": "none",
+                       "frequencyTolerance": 2e-05, "loadCapacitance": 1.25e-11,
+                       "equivalentSeriesResistance": 70000.0},
+        "thermal": {"operatingTemperature": {"minimum": -40, "maximum": 85}},
+        "provenance": [{"source": "manufacturerDatasheet"}]
+      }}}}})json");
+}
+
+bool has_tb_finding(const Verdict& v) {
+    return std::any_of(v.findings.begin(), v.findings.end(),
+                       [](const Finding& f) { return f.code.rfind("TB_", 0) == 0; });
+}
+
 }  // namespace
 
 TEST_CASE("Magnetics: GoodPartIsValid", "[magnetics]") {
@@ -327,6 +366,131 @@ TEST_CASE("Controllers: GoodControllerValid", "[controllers]") {
     Verdict v = V.validate(p);
     CHECK(v.valid);
     CHECK(!has_code(v, "CTL_UVLO_ORDER"));
+}
+
+// Time bases (TBAS): oscillators / crystals / timers / latches + behavioral atoms.
+TEST_CASE("TimeBases: GoodMemsOscillatorValid", "[timebases]") {
+    Verdict v = V.validate(good_oscillator());
+    CHECK(v.valid);
+    CHECK(!has_tb_finding(v));  // SiT8008 datasheet values fire nothing
+}
+
+TEST_CASE("TimeBases: GoodBareCrystalValid", "[timebases]") {
+    Verdict v = V.validate(good_crystal());
+    CHECK(v.valid);
+    CHECK(!has_tb_finding(v));  // outputType none + no supply is coherent for a bare crystal
+}
+
+TEST_CASE("TimeBases: QuartzStabilityTooGoodImpossible", "[timebases]") {
+    // A plain (uncompensated) quartz crystal claiming 0.1 ppm over temperature:
+    // that is TCXO/OCXO physics, below the 0.5 ppm IMPOSSIBLE floor.
+    json p = good_crystal();
+    p["timeBase"]["oscillator"]["manufacturerInfo"]["datasheetInfo"]["electrical"]
+     ["frequencyStability"] = 0.1e-6;
+    Verdict v = V.validate(p);
+    CHECK(has(v, "TB_OSC_STABILITY", Severity::Impossible));
+    CHECK(!v.valid);
+}
+
+TEST_CASE("TimeBases: OcxoUndercurrentImpossible", "[timebases]") {
+    // 5 mA cannot keep an oven at temperature (real OCXOs draw 0.3-1.5 W steady).
+    json p = json::parse(R"json({"timeBase": {"oscillator": {"manufacturerInfo": {
+      "name": "X", "reference": "OCX-10M", "datasheetInfo": {"part": {},
+      "electrical": {"technology": "ocxo", "frequency": 10000000.0, "outputType": "sine",
+                     "supply": {"minimumSupplyVoltage": 4.75, "maximumSupplyVoltage": 5.25,
+                                "currentConsumption": 0.005}}}}}}})json");
+    Verdict v = V.validate(p);
+    CHECK(has(v, "TB_OSC_SUPPLY", Severity::Impossible));
+    CHECK(!v.valid);
+}
+
+TEST_CASE("TimeBases: CmosOutputTooFastImpossible", "[timebases]") {
+    // Single-ended CMOS at 600 MHz: above the 500 MHz format ceiling.
+    json p = good_oscillator();
+    auto& elec = p["timeBase"]["oscillator"]["manufacturerInfo"]["datasheetInfo"]["electrical"];
+    elec["frequency"] = 600.0e6;
+    Verdict v = V.validate(p);
+    CHECK(has(v, "TB_OSC_OUTPUT_TYPE", Severity::Impossible));
+    CHECK(!v.valid);
+}
+
+TEST_CASE("TimeBases: JitterBelowThermalFloorImpossible", "[timebases]") {
+    json p = good_oscillator();
+    p["timeBase"]["oscillator"]["manufacturerInfo"]["datasheetInfo"]["electrical"]
+     ["rmsPhaseJitter"] = 1.0e-15;  // below the 5 fs thermal floor
+    Verdict v = V.validate(p);
+    CHECK(has(v, "TB_OSC_JITTER", Severity::Impossible));
+    CHECK(!v.valid);
+}
+
+TEST_CASE("TimeBases: ZeroJitterSkipsNotFires", "[timebases]") {
+    // Exactly 0 for aging/jitter/startup is vendor-CSV missing data, not a value.
+    json p = good_oscillator();
+    auto& elec = p["timeBase"]["oscillator"]["manufacturerInfo"]["datasheetInfo"]["electrical"];
+    elec["rmsPhaseJitter"] = 0.0;
+    elec["agingPerYear"] = 0.0;
+    elec["startupTime"] = 0.0;
+    Verdict v = V.validate(p);
+    CHECK(v.valid);
+    CHECK(!has_code(v, "TB_OSC_JITTER"));
+    CHECK(!has_code(v, "TB_OSC_AGING"));
+    CHECK(!has_code(v, "TB_OSC_STARTUP"));
+}
+
+TEST_CASE("TimeBases: Bipolar555TooFastImpossible", "[timebases]") {
+    json p = json::parse(R"json({"timeBase": {"timer": {"manufacturerInfo": {
+      "name": "X", "reference": "NE555X", "datasheetInfo": {"part": {},
+      "electrical": {"technology": "bipolar555", "maximumFrequency": 6000000.0,
+                     "supply": {"minimumSupplyVoltage": 4.5, "maximumSupplyVoltage": 16.0}}}}}}})json");
+    Verdict v = V.validate(p);
+    CHECK(has(v, "TB_TMR_FREQ", Severity::Impossible));
+    CHECK(!v.valid);
+}
+
+TEST_CASE("TimeBases: BareResonatorWithSupplyContradiction", "[timebases]") {
+    json p = good_crystal();
+    p["timeBase"]["oscillator"]["manufacturerInfo"]["datasheetInfo"]["electrical"]["supply"] =
+        json::parse(R"json({"minimumSupplyVoltage": 1.8, "maximumSupplyVoltage": 3.3})json");
+    Verdict v = V.validate(p);
+    CHECK(has(v, "TB_OSC_RESONATOR_SUPPLY", Severity::Suspicious));
+    CHECK(v.valid);  // contradiction is a warning, not a physics violation
+}
+
+TEST_CASE("TimeBases: LatchSubHundredPsImpossible", "[timebases]") {
+    json p = json::parse(R"json({"timeBase": {"latch": {"manufacturerInfo": {
+      "name": "X", "reference": "74HC279X", "datasheetInfo": {"part": {},
+      "electrical": {"technology": "CMOS", "propagationDelay": 5e-11,
+                     "numberOfChannels": 4}}}}}})json");
+    Verdict v = V.validate(p);
+    CHECK(has(v, "TB_LATCH_TPD", Severity::Impossible));
+    CHECK(!v.valid);
+}
+
+TEST_CASE("TimeBases: BehavioralOscillatorUnitSlipSuspicious", "[timebases]") {
+    // Part-less behavioral atom (design intent): light screening only.
+    json p = json::parse(R"json({"timeBase": {"oscillator": {"behavioral": {
+      "shape": "sawtooth", "frequency": 5.0e10, "amplitude": 1.0, "offset": 0.0}}}})json");
+    Verdict v = V.validate(p);
+    CHECK(has(v, "TB_BEHAVIORAL", Severity::Suspicious));
+    CHECK(v.valid);  // behavioral atoms are never invalidated
+}
+
+TEST_CASE("TimeBases: BehavioralMonostableHourPlusSuspicious", "[timebases]") {
+    json p = json::parse(R"json({"timeBase": {"timer": {"behavioral": {
+      "mode": "monostable", "outputHigh": 5.0, "outputLow": 0.0, "threshold": 2.5,
+      "polarity": "risingEdge", "onTime": 7200.0, "retriggerable": false}}}})json");
+    Verdict v = V.validate(p);
+    CHECK(has(v, "TB_BEHAVIORAL", Severity::Suspicious));
+    CHECK(v.valid);
+}
+
+TEST_CASE("TimeBases: BehavioralOnlyRecordSkipsDatasheetChecks", "[timebases]") {
+    json p = json::parse(R"json({"timeBase": {"latch": {"behavioral": {
+      "setThreshold": 2.5, "resetThreshold": 1.0, "outputHigh": 5.0, "outputLow": 0.0,
+      "dominance": "reset"}}}})json");
+    Verdict v = V.validate(p);
+    CHECK(v.valid);
+    CHECK(v.findings.empty());  // no datasheet, no physics claims, nothing to flag
 }
 
 // A wildly-out-of-cohort value (1 GOhm among kOhm parts of the same series) is

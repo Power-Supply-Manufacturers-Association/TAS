@@ -121,6 +121,10 @@ const std::vector<std::string>* core_fields(const std::string& c) {
         {"bjt", {"collectorEmitterVoltage", "collectorCurrent"}},
         {"varistor", {"varistorVoltage", "clampingVoltage", "peakSurgeCurrent"}},
         {"connector", {"ratedVoltage", "ratedCurrentPerContact"}},
+        // Time-base families (oscillator/timer/latch) are intentionally omitted:
+        // the catalog is brand-new (no live field-presence statistics to calibrate
+        // a sparse floor against), and behavioral-only records are legitimately
+        // near-empty. Completeness is not scored for them (returns -1).
     };
     auto it = M.find(c);
     return it == M.end() ? nullptr : &it->second;
@@ -168,6 +172,7 @@ Verdict PartValidator::validate(const json& part) const {
     // below would silently pick the first).
     static const char* DISCRIMINATORS[] = {
         "magnetic", "capacitor", "resistor", "varistor", "connector", "controller", "semiconductor",
+        "timeBase",
         "operationalAmplifier", "comparator", "instrumentationAmplifier", "differenceAmplifier",
         "programmableGainAmplifier", "buffer", "sampleHold", "analogSwitch", "multiplexer",
         "adc", "dac", "multiplier", "integrator", "summer"};
@@ -219,6 +224,30 @@ Verdict PartValidator::validate(const json& part) const {
         run("connector", part["connector"], &check_connectors);
     } else if (part.contains("controller")) {
         run("controller", part["controller"], &check_controllers);
+    } else if (part.contains("timeBase")) {
+        // TBAS: {"timeBase": {"oscillator"|"timer"|"latch": {...}}}. A record may
+        // be a part-less behavioral atom (no manufacturerInfo), so the behavioral
+        // screen runs independently of the datasheet pipeline.
+        const json& tb = part["timeBase"];
+        const char* sub = nullptr;
+        void (*fn)(const json&, const Ctx&, std::vector<Finding>&,
+                   std::vector<std::string>&) = nullptr;
+        if (tb.contains("oscillator")) { sub = "oscillator"; fn = &check_oscillators; }
+        else if (tb.contains("timer")) { sub = "timer"; fn = &check_timers; }
+        else if (tb.contains("latch")) { sub = "latch"; fn = &check_latches; }
+        else
+            throw std::invalid_argument("timeBase record has no oscillator/timer/latch sub-object");
+        const json& comp = tb[sub];
+        if (comp.contains("manufacturerInfo"))
+            run(sub, comp, fn);
+        else if (!comp.contains("behavioral"))  // empty pre-sourcing seed
+            v.skipped.push_back(std::string(sub) + ":no-datasheetInfo");
+        if (comp.contains("behavioral")) {
+            Resolved r = resolve(comp);
+            ctx.component = sub;
+            ctx.reference = r.reference;
+            check_time_base_behavioral(comp["behavioral"], ctx, v.findings, v.skipped);
+        }
     } else if (part.contains("semiconductor")) {
         const json& semi = part["semiconductor"];
         if (semi.contains("mosfet")) run("mosfet", semi["mosfet"], &check_mosfets);
@@ -301,6 +330,14 @@ std::vector<std::string> PartValidator::check_codes() {
         "CMP_TPD", "CMP_HYST",
         "CONV_RES", "CONV_RATE", "CONV_VREF", "CONV_SNR", "SW_RON", "SW_LEAK",
         "MULT_SCALE", "MULT_ERROR", "MULT_BW",
+        // time bases (TBAS)
+        "TB_OSC_POSITIVITY", "TB_OSC_FREQ_TECH", "TB_OSC_MODE_FREQ", "TB_OSC_STABILITY",
+        "TB_OSC_AGING", "TB_OSC_JITTER", "TB_OSC_STARTUP", "TB_OSC_SUPPLY",
+        "TB_OSC_RESONATOR_SUPPLY", "TB_OSC_PULL_RANGE", "TB_OSC_OUTPUT_TYPE",
+        "TB_OSC_TOLERANCE", "TB_OSC_WATCH_TOL",
+        "TB_TMR_FREQ", "TB_TMR_SUPPLY", "TB_TMR_ACCURACY", "TB_TMR_CHANNELS",
+        "TB_LATCH_TPD", "TB_LATCH_SUPPLY",
+        "TB_BEHAVIORAL",
     };
 }
 
