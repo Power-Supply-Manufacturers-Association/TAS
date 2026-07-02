@@ -107,10 +107,25 @@
         },
         "regulation": {
           "type": "string",
-          "enum": ["voltage", "current", "both"],
-          "description": "Regulation mode. 'both' covers CC/CV chargers."
+          "enum": ["voltage", "current", "both", "constantPower", "fixedRatio", "unregulated"],
+          "description": "Regulation mode. 'both' covers CC/CV chargers; 'constantPower' a CP-limited envelope (EV fast-charge modules); 'fixedRatio' an open-loop K = Vout/Vin transformer-like output (bus converters, e.g. Vicor BCM); 'unregulated' a ratio-ish output with no closed loop (DOSA unregulated class)."
+        },
+        "ratio": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Vout/Vin transformation ratio, V/V. Required for regulation 'fixedRatio'; optional for 'unregulated'; forbidden otherwise."
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "regulation": { "const": "fixedRatio" } }, "required": ["regulation"] },
+          "then": { "required": ["ratio"] }
+        },
+        {
+          "if": { "properties": { "regulation": { "enum": ["voltage", "current", "both", "constantPower"] } }, "required": ["regulation"] },
+          "then": { "not": { "required": ["ratio"] } }
+        }
+      ]
     },
 
     "operatingPoint": {

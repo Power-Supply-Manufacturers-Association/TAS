@@ -2,22 +2,29 @@
 
 > The universal data format for complete power converter designs — and the component catalog that powers them.
 
-TAS is a JSON schema standard for describing power converter designs end-to-end: requirements, components, circuit connections, and computed results. It also hosts a curated component database of **64,000+ real parts** used by the Proteus AI design system.
+TAS is a JSON schema standard for describing power converter designs end-to-end: requirements, components, circuit connections, and computed results. It also hosts a curated component database of **660,000+ real parts** used by the Proteus AI design system.
 
-## Quick Stats (April 2026)
+## Quick Stats (July 2026)
 
-| Category | Parts | Largest Manufacturer | Share |
-|----------|-------|----------------------|-------|
-| Capacitors | 20,932 | Würth Elektronik | 18.7% |
-| Resistors | 7,476 | Vishay | 20.6% |
-| MOSFETs | 4,790 | onsemi | 13.8% |
-| Diodes | 9,097 | Nexperia | 35.2% |
-| IGBTs | 2,092 | STMicroelectronics | 22.3% |
-| Magnetics | 19,222 | Würth Elektronik | 33.1% |
-| Controllers | 1,336 | onsemi | — |
-| Converters | 101 | — | — |
-| **Active Total** | **64,097** | — | — |
-| Quarantine | 2,493 | — | — |
+Counts are `wc -l` of the active `data/*.ndjson` files (one record per line).
+
+| Category | Records | Largest Manufacturer | Share |
+|----------|---------|----------------------|-------|
+| Capacitors | 230,576 | WIMA | 28.0% |
+| Resistors | 160,831 | Panasonic | 51.7% |
+| Connectors | 138,300 | Molex | 68.2% |
+| Magnetics | 92,368 | TDK | 15.8% |
+| Diodes | 13,309 | Nexperia | 35.3% |
+| MOSFETs | 9,941 | Infineon | 27.0% |
+| BJTs | 3,668 | Nexperia | 52.5% |
+| Analog ICs | 3,418 | Texas Instruments | 99.9% |
+| Varistors | 3,198 | Bourns | 43.4% |
+| IGBTs | 2,271 | STMicroelectronics | 20.9% |
+| Controllers | 2,133 | Monolithic Power Systems | 29.3% |
+| Circuit bricks (CIAS) | 11,979 | — | — |
+| Converters (full TAS docs) | 47 | — | — |
+| **Active total** | **672,039** | — | — |
+| Quarantine (all `*quarantine*` files) | ~169,000 | — | — |
 
 ---
 
@@ -32,10 +39,15 @@ A real power converter design involves dozens of interrelated decisions scattere
 │                        TAS Document                              │
 ├──────────────────────────────────────────────────────────────────┤
 │  INPUTS — what you need                                          │
-│    topology: "Flyback Converter"                                  │
-│    inputVoltage: { minimum: 36, nominal: 48, maximum: 60 }       │
-│    outputVoltage: { nominal: 12 }  outputCurrent: { nominal: 2 } │
-│    efficiencyTarget: 0.88                                        │
+│    designRequirements:                                           │
+│      efficiency: 0.88   inputType: "dc"                          │
+│      inputVoltage: { minimum: 36, nominal: 48, maximum: 60 }     │
+│      outputs: [{ name: "out1", voltage: { nominal: 12 },         │
+│                  regulation: "voltage" }]                        │
+│      switchingFrequency: { nominal: 200e3 }  isolationVoltage: … │
+│    operatingPoints: [{ name: "full_load_Vin_min",                │
+│      inputVoltage: 36, ambientTemperature: 25,                   │
+│      outputs: [{ name: "out1", current: 2 }] }]                  │
 │                                                                  │
 │  TOPOLOGY — how you build it                                     │
 │    stages[]: each instantiates one CIAS brick (a .subckt)        │
@@ -49,7 +61,6 @@ A real power converter design involves dozens of interrelated decisions scattere
 │  OUTPUTS — what you computed                                     │
 │    losses: { core: 0.4W, winding: 0.6W, switch: 1.1W, ... }    │
 │    kpis: { efficiency: 0.921, outputRipple: 0.045 }             │
-│    stresses: { switchVoltageMargin: 0.48, ... }                  │
 │                                                                  │
 │  SIMULATION (optional) — stimulus + analyses, simulator-agnostic │
 └──────────────────────────────────────────────────────────────────┘
@@ -59,31 +70,54 @@ A real power converter design involves dozens of interrelated decisions scattere
 so a TAS document can be just a spec + intended assembly, or a fully analyzed
 design with results and a simulation setup.
 
+The spec side (`inputs.json`) in brief: `designRequirements` requires
+`efficiency`, `inputType` (`dc` / `acSinglePhase` / `acThreePhase`),
+`inputVoltage`, and `outputs[]`; each output is `{name, voltage, regulation}`
+where `regulation` ∈ `voltage | current | both | constantPower | fixedRatio |
+unregulated` (plus `ratio` for `fixedRatio`). Optional constraints:
+`switchingFrequency`, `isolationVoltage`, `powerFactorMinimum`, `bidirectional`,
+`holdUpTimeMinimum`, `lineFrequency` (AC-only fields are forbidden for `dc`).
+`operatingPoints[]` gives per-test-condition Vin / Tamb / per-rail loads,
+joined to the requirement rails by `name`; each load carries exactly one of
+`current` or `power`.
+
 ### The Component Database
 
 `data/` contains NDJSON files with real parts scraped from manufacturer datasheets and APIs. These are queried by Proteus agents during converter design.
 
-| File | Parts | What's in it | Top Manufacturer |
-|------|-------|-------------|------------------|
-| `mosfets.ndjson` | 4,790 | Si, SiC, GaN — Rds_on(Tj), Coss(Vds), Eon/Eoff curves | onsemi 13.8% |
-| `diodes.ndjson` | 9,097 | Schottky, ultrafast, SiC, Zener, switching | Nexperia 35.2% |
-| `igbts.ndjson` | 2,092 | With Eon/Eoff vs Ic switching energy curves | STMicroelectronics 22.3% |
-| `capacitors.ndjson` | 20,932 | MLCC, electrolytic, film, polymer — dissipationFactor as fraction | Würth Elektronik 18.7% |
-| `resistors.ndjson` | 7,476 | Sense, feedback, snubber, current-sense types | Vishay 20.6% |
-| `magnetics.ndjson` | 19,222 | Power inductors, RF inductors, transformers, chokes | Würth Elektronik 33.1% |
-| `controllers.ndjson` | 1,336 | PWM/multiphase/LLC/PFC/sync-rect controllers, gate drivers, references, sense amps — **validated against CTAS `controller.json`** | onsemi |
-| `converters.ndjson` | 101 | Full converter TAS documents (reference designs) | — |
-| `quarantine.ndjson` | 2,493 | Parts with verified data errors, excluded from queries | — |
+Each record is a single-line JSON object wrapped in its PEAS discriminator, and every record is validated by `tests/test_data.py` against the matching sibling-repo schema:
 
-To search the database:
+| File | Records | Wrap | Validated against |
+|------|---------|------|-------------------|
+| `mosfets.ndjson` | 9,941 | `{"semiconductor": {"mosfet": …}}` | SAS `mosfet.json` |
+| `diodes.ndjson` | 13,309 | `{"semiconductor": {"diode": …}}` | SAS `diode.json` |
+| `igbts.ndjson` | 2,271 | `{"semiconductor": {"igbt": …}}` | SAS `igbt.json` |
+| `bjts.ndjson` | 3,668 | `{"semiconductor": {"bjt": …}}` | SAS `bjt.json` |
+| `capacitors.ndjson` | 230,576 | `{"capacitor": …}` | CAS `capacitor.json` |
+| `resistors.ndjson` | 160,831 | `{"resistor": …}` | RAS `resistor.json` |
+| `varistors.ndjson` | 3,198 | `{"varistor": …}` | RAS `varistor.json` |
+| `magnetics.ndjson` | 92,368 | `{"magnetic": …}` | MAS `magnetic.json` |
+| `controllers.ndjson` | 2,133 | `{"controller": …}` | CTAS `controller.json` |
+| `analog_ics.ndjson` | 3,418 | `{"analog": …}` (e.g. `{"analog": {"operationalAmplifier": …}}`) | AAS `AAS.json` |
+| `connectors.ndjson` | 138,300 | `{"connector": …}` | CONAS `connector.json` |
+| `circuits.ndjson` | 11,979 | CIAS brick `{name, ports, components, connections}` | CIAS `CIAS.json` |
+| `converters.ndjson` | 47 | full TAS documents (reference designs) | TAS `TAS.json` |
+
+The `*.quarantine_*.ndjson` siblings (plus the legacy `quarantine.ndjson`) hold records with verified data errors or incomplete data, excluded from queries — see [Quarantine](#quarantine).
+
+To search the database, grep/parse the NDJSON directly (never load a whole file — `capacitors.ndjson` is ~263 MB):
 
 ```bash
-# From the Proteus directory:
-python3 scripts/component_query.py mosfets --min-vds 600 --max-rds-on 0.1 --top 5
-python3 scripts/component_query.py diodes --min-vrrm 200 --max-vf 0.6 --top 5
-python3 scripts/component_query.py capacitors --min-cap 100e-6 --min-voltage 50 --top 5
-python3 scripts/component_query.py magnetics --min-inductance 10e-6 --min-isat 5 --top 5
+grep -m5 '"partNumber": "C3M0' data/mosfets.ndjson | python3 -m json.tool
+python3 -c '
+import json
+for line in open("data/mosfets.ndjson"):
+    d = json.loads(line)["semiconductor"]["mosfet"]
+    e = d["manufacturerInfo"]["datasheetInfo"]["electrical"]
+    ...'
 ```
+
+Beyond schema validation, catalog parts are physics-checked by the C++ **`tas_validator`** (`validator/` — a pybind11 module that flags IMPOSSIBLE/SUSPICIOUS parameter combinations; see `validator/BUILD.md`).
 
 ---
 
@@ -93,9 +127,7 @@ TAS uses [JSON Schema 2020-12](https://json-schema.org/draft/2020-12/schema). Al
 
 TAS is a **v2** schema model: a converter is a tree of **stages**, each
 instantiating one [CIAS](https://github.com/Power-Supply-Manufacturers-Association/CIAS)
-circuit brick, wired together — analogous to a complete SPICE deck. (The schema
-files are the source of truth; older prose describing a flat
-`components`/`netlist` model is obsolete.)
+circuit brick, wired together — analogous to a complete SPICE deck.
 
 ```
 schemas/
@@ -107,9 +139,12 @@ schemas/
 ```
 
 - **`topology.json`** — `stages[]` (variants: `powerStage`, `isolationStage`,
-  `virtualControl`, `physicalControl`) plus `interStageConnections[]`. Each power
-  stage references a CIAS brick (`circuitRef`), binds its ports (`portBinding` /
-  `portType`), and control stages carry `sense`/`drive` instead of power ports.
+  `virtualControl`, `physicalControl`) plus `interStageConnections[]` (variants:
+  `wire`, `externalPort`). Each power stage references a CIAS brick (`circuit`:
+  inline CIAS document or a URI string like
+  `"TAS/data/circuits.ndjson?name=half-bridge"`), types its terminals
+  (`portBinding`/`portType`), and control stages carry `senses`/`drives`
+  (virtual) or electrically wired `ports` (physical) instead of power ports.
 - **`simulation`** (in `TAS.json`) — simulator-agnostic stimulus + analyses
   (transient / ac / dcSweep / operatingPoint), model-library entries, and
   per-component model bindings/overrides. Translatable to SPICE, PLECS, etc.
@@ -120,16 +155,22 @@ schemas/
 TAS   ← complete converter designs + finished component catalog
  └── PEAS   ← universal component container (abstract base)
       ├── MAS   ← magnetics (cores, windings, bobbins)
-      ├── SAS   ← semiconductors (MOSFETs, diodes, IGBTs)
+      ├── SAS   ← semiconductors (MOSFETs, diodes, IGBTs, BJTs)
       ├── CAS   ← capacitors
-      └── RAS   ← resistors
+      └── RAS   ← resistors, varistors
 ```
+
+(Sibling catalogs also draw on CTAS — controllers, AAS — analog ICs, CONAS — connectors, and CIAS — circuit bricks.)
 
 **Rule:** Finished, orderable components (with part numbers) belong in `TAS/data/`. Manufacturing building blocks (raw cores, wire, die) belong in MAS/SAS/CAS/RAS.
 
-### Supported Topologies (20)
+### Topologies
 
-Buck, Boost, Buck-Boost, Inverting Buck-Boost, SEPIC, Cuk, Zeta, Flyback, Forward, Two-Switch Forward, Active Clamp Forward, Push-Pull, Half-Bridge, Full-Bridge, Phase-Shifted Full-Bridge, LLC Resonant, CLLC Resonant, Dual Active Bridge, Power Factor Correction Boost, Totem-Pole Bridgeless PFC.
+v2 has **no fixed topology enum**: any converter expressible as a cascade of
+typed stages (lineFilter → rectifier → pfc → bulkStorage → switchingCell /
+inverter → isolation → outputRectifier → outputFilter, plus control stages) built
+from CIAS bricks is representable — buck to LLC to dual active bridge and beyond.
+The reusable brick library lives in `data/circuits.ndjson`.
 
 Full schema reference: `docs/schema.md`
 
@@ -145,14 +186,32 @@ schemas/        JSON Schema files — the normative spec.
 
 data/           NDJSON component databases. One JSON object per line.
                 Scripts append here; never load the whole file at once
-                (capacitors.ndjson is 26 MB).
+                (capacitors.ndjson is ~263 MB, magnetics.ndjson ~276 MB).
 
 docs/           schema.md — human-readable schema reference.
 
-scripts/        Utility scripts for database maintenance.
+scripts/        Utility scripts for database maintenance (one-off ETL/repair).
 
-examples/       Example TAS documents.
+validator/      C++/pybind11 physics validator (tas_validator).
+
+librarian/      Enrichment pipeline for filling missing datasheet fields.
+
+examples/       Example TAS documents (valid v2, used by the tests).
+
+tests/          pytest suite — schema meta-validation + full data validation.
 ```
+
+### Validation
+
+```bash
+pip install pytest jsonschema referencing
+pytest tests/test_schemas.py -q   # schema meta-validation + negative cases (fast)
+pytest tests/test_data.py -q      # every NDJSON record against its schema (slow)
+```
+
+Cross-repo `$ref`s resolve by absolute `$id` (`https://psma.com/<repo>/…`); the
+tests build the registry from the sibling repos checked out alongside TAS
+(PEAS, CIAS, MAS, CAS, RAS, SAS, CTAS, AAS, CONAS).
 
 ### Data Format Rules
 
@@ -165,16 +224,19 @@ examples/       Example TAS documents.
 **`dissipationFactor` is a fraction, not percent.**
 X7R typical DF = 0.025 (not 2.5). This was a systematic error in early database population — all entries have been corrected.
 
-**MOSFET structure (SAS path):**
+**MOSFET structure (SAS path)** — note the two-level `semiconductor` → `mosfet` discriminator nesting:
 ```json
 {
   "semiconductor": {
-    "manufacturerInfo": {
-      "name": "Infineon",
-      "datasheetInfo": {
-        "part": { "partNumber": "...", "technology": "Si", "subType": "nChannel" },
-        "electrical": { "drainSourceVoltage": 100, "onResistance": 0.0018, ... },
-        "thermal": { "thermalResistanceJunctionCase": 0.9, ... }
+    "mosfet": {
+      "manufacturerInfo": {
+        "name": "Infineon",
+        "reference": "…",
+        "datasheetInfo": {
+          "part": { "partNumber": "…", "technology": "Si", "subType": "nChannel" },
+          "electrical": { "drainSourceVoltage": 100, "onResistance": 0.0018, ... },
+          "thermal": { "thermalResistanceJunctionCase": 0.9, ... }
+        }
       }
     }
   }
@@ -209,35 +271,17 @@ electricals live in optional sub-objects under `electrical` (`gateDrive`, `isola
 `controllers.quarantine_sparse.ndjson`, and the verbatim original to
 `controllers.pre-ctas.backup.ndjson`.
 
-**Wurth magnetics structure (WE-Aplan path, different from standard SAS):**
-```json
-{
-  "magnetic": {
-    "manufacturerInfo": {
-      "name": "Wurth Elektronik",
-      "reference": "7443641000"
-    },
-    "commercialSpecs": {
-      "inductance": 1e-5,
-      "dcResistance": 0.0024,
-      "saturationCurrent": 37.0,
-      "ratedCurrent": 30.0,
-      "selfResonantFrequency": 13000000.0
-    }
-  }
-}
-```
-Note: For Wurth entries, inductance and electrical specs are in `magnetic.commercialSpecs`, not in `manufacturerInfo.datasheetInfo.electrical`. The part number is in `manufacturerInfo.reference`.
-
-**`dataCompleteness` field (magnetics only):**
-- `"complete"` — all key parameters present
-- `"partial"` — some parameters missing (e.g. DCR but no Isat)
-- `"skeleton"` — part number only, no electrical data yet
-- `"not_found"` — datasheet not locatable
+**Magnetics structure (MAS path):** all magnetics — including Würth — now use the
+standard MAS shape: specs live in `manufacturerInfo.datasheetInfo` (`part`,
+`electrical[]` variant array, `mechanical`, `thermal`, `provenance[]`), with the
+part number in `manufacturerInfo.reference`. (The old Würth-specific
+`magnetic.commercialSpecs` shape and the `dataCompleteness` field have been
+migrated out and no longer appear in the data.)
 
 ### Adding Parts to the Database
 
-Use the `component-librarian` agent in Proteus:
+Use the `component-librarian` agent in Proteus (see also the standing enrichment
+pipeline in `librarian/`):
 
 ```
 Use the component-librarian agent to add these Infineon CoolMOS parts to the TAS database:
@@ -246,27 +290,15 @@ IPW60R099CP, IPW60R125CP, IPW60R165CP
 
 The librarian searches for datasheets, extracts parameters, and appends to the appropriate NDJSON file. It will also flag entries for the `component-auditor` if values seem implausible.
 
-**Never bulk-load a file and rewrite it when other processes may be appending.** Use line-number patching for in-place updates (grep for the part number to find its line, parse that line, modify, write back). The librarian uses this pattern for `usageNotes` updates.
-
-### `usageNotes` Field
-
-Components can carry a top-level `usageNotes` array recording cross-reference validation history, known caveats, and application lessons:
-
-```json
-{
-  "usageNotes": [{
-    "date": "2026-04-04",
-    "source": "cross-referencer agent (EPC9195 Wurth cross-reference)",
-    "note": "Validated in 216W GaN buck @ 750kHz. DCR=2.4mΩ gives 1.97× Isat margin at worst case (Vin=60V, L-20%, T=125°C). WE-MAPI 74436411000 rejected — only 1.15× margin. APPROVED."
-  }]
-}
-```
-
-The Proteus cross-referencer agent writes these back after every substitution analysis.
+**Never bulk-load a file and rewrite it when other processes may be appending.** Use line-number patching for in-place updates (grep for the part number to find its line, parse that line, modify, write back).
 
 ### Quarantine
 
-Parts with data errors go to `quarantine.ndjson` rather than deletion. This preserves traceability. A quarantined entry includes a `quarantineReason` field:
+Parts with data errors are moved to a per-catalog quarantine sibling
+(`<catalog>.quarantine_<reason>.ndjson`, e.g.
+`capacitors.quarantine_duplicates.ndjson`, `mosfets.quarantine_incomplete.ndjson`;
+legacy records live in `quarantine.ndjson`) rather than deleted. This preserves
+traceability. Quarantined entries typically carry a `quarantineReason` field:
 
 ```json
 { "quarantineReason": "Hallucinated part number — FCP021N60E does not exist on onsemi.com or any distributor" }
@@ -277,7 +309,7 @@ Parts with data errors go to `quarantine.ndjson` rather than deletion. This pres
 | Issue | Affected entries | Fix applied |
 |-------|-----------------|-------------|
 | `dissipationFactor` stored as % instead of fraction | 10,088 MLCC/film caps | ÷100 applied to all |
-| Coilcraft SRF in THz range (double ×1e6 error) | 159 entries lines 2818–2976 | ÷1,000,000 applied |
+| Coilcraft SRF in THz range (double ×1e6 error) | 159 entries | ÷1,000,000 applied |
 | Wolfspeed SiC Qrr 2–5× too low (25°C values, not 175°C) | 8 corrected, 19 filled | Manual verification |
 | ROHM SiC Vf at 1.35V (impossible — should be ~3.2V) | SCT3022/3030/3060/3120AL | Set to 3.2V |
 | Hallucinated onsemi FCP/FCA parts | 4 entries | Moved to quarantine |
@@ -286,4 +318,4 @@ Parts with data errors go to `quarantine.ndjson` rather than deletion. This pres
 
 ## License
 
-MIT — see `LICENSE` if present, otherwise all rights reserved pending formal license assignment.
+MIT — see `LICENSE`.

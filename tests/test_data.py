@@ -92,15 +92,15 @@ def _build_tas_registry() -> Registry:
     for name in ("CIAS",):
         s = json.loads((cias_dir / f"{name}.json").read_text())
         schemas[s["$id"]] = s
-    peas_dir = REPO.parent / "PEAS" / "schemas"
-    for path in peas_dir.rglob("*.json"):
-        s = json.loads(path.read_text())
-        schemas[s["$id"]] = s
-    aas_dir = REPO.parent / "AAS" / "schemas"
-    if aas_dir.is_dir():
-        for path in aas_dir.rglob("*.json"):
+    # peas.json's oneOf reaches every component family: load ALL siblings so bricks
+    # with inline PEAS atoms (resistor/capacitor/magnetic/...) resolve.
+    for repo in ("PEAS", "MAS", "CAS", "SAS", "RAS", "AAS", "CTAS", "CONAS", "COAS"):
+        sdir = REPO.parent / repo / "schemas"
+        assert sdir.is_dir(), f"sibling repo {repo} missing — PSMA workspace layout required"
+        for path in sdir.rglob("*.json"):
             s = json.loads(path.read_text())
-            schemas[s["$id"]] = s
+            if "$id" in s:
+                schemas[s["$id"]] = s
     resources = [
         (sid, Resource(contents=s, specification=DRAFT202012))
         for sid, s in schemas.items()
@@ -136,6 +136,7 @@ def part_library_validators():
         ("magnetics.ndjson",  ["magnetic"],                "MAS", "magnetic.json"),
         ("controllers.ndjson", ["controller"],             "CTAS", "controller.json"),
         ("analog_ics.ndjson", ["analog"],                  "AAS", "AAS.json"),
+        ("connectors.ndjson", ["connector"],               "CONAS", "connector.json"),
     ]:
         schema = json.loads((PROTEUS / repo / "schemas" / schema_file).read_text())
         out[fname] = (disc_path, Draft202012Validator(schema, registry=reg))
@@ -186,6 +187,7 @@ def _summarise_failures(fails: list[tuple[int, str]], cap: int = 5) -> str:
     "mosfets.ndjson", "diodes.ndjson", "igbts.ndjson", "bjts.ndjson",
     "capacitors.ndjson", "resistors.ndjson", "varistors.ndjson",
     "magnetics.ndjson", "controllers.ndjson", "analog_ics.ndjson",
+    "connectors.ndjson",
 ])
 def test_part_library_records_validate(part_library_validators, fname):
     path = DATA / fname
@@ -241,6 +243,7 @@ def _manufacturer_ref(rec):
     "mosfets.ndjson", "diodes.ndjson", "igbts.ndjson", "bjts.ndjson",
     "capacitors.ndjson", "resistors.ndjson", "varistors.ndjson",
     "magnetics.ndjson", "controllers.ndjson", "analog_ics.ndjson",
+    "connectors.ndjson",
 ])
 def test_part_library_references_unique(fname):
     """No (manufacturer, reference) may appear more than once in a part library.

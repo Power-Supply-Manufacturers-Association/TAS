@@ -61,7 +61,7 @@ TAS
 | Field | Type | Notes |
 |-------|------|-------|
 | `efficiency` | `number` (0–1) | Target efficiency, fraction |
-| `inputType` | `string` | `dc` / `ac` |
+| `inputType` | `string` | `dc` / `acSinglePhase` / `acThreePhase` |
 | `inputVoltage` | `dimensionWithTolerance` | Volts |
 | `lineFrequency` | `dimensionWithTolerance` | Hz (ac input) |
 | `switchingFrequency` | `dimensionWithTolerance` | Hz |
@@ -69,7 +69,7 @@ TAS
 | `powerFactorMinimum` | `number` | PFC designs |
 | `bidirectional` | `boolean` | — |
 | `holdUpTimeMinimum` | `number` | s |
-| `outputs[]` | array | Per-rail `{name, voltage, regulation, …}` |
+| `outputs[]` | array | Per-rail `{name, voltage, regulation, ratio?}`; `regulation` ∈ `voltage \| current \| both \| constantPower \| fixedRatio \| unregulated`; `ratio` (Vout/Vin) required for `fixedRatio`, optional for `unregulated`, forbidden otherwise |
 
 ### operatingPoints — `minItems: 1`, each `required: [name, inputVoltage, ambientTemperature, outputs]`
 

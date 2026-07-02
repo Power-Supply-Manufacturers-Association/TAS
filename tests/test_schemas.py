@@ -37,6 +37,9 @@ EXAMPLES_DIR = REPO / "examples"
 
 TAS_SCHEMA_NAMES = ["TAS", "inputs", "outputs", "utils", "topology"]
 CIAS_SCHEMA_NAMES = ["CIAS"]
+# peas.json's oneOf reaches every component family; all siblings must be loadable
+# so TAS documents with inline PEAS component data validate against the REAL seam.
+SIBLING_REPOS = ["MAS", "CAS", "SAS", "RAS", "CTAS", "CONAS", "AAS", "COAS"]
 
 
 # ---------------------------------------------------------------------------
@@ -56,11 +59,13 @@ def schemas():
     for path in PEAS_SCHEMA_DIR.rglob("*.json"):
         s = json.loads(path.read_text())
         out[s["$id"]] = s
-    aas_dir = REPO.parent / "AAS" / "schemas"
-    if aas_dir.is_dir():
-        for path in aas_dir.rglob("*.json"):
+    for repo in SIBLING_REPOS:
+        sdir = REPO.parent / repo / "schemas"
+        assert sdir.is_dir(), f"sibling repo {repo} missing — the PSMA workspace layout is required"
+        for path in sdir.rglob("*.json"):
             s = json.loads(path.read_text())
-            out[s["$id"]] = s
+            if "$id" in s:
+                out[s["$id"]] = s
     return out
 
 
@@ -71,12 +76,6 @@ def registry(schemas):
         (sid, Resource(contents=s, specification=DRAFT202012))
         for sid, s in schemas.items()
     ]
-    # Stub the external PEAS peas.json root so component $refs resolve.
-    if "https://psma.com/peas/peas.json" not in schemas:
-        resources.append((
-            "https://psma.com/peas/peas.json",
-            Resource(contents={"type": "object"}, specification=DRAFT202012),
-        ))
     return Registry().with_resources(resources)
 
 
@@ -111,6 +110,45 @@ def assert_invalid(validator, doc, *, contains=None):
     if contains:
         joined = " | ".join(e.message for e in errs)
         assert contains in joined, f"expected error containing {contains!r}, got: {joined}"
+
+
+# ---------------------------------------------------------------------------
+# PEAS seam (H14 regression: TAS validates against the REAL peas.json, no stub)
+# ---------------------------------------------------------------------------
+
+def test_inline_peas_component_validates(tas_validator, flyback_doc):
+    """A component whose data is an inline PEAS document must validate through
+    the real peas.json oneOf (this used to be stubbed with {"type": "object"})."""
+    inline_resistor = {
+        "inputs": {"designRequirements": {
+            "deviceType": "resistor",
+            "resistance": {"nominal": 0.01},
+            "powerRating": 1.0,
+        }},
+        "resistor": {"manufacturerInfo": {
+            "name": "Vishay",
+            "datasheetInfo": {
+                "part": {"partNumber": "WSK2512R0100FEA", "technology": "currentSenseShunt", "case": "2512"},
+                "electrical": {"resistance": {"nominal": 0.01}, "tolerance": 0.01, "powerRating": 1.0},
+            },
+        }},
+    }
+    stage = flyback_doc["topology"]["stages"][0]
+    circuit = stage["circuit"]
+    circuit["components"].append({"name": "Rsense", "data": inline_resistor})
+    circuit["connections"][0]["endpoints"].append({"component": "Rsense", "pin": "1"})
+    assert_valid(tas_validator, flyback_doc)
+
+
+def test_inline_peas_component_junk_rejected(tas_validator, flyback_doc):
+    """The real PEAS seam must reject an inline component with a junk root key
+    (the old stub accepted anything object-shaped)."""
+    stage = flyback_doc["topology"]["stages"][0]
+    stage["circuit"]["components"].append({
+        "name": "Rbogus",
+        "data": {"inputs": {"designRequirements": {}}, "junkDiscriminator": {}},
+    })
+    assert_invalid(tas_validator, flyback_doc)
 
 
 # ---------------------------------------------------------------------------

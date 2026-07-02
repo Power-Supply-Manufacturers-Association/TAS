@@ -60,7 +60,7 @@ def convert(r):
           "status": STATUS.get(r.get("status"), "production"),
           "datasheetUrl": f"https://www.ti.com/lit/gpn/{gpn}",
           "datasheetInfo": {"part": part, "electrical": e}}
-    return {"comparator": {"manufacturerInfo": mi}}
+    return {"analog": {"comparator": {"manufacturerInfo": mi}}}  # analog_ics.ndjson stores PEAS-wrapped records
 
 def main():
     recs = json.load(open(SRC))["records"]
