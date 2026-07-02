@@ -30,7 +30,7 @@
           "ports": [ { "name": "dc+" }, { "name": "dc-" }, { "name": "sw" }, { "name": "gate" } ],
           "components": [
             { "name": "Q1",   "data": "TAS/data/mosfets.ndjson?partNumber=C3M0032120K" },
-            { "name": "C_in", "data": "TAS/data/capacitors.ndjson?partNumber=B32774" }
+            { "name": "C_in", "data": "TAS/data/capacitors.ndjson?partNumber=B32623A2106K" }
           ],
           "connections": [
             { "name": "dc_pos",   "endpoints": [ { "component": "Q1", "pin": "D" }, { "component": "C_in", "pin": "1" }, { "port": "dc+" } ] },
@@ -50,7 +50,7 @@
           "name": "flyback-transformer",
           "ports": [ { "name": "pri" }, { "name": "sec" }, { "name": "sec_rtn" } ],
           "components": [
-            { "name": "T1", "data": "TAS/data/transformers.ndjson?partNumber=FLY-48-12-24W" }
+            { "name": "T1", "data": "TAS/data/magnetics.ndjson?placeholder=T1" }
           ],
           "connections": [
             { "name": "primary",   "endpoints": [ { "component": "T1", "pin": "P1" }, { "port": "pri" } ] },

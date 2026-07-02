@@ -26,7 +26,7 @@
           "components": [
             { "name": "Q1",    "data": "TAS/data/mosfets.ndjson?partNumber=BSC010N04LS" },
             { "name": "D1",    "data": "TAS/data/diodes.ndjson?partNumber=SS34" },
-            { "name": "L1",    "data": "TAS/data/magnetics.ndjson?partNumber=XAL5030-223MEC" },
+            { "name": "L1",    "data": "TAS/data/magnetics.ndjson?partNumber=XAL5050-223MEC" },
             { "name": "C_in",  "data": "TAS/data/capacitors.ndjson?placeholder=C_in" },
             { "name": "C_out", "data": "TAS/data/capacitors.ndjson?placeholder=C_out" }
           ],
