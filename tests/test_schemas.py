@@ -39,7 +39,7 @@ TAS_SCHEMA_NAMES = ["TAS", "inputs", "outputs", "utils", "topology"]
 CIAS_SCHEMA_NAMES = ["CIAS"]
 # peas.json's oneOf reaches every component family; all siblings must be loadable
 # so TAS documents with inline PEAS component data validate against the REAL seam.
-SIBLING_REPOS = ["MAS", "CAS", "SAS", "RAS", "CTAS", "CONAS", "AAS", "COAS"]
+SIBLING_REPOS = ["MAS", "CAS", "SAS", "RAS", "CTAS", "CONAS", "AAS", "TBAS", "COAS"]
 
 
 # ---------------------------------------------------------------------------
