@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MIT
 // TAS Physics Validator — public API.
 //
 // Given a single TAS catalog part record (one NDJSON line as JSON), decide

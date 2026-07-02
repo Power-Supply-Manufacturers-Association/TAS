@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MIT
 // Corpus-level batch screen (P6). Within each (manufacturer, component) cohort, a
 // numeric electrical field value that is a robust-z outlier (Iglewicz-Hoaglin
 // modified z-score from the median/MAD) far from its cohort mates is a likely typo

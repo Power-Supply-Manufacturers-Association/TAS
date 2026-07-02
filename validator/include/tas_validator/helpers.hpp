@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MIT
 // TAS Physics Validator — shared helpers for navigating MAS/TAS datasheet JSON.
 //
 // Records are draft-2020-12 documents. Physical scalars are either bare numbers

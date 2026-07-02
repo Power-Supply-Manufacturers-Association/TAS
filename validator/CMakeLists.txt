@@ -49,16 +49,13 @@ target_link_libraries(tas_validator_core PUBLIC nlohmann_json::nlohmann_json)
 pybind11_add_module(tas_validator src/bindings.cpp)
 target_link_libraries(tas_validator PRIVATE tas_validator_core)
 
-# --- C++ unit tests ----------------------------------------------------------
+# --- C++ unit tests (Catch2, run the binary directly — no ctest) -------------
 if(BUILD_TAS_VALIDATOR_TESTS)
-  FetchContent_Declare(UnitTestpp
-    GIT_REPOSITORY https://github.com/unittest-cpp/unittest-cpp.git
-    GIT_TAG tags/v2.0.0)
-  set(UTPP_INCLUDE_TESTS_IN_BUILD OFF CACHE BOOL "" FORCE)
-  FetchContent_MakeAvailable(UnitTestpp)
+  FetchContent_Declare(Catch2
+    GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+    GIT_TAG v3.8.1)
+  FetchContent_MakeAvailable(Catch2)
 
   add_executable(tas_validator_tests tests/test_validator.cpp)
-  target_include_directories(tas_validator_tests PRIVATE
-    "${CMAKE_BINARY_DIR}/_deps/unittestpp-src")
-  target_link_libraries(tas_validator_tests PRIVATE tas_validator_core UnitTest++)
+  target_link_libraries(tas_validator_tests PRIVATE tas_validator_core Catch2::Catch2WithMain)
 endif()

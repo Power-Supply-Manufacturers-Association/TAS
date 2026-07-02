@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MIT
 #include "tas_validator/eseries.hpp"
 
 #include <cmath>

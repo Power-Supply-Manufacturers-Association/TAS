@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MIT
 // Analog IC (AAS) physics checks. `datasheet` is the AAS component datasheetInfo;
 // the subtype is ctx.component (the top-level discriminator). Subtype families:
 //   amplifier   (operationalAmplifier, buffer, differenceAmplifier,

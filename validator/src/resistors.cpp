@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MIT
 // Resistor physics checks. `datasheet` is the datasheetInfo object:
 //   electrical.{resistance,tolerance,temperatureCoefficient,powerRating,maxVoltage},
 //   part.technology, mechanical.{length,width,height}.

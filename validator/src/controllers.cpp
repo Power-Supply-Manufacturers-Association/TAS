@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MIT
 // Controller (CTAS) physics checks. `datasheet` is the controller datasheetInfo:
 //   function.{category,channelCount,maxPhaseCount}, electrical.{supplyVoltage,
 //   switchingFrequencyMin/Max, uvlo[], isolation, gateDrive, shuntReference,

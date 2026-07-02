@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MIT
 // Magnetics physics checks. `datasheet` is the datasheetInfo object; its
 // `electrical` member is an ARRAY of operating points (inductor/transformer
 // windings), so every check runs per op-point and tags findings with the index.

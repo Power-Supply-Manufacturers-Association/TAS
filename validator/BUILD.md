@@ -9,7 +9,7 @@ Fetched automatically by CMake (network required on first configure):
 
 - [nlohmann/json](https://github.com/nlohmann/json) v3.11.2 (same tag as MAS)
 - [pybind11](https://github.com/pybind/pybind11) v2.13.6
-- [UnitTest++](https://github.com/unittest-cpp/unittest-cpp) v2.0.0 (tests only)
+- [Catch2](https://github.com/catchorg/Catch2) v3.8.1 (tests only; same tag as CAS)
 
 Host tools: a C++20 compiler, CMake ≥ 3.18, Ninja (or Make), and Python 3 dev
 headers (`python3-dev`) for the module.

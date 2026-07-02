@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MIT
 // TAS Physics Validator — all numeric bounds in one auditable place.
 //
 // Each constant carries the physical/datasheet rationale. Bounds are

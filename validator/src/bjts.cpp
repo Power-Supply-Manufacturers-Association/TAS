@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MIT
 // BJT (SAS) physics checks. `datasheet` is the bjt datasheetInfo:
 //   electrical.{collectorEmitterVoltage(VCEO),collectorBaseVoltage(VCBO),
 //     collectorCurrent(IC),dcCurrentGain(hFE),saturationVoltage(VCEsat),

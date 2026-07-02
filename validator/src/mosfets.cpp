@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MIT
 // MOSFET physics checks. `datasheet` is the mosfet datasheetInfo object:
 //   electrical.{drainSourceVoltage,gateSourceVoltageMax,onResistance,
 //     gateThresholdVoltage,inputCapacitance(Ciss),outputCapacitance(Coss),

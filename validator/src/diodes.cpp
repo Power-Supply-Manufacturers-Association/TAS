@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MIT
 // Diode physics checks. `datasheet` is the diode datasheetInfo object:
 //   electrical.{reverseVoltage,forwardCurrent,surgeCurrent,forwardVoltage,
 //     reverseLeakageCurrent,junctionCapacitance,junctionCapacitanceVr,

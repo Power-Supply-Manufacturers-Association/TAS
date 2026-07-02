@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MIT
 // Connector (CONAS) physics checks. `datasheet` is the connector datasheetInfo:
 //   electrical.{ratedCurrentPerContact,ratedVoltage,contactResistance,
 //     insulationResistance,dielectricWithstandingVoltage,clearance,creepage}.

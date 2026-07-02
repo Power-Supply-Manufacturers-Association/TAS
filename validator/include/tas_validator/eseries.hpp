@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MIT
 // IEC 60063 E-series preferred-value membership — the strongest real-vs-synthesized
 // signal for passive components. Real resistor/capacitor nominal values are
 // quantized to the E-series lattice (measured: 99.8% of live resistors, 99.9% of

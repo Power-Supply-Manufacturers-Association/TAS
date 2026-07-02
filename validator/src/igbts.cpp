@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MIT
 // IGBT physics checks. `datasheet` is the igbt datasheetInfo object:
 //   electrical.{collectorEmitterVoltage,continuousCollectorCurrent,
 //     collectorEmitterSaturation}.

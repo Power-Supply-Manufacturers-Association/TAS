@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MIT
 // Varistor (MOV, RAS) physics checks. `datasheet` is the varistor datasheetInfo:
 //   electrical.{varistorVoltage(V_1mA),maxContinuousAcVoltage,maxContinuousDcVoltage,
 //     clampingVoltage,peakSurgeCurrent,capacitance,nonlinearityCoefficient}.
