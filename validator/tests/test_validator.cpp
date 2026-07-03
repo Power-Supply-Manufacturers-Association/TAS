@@ -54,7 +54,7 @@ json good_cap() {
 }
 
 // A real-shaped, physically sane MEMS oscillator (SiTime SiT8008, 25 MHz —
-// TBAS/examples/mems-oscillator-25mhz.json values).
+// TDAS/examples/mems-oscillator-25mhz.json values).
 json good_oscillator() {
     return json::parse(R"json({"timeBase": {"oscillator": {"manufacturerInfo": {
       "name": "SiTime", "reference": "SiT8008BI-73-33E-25.000000", "datasheetInfo": {
@@ -73,7 +73,7 @@ json good_oscillator() {
 }
 
 // A real-shaped bare watch crystal (Würth 830502587, 32.768 kHz —
-// TBAS/examples/watch-crystal-32768.json values).
+// TDAS/examples/watch-crystal-32768.json values).
 json good_crystal() {
     return json::parse(R"json({"timeBase": {"oscillator": {"manufacturerInfo": {
       "name": "Würth Elektronik", "reference": "830502587", "datasheetInfo": {
@@ -368,7 +368,7 @@ TEST_CASE("Controllers: GoodControllerValid", "[controllers]") {
     CHECK(!has_code(v, "CTL_UVLO_ORDER"));
 }
 
-// Time bases (TBAS): oscillators / crystals / timers / latches + behavioral atoms.
+// Time bases (TDAS): oscillators / crystals / timers / latches + behavioral atoms.
 TEST_CASE("TimeBases: GoodMemsOscillatorValid", "[timebases]") {
     Verdict v = V.validate(good_oscillator());
     CHECK(v.valid);

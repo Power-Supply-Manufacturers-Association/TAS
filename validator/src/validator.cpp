@@ -225,7 +225,7 @@ Verdict PartValidator::validate(const json& part) const {
     } else if (part.contains("controller")) {
         run("controller", part["controller"], &check_controllers);
     } else if (part.contains("timeBase")) {
-        // TBAS: {"timeBase": {"oscillator"|"timer"|"latch": {...}}}. A record may
+        // TDAS: {"timeBase": {"oscillator"|"timer"|"latch": {...}}}. A record may
         // be a part-less behavioral atom (no manufacturerInfo), so the behavioral
         // screen runs independently of the datasheet pipeline.
         const json& tb = part["timeBase"];
@@ -330,7 +330,7 @@ std::vector<std::string> PartValidator::check_codes() {
         "CMP_TPD", "CMP_HYST",
         "CONV_RES", "CONV_RATE", "CONV_VREF", "CONV_SNR", "SW_RON", "SW_LEAK",
         "MULT_SCALE", "MULT_ERROR", "MULT_BW",
-        // time bases (TBAS)
+        // time bases (TDAS)
         "TB_OSC_POSITIVITY", "TB_OSC_FREQ_TECH", "TB_OSC_MODE_FREQ", "TB_OSC_STABILITY",
         "TB_OSC_AGING", "TB_OSC_JITTER", "TB_OSC_STARTUP", "TB_OSC_SUPPLY",
         "TB_OSC_RESONATOR_SUPPLY", "TB_OSC_PULL_RANGE", "TB_OSC_OUTPUT_TYPE",

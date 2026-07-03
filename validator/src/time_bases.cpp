@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Time-base (TBAS) physics checks: oscillators/crystals, 555-class timers and
+// Time-base (TDAS) physics checks: oscillators/crystals, 555-class timers and
 // discrete SR latches. `datasheet` is the family datasheetInfo; the subtype is
 // ctx.component ("oscillator" | "timer" | "latch", the timeBase sub-discriminator).
 //

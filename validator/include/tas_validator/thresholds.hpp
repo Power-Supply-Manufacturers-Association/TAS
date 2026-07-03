@@ -255,9 +255,9 @@ inline constexpr double CTL_TJMAX_SUS = 175.0, CTL_TJMAX_IMP = 250.0;
 // maxPhaseCount [count]: real max 20 (Renesas RAA228228).
 inline constexpr double CTL_PHASE_SUS = 20.0, CTL_PHASE_IMP = 32.0;
 
-// ---- Time bases (TBAS: oscillator / timer / latch) --------------------------
+// ---- Time bases (TDAS: oscillator / timer / latch) --------------------------
 // Fractional-frequency quantities (stability, aging, tolerance, pull range,
-// timing accuracy) are DIMENSIONLESS fractions per the TBAS schema (1 ppm =
+// timing accuracy) are DIMENSIONLESS fractions per the TDAS schema (1 ppm =
 // 1e-6). Bounds from the July-2026 vendor-catalog research pass; every
 // IMPOSSIBLE floor sits >10x beyond published best-in-class so a future
 // record-breaking part lands SUSPICIOUS, never IMPOSSIBLE.

@@ -44,7 +44,7 @@ def _build_full_registry() -> Registry:
     pure $ref schemas (e.g. CAS/utils.json -> PEAS/utils.json)."""
     by_id: dict[str, dict] = {}
     by_path: dict[Path, dict] = {}
-    for repo_name in ("PEAS", "SAS", "CAS", "RAS", "MAS", "CTAS", "CONAS", "AAS", "TBAS"):
+    for repo_name in ("PEAS", "SAS", "CAS", "RAS", "MAS", "CTAS", "CONAS", "AAS", "TDAS"):
         repo_dir = PROTEUS / repo_name / "schemas"
         if not repo_dir.is_dir():
             continue
@@ -94,7 +94,7 @@ def _build_tas_registry() -> Registry:
         schemas[s["$id"]] = s
     # peas.json's oneOf reaches every component family: load ALL siblings so bricks
     # with inline PEAS atoms (resistor/capacitor/magnetic/...) resolve.
-    for repo in ("PEAS", "MAS", "CAS", "SAS", "RAS", "AAS", "CTAS", "CONAS", "TBAS", "COAS"):
+    for repo in ("PEAS", "MAS", "CAS", "SAS", "RAS", "AAS", "CTAS", "CONAS", "TDAS", "COAS"):
         sdir = REPO.parent / repo / "schemas"
         assert sdir.is_dir(), f"sibling repo {repo} missing — PSMA workspace layout required"
         for path in sdir.rglob("*.json"):
@@ -137,7 +137,7 @@ def part_library_validators():
         ("controllers.ndjson", ["controller"],             "CTAS", "controller.json"),
         ("analog_ics.ndjson", ["analog"],                  "AAS", "AAS.json"),
         ("connectors.ndjson", ["connector"],               "CONAS", "connector.json"),
-        ("time_based.ndjson", ["timeBase"],                "TBAS", "tbas.json"),
+        ("timing_devices.ndjson", ["timeBase"],            "TDAS", "tdas.json"),
         ("thermistors.ndjson", ["thermistor"],             "RAS", "thermistor.json"),
         ("modules.ndjson",    ["semiconductor", "module"], "SAS", "module.json"),
     ]:
@@ -190,7 +190,7 @@ def _summarise_failures(fails: list[tuple[int, str]], cap: int = 5) -> str:
     "mosfets.ndjson", "diodes.ndjson", "igbts.ndjson", "bjts.ndjson",
     "capacitors.ndjson", "resistors.ndjson", "varistors.ndjson",
     "magnetics.ndjson", "controllers.ndjson", "analog_ics.ndjson",
-    "connectors.ndjson", "time_based.ndjson", "thermistors.ndjson", "modules.ndjson",
+    "connectors.ndjson", "timing_devices.ndjson", "thermistors.ndjson", "modules.ndjson",
 ])
 def test_part_library_records_validate(part_library_validators, fname):
     path = DATA / fname
@@ -246,7 +246,7 @@ def _manufacturer_ref(rec):
     "mosfets.ndjson", "diodes.ndjson", "igbts.ndjson", "bjts.ndjson",
     "capacitors.ndjson", "resistors.ndjson", "varistors.ndjson",
     "magnetics.ndjson", "controllers.ndjson", "analog_ics.ndjson",
-    "connectors.ndjson", "time_based.ndjson", "thermistors.ndjson", "modules.ndjson",
+    "connectors.ndjson", "timing_devices.ndjson", "thermistors.ndjson", "modules.ndjson",
 ])
 def test_part_library_references_unique(fname):
     """No (manufacturer, reference) may appear more than once in a part library.
