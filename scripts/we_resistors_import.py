@@ -54,7 +54,12 @@ def main():
         tol=num(row.get("Resistance Tolerance"))
         if tol is not None: e["tolerance"]=abs(tol)/100.0
         if (v:=watts(row.get("Rated Power"))) is not None: e["powerRating"]=v
-        if (v:=num(row.get("Temperature Coefficient of Resistance"))) is not None: e["temperatureCoefficient"]=v
+        # RAS unit is ppm/K. The .mdb column carries the MIN bound of WE's
+        # symmetric ±TCR band, sometimes as a bare fraction per K (-0.0001 =
+        # ±100 ppm): normalise to the band magnitude in ppm. Datasheet-verified
+        # on 560050310009 / 580060716002 (both "TCR min -100 / max +100 ppm/°C").
+        if (v:=num(row.get("Temperature Coefficient of Resistance"))) is not None:
+            e["temperatureCoefficient"]=abs(v)*1e6 if abs(v)<0.1 else abs(v)
         di={"part":part,"electrical":e}
         tmin=num(row.get("Min Operating Temperature")); tmax=num(row.get("Max Operating Temperature"))
         if tmin is not None and tmax is not None: di["thermal"]={"operatingTemperature":{"minimum":tmin,"maximum":tmax}}
