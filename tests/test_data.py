@@ -137,7 +137,7 @@ def part_library_validators():
         ("controllers.ndjson", ["controller"],             "CTAS", "controller.json"),
         ("analog_ics.ndjson", ["analog"],                  "AAS", "AAS.json"),
         ("connectors.ndjson", ["connector"],               "CONAS", "connector.json"),
-        ("time_bases.ndjson", ["timeBase"],                "TBAS", "tbas.json"),
+        ("time_based.ndjson", ["timeBase"],                "TBAS", "tbas.json"),
         ("thermistors.ndjson", ["thermistor"],             "RAS", "thermistor.json"),
         ("modules.ndjson",    ["semiconductor", "module"], "SAS", "module.json"),
     ]:
@@ -190,7 +190,7 @@ def _summarise_failures(fails: list[tuple[int, str]], cap: int = 5) -> str:
     "mosfets.ndjson", "diodes.ndjson", "igbts.ndjson", "bjts.ndjson",
     "capacitors.ndjson", "resistors.ndjson", "varistors.ndjson",
     "magnetics.ndjson", "controllers.ndjson", "analog_ics.ndjson",
-    "connectors.ndjson", "time_bases.ndjson", "thermistors.ndjson", "modules.ndjson",
+    "connectors.ndjson", "time_based.ndjson", "thermistors.ndjson", "modules.ndjson",
 ])
 def test_part_library_records_validate(part_library_validators, fname):
     path = DATA / fname
@@ -246,7 +246,7 @@ def _manufacturer_ref(rec):
     "mosfets.ndjson", "diodes.ndjson", "igbts.ndjson", "bjts.ndjson",
     "capacitors.ndjson", "resistors.ndjson", "varistors.ndjson",
     "magnetics.ndjson", "controllers.ndjson", "analog_ics.ndjson",
-    "connectors.ndjson", "time_bases.ndjson", "thermistors.ndjson", "modules.ndjson",
+    "connectors.ndjson", "time_based.ndjson", "thermistors.ndjson", "modules.ndjson",
 ])
 def test_part_library_references_unique(fname):
     """No (manufacturer, reference) may appear more than once in a part library.
