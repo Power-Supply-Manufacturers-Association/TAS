@@ -230,9 +230,15 @@ void check_switch(const json& elec, const Ctx& ctx, std::vector<Finding>& out) {
             emit(out, ctx, "SW_RON", Severity::Suspicious, *ron, thr::SW_RON_SUS,
                  fmt("onResistance high for an analog switch [Ohm]", *ron, thr::SW_RON_SUS));
     }
-    if (auto leak = scalar_at(elec, {"offLeakageCurrent"}))
-        if (*leak < 0)
-            emit(out, ctx, "SW_LEAK", Severity::Impossible, *leak, 0, "offLeakageCurrent < 0");
+    if (auto leak = scalar_at(elec, {"offLeakageCurrent"})) {
+        double a = std::fabs(*leak);
+        if (a > thr::SW_LEAK_IMP)
+            emit(out, ctx, "SW_LEAK", Severity::Impossible, a, thr::SW_LEAK_IMP,
+                 fmt("off-state leakage far too high to be a switch [A]", a, thr::SW_LEAK_IMP));
+        else if (a > thr::SW_LEAK_SUS)
+            emit(out, ctx, "SW_LEAK", Severity::Suspicious, a, thr::SW_LEAK_SUS,
+                 fmt("off-state leakage high for an analog switch [A]", a, thr::SW_LEAK_SUS));
+    }
 }
 
 void check_multiplier(const json& elec, const Ctx& ctx, std::vector<Finding>& out) {

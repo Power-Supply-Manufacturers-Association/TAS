@@ -224,6 +224,11 @@ inline constexpr double CONV_RATE_IMP = 1.0e12, CONV_RATE_SUS = 1.0e11;
 inline constexpr double CONV_VREF_IMP = 20.0, CONV_VREF_SUS = 10.0;
 // Analog switch / mux on-resistance [Ohm]: ~0.3 Ω to ~kΩ.
 inline constexpr double SW_RON_IMP = 1.0e6, SW_RON_SUS = 1.0e4;
+// Off-leakage: real analog-switch/mux off-leakage is pA (typ ~10 pA @25C) to a few uA
+// hot; > 100 uA is not "off", > 10 mA is a short, not a switch. (TI MUX50x, ADI ADG604,
+// NXP NX3L4051, Maxim MAX354, Vishay app note SG2134.)
+inline constexpr double SW_LEAK_SUS = 1.0e-4;   // |I_leak(off)| > 100 uA is suspicious
+inline constexpr double SW_LEAK_IMP = 1.0e-2;   // |I_leak(off)| > 10 mA is impossible
 
 // ---- Controllers (CTAS) -----------------------------------------------------
 // Control ICs span enormous parameter ranges, so magnitude bounds are wide and
@@ -428,5 +433,45 @@ inline constexpr double TB_LATCH_V_SUS_LO = 0.5, TB_LATCH_V_SUS_HI = 20.0;
 // hour is almost certainly a unit slip.
 inline constexpr double TB_BEH_OSC_F_SUS = 10.0e9;
 inline constexpr double TB_BEH_TMR_ONTIME_SUS = 3600.0;
+
+// ---- Thermistors (THERM_*) -------------------------------------------------
+// Bounds from NTC/PTC datasheets + app notes (Vishay NTCLE/NTCLG, TDK/EPCOS B57,
+// Murata NCP/NCU, Amphenol/Thermometrics, Littelfuse, Ametherm inrush limiters).
+// R25 (Ohm): inrush limiters reach ~0.05 Ohm (Ametherm SL32 0R230=0.25); high-R
+// sensing NTCs reach ~10 MOhm (1 MOhm common ceiling).
+inline constexpr double THERM_R25_IMP_LO = 1e-3;    // < 1 mOhm: a short, not a thermistor
+inline constexpr double THERM_R25_IMP_HI = 1e8;     // > 100 MOhm impossible
+inline constexpr double THERM_R25_SUS_LO = 0.05;    // below inrush-limiter floor
+inline constexpr double THERM_R25_SUS_HI = 1e7;     // above typical sensing max (10 MOhm)
+// B constant / beta (K): real NTC-oxide parts ~2400..5000 K (TDK/EPCOS, Niccomp NCT=2410).
+inline constexpr double THERM_B_IMP_LO = 1000.0;
+inline constexpr double THERM_B_IMP_HI = 7000.0;
+inline constexpr double THERM_B_SUS_LO = 2000.0;
+inline constexpr double THERM_B_SUS_HI = 5500.0;
+// Resistance tolerance (fraction): tightest ~0.001, loosest ~0.2..0.25.
+inline constexpr double THERM_TOL_IMP_HI = 0.5;     // >= 50% is not a tolerance
+inline constexpr double THERM_TOL_SUS_HI = 0.30;    // above the loosest real grade (25%)
+// Dissipation constant (W/K, still air): micro-bead ~0.3 mW/K; large potted disc ~0.2 W/K.
+// Oil-referenced figures run several x higher, so hard-gate only at 1 W/K (impossible).
+inline constexpr double THERM_DISS_IMP_LO = 1e-5;
+inline constexpr double THERM_DISS_IMP_HI = 10.0;   // generous vs the 1 W/K air ceiling (oil-safe)
+inline constexpr double THERM_DISS_SUS_LO = 2e-4;
+inline constexpr double THERM_DISS_SUS_HI = 0.25;   // above the ~0.2 W/K potted max
+// Thermal time constant (s, still air): micro-bead ~0.1 s; potted probe ~232..400 s.
+inline constexpr double THERM_TAU_IMP_HI = 1000.0;  // > 1000 s is not a thermistor
+inline constexpr double THERM_TAU_SUS_HI = 400.0;
+// Implied heat capacity C_th = tau * dissipationConstant (J/K): ~0.5 mJ/K (bead) to ~2 J/K (disc).
+inline constexpr double THERM_CTH_SUS_LO = 1e-6;
+inline constexpr double THERM_CTH_SUS_HI = 10.0;
+// Operating temperature (deg C).
+inline constexpr double THERM_ABS_ZERO_C = -273.15;
+inline constexpr double THERM_TEMP_MAX_IMP = 1200.0;  // rare-earth high-temp NTC reaches ~1100
+inline constexpr double THERM_TEMP_MAX_SUS = 330.0;   // above glass-NTC max (~300)
+// PTC switch (reference) temperature (deg C): sensors to ~165, heaters (same physics) to ~320.
+inline constexpr double THERM_PTC_TSW_IMP_HI = 400.0;
+inline constexpr double THERM_PTC_TSW_SUS_HI = 330.0;
+// Max steady-state current for inrush-limiter NTCs (A): MM35-DIN reaches 80 A.
+inline constexpr double THERM_ISS_IMP_HI = 100.0;
+inline constexpr double THERM_ISS_SUS_HI = 50.0;
 
 }  // namespace tas::thr

@@ -121,6 +121,9 @@ const std::vector<std::string>* core_fields(const std::string& c) {
         {"bjt", {"collectorEmitterVoltage", "collectorCurrent"}},
         {"varistor", {"varistorVoltage", "clampingVoltage", "peakSurgeCurrent"}},
         {"connector", {"ratedVoltage", "ratedCurrentPerContact"}},
+        // Thermistor: R25 is the single universal field; B constant is NTC-only and
+        // absent on PTC, so it is not in the core manifest (would false-flag PTC).
+        {"thermistor", {"resistanceAt25C"}},
         // Time-base families (oscillator/timer/latch) are intentionally omitted:
         // the catalog is brand-new (no live field-presence statistics to calibrate
         // a sparse floor against), and behavioral-only records are legitimately
@@ -171,8 +174,8 @@ Verdict PartValidator::validate(const json& part) const {
     // component discriminator. More than one is a structural error (the dispatcher
     // below would silently pick the first).
     static const char* DISCRIMINATORS[] = {
-        "magnetic", "capacitor", "resistor", "varistor", "connector", "controller", "semiconductor",
-        "timeBase",
+        "magnetic", "capacitor", "resistor", "varistor", "thermistor", "connector", "controller",
+        "semiconductor", "timeBase",
         "operationalAmplifier", "comparator", "instrumentationAmplifier", "differenceAmplifier",
         "programmableGainAmplifier", "buffer", "sampleHold", "analogSwitch", "multiplexer",
         "adc", "dac", "multiplier", "integrator", "summer"};
@@ -222,6 +225,8 @@ Verdict PartValidator::validate(const json& part) const {
         run("varistor", part["varistor"], &check_varistors);
     } else if (part.contains("connector")) {
         run("connector", part["connector"], &check_connectors);
+    } else if (part.contains("thermistor")) {
+        run("thermistor", part["thermistor"], &check_thermistors);
     } else if (part.contains("controller")) {
         run("controller", part["controller"], &check_controllers);
     } else if (part.contains("timeBase")) {
@@ -258,20 +263,26 @@ Verdict PartValidator::validate(const json& part) const {
             throw std::invalid_argument(
                 "semiconductor record has no mosfet/diode/igbt/bjt sub-object");
     } else {
-        // AAS analog ICs: top-level discriminator is the subtype name.
+        // AAS analog ICs. The subtype (operationalAmplifier / comparator / analogSwitch /
+        // multiplexer / adc / dac / ...) is the discriminator. It appears either at the top
+        // level (a bare AAS document, e.g. the schema examples) OR nested under the `analog`
+        // PEAS discriminator (`{"analog": {"<subtype>": {...}}}`, the shape stored in
+        // TAS/data/analog_ics.ndjson) — accept both.
         static const char* AAS[] = {
             "operationalAmplifier", "comparator", "instrumentationAmplifier",
             "differenceAmplifier", "programmableGainAmplifier", "buffer", "sampleHold",
             "analogSwitch", "multiplexer", "adc", "dac", "multiplier", "integrator", "summer"};
+        const json& aas = part.contains("analog") && part["analog"].is_object() ? part["analog"]
+                                                                                 : part;
         const char* hit = nullptr;
         for (const char* k : AAS)
-            if (part.contains(k)) { hit = k; break; }
+            if (aas.contains(k)) { hit = k; break; }
         if (hit != nullptr)
-            run(hit, part[hit], &check_analog);
+            run(hit, aas[hit], &check_analog);
         else
             throw std::invalid_argument(
                 "no known component discriminator (magnetic/capacitor/resistor/varistor/"
-                "connector/semiconductor/analog-AAS)");
+                "connector/thermistor/semiconductor/analog-AAS)");
     }
 
     for (const auto& f : v.findings)
@@ -338,6 +349,11 @@ std::vector<std::string> PartValidator::check_codes() {
         "TB_TMR_FREQ", "TB_TMR_SUPPLY", "TB_TMR_ACCURACY", "TB_TMR_CHANNELS",
         "TB_LATCH_TPD", "TB_LATCH_SUPPLY",
         "TB_BEHAVIORAL",
+        // thermistors (RAS)
+        "THERM_POSITIVITY", "THERM_R25_RANGE", "THERM_BETA_RANGE", "THERM_PTC_HAS_BETA",
+        "THERM_TOLERANCE", "THERM_DISSIPATION", "THERM_TIME_CONSTANT", "THERM_HEAT_CAPACITY",
+        "THERM_MAX_CURRENT", "THERM_PTC_TSWITCH", "THERM_NTC_HAS_TSWITCH", "THERM_ABS_ZERO",
+        "THERM_TEMP_RANGE", "THERM_TEMP_ORDER",
     };
 }
 

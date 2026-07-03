@@ -534,3 +534,113 @@ TEST_CASE("Framework: MalformedScalarThrows", "[framework]") {
 TEST_CASE("Framework: CheckCodesNonEmpty", "[framework]") {
     CHECK(PartValidator::check_codes().size() > 20);
 }
+
+// ---- Thermistors (THERM_*) -------------------------------------------------
+namespace {
+// A real-shaped NTC (Vishay NTCLE100E3, 10 kOhm, B25/85 = 3977 K).
+json good_thermistor() {
+    return json::parse(R"json({
+      "thermistor": {"manufacturerInfo": {"name": "Vishay", "reference": "NTCLE100E3103",
+        "datasheetInfo": {
+          "part": {"technology": "ntc"},
+          "electrical": {"resistanceAt25C": {"nominal": 10000.0}, "resistanceTolerance": 0.01,
+                         "bConstant": 3977.0, "bConstantTemperatures": [25, 85],
+                         "dissipationConstant": 0.007, "thermalTimeConstant": 15.0},
+          "thermal": {"operatingTemperature": {"minimum": -55, "maximum": 125}},
+          "provenance": [{"source": "manufacturerDatasheet"}]}}}})json");
+}
+}  // namespace
+
+TEST_CASE("Thermistor: good part passes", "[thermistor]") {
+    Verdict v = V.validate(good_thermistor());
+    CHECK(v.valid);
+    CHECK(!has_code(v, "THERM_R25_RANGE"));
+    CHECK(!has_code(v, "THERM_BETA_RANGE"));
+    CHECK(!has_code(v, "THERM_HEAT_CAPACITY"));
+}
+
+TEST_CASE("Thermistor: R25 out of range impossible", "[thermistor]") {
+    json p = good_thermistor();
+    p["thermistor"]["manufacturerInfo"]["datasheetInfo"]["electrical"]["resistanceAt25C"]["nominal"] = 1e9;
+    Verdict v = V.validate(p);
+    CHECK(has(v, "THERM_R25_RANGE", Severity::Impossible));
+    CHECK(!v.valid);
+}
+
+TEST_CASE("Thermistor: negative R25 impossible", "[thermistor]") {
+    json p = good_thermistor();
+    p["thermistor"]["manufacturerInfo"]["datasheetInfo"]["electrical"]["resistanceAt25C"]["nominal"] = -5.0;
+    CHECK(has(V.validate(p), "THERM_POSITIVITY", Severity::Impossible));
+}
+
+TEST_CASE("Thermistor: beta out of range impossible", "[thermistor]") {
+    json p = good_thermistor();
+    p["thermistor"]["manufacturerInfo"]["datasheetInfo"]["electrical"]["bConstant"] = 12000.0;
+    CHECK(has(V.validate(p), "THERM_BETA_RANGE", Severity::Impossible));
+}
+
+TEST_CASE("Thermistor: percent-as-fraction tolerance impossible", "[thermistor]") {
+    json p = good_thermistor();
+    p["thermistor"]["manufacturerInfo"]["datasheetInfo"]["electrical"]["resistanceTolerance"] = 200.0;
+    CHECK(has(V.validate(p), "THERM_TOLERANCE", Severity::Impossible));
+}
+
+TEST_CASE("Thermistor: PTC carrying a beta is suspicious", "[thermistor]") {
+    json p = good_thermistor();
+    p["thermistor"]["manufacturerInfo"]["datasheetInfo"]["part"]["technology"] = "ptc";
+    CHECK(has(V.validate(p), "THERM_PTC_HAS_BETA", Severity::Suspicious));
+}
+
+TEST_CASE("Thermistor: excessive time constant impossible", "[thermistor]") {
+    json p = good_thermistor();
+    p["thermistor"]["manufacturerInfo"]["datasheetInfo"]["electrical"]["thermalTimeConstant"] = 7200.0;
+    CHECK(has(V.validate(p), "THERM_TIME_CONSTANT", Severity::Impossible));
+}
+
+TEST_CASE("Thermistor: implausible implied heat capacity suspicious", "[thermistor]") {
+    json p = good_thermistor();
+    auto& el = p["thermistor"]["manufacturerInfo"]["datasheetInfo"]["electrical"];
+    el["thermalTimeConstant"] = 100.0;
+    el["dissipationConstant"] = 5.0;  // C_th = 500 J/K -> absurd for a bead
+    CHECK(has(V.validate(p), "THERM_HEAT_CAPACITY", Severity::Suspicious));
+}
+
+TEST_CASE("Thermistor: operating temperature below absolute zero impossible", "[thermistor]") {
+    json p = good_thermistor();
+    p["thermistor"]["manufacturerInfo"]["datasheetInfo"]["thermal"]["operatingTemperature"]["minimum"] = -300.0;
+    CHECK(has(V.validate(p), "THERM_ABS_ZERO", Severity::Impossible));
+}
+
+// ---- AAS analog ICs: wrapped-format dispatch + switch leakage --------------
+TEST_CASE("AAS: PEAS-wrapped {analog:{...}} record dispatches to check_analog", "[analog]") {
+    // TAS/data/analog_ics.ndjson stores the AAS subtype nested under `analog`.
+    json p = json::parse(R"json({"analog": {"operationalAmplifier": {"manufacturerInfo": {
+      "name": "TI", "reference": "OPAX", "datasheetInfo": {
+        "part": {"partNumber": "OPAX"},
+        "electrical": {"numberOfChannels": 1, "maximumSupplyVoltage": 36.0},
+        "provenance": [{"source": "manufacturerDatasheet"}]}}}}})json");
+    CHECK_NOTHROW(V.validate(p));           // must NOT throw "no known discriminator"
+    Verdict v = V.validate(p);
+    CHECK(v.valid);
+}
+
+TEST_CASE("AAS: analog switch with mA off-leakage is impossible", "[analog]") {
+    json p = json::parse(R"json({"analog": {"analogSwitch": {"manufacturerInfo": {
+      "name": "X", "reference": "SW", "datasheetInfo": {
+        "part": {"partNumber": "SW"},
+        "electrical": {"switchConfiguration": "SPDT", "onResistance": 50.0,
+                       "offLeakageCurrent": 0.05},
+        "provenance": [{"source": "manufacturerDatasheet"}]}}}}})json");
+    Verdict v = V.validate(p);
+    CHECK(has(v, "SW_LEAK", Severity::Impossible));
+    CHECK(!v.valid);
+}
+
+TEST_CASE("AAS: multiplexer with absurd on-resistance is impossible", "[analog]") {
+    json p = json::parse(R"json({"analog": {"multiplexer": {"manufacturerInfo": {
+      "name": "X", "reference": "MUX", "datasheetInfo": {
+        "part": {"partNumber": "MUX"},
+        "electrical": {"multiplexerConfiguration": "8:1", "onResistance": 5.0e6},
+        "provenance": [{"source": "manufacturerDatasheet"}]}}}}})json");
+    CHECK(has(V.validate(p), "SW_RON", Severity::Impossible));
+}
