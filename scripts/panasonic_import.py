@@ -23,11 +23,14 @@ RAW = os.path.join(REPO, "data", "staging", "panasonic_raw")
 STAGE = os.path.join(REPO, "data", "staging")
 
 TYPE_FILE = {"capacitor": "capacitors", "resistor": "resistors",
-             "varistor": "varistors", "magnetic": "magnetics"}
+             "varistor": "varistors", "magnetic": "magnetics",
+             "connector": "connectors"}
 DISC = {"capacitor": ["capacitor"], "resistor": ["resistor"],
-        "varistor": ["varistor"], "magnetic": ["magnetic"]}
+        "varistor": ["varistor"], "magnetic": ["magnetic"],
+        "connector": ["connector"]}
 SCHEMA = {"capacitor": ("CAS", "capacitor.json"), "resistor": ("RAS", "resistor.json"),
-          "varistor": ("RAS", "varistor.json"), "magnetic": ("MAS", "magnetic.json")}
+          "varistor": ("RAS", "varistor.json"), "magnetic": ("MAS", "magnetic.json"),
+          "connector": ("CONAS", "connector.json")}
 
 # ---- jsonschema registry (mirrors tests/test_data.py _build_full_registry) ----
 def build_registry():
@@ -38,7 +41,7 @@ def build_registry():
             try: yield p, json.load(open(p))
             except Exception: pass
     by_id, by_path = {}, {}
-    for repo in ("PEAS", "MAS", "CAS", "RAS", "SAS", "TAS", "CIAS", "AAS"):
+    for repo in ("PEAS", "MAS", "CAS", "RAS", "SAS", "TAS", "CIAS", "AAS", "CONAS", "CTAS", "TDAS"):
         d = os.path.join(PROTEUS, repo, "schemas")
         if not os.path.isdir(d): continue
         for path, schema in walk(d):
