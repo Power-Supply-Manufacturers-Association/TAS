@@ -54,24 +54,55 @@ KNOWN_TEMPLATES = [
     (re.compile(r"^SRR-\d+(nH|uH|mH)$"), "aggressive_mag_sourcing (Bourns)"),
     (re.compile(r"^IHLP-\d+(nH|uH|mH)$"), "aggressive_mag_sourcing (Vishay)"),
     (re.compile(r"^WCAP-(ATH|MLCC)-[\d.]+(uF|nF)-[\d.]+V$"), "bulk sourcing (WCAP)"),
+    # ABT #247 follow-up audit (2026-07-21): output of the OTHER disabled scripts.
+    # Verified against the WE released Access DB: zero real Wuerth MPNs have the
+    # short 7443-value shape (real catalogue numbers are 6 or 9+ digits there).
+    (re.compile(r"^7443\d{3,4}$"), "bulk sourcing (WE-HCF short value-code)"),
+    # Real ST duals end in ...CT (STPS30H60CT); the generator minted ...C and
+    # attributed them to Texas Instruments, which never made STPS parts.
+    (re.compile(r"^STPS\d{2}H\d{3}C$"), "parametric sourcing (Schottky, fake TI attribution)"),
+    (re.compile(r"^SiC\d{2}H\d{4}$"), "parametric sourcing (SiC Schottky value-code)"),
 ]
 
 # (2) generator DCR formulas: dcr = base / (L/1uH) * package_scale
 FORMULA_BASES = (0.008, 0.01)
+# ABT #247 follow-up: manufacturer_sourcing's WE-LQM generator used the
+# MULTIPLICATIVE form dcr = base * (L/1uH), base 0.08 (74437401 = 1uH/0.08R,
+# 7443740401 = 401nH/0.03208R -- float noise and all).
+FORMULA_MUL_BASES = (0.08,)
 FORMULA_SCALES = (1.0, 1.2, 0.85, 0.70, 1.3)
 REL_TOL = 1e-9
+
+# ABT #247 follow-up: manufacturer/bulk sourcing hardcoded this exact
+# (L, DCRmax) ladder for invented Wuerth "WE-HCF" rows. Exact float pairs,
+# matched only on bare stubs -- a real part with these values would carry a
+# datasheet URL / description / Isat / dimensions and never reach this test.
+GENERATOR_LADDER = {
+    (220e-9, 0.0018), (330e-9, 0.0024), (470e-9, 0.0032), (680e-9, 0.0045),
+    (1e-6, 0.0062), (1.5e-6, 0.0088), (2.2e-6, 0.012), (3.3e-6, 0.017),
+    (4.7e-6, 0.023), (6.8e-6, 0.032), (10e-6, 0.044), (15e-6, 0.062),
+    (22e-6, 0.085), (33e-6, 0.118), (47e-6, 0.162), (68e-6, 0.224),
+    (100e-6, 0.31),
+}
 
 
 def formula_dcr(inductance, dcr):
     """True when dcr lands exactly on a known generator formula output."""
     if not inductance or not dcr or inductance <= 0 or dcr <= 0:
         return False
-    scale_factor = 1.0 / max(inductance / 1e-6, 0.1)
+    if (inductance, dcr) in GENERATOR_LADDER:
+        return True
+    lu = inductance / 1e-6
+    scale_factor = 1.0 / max(lu, 0.1)
     for base in FORMULA_BASES:
         for scale in FORMULA_SCALES:
             expected = base / scale_factor * scale
             if abs(dcr - expected) <= REL_TOL * max(abs(dcr), abs(expected)):
                 return True
+    for base in FORMULA_MUL_BASES:
+        expected = base * lu
+        if abs(dcr - expected) <= REL_TOL * max(abs(dcr), abs(expected)):
+            return True
     return False
 
 
@@ -132,7 +163,29 @@ def impossible_ratings(info, electrical):
     return None
 
 
-def check_file(path):
+def load_quarantined_fabricated(data_dir):
+    """References already condemned as fabricated must never reappear live.
+
+    Self-maintaining denylist: every *.quarantine_fabricated.ndjson record's
+    reference. Zero false-positive risk (each entry was individually
+    evidence-checked when it was quarantined) and exact recall against
+    re-imports of the same invented parts.
+    """
+    refs = set()
+    for qpath in data_dir.glob("*.quarantine_fabricated.ndjson"):
+        with qpath.open(encoding="utf-8", errors="replace") as fh:
+            for line in fh:
+                try:
+                    record = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+                for info, _ in iter_parts(record):
+                    refs.add(str(info.get("reference", "")))
+    refs.discard("")
+    return refs
+
+
+def check_file(path, quarantined_refs=frozenset()):
     findings = []
     with path.open(encoding="utf-8", errors="replace") as fh:
         first = fh.readline()
@@ -151,6 +204,11 @@ def check_file(path):
                 hit = next((why for pattern, why in KNOWN_TEMPLATES if pattern.match(reference)), None)
                 if hit:
                     findings.append((lineno, reference, f"MPN matches the {hit} generator template"))
+                    continue
+                if reference in quarantined_refs:
+                    findings.append((lineno, reference,
+                                     "reference was previously quarantined as fabricated "
+                                     "(*.quarantine_fabricated.ndjson) and must not reappear live"))
                     continue
                 inductance = (electrical.get("inductance") or {}).get("nominal")
                 dcr = (electrical.get("dcResistance") or {}).get("maximum")
@@ -171,12 +229,13 @@ def main():
     args = parser.parse_args()
 
     total = 0
+    quarantined_refs = load_quarantined_fabricated(args.data)
     for path in sorted(args.data.glob("*.ndjson")):
         name = path.name
         # quarantine files are where fabricated parts are SUPPOSED to live
         if "quarantine" in name or "pending" in name or name.endswith(".bak"):
             continue
-        findings = check_file(path)
+        findings = check_file(path, quarantined_refs)
         if findings:
             total += len(findings)
             print(f"\n{name}: {len(findings)} fabricated part(s)")
