@@ -5,6 +5,7 @@
 
 #include <cctype>
 #include <map>
+#include <regex>
 #include <stdexcept>
 
 namespace tas {
@@ -53,6 +54,39 @@ void check_family_coherence(const json& ds, const Ctx& ctx, std::vector<Finding>
         }
 }
 
+// GEN_FABRICATED_MPN: the exact MPN templates emitted by the April-2026
+// fabrication scripts (ABT #247). These shapes are provably synthetic — no
+// vendor sells them (verified against the WE released database and
+// we-online.com; real ST duals end in ...CT, not ...C; case-sensitive unit
+// suffixes nH/uH/mH are the generators', vendors use NF/MF/PF codes). Kept in
+// lockstep with scripts/check_no_fabricated_parts.py KNOWN_TEMPLATES so the
+// signature is enforced at physics-validation time (librarian promote gate,
+// imports), not only at shard-build time.
+void check_fabricated_mpn(const Ctx& ctx, std::vector<Finding>& out) {
+    static const std::regex TEMPLATES[] = {
+        std::regex(R"(^7443HCF-\d{4}-\d{4}$)"),
+        std::regex(R"(^7443MAPI-\d{4}-\d{4}$)"),
+        std::regex(R"(^WE-HCF-\d+(nH|uH|mH)-(STD|HC|XC)$)"),
+        std::regex(R"(^WE-HCI-\d{4}-\d+$)"),
+        std::regex(R"(^CC-[A-Z0-9]+-\d+(nH|uH|mH)$)"),
+        std::regex(R"(^TDK-SPM-\d+(nH|uH|mH)$)"),
+        std::regex(R"(^SRR-\d+(nH|uH|mH)$)"),
+        std::regex(R"(^IHLP-\d+(nH|uH|mH)$)"),
+        std::regex(R"(^WCAP-(ATH|MLCC)-[\d.]+(uF|nF)-[\d.]+V$)"),
+        std::regex(R"(^7443\d{3,4}$)"),
+        std::regex(R"(^STPS\d{2}H\d{3}C$)"),
+        std::regex(R"(^SiC\d{2}H\d{4}$)"),
+    };
+    for (const auto& rx : TEMPLATES) {
+        if (std::regex_match(ctx.reference, rx)) {
+            emit(out, ctx, "GEN_FABRICATED_MPN", Severity::Impossible, 0, 0,
+                 "reference matches a known fabrication-script MPN template — "
+                 "this part number was invented, not sourced");
+            return;
+        }
+    }
+}
+
 // Generic checks applicable to every family, run on the datasheetInfo object.
 void check_generic(const json& ds, const Ctx& ctx, std::vector<Finding>& out) {
     // GEN_TEMP_ORDER: a temperature min/max pair where min > max. Restricted to
@@ -82,6 +116,7 @@ void check_generic(const json& ds, const Ctx& ctx, std::vector<Finding>& out) {
         emit(out, ctx, "GEN_PROVENANCE_MISSING", Severity::Suspicious, 0, 0,
              "datasheetInfo.provenance is not set — data origin is untracked");
 
+    check_fabricated_mpn(ctx, out);
     check_family_coherence(ds, ctx, out);
 }
 
