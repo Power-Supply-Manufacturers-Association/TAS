@@ -1,5 +1,29 @@
 #!/usr/bin/env python3
+"""DISABLED 2026-07-20 — THIS SCRIPT FABRICATED CATALOGUE DATA.
+
+It did not source parts; it INVENTED them: looping over a hardcoded value list,
+minting a value-encoded MPN that no vendor sells, and computing DCR/Isat from a
+made-up scaling formula. 177 of its records reached production and were found by
+a user on kelvin.openconverters.com in July 2026 (see the cross-reference tool
+recommending "7443HCF-0004-2040" — a part that does not exist).
+
+Catalogue data must come from a datasheet, a manufacturer database, or a vendor
+API — with real MPNs and honest provenance. If a part is not in a real source,
+the catalogue does not get that part. A gap is correct; an invention is not.
+
+Kept in-tree only as the forensic record of what went wrong. Do NOT re-enable,
+do not copy this generate-then-scale pattern, and do not run it: the shard build
+(check_no_fabricated_parts.py) will reject anything it produces.
 """
+import sys
+
+sys.exit(
+    "REFUSING to run: this script fabricates catalogue data. See the module "
+    "docstring. Source parts from a real datasheet/database instead."
+)
+
+_ORIGINAL_SOURCE_BELOW = """
+\"\"\"
 Bulk manufacturer component sourcing for TAS database.
 
 Generates comprehensive parts lists from major manufacturers:
@@ -12,7 +36,7 @@ Generates comprehensive parts lists from major manufacturers:
 
 Target: 4,000-5,000 additional parts.
 
-"""
+\"\"\"
 
 import json
 import sys
@@ -24,7 +48,7 @@ TAS_DATA_DIR = Path("/home/alf/OpenConverters/TAS/data")
 
 
 def load_existing_mpns(category: str) -> Set[str]:
-    """Load all existing part numbers from a NDJSON file to avoid duplicates."""
+    \"\"\"Load all existing part numbers from a NDJSON file to avoid duplicates.\"\"\"
     ndjson_file = TAS_DATA_DIR / f"{category}.ndjson"
     if not ndjson_file.exists():
         return set()
@@ -72,7 +96,7 @@ def create_mosfet_entry(
     tj_max: float = 175,
     datasheet_url: str = "",
 ) -> Dict:
-    """Create a MOSFET PEAS document."""
+    \"\"\"Create a MOSFET PEAS document.\"\"\"
     entry = {
         "inputs": {"designRequirements": {}},
         "semiconductor": {
@@ -132,7 +156,7 @@ def create_diode_entry(
     ir: float = None,
     datasheet_url: str = "",
 ) -> Dict:
-    """Create a diode PEAS document."""
+    \"\"\"Create a diode PEAS document.\"\"\"
     entry = {
         "manufacturerInfo": {
             "name": manufacturer,
@@ -178,7 +202,7 @@ def create_capacitor_entry(
     capacitor_type: str,
     datasheet_url: str = "",
 ) -> Dict:
-    """Create a capacitor PEAS document (flat structure)."""
+    \"\"\"Create a capacitor PEAS document (flat structure).\"\"\"
     return {
         "manufacturerInfo": {
             "name": manufacturer,
@@ -216,7 +240,7 @@ def create_magnetic_entry(
     package: str,
     datasheet_url: str = "",
 ) -> Dict:
-    """Create a magnetic (inductor) PEAS document."""
+    \"\"\"Create a magnetic (inductor) PEAS document.\"\"\"
     nom = inductance
     lo = nom * 0.80
     hi = nom * 1.20
@@ -267,7 +291,7 @@ def create_igbt_entry(
     vce_sat: float,
     datasheet_url: str = "",
 ) -> Dict:
-    """Create an IGBT PEAS document."""
+    \"\"\"Create an IGBT PEAS document.\"\"\"
     return {
         "inputs": {"designRequirements": {}},
         "semiconductor": {
@@ -306,7 +330,7 @@ def create_igbt_entry(
 
 
 def append_to_ndjson(file_path: Path, entries: List[Dict]) -> int:
-    """Append entries to NDJSON file. Return count appended."""
+    \"\"\"Append entries to NDJSON file. Return count appended.\"\"\"
     if not entries:
         return 0
     count = 0
@@ -326,7 +350,7 @@ def append_to_ndjson(file_path: Path, entries: List[Dict]) -> int:
 # ===========================================================================
 
 def source_si_mosfets(existing_mpns: Set[str]) -> List[Dict]:
-    """Silicon MOSFETs across voltage/current ratings."""
+    \"\"\"Silicon MOSFETs across voltage/current ratings.\"\"\"
     entries = []
 
     # Format: (mfr, mpn, tech, sub_type, case, vds, id, rds)
@@ -358,7 +382,7 @@ def source_si_mosfets(existing_mpns: Set[str]) -> List[Dict]:
 
 
 def source_sic_mosfets(existing_mpns: Set[str]) -> List[Dict]:
-    """SiC MOSFETs (600V-1200V range)."""
+    \"\"\"SiC MOSFETs (600V-1200V range).\"\"\"
     entries = []
 
     sic_mosfets = [
@@ -381,7 +405,7 @@ def source_sic_mosfets(existing_mpns: Set[str]) -> List[Dict]:
 
 
 def source_gan_fets(existing_mpns: Set[str]) -> List[Dict]:
-    """GaN FETs from EPC and others."""
+    \"\"\"GaN FETs from EPC and others.\"\"\"
     entries = []
 
     gan_fets = [
@@ -404,7 +428,7 @@ def source_gan_fets(existing_mpns: Set[str]) -> List[Dict]:
 # ===========================================================================
 
 def source_schottky_diodes(existing_mpns: Set[str]) -> List[Dict]:
-    """Schottky diodes (Si and SiC)."""
+    \"\"\"Schottky diodes (Si and SiC).\"\"\"
     entries = []
 
     schottky_diodes = [
@@ -431,7 +455,7 @@ def source_schottky_diodes(existing_mpns: Set[str]) -> List[Dict]:
 
 
 def source_ultrafast_diodes(existing_mpns: Set[str]) -> List[Dict]:
-    """Ultrafast recovery diodes."""
+    \"\"\"Ultrafast recovery diodes.\"\"\"
     entries = []
 
     ultrafast_diodes = [
@@ -453,7 +477,7 @@ def source_ultrafast_diodes(existing_mpns: Set[str]) -> List[Dict]:
 # ===========================================================================
 
 def source_wuerth_capacitors(existing_mpns: Set[str]) -> List[Dict]:
-    """Würth WCAP series capacitors."""
+    \"\"\"Würth WCAP series capacitors.\"\"\"
     entries = []
 
     # (mfr, mpn, capacitance, voltage, case, type)
@@ -489,7 +513,7 @@ def source_wuerth_capacitors(existing_mpns: Set[str]) -> List[Dict]:
 # ===========================================================================
 
 def source_wuerth_hcf_inductors(existing_mpns: Set[str]) -> List[Dict]:
-    """Würth HCF inductors - comprehensive coverage of standard values."""
+    \"\"\"Würth HCF inductors - comprehensive coverage of standard values.\"\"\"
     entries = []
 
     # Standard inductor values in Henry
@@ -563,7 +587,7 @@ def source_wuerth_hcf_inductors(existing_mpns: Set[str]) -> List[Dict]:
 # ===========================================================================
 
 def source_igbts(existing_mpns: Set[str]) -> List[Dict]:
-    """IGBTs from Infineon, ON Semiconductor."""
+    \"\"\"IGBTs from Infineon, ON Semiconductor.\"\"\"
     entries = []
 
     igbts = [
@@ -590,7 +614,7 @@ def source_igbts(existing_mpns: Set[str]) -> List[Dict]:
 # ===========================================================================
 
 def main():
-    """Orchestrate comprehensive sourcing."""
+    \"\"\"Orchestrate comprehensive sourcing.\"\"\"
     print("=" * 80)
     print("OpenConverters BULK Manufacturer Sourcing")
     print(f"Started: {datetime.now().isoformat()}")
@@ -674,3 +698,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+"""

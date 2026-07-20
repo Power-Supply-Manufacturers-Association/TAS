@@ -1,5 +1,29 @@
 #!/usr/bin/env python3
+"""DISABLED 2026-07-20 — THIS SCRIPT FABRICATED CATALOGUE DATA.
+
+It did not source parts; it INVENTED them: looping over a hardcoded value list,
+minting a value-encoded MPN that no vendor sells, and computing DCR/Isat from a
+made-up scaling formula. 177 of its records reached production and were found by
+a user on kelvin.openconverters.com in July 2026 (see the cross-reference tool
+recommending "7443HCF-0004-2040" — a part that does not exist).
+
+Catalogue data must come from a datasheet, a manufacturer database, or a vendor
+API — with real MPNs and honest provenance. If a part is not in a real source,
+the catalogue does not get that part. A gap is correct; an invention is not.
+
+Kept in-tree only as the forensic record of what went wrong. Do NOT re-enable,
+do not copy this generate-then-scale pattern, and do not run it: the shard build
+(check_no_fabricated_parts.py) will reject anything it produces.
 """
+import sys
+
+sys.exit(
+    "REFUSING to run: this script fabricates catalogue data. See the module "
+    "docstring. Source parts from a real datasheet/database instead."
+)
+
+_ORIGINAL_SOURCE_BELOW = """
+\"\"\"
 Aggressive magnetic (inductor) sourcing for Würth HCF and related families.
 
 Generates 2,000+ inductor variants covering:
@@ -7,7 +31,7 @@ Generates 2,000+ inductor variants covering:
 - WE-MAPI (metal alloy)
 - WE-PD (power design)
 - Multiple package sizes and current ratings
-"""
+\"\"\"
 
 import json
 from pathlib import Path
@@ -17,7 +41,7 @@ TAS_DATA_DIR = Path("/home/alf/OpenConverters/TAS/data")
 
 
 def load_existing_mpns(category: str) -> Set[str]:
-    """Load all existing part numbers."""
+    \"\"\"Load all existing part numbers.\"\"\"
     ndjson_file = TAS_DATA_DIR / f"{category}.ndjson"
     if not ndjson_file.exists():
         return set()
@@ -52,7 +76,7 @@ def create_magnetic_entry(
     irated: float,
     package: str,
 ) -> Dict:
-    """Create a magnetic (inductor) PEAS document."""
+    \"\"\"Create a magnetic (inductor) PEAS document.\"\"\"
     nom = inductance
     return {
         "inputs": {
@@ -92,7 +116,7 @@ def create_magnetic_entry(
 
 
 def append_to_ndjson(file_path: Path, entries: List[Dict]) -> int:
-    """Append entries to NDJSON file."""
+    \"\"\"Append entries to NDJSON file.\"\"\"
     if not entries:
         return 0
     count = 0
@@ -108,7 +132,7 @@ def append_to_ndjson(file_path: Path, entries: List[Dict]) -> int:
 
 
 def generate_wuerth_hcf_comprehensive(existing_mpns: Set[str]) -> List[Dict]:
-    """Generate comprehensive WE-HCF family (high-current, shielded)."""
+    \"\"\"Generate comprehensive WE-HCF family (high-current, shielded).\"\"\"
     entries = []
 
     # Standard inductor values
@@ -161,7 +185,7 @@ def generate_wuerth_hcf_comprehensive(existing_mpns: Set[str]) -> List[Dict]:
 
 
 def generate_wuerth_mapi(existing_mpns: Set[str]) -> List[Dict]:
-    """Generate WE-MAPI family (metal alloy power inductors)."""
+    \"\"\"Generate WE-MAPI family (metal alloy power inductors).\"\"\"
     entries = []
 
     # Metal alloy inductors typically cover similar range but different thermal/DCR profiles
@@ -202,7 +226,7 @@ def generate_wuerth_mapi(existing_mpns: Set[str]) -> List[Dict]:
 
 
 def generate_coilcraft_inductors(existing_mpns: Set[str]) -> List[Dict]:
-    """Generate Coilcraft inductor family (additional manufacturer)."""
+    \"\"\"Generate Coilcraft inductor family (additional manufacturer).\"\"\"
     entries = []
 
     # Coilcraft common series
@@ -244,7 +268,7 @@ def generate_coilcraft_inductors(existing_mpns: Set[str]) -> List[Dict]:
 
 
 def generate_tdk_inductors(existing_mpns: Set[str]) -> List[Dict]:
-    """Generate TDK inductor family."""
+    \"\"\"Generate TDK inductor family.\"\"\"
     entries = []
 
     inductor_values = [
@@ -277,7 +301,7 @@ def generate_tdk_inductors(existing_mpns: Set[str]) -> List[Dict]:
 
 
 def generate_bourns_inductors(existing_mpns: Set[str]) -> List[Dict]:
-    """Generate Bourns inductor family."""
+    \"\"\"Generate Bourns inductor family.\"\"\"
     entries = []
 
     inductor_values = [
@@ -309,7 +333,7 @@ def generate_bourns_inductors(existing_mpns: Set[str]) -> List[Dict]:
 
 
 def generate_vishay_inductors(existing_mpns: Set[str]) -> List[Dict]:
-    """Generate Vishay inductor family."""
+    \"\"\"Generate Vishay inductor family.\"\"\"
     entries = []
 
     inductor_values = [
@@ -341,7 +365,7 @@ def generate_vishay_inductors(existing_mpns: Set[str]) -> List[Dict]:
 
 
 def main():
-    """Generate comprehensive inductor database."""
+    \"\"\"Generate comprehensive inductor database.\"\"\"
     print("=" * 80)
     print("OpenConverters AGGRESSIVE Magnetic Sourcing")
     print("Generating 2,000+ inductor variants...")
@@ -398,3 +422,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+"""

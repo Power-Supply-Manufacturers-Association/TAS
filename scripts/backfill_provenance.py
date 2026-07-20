@@ -168,10 +168,19 @@ def classify(manufacturer, url):
         for key, (src, name, date) in DOMAIN_MAP:
             if key in h:
                 return (src, name, date, url)
-    # fallback on manufacturer name; keep the url as sourceUrl if it exists
+    # Fallback on manufacturer name alone. This is an INFERENCE, not a trace: nothing
+    # about THIS record was verified against that source — we only know who makes the
+    # part. Asserting "Wuerth Elektronik database (.mdb), retrieved 2026-06-24" here
+    # claims a provenance that was never established, which is exactly how 177
+    # fabricated parts came to look legitimately sourced and reached production (found
+    # by a user, 2026-07-20). So label the inference as such and leave retrievedDate
+    # null: that date belongs to the campaign, not to this record.
     if manufacturer in MANUF_MAP:
-        src, name, date = MANUF_MAP[manufacturer]
-        return (src, name, date, url or None)
+        src, name, campaign_date = MANUF_MAP[manufacturer]
+        if url:
+            return (src, name, campaign_date, url)
+        return (src, f"{name} [inferred from manufacturer name — this record was not traced to that source]",
+                None, None)
     return None
 
 

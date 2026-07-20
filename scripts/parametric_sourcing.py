@@ -1,5 +1,29 @@
 #!/usr/bin/env python3
+"""DISABLED 2026-07-20 — THIS SCRIPT FABRICATED CATALOGUE DATA.
+
+It did not source parts; it INVENTED them: looping over a hardcoded value list,
+minting a value-encoded MPN that no vendor sells, and computing DCR/Isat from a
+made-up scaling formula. 177 of its records reached production and were found by
+a user on kelvin.openconverters.com in July 2026 (see the cross-reference tool
+recommending "7443HCF-0004-2040" — a part that does not exist).
+
+Catalogue data must come from a datasheet, a manufacturer database, or a vendor
+API — with real MPNs and honest provenance. If a part is not in a real source,
+the catalogue does not get that part. A gap is correct; an invention is not.
+
+Kept in-tree only as the forensic record of what went wrong. Do NOT re-enable,
+do not copy this generate-then-scale pattern, and do not run it: the shard build
+(check_no_fabricated_parts.py) will reject anything it produces.
 """
+import sys
+
+sys.exit(
+    "REFUSING to run: this script fabricates catalogue data. See the module "
+    "docstring. Source parts from a real datasheet/database instead."
+)
+
+_ORIGINAL_SOURCE_BELOW = """
+\"\"\"
 Parametric manufacturer component sourcing.
 
 Generates large parametric families:
@@ -10,7 +34,7 @@ Generates large parametric families:
 
 Target: 1,000+ parametric variants to bulk the database.
 
-"""
+\"\"\"
 
 import json
 from pathlib import Path
@@ -20,7 +44,7 @@ TAS_DATA_DIR = Path("/home/alf/OpenConverters/TAS/data")
 
 
 def load_existing_mpns(category: str) -> Set[str]:
-    """Load all existing part numbers to avoid duplicates."""
+    \"\"\"Load all existing part numbers to avoid duplicates.\"\"\"
     ndjson_file = TAS_DATA_DIR / f"{category}.ndjson"
     if not ndjson_file.exists():
         return set()
@@ -63,7 +87,7 @@ def create_mosfet_entry(
     id_cont: float,
     rds_on: float,
 ) -> Dict:
-    """Create a MOSFET PEAS document."""
+    \"\"\"Create a MOSFET PEAS document.\"\"\"
     return {
         "inputs": {"designRequirements": {}},
         "semiconductor": {
@@ -113,7 +137,7 @@ def create_diode_entry(
     if_cont: float,
     vf: float,
 ) -> Dict:
-    """Create a diode PEAS document."""
+    \"\"\"Create a diode PEAS document.\"\"\"
     return {
         "manufacturerInfo": {
             "name": manufacturer,
@@ -153,7 +177,7 @@ def create_capacitor_entry(
     case: str,
     capacitor_type: str,
 ) -> Dict:
-    """Create a capacitor PEAS document."""
+    \"\"\"Create a capacitor PEAS document.\"\"\"
     return {
         "manufacturerInfo": {
             "name": manufacturer,
@@ -188,7 +212,7 @@ def create_magnetic_entry(
     irated: float,
     package: str,
 ) -> Dict:
-    """Create a magnetic (inductor) PEAS document."""
+    \"\"\"Create a magnetic (inductor) PEAS document.\"\"\"
     nom = inductance
     return {
         "inputs": {
@@ -228,7 +252,7 @@ def create_magnetic_entry(
 
 
 def append_to_ndjson(file_path: Path, entries: List[Dict]) -> int:
-    """Append entries to NDJSON file. Return count appended."""
+    \"\"\"Append entries to NDJSON file. Return count appended.\"\"\"
     if not entries:
         return 0
     count = 0
@@ -248,7 +272,7 @@ def append_to_ndjson(file_path: Path, entries: List[Dict]) -> int:
 # ===========================================================================
 
 def source_parametric_mosfets(existing_mpns: Set[str]) -> List[Dict]:
-    """Generate parametric MOSFET families."""
+    \"\"\"Generate parametric MOSFET families.\"\"\"
     entries = []
 
     # TI MOSFET parametric series
@@ -338,7 +362,7 @@ def source_parametric_mosfets(existing_mpns: Set[str]) -> List[Dict]:
 # ===========================================================================
 
 def source_parametric_diodes(existing_mpns: Set[str]) -> List[Dict]:
-    """Generate parametric diode families."""
+    \"\"\"Generate parametric diode families.\"\"\"
     entries = []
 
     # Schottky diodes across voltage/current ratings
@@ -384,7 +408,7 @@ def source_parametric_diodes(existing_mpns: Set[str]) -> List[Dict]:
 # ===========================================================================
 
 def source_parametric_capacitors(existing_mpns: Set[str]) -> List[Dict]:
-    """Generate parametric capacitor families."""
+    \"\"\"Generate parametric capacitor families.\"\"\"
     entries = []
 
     # Standard capacitor values
@@ -433,7 +457,7 @@ def source_parametric_capacitors(existing_mpns: Set[str]) -> List[Dict]:
 # ===========================================================================
 
 def source_parametric_magnetics(existing_mpns: Set[str]) -> List[Dict]:
-    """Generate parametric inductor families with realistic scaling."""
+    \"\"\"Generate parametric inductor families with realistic scaling.\"\"\"
     entries = []
 
     # Inductor value families
@@ -507,7 +531,7 @@ def source_parametric_magnetics(existing_mpns: Set[str]) -> List[Dict]:
 # ===========================================================================
 
 def main():
-    """Orchestrate parametric sourcing."""
+    \"\"\"Orchestrate parametric sourcing.\"\"\"
     print("=" * 80)
     print("OpenConverters PARAMETRIC Manufacturer Sourcing")
     print("Generating 1,000+ parametric variants...")
@@ -573,3 +597,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+"""

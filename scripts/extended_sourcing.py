@@ -1,5 +1,29 @@
 #!/usr/bin/env python3
+"""DISABLED 2026-07-20 — THIS SCRIPT FABRICATED CATALOGUE DATA.
+
+It did not source parts; it INVENTED them: looping over a hardcoded value list,
+minting a value-encoded MPN that no vendor sells, and computing DCR/Isat from a
+made-up scaling formula. 177 of its records reached production and were found by
+a user on kelvin.openconverters.com in July 2026 (see the cross-reference tool
+recommending "7443HCF-0004-2040" — a part that does not exist).
+
+Catalogue data must come from a datasheet, a manufacturer database, or a vendor
+API — with real MPNs and honest provenance. If a part is not in a real source,
+the catalogue does not get that part. A gap is correct; an invention is not.
+
+Kept in-tree only as the forensic record of what went wrong. Do NOT re-enable,
+do not copy this generate-then-scale pattern, and do not run it: the shard build
+(check_no_fabricated_parts.py) will reject anything it produces.
 """
+import sys
+
+sys.exit(
+    "REFUSING to run: this script fabricates catalogue data. See the module "
+    "docstring. Source parts from a real datasheet/database instead."
+)
+
+_ORIGINAL_SOURCE_BELOW = """
+\"\"\"
 Extended sourcing to cover additional manufacturers and fill out families.
 
 Adds:
@@ -7,7 +31,7 @@ Adds:
 - More TI, Infineon, ON Semi parts
 - Additional capacitor families
 - Ferrite beads
-"""
+\"\"\"
 
 import json
 from pathlib import Path
@@ -17,7 +41,7 @@ TAS_DATA_DIR = Path("/home/alf/OpenConverters/TAS/data")
 
 
 def load_existing_mpns(category: str) -> Set[str]:
-    """Load existing MPNs."""
+    \"\"\"Load existing MPNs.\"\"\"
     ndjson_file = TAS_DATA_DIR / f"{category}.ndjson"
     if not ndjson_file.exists():
         return set()
@@ -152,7 +176,7 @@ def create_magnetic_entry(mfr, mpn, series, inductance, dcr, isat, irated, packa
 
 
 def create_ferrite_bead_entry(mfr, mpn, impedance_ohm, freq_hz, current, package):
-    """Ferrite bead with impedance instead of inductance."""
+    \"\"\"Ferrite bead with impedance instead of inductance.\"\"\"
     return {
         "magnetic": {
             "manufacturerInfo": {
@@ -195,7 +219,7 @@ def append_to_ndjson(file_path: Path, entries: List[Dict]) -> int:
 # ===========================================================================
 
 def source_extended_mosfets(existing_mpns: Set[str]) -> List[Dict]:
-    """Additional MOSFET variants from TI, Infineon, ON Semi."""
+    \"\"\"Additional MOSFET variants from TI, Infineon, ON Semi.\"\"\"
     entries = []
 
     # Extended TI portfolio
@@ -237,7 +261,7 @@ def source_extended_mosfets(existing_mpns: Set[str]) -> List[Dict]:
 # ===========================================================================
 
 def source_extended_capacitors(existing_mpns: Set[str]) -> List[Dict]:
-    """Additional capacitor families: Kemet, Panasonic, Taiyo Yuden."""
+    \"\"\"Additional capacitor families: Kemet, Panasonic, Taiyo Yuden.\"\"\"
     entries = []
 
     # Kemet X7S MLCC series (common, stable, automotive-grade)
@@ -277,7 +301,7 @@ def source_extended_capacitors(existing_mpns: Set[str]) -> List[Dict]:
 # ===========================================================================
 
 def source_ferrite_beads(existing_mpns: Set[str]) -> List[Dict]:
-    """Ferrite bead EMI suppressors."""
+    \"\"\"Ferrite bead EMI suppressors.\"\"\"
     entries = []
 
     # Würth Elektronik ferrite beads (0603, 0805, 1206)
@@ -359,3 +383,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+"""
