@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""GUARD: fail if any LIVE catalogue contains a fabricated (synthesized) part.
+"""GUARD: fail if any LIVE catalogue contains a fabricated part or an impossible one.
 
 Runs in the shard-build path, so a fabricated record physically cannot reach a
 deployed catalogue. Exit 0 = clean, exit 1 = fabricated parts found (build stops).
@@ -106,6 +106,32 @@ def iter_parts(record):
             yield from iter_parts(value)
 
 
+# ── physically impossible ratings ────────────────────────────────────────────
+# Separate failure mode from fabrication: these rows describe REAL part numbers,
+# but a source column mis-mapping gave them ratings that cannot exist. Found on
+# the live site — a 40 V / 200 mA BAS40 stored as 1000 V / 120 A was offered as a
+# recommended drop-in upgrade. Each rule rejects a combination that is impossible
+# in silicon, not one that is merely unusual.
+SCHOTTKY_MAX_VRRM = 300.0
+SCHOTTKY_MAX_VF = 1.2
+
+
+def impossible_ratings(info, electrical):
+    part = (info.get("datasheetInfo") or {}).get("part") or {}
+    subtype = str(part.get("subType") or "").lower()
+    technology = str(part.get("technology") or "").lower()
+    if subtype != "schottky" or "sic" in technology:
+        return None
+    def num(v):
+        return v if isinstance(v, (int, float)) and not isinstance(v, bool) else None
+    vrrm, vf = num(electrical.get("reverseVoltage")), num(electrical.get("forwardVoltage"))
+    if vrrm is not None and vrrm > SCHOTTKY_MAX_VRRM:
+        return f"silicon Schottky rated {vrrm:g} V reverse (barrier height caps this ~{SCHOTTKY_MAX_VRRM:g} V)"
+    if vf is not None and vf > SCHOTTKY_MAX_VF:
+        return f"Schottky with a {vf:g} V forward drop — mis-typed PN/ultrafast rectifier"
+    return None
+
+
 def check_file(path):
     findings = []
     with path.open(encoding="utf-8", errors="replace") as fh:
@@ -132,6 +158,10 @@ def check_file(path):
                     findings.append((lineno, reference,
                                      "DCR reproduces a generator formula on a record with no "
                                      "datasheet, description, Isat, SRF or dimensions"))
+                    continue
+                impossible = impossible_ratings(info, electrical)
+                if impossible:
+                    findings.append((lineno, reference, impossible))
     return findings
 
 
@@ -157,15 +187,14 @@ def main():
 
     if total:
         print(
-            f"\nFAIL: {total} fabricated part(s) in live catalogues.\n"
-            "Fabricated parts must never ship. Quarantine them "
-            "(scripts/quarantine_fabricated_magnetics.py is the template), or if a "
-            "flagged part is genuinely real, source it from its datasheet with its real "
-            "MPN and provenance.",
+            f"\nFAIL: {total} fabricated or physically impossible part(s) in live catalogues.\n"
+            "Neither must ship. Quarantine them (quarantine_fabricated_magnetics.py and "
+            "quarantine_impossible_diodes.py are the templates), or if a flagged part is "
+            "genuinely real, correct it from its datasheet with real values and provenance.",
             file=sys.stderr,
         )
         return 1
-    print("OK: no fabricated parts in live catalogues")
+    print("OK: no fabricated or physically impossible parts in live catalogues")
     return 0
 
 
