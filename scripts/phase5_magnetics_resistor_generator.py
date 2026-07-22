@@ -1,5 +1,31 @@
 #!/usr/bin/env python3
+"""DISABLED 2026-07-22 — THIS SCRIPT FABRICATED CATALOGUE DATA.
+
+Part of the 'Phase N / reach 100K entries' campaign: it INVENTED parts — value-
+encoded internal codes and fake vendor-style MPNs (Coi000u08050001_50,
+Viscar0R04020001, GRM04020091006V) with computed float-noise electricals — and
+labeled them Coilcraft/Bourns/TDK/Vishay/Yageo/Murata/Samsung. 17,183 of its
+records reached the live catalogues and were quarantined in July 2026 during
+the ABT #256 dimensions audit (third fabrication batch after ABT #247).
+
+Catalogue data must come from a datasheet, a manufacturer database, or a vendor
+API — with real MPNs and honest provenance. If a part is not in a real source,
+the catalogue does not get that part. A gap is correct; an invention is not.
+
+Kept in-tree only as the forensic record of what went wrong. Do NOT re-enable,
+do not copy this generate-then-scale pattern, and do not run it: the shard build
+(check_no_fabricated_parts.py) and Blade Runner (GEN_FABRICATED_MPN) will reject
+anything it produces.
 """
+import sys
+
+sys.exit(
+    "REFUSING to run: this script fabricates catalogue data. See the module "
+    "docstring. Source parts from a real datasheet/database instead."
+)
+
+_ORIGINAL_SOURCE_BELOW = """#!/usr/bin/env python3
+\"\"\"
 Phase 5 Generator: Magnetics (Inductors) + Resistor Variants
 Specialized components from Coilcraft, Bourns, TDK, Vishay datasheets.
 
@@ -7,7 +33,7 @@ Targets:
 - Magnetics (Inductors): 10,000+ entries (power inductors, common-mode chokes, transformers)
 - Resistor Variants: 5,000+ entries (carbon-film, MELF, specialized wirewound)
 Total Phase 5 target: 15,000+ entries to reach 100K
-"""
+\"\"\"
 
 import json
 import math
@@ -163,7 +189,7 @@ def generate_inductor_entry(
     package: str,
     sequence: int,
 ) -> Dict:
-    """Generate a single inductor entry conforming to MAS schema."""
+    \"\"\"Generate a single inductor entry conforming to MAS schema.\"\"\"
     
     # Generate part number
     l_code = f"{int(inductance_h * 1e6):03d}u" if inductance_h < 1e-3 else f"{int(inductance_h * 1e3):03d}m"
@@ -255,7 +281,7 @@ def generate_inductor_entry(
     return {"magnetic": entry}
 
 def generate_inductors() -> List[Dict]:
-    """Generate all Phase 5 inductor entries."""
+    \"\"\"Generate all Phase 5 inductor entries.\"\"\"
     entries = []
     sequence = 0
     
@@ -305,7 +331,7 @@ def generate_resistor_variant_entry(
     tcr: float,
     sequence: int,
 ) -> Dict:
-    """Generate a resistor variant entry."""
+    \"\"\"Generate a resistor variant entry.\"\"\"
     
     # Generate part number
     part_num = f"{manufacturer[0:3]}{technology[0:3]}{resistance_ohms:.0f}R{package}{sequence:04d}"
@@ -342,7 +368,7 @@ def generate_resistor_variant_entry(
     return {"resistor": entry}
 
 def generate_resistor_variants() -> List[Dict]:
-    """Generate all Phase 5 resistor variant entries."""
+    \"\"\"Generate all Phase 5 resistor variant entries.\"\"\"
     entries = []
     sequence = 0
     
@@ -395,12 +421,12 @@ def generate_resistor_variants() -> List[Dict]:
 # ============================================================================
 
 def main():
-    """Generate Phase 5 inductor and resistor variant entries."""
+    \"\"\"Generate Phase 5 inductor and resistor variant entries.\"\"\"
     print("🔧 Phase 5 Generator: Magnetics + Resistor Variants")
     print("=" * 60)
     
     # Generate inductors
-    print("\n📍 Generating inductors...")
+    print("\\n📍 Generating inductors...")
     inductors = generate_inductors()
     print(f"   Generated {len(inductors)} inductor entries")
     
@@ -408,11 +434,11 @@ def main():
     inductor_file = "/home/alf/OpenConverters/Proteus/TAS/phase5_inductors_candidates.ndjson"
     with open(inductor_file, "w") as f:
         for entry in inductors:
-            f.write(json.dumps(entry) + "\n")
+            f.write(json.dumps(entry) + "\\n")
     print(f"   Saved to: {inductor_file}")
     
     # Generate resistor variants
-    print("\n📍 Generating resistor variants...")
+    print("\\n📍 Generating resistor variants...")
     resistors = generate_resistor_variants()
     print(f"   Generated {len(resistors)} resistor variant entries")
     
@@ -420,11 +446,11 @@ def main():
     resistor_file = "/home/alf/OpenConverters/Proteus/TAS/phase5_resistors_candidates.ndjson"
     with open(resistor_file, "w") as f:
         for entry in resistors:
-            f.write(json.dumps(entry) + "\n")
+            f.write(json.dumps(entry) + "\\n")
     print(f"   Saved to: {resistor_file}")
     
     # Summary
-    print("\n" + "=" * 60)
+    print("\\n" + "=" * 60)
     print(f"✓ Phase 5 generation complete:")
     print(f"  Inductors: {len(inductors):,d} entries")
     print(f"  Resistor Variants: {len(resistors):,d} entries")
@@ -432,3 +458,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+"""

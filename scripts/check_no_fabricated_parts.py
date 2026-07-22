@@ -62,6 +62,13 @@ KNOWN_TEMPLATES = [
     # attributed them to Texas Instruments, which never made STPS parts.
     (re.compile(r"^STPS\d{2}H\d{3}C$"), "parametric sourcing (Schottky, fake TI attribution)"),
     (re.compile(r"^SiC\d{2}H\d{4}$"), "parametric sourcing (SiC Schottky value-code)"),
+    # ABT #256 audit (2026-07-22): the phase2-5 'reach 100K entries' generators.
+    # Vendor-abbreviated internal codes no vendor sells; verified against live
+    # catalogues (17,183 quarantined, zero real MPNs match these shapes).
+    (re.compile(r"^(Coi|Bou|TDK|Wur|Vis|Mur|Pul|Sum)\d{3}u\d+_\d+$"), "phase5 magnetics generator"),
+    (re.compile(r"^(Vis|Yag|Bou|Pan|KOA)(wir|car|mel|met|thi|MCS|PTF)\d+R\d{4}\d{4}$"), "phase3/5 resistor generator"),
+    (re.compile(r"^(GRM|CL|FK)\d{4}\d{4}\d{3}V$"), "phase2 MLCC generator (fake GRM/CL/FK numbering)"),
+    (re.compile(r"^MLCC\d{6}$"), "phase2 MLCC generator (generic fallback)"),
 ]
 
 # (2) generator DCR formulas: dcr = base / (L/1uH) * package_scale
@@ -123,15 +130,24 @@ def is_bare_stub(info, electrical):
 
 
 def iter_parts(record):
-    """Yield every (manufacturerInfo, electrical-dict) in a catalogue record."""
+    """Yield every (manufacturerInfo, electrical-dict) in a catalogue record.
+
+    A record is identified by manufacturerInfo.reference OR
+    datasheetInfo.part.partNumber — the phase2-5 generators wrote partNumber
+    ONLY, which is precisely how 17,183 fabricated records slipped past the
+    reference-keyed version of this guard (found in the ABT #256 audit).
+    """
     if not isinstance(record, dict):
         return
     info = record.get("manufacturerInfo")
-    if isinstance(info, dict) and info.get("reference"):
-        electrical = (info.get("datasheetInfo") or {}).get("electrical")
-        if isinstance(electrical, list):
-            electrical = electrical[0] if electrical else {}
-        yield info, (electrical if isinstance(electrical, dict) else {})
+    if isinstance(info, dict):
+        datasheet = info.get("datasheetInfo") or {}
+        part_number = (datasheet.get("part") or {}).get("partNumber")
+        if info.get("reference") or part_number:
+            electrical = datasheet.get("electrical")
+            if isinstance(electrical, list):
+                electrical = electrical[0] if electrical else {}
+            yield info, (electrical if isinstance(electrical, dict) else {})
     for value in record.values():
         if isinstance(value, dict):
             yield from iter_parts(value)
@@ -181,6 +197,8 @@ def load_quarantined_fabricated(data_dir):
                     continue
                 for info, _ in iter_parts(record):
                     refs.add(str(info.get("reference", "")))
+                    refs.add(str((((info.get("datasheetInfo") or {}).get("part")) or {})
+                                 .get("partNumber", "")))
     refs.discard("")
     return refs
 
@@ -201,12 +219,16 @@ def check_file(path, quarantined_refs=frozenset()):
                 continue
             for info, electrical in iter_parts(record):
                 reference = str(info.get("reference", ""))
-                hit = next((why for pattern, why in KNOWN_TEMPLATES if pattern.match(reference)), None)
+                part_number = str((((info.get("datasheetInfo") or {}).get("part")) or {})
+                                  .get("partNumber", ""))
+                ids = [i for i in (reference, part_number) if i]
+                hit = next((why for pattern, why in KNOWN_TEMPLATES
+                            for i in ids if pattern.match(i)), None)
                 if hit:
-                    findings.append((lineno, reference, f"MPN matches the {hit} generator template"))
+                    findings.append((lineno, ids[0], f"MPN matches the {hit} generator template"))
                     continue
-                if reference in quarantined_refs:
-                    findings.append((lineno, reference,
+                if any(i in quarantined_refs for i in ids):
+                    findings.append((lineno, ids[0],
                                      "reference was previously quarantined as fabricated "
                                      "(*.quarantine_fabricated.ndjson) and must not reappear live"))
                     continue

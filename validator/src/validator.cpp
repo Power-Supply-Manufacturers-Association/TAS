@@ -62,7 +62,7 @@ void check_family_coherence(const json& ds, const Ctx& ctx, std::vector<Finding>
 // lockstep with scripts/check_no_fabricated_parts.py KNOWN_TEMPLATES so the
 // signature is enforced at physics-validation time (librarian promote gate,
 // imports), not only at shard-build time.
-void check_fabricated_mpn(const Ctx& ctx, std::vector<Finding>& out) {
+void check_fabricated_mpn(const json& ds, const Ctx& ctx, std::vector<Finding>& out) {
     static const std::regex TEMPLATES[] = {
         std::regex(R"(^7443HCF-\d{4}-\d{4}$)"),
         std::regex(R"(^7443MAPI-\d{4}-\d{4}$)"),
@@ -76,13 +76,29 @@ void check_fabricated_mpn(const Ctx& ctx, std::vector<Finding>& out) {
         std::regex(R"(^7443\d{3,4}$)"),
         std::regex(R"(^STPS\d{2}H\d{3}C$)"),
         std::regex(R"(^SiC\d{2}H\d{4}$)"),
+        // ABT #256 audit: the phase2-5 'reach 100K entries' generators
+        std::regex(R"(^(Coi|Bou|TDK|Wur|Vis|Mur|Pul|Sum)\d{3}u\d+_\d+$)"),
+        std::regex(R"(^(Vis|Yag|Bou|Pan|KOA)(wir|car|mel|met|thi|MCS|PTF)\d+R\d{4}\d{4}$)"),
+        std::regex(R"(^(GRM|CL|FK)\d{4}\d{4}\d{3}V$)"),
+        std::regex(R"(^MLCC\d{6}$)"),
     };
-    for (const auto& rx : TEMPLATES) {
-        if (std::regex_match(ctx.reference, rx)) {
-            emit(out, ctx, "GEN_FABRICATED_MPN", Severity::Impossible, 0, 0,
-                 "reference matches a known fabrication-script MPN template — "
-                 "this part number was invented, not sourced");
-            return;
+    // The phase2-5 generators wrote part.partNumber ONLY (no reference) — that
+    // is how their output evaded reference-keyed checks. Test both identifiers.
+    std::vector<std::string> ids;
+    if (!ctx.reference.empty()) ids.push_back(ctx.reference);
+    if (const json* part = at(ds, "part")) {
+        if (part->is_object() && part->contains("partNumber") &&
+            (*part)["partNumber"].is_string())
+            ids.push_back((*part)["partNumber"].get<std::string>());
+    }
+    for (const auto& id : ids) {
+        for (const auto& rx : TEMPLATES) {
+            if (std::regex_match(id, rx)) {
+                emit(out, ctx, "GEN_FABRICATED_MPN", Severity::Impossible, 0, 0,
+                     "part number '" + id + "' matches a known fabrication-script "
+                     "MPN template — it was invented, not sourced");
+                return;
+            }
         }
     }
 }
@@ -116,7 +132,7 @@ void check_generic(const json& ds, const Ctx& ctx, std::vector<Finding>& out) {
         emit(out, ctx, "GEN_PROVENANCE_MISSING", Severity::Suspicious, 0, 0,
              "datasheetInfo.provenance is not set — data origin is untracked");
 
-    check_fabricated_mpn(ctx, out);
+    check_fabricated_mpn(ds, ctx, out);
     check_family_coherence(ds, ctx, out);
 }
 

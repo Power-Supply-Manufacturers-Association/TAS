@@ -1,5 +1,31 @@
 #!/usr/bin/env python3
+"""DISABLED 2026-07-22 — THIS SCRIPT FABRICATED CATALOGUE DATA.
+
+Part of the 'Phase N / reach 100K entries' campaign: it INVENTED parts — value-
+encoded internal codes and fake vendor-style MPNs (Coi000u08050001_50,
+Viscar0R04020001, GRM04020091006V) with computed float-noise electricals — and
+labeled them Coilcraft/Bourns/TDK/Vishay/Yageo/Murata/Samsung. 17,183 of its
+records reached the live catalogues and were quarantined in July 2026 during
+the ABT #256 dimensions audit (third fabrication batch after ABT #247).
+
+Catalogue data must come from a datasheet, a manufacturer database, or a vendor
+API — with real MPNs and honest provenance. If a part is not in a real source,
+the catalogue does not get that part. A gap is correct; an invention is not.
+
+Kept in-tree only as the forensic record of what went wrong. Do NOT re-enable,
+do not copy this generate-then-scale pattern, and do not run it: the shard build
+(check_no_fabricated_parts.py) and Blade Runner (GEN_FABRICATED_MPN) will reject
+anything it produces.
 """
+import sys
+
+sys.exit(
+    "REFUSING to run: this script fabricates catalogue data. See the module "
+    "docstring. Source parts from a real datasheet/database instead."
+)
+
+_ORIGINAL_SOURCE_BELOW = """#!/usr/bin/env python3
+\"\"\"
 Phase 3 Generator: Resistors + MOSFETs (Si, SiC, GaN)
 Real-world components from Vishay, Yageo, Infineon, ON Semi, TI datasheets.
 
@@ -7,7 +33,7 @@ Targets:
 - Resistors: 5,000+ entries (thin-film, wirewound, current-sense)
 - MOSFETs: 5,000+ entries (Si 20V-200V, SiC, GaN variants)
 Total Phase 3 target: 10,000+ entries
-"""
+\"\"\"
 
 import json
 import math
@@ -128,7 +154,7 @@ def generate_resistor_entry(
     package: str,
     sequence: int,
 ) -> Dict:
-    """Generate a single resistor entry conforming to RAS schema."""
+    \"\"\"Generate a single resistor entry conforming to RAS schema.\"\"\"
     
     tech_data = RESISTOR_TECHS[technology]
     tolerance = tech_data["tolerance"]
@@ -176,7 +202,7 @@ def generate_resistor_entry(
     return {"resistor": entry}
 
 def generate_resistors() -> List[Dict]:
-    """Generate all Phase 3 resistor entries."""
+    \"\"\"Generate all Phase 3 resistor entries.\"\"\"
     entries = []
     sequence = 0
     
@@ -228,7 +254,7 @@ def generate_mosfet_entry(
     package: str,
     sequence: int,
 ) -> Dict:
-    """Generate a single MOSFET entry conforming to SAS schema."""
+    \"\"\"Generate a single MOSFET entry conforming to SAS schema.\"\"\"
     
     # Generate part number
     tech_code = variant_data["technology"][:2]
@@ -297,7 +323,7 @@ def generate_mosfet_entry(
     return {"mosfet": entry}
 
 def generate_mosfets() -> List[Dict]:
-    """Generate all Phase 3 MOSFET entries."""
+    \"\"\"Generate all Phase 3 MOSFET entries.\"\"\"
     entries = []
     sequence = 0
     
@@ -337,12 +363,12 @@ def generate_mosfets() -> List[Dict]:
 # ============================================================================
 
 def main():
-    """Generate Phase 3 resistor and MOSFET entries."""
+    \"\"\"Generate Phase 3 resistor and MOSFET entries.\"\"\"
     print("🔧 Phase 3 Generator: Resistors + MOSFETs")
     print("=" * 60)
     
     # Generate resistors
-    print("\n📍 Generating resistors...")
+    print("\\n📍 Generating resistors...")
     resistors = generate_resistors()
     print(f"   Generated {len(resistors)} resistor entries")
     
@@ -350,11 +376,11 @@ def main():
     resistor_file = "/home/alf/OpenConverters/Proteus/TAS/phase3_resistors_candidates.ndjson"
     with open(resistor_file, "w") as f:
         for entry in resistors:
-            f.write(json.dumps(entry) + "\n")
+            f.write(json.dumps(entry) + "\\n")
     print(f"   Saved to: {resistor_file}")
     
     # Generate MOSFETs
-    print("\n📍 Generating MOSFETs...")
+    print("\\n📍 Generating MOSFETs...")
     mosfets = generate_mosfets()
     print(f"   Generated {len(mosfets)} MOSFET entries")
     
@@ -362,11 +388,11 @@ def main():
     mosfet_file = "/home/alf/OpenConverters/Proteus/TAS/phase3_mosfets_candidates.ndjson"
     with open(mosfet_file, "w") as f:
         for entry in mosfets:
-            f.write(json.dumps(entry) + "\n")
+            f.write(json.dumps(entry) + "\\n")
     print(f"   Saved to: {mosfet_file}")
     
     # Summary
-    print("\n" + "=" * 60)
+    print("\\n" + "=" * 60)
     print(f"✓ Phase 3 generation complete:")
     print(f"  Resistors: {len(resistors):,d} entries")
     print(f"  MOSFETs:   {len(mosfets):,d} entries")
@@ -374,3 +400,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+"""

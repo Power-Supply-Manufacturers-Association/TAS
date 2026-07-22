@@ -1,5 +1,31 @@
 #!/usr/bin/env python3
+"""DISABLED 2026-07-22 — THIS SCRIPT FABRICATED CATALOGUE DATA.
+
+Part of the 'Phase N / reach 100K entries' campaign: it INVENTED parts — value-
+encoded internal codes and fake vendor-style MPNs (Coi000u08050001_50,
+Viscar0R04020001, GRM04020091006V) with computed float-noise electricals — and
+labeled them Coilcraft/Bourns/TDK/Vishay/Yageo/Murata/Samsung. 17,183 of its
+records reached the live catalogues and were quarantined in July 2026 during
+the ABT #256 dimensions audit (third fabrication batch after ABT #247).
+
+Catalogue data must come from a datasheet, a manufacturer database, or a vendor
+API — with real MPNs and honest provenance. If a part is not in a real source,
+the catalogue does not get that part. A gap is correct; an invention is not.
+
+Kept in-tree only as the forensic record of what went wrong. Do NOT re-enable,
+do not copy this generate-then-scale pattern, and do not run it: the shard build
+(check_no_fabricated_parts.py) and Blade Runner (GEN_FABRICATED_MPN) will reject
+anything it produces.
 """
+import sys
+
+sys.exit(
+    "REFUSING to run: this script fabricates catalogue data. See the module "
+    "docstring. Source parts from a real datasheet/database instead."
+)
+
+_ORIGINAL_SOURCE_BELOW = """#!/usr/bin/env python3
+\"\"\"
 Phase 4 Generator: IGBTs + Diodes (Schottky, SiC, TVS, Zener)
 Real-world components from Infineon, ON Semi, Wolfspeed, TI, Vishay datasheets.
 
@@ -7,7 +33,7 @@ Targets:
 - IGBTs: 3,000+ entries (Si standard, SiC automotive-grade)
 - Diodes: 4,000+ entries (Schottky, SiC Schottky, TVS, Zener variants)
 Total Phase 4 target: 7,000+ entries
-"""
+\"\"\"
 
 import json
 import math
@@ -155,7 +181,7 @@ def generate_igbt_entry(
     package: str,
     sequence: int,
 ) -> Dict:
-    """Generate a single IGBT entry conforming to SAS schema."""
+    \"\"\"Generate a single IGBT entry conforming to SAS schema.\"\"\"
     
     # Generate part number
     tech_code = variant_data["technology"][:2]
@@ -216,7 +242,7 @@ def generate_igbt_entry(
     return {"igbt": entry}
 
 def generate_igbts() -> List[Dict]:
-    """Generate all Phase 4 IGBT entries."""
+    \"\"\"Generate all Phase 4 IGBT entries.\"\"\"
     entries = []
     sequence = 0
     
@@ -267,7 +293,7 @@ def generate_diode_entry(
     package: str,
     sequence: int,
 ) -> Dict:
-    """Generate a single diode entry conforming to SAS schema."""
+    \"\"\"Generate a single diode entry conforming to SAS schema.\"\"\"
     
     # Generate part number
     tech_abbr = "SC" if "Schottky" in variant_key else "Z" if "Zener" in variant_key else "TVS" if "TVS" in variant_key else "UF"
@@ -323,7 +349,7 @@ def generate_diode_entry(
     return {"diode": entry}
 
 def generate_diodes() -> List[Dict]:
-    """Generate all Phase 4 diode entries."""
+    \"\"\"Generate all Phase 4 diode entries.\"\"\"
     entries = []
     sequence = 0
     
@@ -365,12 +391,12 @@ def generate_diodes() -> List[Dict]:
 # ============================================================================
 
 def main():
-    """Generate Phase 4 IGBT and Diode entries."""
+    \"\"\"Generate Phase 4 IGBT and Diode entries.\"\"\"
     print("🔧 Phase 4 Generator: IGBTs + Diodes")
     print("=" * 60)
     
     # Generate IGBTs
-    print("\n📍 Generating IGBTs...")
+    print("\\n📍 Generating IGBTs...")
     igbts = generate_igbts()
     print(f"   Generated {len(igbts)} IGBT entries")
     
@@ -378,11 +404,11 @@ def main():
     igbt_file = "/home/alf/OpenConverters/Proteus/TAS/phase4_igbts_candidates.ndjson"
     with open(igbt_file, "w") as f:
         for entry in igbts:
-            f.write(json.dumps(entry) + "\n")
+            f.write(json.dumps(entry) + "\\n")
     print(f"   Saved to: {igbt_file}")
     
     # Generate Diodes
-    print("\n📍 Generating Diodes...")
+    print("\\n📍 Generating Diodes...")
     diodes = generate_diodes()
     print(f"   Generated {len(diodes)} Diode entries")
     
@@ -390,11 +416,11 @@ def main():
     diode_file = "/home/alf/OpenConverters/Proteus/TAS/phase4_diodes_candidates.ndjson"
     with open(diode_file, "w") as f:
         for entry in diodes:
-            f.write(json.dumps(entry) + "\n")
+            f.write(json.dumps(entry) + "\\n")
     print(f"   Saved to: {diode_file}")
     
     # Summary
-    print("\n" + "=" * 60)
+    print("\\n" + "=" * 60)
     print(f"✓ Phase 4 generation complete:")
     print(f"  IGBTs:   {len(igbts):,d} entries")
     print(f"  Diodes:  {len(diodes):,d} entries")
@@ -402,3 +428,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+"""

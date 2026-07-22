@@ -1,5 +1,31 @@
 #!/usr/bin/env python3
+"""DISABLED 2026-07-22 — THIS SCRIPT FABRICATED CATALOGUE DATA.
+
+Part of the 'Phase N / reach 100K entries' campaign: it INVENTED parts — value-
+encoded internal codes and fake vendor-style MPNs (Coi000u08050001_50,
+Viscar0R04020001, GRM04020091006V) with computed float-noise electricals — and
+labeled them Coilcraft/Bourns/TDK/Vishay/Yageo/Murata/Samsung. 17,183 of its
+records reached the live catalogues and were quarantined in July 2026 during
+the ABT #256 dimensions audit (third fabrication batch after ABT #247).
+
+Catalogue data must come from a datasheet, a manufacturer database, or a vendor
+API — with real MPNs and honest provenance. If a part is not in a real source,
+the catalogue does not get that part. A gap is correct; an invention is not.
+
+Kept in-tree only as the forensic record of what went wrong. Do NOT re-enable,
+do not copy this generate-then-scale pattern, and do not run it: the shard build
+(check_no_fabricated_parts.py) and Blade Runner (GEN_FABRICATED_MPN) will reject
+anything it produces.
 """
+import sys
+
+sys.exit(
+    "REFUSING to run: this script fabricates catalogue data. See the module "
+    "docstring. Source parts from a real datasheet/database instead."
+)
+
+_ORIGINAL_SOURCE_BELOW = """#!/usr/bin/env python3
+\"\"\"
 Phase 2 MLCC Generator: Real-world MLCC entries from Samsung, Murata, TDK
 Based on public datasheet patterns and known manufacturing series.
 
@@ -8,7 +34,7 @@ Targets: 4,000-5,000 new MLCC entries covering:
 - Standard voltage ratings (6.3V → 100V)
 - Multiple technologies (X7R, X5R, Y5V, C0G)
 - Realistic package codes (0402, 0603, 0805, 1206, 1210)
-"""
+\"\"\"
 
 import json
 import math
@@ -64,7 +90,7 @@ PACKAGE_DIMENSIONS = {
 
 # ESR typical values (Ohms) based on capacitance and voltage
 def estimate_esr(capacitance_f: float, voltage_v: int) -> float:
-    """Estimate ESR for X7R MLCC based on capacitance and voltage rating."""
+    \"\"\"Estimate ESR for X7R MLCC based on capacitance and voltage rating.\"\"\"
     # Higher voltage rating MLCCs typically have higher ESR
     # Formula: ESR ≈ k / (C * f), where k depends on voltage
     voltage_factor = {6.3: 0.015, 10: 0.02, 16: 0.025, 25: 0.03, 50: 0.04, 100: 0.05}
@@ -74,12 +100,12 @@ def estimate_esr(capacitance_f: float, voltage_v: int) -> float:
     return max(esr, 0.01)  # Minimum 10 mOhm
 
 def estimate_volume(package: str) -> float:
-    """Calculate volume in m³."""
+    \"\"\"Calculate volume in m³.\"\"\"
     dims = PACKAGE_DIMENSIONS[package]
     return dims["width"] * dims["length"] * dims["height"]
 
 def estimate_footprint(package: str) -> float:
-    """Calculate footprint area in m² (top view)."""
+    \"\"\"Calculate footprint area in m² (top view).\"\"\"
     dims = PACKAGE_DIMENSIONS[package]
     return dims["width"] * dims["length"]
 
@@ -92,7 +118,7 @@ def generate_mlcc_entry(
     package: str,
     part_number: str,
 ) -> Dict:
-    """Generate a single MLCC entry conforming to CAS schema."""
+    \"\"\"Generate a single MLCC entry conforming to CAS schema.\"\"\"
     
     # Generate realistic tolerances: ±5%, ±10%, or ±20%
     tolerance_percent = 10  # Standard for high-volume MLCCs
@@ -186,7 +212,7 @@ def generate_part_number(
     package: str,
     sequence: int,
 ) -> str:
-    """Generate realistic part numbers based on manufacturer patterns."""
+    \"\"\"Generate realistic part numbers based on manufacturer patterns.\"\"\"
     
     # Convert capacitance to standard notation (e.g., 10nF = 103)
     if capacitance_f >= 1e-2:  # >= 10 µF
@@ -214,7 +240,7 @@ def generate_part_number(
         return f"MLCC{sequence:06d}"
 
 def generate_phase2_mlccs() -> List[Dict]:
-    """Generate complete Phase 2 MLCC dataset."""
+    \"\"\"Generate complete Phase 2 MLCC dataset.\"\"\"
     
     entries = []
     sequence_counter = {}
@@ -279,7 +305,7 @@ def generate_phase2_mlccs() -> List[Dict]:
     return entries
 
 def main():
-    """Generate and save Phase 2 MLCC entries."""
+    \"\"\"Generate and save Phase 2 MLCC entries.\"\"\"
     print("🔧 Phase 2 MLCC Generator")
     print("=" * 60)
     
@@ -300,10 +326,11 @@ def main():
     output_path = "/home/alf/OpenConverters/Proteus/TAS/phase2_mlcc_candidates.ndjson"
     with open(output_path, "w") as f:
         for entry in entries:
-            f.write(json.dumps(entry) + "\n")
+            f.write(json.dumps(entry) + "\\n")
     
-    print(f"\n✓ Saved to: {output_path}")
+    print(f"\\n✓ Saved to: {output_path}")
     print(f"  Total entries: {len(entries)}")
 
 if __name__ == "__main__":
     main()
+"""
