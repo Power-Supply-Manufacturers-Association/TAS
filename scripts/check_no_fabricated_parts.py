@@ -65,7 +65,7 @@ KNOWN_TEMPLATES = [
     # ABT #256 audit (2026-07-22): the phase2-5 'reach 100K entries' generators.
     # Vendor-abbreviated internal codes no vendor sells; verified against live
     # catalogues (17,183 quarantined, zero real MPNs match these shapes).
-    (re.compile(r"^(Coi|Bou|TDK|Wur|Vis|Mur|Pul|Sum)\d{3}u\d+_\d+$"), "phase5 magnetics generator"),
+    (re.compile(r"^(Coi|Bou|TDK|Wur|Vis|Mur|Pul|Sum)\d{3}u[A-Za-z0-9]+_\d+$"), "phase5 magnetics generator"),
     (re.compile(r"^(Vis|Yag|Bou|Pan|KOA)(wir|car|mel|met|thi|MCS|PTF)\d+R\d{4}\d{4}$"), "phase3/5 resistor generator"),
     (re.compile(r"^(GRM|CL|FK)\d{4}\d{4}\d{3}V$"), "phase2 MLCC generator (fake GRM/CL/FK numbering)"),
     (re.compile(r"^MLCC\d{6}$"), "phase2 MLCC generator (generic fallback)"),

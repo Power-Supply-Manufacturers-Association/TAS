@@ -77,7 +77,7 @@ void check_fabricated_mpn(const json& ds, const Ctx& ctx, std::vector<Finding>& 
         std::regex(R"(^STPS\d{2}H\d{3}C$)"),
         std::regex(R"(^SiC\d{2}H\d{4}$)"),
         // ABT #256 audit: the phase2-5 'reach 100K entries' generators
-        std::regex(R"(^(Coi|Bou|TDK|Wur|Vis|Mur|Pul|Sum)\d{3}u\d+_\d+$)"),
+        std::regex(R"(^(Coi|Bou|TDK|Wur|Vis|Mur|Pul|Sum)\d{3}u[A-Za-z0-9]+_\d+$)"),
         std::regex(R"(^(Vis|Yag|Bou|Pan|KOA)(wir|car|mel|met|thi|MCS|PTF)\d+R\d{4}\d{4}$)"),
         std::regex(R"(^(GRM|CL|FK)\d{4}\d{4}\d{3}V$)"),
         std::regex(R"(^MLCC\d{6}$)"),
