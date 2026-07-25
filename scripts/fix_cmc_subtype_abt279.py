@@ -14,8 +14,8 @@ Filters ..."). Rule, deliberately narrow:
 Matching rows get every electrical entry set to 'commonModeChoke' with
 'dcResistance' mapped to the CMC variant's per-winding 'dcResistances: [value]'
 (the shape every correctly-tagged CMC row in this catalogue already uses).
-Rows carrying 'saturationCurrentPeak' (or any other field the CMC variant has
-no slot for) are left UNCHANGED and counted — dropping a datasheet value or
+Rows carrying a field the CMC variant has no slot for are left UNCHANGED and
+counted — dropping a datasheet value or
 inventing a mapping is a decision for the ticket, not for a script. Every
 modified document is validated against the MAS magnetic schema before it is
 written; a row that fails validation is left unchanged and reported.
@@ -101,8 +101,7 @@ def main():
             candidate = json.loads(line)  # untouched copy in case validation fails
             unmappable = None
             for entry in candidate["magnetic"]["manufacturerInfo"]["datasheetInfo"]["electrical"]:
-                for field in ("saturationCurrentPeak", "saturationCurrents",
-                              "inductancePoints", "maximumImpedance"):
+                for field in ("saturationCurrents", "inductancePoints", "maximumImpedance"):
                     if field in entry:
                         unmappable = field
                 entry["subtype"] = "commonModeChoke"
