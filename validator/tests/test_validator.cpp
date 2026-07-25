@@ -110,6 +110,46 @@ TEST_CASE("Magnetics: EnergyDensityImpossible", "[magnetics]") {
     CHECK(!v.valid);
 }
 
+TEST_CASE("Magnetics: SubtypeMismatchCmcAsInductor", "[magnetics]") {
+    // The ABT #279 shape: description says common-mode choke, subtype says inductor.
+    json p = good_magnetic();
+    auto& ds = p["magnetic"]["manufacturerInfo"]["datasheetInfo"];
+    ds["part"]["description"] = "WE-CMBH Horizontal Common Mode Power Line Choke, 1mH, 10A";
+    ds["electrical"][0]["subtype"] = "inductor";
+    Verdict v = V.validate(p);
+    CHECK(has(v, "MAG_SUBTYPE_MISMATCH", Severity::Suspicious));
+
+    // Correctly tagged: any electrical entry declaring the subtype clears it.
+    ds["electrical"][0]["subtype"] = "commonModeChoke";
+    CHECK(!has_code(V.validate(p), "MAG_SUBTYPE_MISMATCH"));
+}
+
+TEST_CASE("Magnetics: SubtypeMismatchTransformerAndBead", "[magnetics]") {
+    json p = good_magnetic();
+    auto& ds = p["magnetic"]["manufacturerInfo"]["datasheetInfo"];
+    ds["part"]["description"] = "Gate drive transformer 1:1:1";
+    ds["electrical"][0]["subtype"] = "inductor";
+    CHECK(has(V.validate(p), "MAG_SUBTYPE_MISMATCH", Severity::Suspicious));
+    ds["electrical"][0]["subtype"] = "transformer";
+    CHECK(!has_code(V.validate(p), "MAG_SUBTYPE_MISMATCH"));
+
+    ds["part"]["description"] = "Ferrite bead 600 ohm @ 100 MHz";
+    ds["electrical"][0]["subtype"] = "inductor";
+    CHECK(has(V.validate(p), "MAG_SUBTYPE_MISMATCH", Severity::Suspicious));
+    ds["electrical"][0]["subtype"] = "chipBead";
+    CHECK(!has_code(V.validate(p), "MAG_SUBTYPE_MISMATCH"));
+}
+
+TEST_CASE("Magnetics: SubtypeCoherencePlainInductorUnaffected", "[magnetics]") {
+    // A DM "power line choke" or a plain inductor must NOT be flagged — the
+    // check requires the common-mode noun, not just "choke"/"filter".
+    json p = good_magnetic();
+    auto& ds = p["magnetic"]["manufacturerInfo"]["datasheetInfo"];
+    ds["part"]["description"] = "Power line choke for EMI filter applications";
+    ds["electrical"][0]["subtype"] = "inductor";
+    CHECK(!has_code(V.validate(p), "MAG_SUBTYPE_MISMATCH"));
+}
+
 TEST_CASE("Magnetics: InductanceToleranceOrdering", "[magnetics]") {
     json p = good_magnetic();
     auto& ind = p["magnetic"]["manufacturerInfo"]["datasheetInfo"]["electrical"][0]["inductance"];

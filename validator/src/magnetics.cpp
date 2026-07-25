@@ -7,6 +7,7 @@
 #include "tas_validator/thresholds.hpp"
 #include "tas_validator/validator.hpp"
 
+#include <cctype>
 #include <cmath>
 #include <sstream>
 #include <string>
@@ -209,6 +210,50 @@ void check_point(const json& pt, int idx, const json& dims, const std::string& m
     }
 }
 
+// MAG_SUBTYPE_MISMATCH: the description names a specific magnetic variant but no
+// electrical entry declares that subtype. GEN_FAMILY_MISMATCH one level down:
+// physics bounds cannot see taxonomy — a common-mode choke's numbers are legal
+// *inductor* numbers, which is how 2,635 mistagged CMCs sailed through every
+// window (ABT #279) — so the description noun is the only in-record witness.
+// SUSPICIOUS only; a matching subtype on ANY electrical entry clears it (multi-
+// wiring parts list one entry per variant).
+void check_subtype_coherence(const json& datasheet, const json& elec, const Ctx& ctx,
+                             std::vector<Finding>& out) {
+    const json* d = at(datasheet, "part", "description");
+    if (d == nullptr || !d->is_string()) return;
+    std::string desc;
+    for (char c : d->get<std::string>())
+        desc += static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
+    auto has = [&](const char* s) { return desc.find(s) != std::string::npos; };
+
+    const char* expected = nullptr;
+    const char* noun = nullptr;
+    if ((has("common mode") || has("common-mode")) && (has("choke") || has("filter"))) {
+        expected = "commonModeChoke";
+        noun = "common-mode choke/filter";
+    } else if (has("bead")) {
+        expected = "chipBead";
+        noun = "bead";
+    } else if (has("transformer")) {
+        expected = "transformer";
+        noun = "transformer";
+    }
+    if (expected == nullptr) return;
+
+    std::string found = "(none)";
+    for (const auto& pt : elec) {
+        if (!pt.is_object()) continue;
+        auto it = pt.find("subtype");
+        if (it != pt.end() && it->is_string()) {
+            if (it->get<std::string>() == expected) return;
+            found = it->get<std::string>();
+        }
+    }
+    emit(out, ctx, "MAG_SUBTYPE_MISMATCH", Severity::Suspicious, 0, 0,
+         std::string("description names a ") + noun + " but no electrical entry has subtype '" +
+             expected + "' (found '" + found + "')");
+}
+
 }  // namespace
 
 void check_magnetics(const json& datasheet, const Ctx& ctx, std::vector<Finding>& out,
@@ -220,6 +265,8 @@ void check_magnetics(const json& datasheet, const Ctx& ctx, std::vector<Finding>
     }
     if (!elec->is_array())
         throw MalformedField("magnetic.datasheetInfo.electrical: expected array of op-points");
+
+    check_subtype_coherence(datasheet, *elec, ctx, out);
 
     const json* mech = at(datasheet, "mechanical");
     const json dims = (mech && mech->is_object()) ? *mech : json::object();
