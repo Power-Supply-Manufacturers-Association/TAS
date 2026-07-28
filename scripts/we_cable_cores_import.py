@@ -27,9 +27,18 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 DATA = HERE.parent / "data"
 RAW = DATA / "we_cable_ferrites_raw.json"
+META = DATA / "we_cable_ferrites_meta.json"   # WE REDEXPERT MCP get_products(module=2)
 OUT = DATA / "we_cable_cores.ndjson"
 APPLY = "--apply" in sys.argv
 RETRIEVED = "2026-07-28"
+
+# WE assemblingTechnology -> MAS cableCore.mountingForm enum.
+MOUNTING_FORM = {
+    "Solid": "solidRing", "Snap-On": "snapOn",
+    "Splitted": "split", "Splitted with Clip": "split", "Screwable": "screwable",
+}
+FORM_LABEL = {"solidRing": "solid ring", "snapOn": "snap-on clip",
+              "split": "split core", "screwable": "screwable"}
 
 # Physics sanity gates (a real cable ferrite curve must satisfy these; anything
 # failing is a data-transcription error, quarantined and reported — not shipped).
@@ -84,15 +93,40 @@ def sanity(mpn, pts):
     return findings
 
 
-def build(rec):
+def build(rec, meta_by_mpn):
     mpn = rec["mpn"]
     series = rec.get("series") or ""
     material = material_name(rec.get("permeability"))
     z100 = rec.get("z100_ohm")
     url = f"https://www.we-online.com/components/products/datasheet/{mpn}.pdf"
     pts = build_impedance_points(rec["curve_MHz_ohm"])
-    desc = f"{series} cable ferrite core ({rec.get('type','')}), " \
-           f"|Z|≈{z100} Ω @ 100 MHz, 1 turn" if z100 else f"{series} cable ferrite core"
+
+    meta = meta_by_mpn.get(str(mpn), {})
+    form = MOUNTING_FORM.get(meta.get("assemblingTechnology"))
+    cable_max = meta.get("cableMax_m")
+    if not isinstance(cable_max, (int, float)) or cable_max <= 0:
+        cable_max = rec.get("cableMax_m")
+    aecq, automotive = meta.get("aecq"), meta.get("automotive")
+
+    electrical = {"subtype": "cableCore", "numberTurns": 1, "impedancePoints": pts}
+    if form:
+        electrical["mountingForm"] = form
+    if isinstance(cable_max, (int, float)) and cable_max > 0:
+        electrical["maximumCableOuterDiameter"] = float(cable_max)
+
+    extra = []
+    if form:
+        extra.append(FORM_LABEL[form])
+    if isinstance(cable_max, (int, float)) and cable_max > 0:
+        extra.append(f"≤{round(cable_max * 1000, 1):g} mm cable")
+    if automotive and str(aecq) in ("0", "1", "2"):
+        extra.append(f"AEC-Q200 grade {aecq}, automotive")
+    desc = f"{series} cable ferrite core ({rec.get('type', '')})"
+    if extra:
+        desc += ", " + ", ".join(extra)
+    if z100:
+        desc += f", |Z|≈{z100} Ω @ 100 MHz, 1 turn"
+
     mech = {}
     for key, src in (("length", "sizeL_m"), ("width", "sizeW_m"), ("height", "sizeH_m")):
         v = rec.get(src)
@@ -106,11 +140,7 @@ def build(rec):
         "datasheetUrl": url,
         "datasheetInfo": {
             "part": {"description": desc, "material": material, "shielded": False},
-            "electrical": [{
-                "subtype": "cableCore",
-                "numberTurns": 1,
-                "impedancePoints": pts,
-            }],
+            "electrical": [electrical],
             "provenance": [{
                 "source": "manufacturerDatabase",
                 "sourceName": "Würth Elektronik REDEXPERT (Ferrites for Cable Assembly, |Z| 1 turn)",
@@ -127,6 +157,7 @@ def build(rec):
 def main():
     raw = json.load(open(RAW))
     records = raw["records"]
+    meta_by_mpn = json.load(open(META))["meta"] if META.exists() else {}
     built, invalid, dup = [], 0, 0
     seen = set()
     quarantine = []
@@ -135,7 +166,7 @@ def main():
         if not mpn or mpn in seen:
             dup += 1
             continue
-        obj, pts = build(rec)
+        obj, pts = build(rec, meta_by_mpn)
         findings = sanity(mpn, pts)
         if findings:
             invalid += 1
