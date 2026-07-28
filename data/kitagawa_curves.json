@@ -1,0 +1,536 @@
+{
+ "RFC-MA": {
+  "series": "RFC-MA",
+  "spec_freq_mhz": 10,
+  "parts": [
+   {
+    "mpn": "RFC-8MA",
+    "cable_max_mm": 8.5,
+    "z_spot_ohm": 20,
+    "spec_freq_mhz": 10
+   },
+   {
+    "mpn": "RFC-13MA",
+    "cable_max_mm": 13.5,
+    "z_spot_ohm": 20,
+    "spec_freq_mhz": 10
+   },
+   {
+    "mpn": "RFC-20MA",
+    "cable_max_mm": 20.0,
+    "z_spot_ohm": 20,
+    "spec_freq_mhz": 10
+   }
+  ],
+  "shape_norm10": {
+   "0.3": 0.4,
+   "1": 1.23,
+   "3": 1.36,
+   "10": 1.0,
+   "30": 0.79,
+   "100": 1.36,
+   "300": 1.9
+  },
+  "verify_note": "Shape = average of the 3 digitized RFC-8MA/-13MA/-20MA log-log Impedance-vs-frequency curves (label-anchored calibration: 0.01MHz-100MHz decade lines, 117px/dec; 1000ohm top, 155px/dec). Same family behaviour as MRFC: inductive rise to a broad peak ~1-3MHz (norm ~1.35), fall through 10MHz (=1.0) to a dip ~30MHz (0.79), then a second rise toward the 100MHz edge (1.36). VERIFY-BACK: digitized raw Z@10MHz per part = 42.9/35.9/34.6 ohm (avg ~38). Published spot 'Impedance >=20 ohm/10MHz(1turn)' is a GUARANTEED MINIMUM, graph is 'measured data for reference, not guaranteed'; digitized ~38 ohm sits above the >=20 guarantee (typical~2x guaranteed-min), so consistent. z_spot_ohm=20 copied exactly from '>= 20'. RFC-13MA cable spec is a RANGE phi12.5-13.5mm -> cable_max_mm=13.5. NOTE: chart x-axis ends at 100MHz (data traces to ~125MHz); the 300MHz point is EXTRAPOLATED from the rising second-hump tail (~2x/decade) and is uncertain."
+ },
+ "RFC-A": {
+  "series": "RFC-A",
+  "spec_freq_mhz": 100,
+  "parts": [
+   {
+    "mpn": "RFC-6-A",
+    "cable_max_mm": 6.0,
+    "z_spot_ohm": 135
+   },
+   {
+    "mpn": "RFC-8-A",
+    "cable_max_mm": 8.5,
+    "z_spot_ohm": 120
+   },
+   {
+    "mpn": "RFC-9-A",
+    "cable_max_mm": 9.5,
+    "z_spot_ohm": 125
+   },
+   {
+    "mpn": "RFC-13-A",
+    "cable_max_mm": 13.5,
+    "z_spot_ohm": 123
+   },
+   {
+    "mpn": "RFC-H13-A",
+    "cable_max_mm": 13.5,
+    "z_spot_ohm": 170
+   },
+   {
+    "mpn": "RFC-20-A",
+    "cable_max_mm": 20.0,
+    "z_spot_ohm": 180
+   }
+  ],
+  "shape_norm100": {
+   "1": 0.045,
+   "3": 0.134,
+   "10": 0.332,
+   "30": 0.634,
+   "100": 1.0,
+   "300": 1.388,
+   "1000": 1.8
+  },
+  "verify_note": "Shape digitized from the per-part log-log Impedance-vs-frequency graphs (median of RFC-6-A, RFC-8-A, RFC-9-A, RFC-13-A). Red curves start ~5-11 ohm at 1 MHz and end at ~490-506 MHz (they do NOT extend to 1000 MHz), so the 1000 MHz point is a mild extrapolation anchored on the real ~500 MHz reading (norm ~1.9) plus a quadratic log-log fit (~1.5); 1.8 used as a near-plateau value. Verify-back at 100 MHz: digitized absolute Z(100MHz) = RFC-6-A:217, -8-A:186, -9-A:183, -13-A:214 ohm vs published minima (>=135,120,125,123). Digitized runs consistently ~1.47-1.74x the published '>=N' (all outside a strict +/-25% band). The graphs plot typical measured data while the table gives the guaranteed floor, so digitized exceeding the '>=' minimum by ~50-75% is expected; the consistency validates the digitization and the z_spot_ohm field keeps the published catalog minima verbatim."
+ },
+ "KTFC": {
+  "series": "KTFC",
+  "parts": [
+   {
+    "mpn": "KTFC-36-19-18",
+    "cable_max_mm": 18.5,
+    "z_spot_ohm": 66,
+    "spec_freq_mhz": 100
+   }
+  ],
+  "shape_norm100": {
+   "1": 0.135,
+   "3": 0.296,
+   "10": 0.545,
+   "30": 0.716,
+   "100": 1.0,
+   "300": 2.345,
+   "1000": null
+  },
+  "verify_note": "1-turn (blue) curve digitized from log-log graph; frame calibrated f=1..1000 MHz, Z=10..10000 ohm. Raw Z: 1MHz=14, 3=31, 10=57, 30=75, 100=104, 300=244 ohm. Curve terminates ~490 MHz so no 1000 MHz reading (null, not invented). Verify-back: digitized ~104 ohm at 100 MHz sits on the 100-ohm gridline; published is a guaranteed minimum >=66 ohm, so measured-typical exceeding it (+58%) is expected for a >= spec, not a calibration error."
+ },
+ "GTFC": {
+  "series": "GTFC",
+  "spec_freq_mhz": 100,
+  "parts": [
+   {
+    "mpn": "GTFC-16-8-13",
+    "cable_max_mm": 7.2,
+    "z_spot_ohm": 45
+   },
+   {
+    "mpn": "GTFC-16-8-16",
+    "cable_max_mm": 7.2,
+    "z_spot_ohm": 55
+   },
+   {
+    "mpn": "GTFC-20-10-10",
+    "cable_max_mm": 8.5,
+    "z_spot_ohm": 40
+   },
+   {
+    "mpn": "GTFC-23-11-14",
+    "cable_max_mm": 10.5,
+    "z_spot_ohm": 55
+   },
+   {
+    "mpn": "GTFC-25-15-12",
+    "cable_max_mm": 13,
+    "z_spot_ohm": 40
+   },
+   {
+    "mpn": "GTFC-28-16-13",
+    "cable_max_mm": 14.7,
+    "z_spot_ohm": 50
+   },
+   {
+    "mpn": "GTFC-28-16-20",
+    "cable_max_mm": 14.7,
+    "z_spot_ohm": 70
+   },
+   {
+    "mpn": "GTFC-41-27-16",
+    "cable_max_mm": 26,
+    "z_spot_ohm": 50
+   }
+  ],
+  "shape_norm100": {
+   "1": 0.032,
+   "3": 0.095,
+   "10": 0.266,
+   "30": 0.575,
+   "100": 1.0,
+   "300": 1.52,
+   "1000": 2.5
+  },
+  "verify_note": "Shape averaged from pixel-digitization of 5 clearest log-log curves (16-8-13, 16-8-16, 20-10-10, 23-11-14, 25-15-12); y-axis calibrated to decade gridlines (1000@px3083..1@px3495), x-axis f=1 at left frame + 141.3px/decade. Plotted curves only extend to ~500 MHz, so the 100 MHz point is well-supported but the 1000 MHz normalized value (2.5) is an EXTRAPOLATION of the flattening HF tail (norm~2.0 at the 500 MHz curve end), not read from the graph. Verify-back: digitized 100 MHz absolute Z per part: 16-8-13=78, 16-8-16=96, 20-10-10=67, 23-11-14=97, 25-15-12=65 ohm vs published minima 45/55/40/55/40 -> a consistent ~1.6-1.8x (avg 1.7x). This exceeds +-25% but is EXPECTED: the catalog column is a guaranteed MINIMUM (>=N) while the curves are reference-measured typicals (page note: 'measured data for reference, not guaranteed'). Ratios are consistent across all parts, confirming the readings track the published floor."
+ },
+ "KRFC": {
+  "series": "KRFC",
+  "spec_freq_mhz": 100,
+  "parts": [
+   {
+    "mpn": "KRFC-4",
+    "cable_max_mm": 4.5,
+    "z_spot_ohm": 70,
+    "spec_freq_mhz": 100
+   },
+   {
+    "mpn": "KRFC-6",
+    "cable_max_mm": 6.5,
+    "z_spot_ohm": 110,
+    "spec_freq_mhz": 100
+   },
+   {
+    "mpn": "KRFC-8",
+    "cable_max_mm": 8.5,
+    "z_spot_ohm": 80,
+    "spec_freq_mhz": 100
+   },
+   {
+    "mpn": "KRFC-9",
+    "cable_max_mm": 9.5,
+    "z_spot_ohm": 80,
+    "spec_freq_mhz": 100
+   },
+   {
+    "mpn": "KRFC-10",
+    "cable_max_mm": 10.5,
+    "z_spot_ohm": 120,
+    "spec_freq_mhz": 100
+   },
+   {
+    "mpn": "KRFC-13",
+    "cable_max_mm": 13.5,
+    "z_spot_ohm": 105,
+    "spec_freq_mhz": 100
+   },
+   {
+    "mpn": "KRFC-15",
+    "cable_max_mm": 15.5,
+    "z_spot_ohm": 221,
+    "spec_freq_mhz": 100
+   },
+   {
+    "mpn": "KRFC-26",
+    "cable_max_mm": 26.0,
+    "z_spot_ohm": 196,
+    "spec_freq_mhz": 100
+   }
+  ],
+  "shape_norm100": {
+   "1": 0.1,
+   "3": 0.26,
+   "10": 0.54,
+   "30": 0.8,
+   "100": 1.0,
+   "300": 1.5,
+   "1000": 2.6
+  },
+  "verify_note": "Shape = 1-turn (blue) curve, digitized by color+log-log calibration from 4 clear plots (KRFC-6/8/10/13); normalized shapes agree within a few percent through 300 MHz. Blue 1-turn trace ends ~500 MHz (still rising, ~2.4x the 100 MHz value); the 1000 MHz point (2.6) is a modest extrapolation beyond the measured data. Verify-back: digitized 1-turn absolute value at 100 MHz reads ~127-187 ohm across parts vs the published guaranteed-minimum spots of 70-120 ohm, i.e. the reference-measured curves run ~55-65% ABOVE the table spot (outside +/-25%). This is expected: table spots are guaranteed minimums (>=) while the graph is 'measured data for reference, not guaranteed' (typical), a ~1.6x guard band. Normalized shape is robust regardless of this absolute offset."
+ },
+ "GTFCK": {
+  "series": "GTFCK",
+  "spec_freq_mhz": 100,
+  "parts": [
+   {
+    "mpn": "GTFCK-16-8-13",
+    "cable_max_mm": 7.2,
+    "z_spot_ohm": 45
+   },
+   {
+    "mpn": "GTFCK-16-8-16",
+    "cable_max_mm": 7.2,
+    "z_spot_ohm": 55
+   },
+   {
+    "mpn": "GTFCK-20-10-10",
+    "cable_max_mm": 8.5,
+    "z_spot_ohm": 40
+   },
+   {
+    "mpn": "GTFCK-23-11-14",
+    "cable_max_mm": 10.5,
+    "z_spot_ohm": 55
+   },
+   {
+    "mpn": "GTFCK-25-15-12",
+    "cable_max_mm": 13,
+    "z_spot_ohm": 40
+   },
+   {
+    "mpn": "GTFCK-28-16-13",
+    "cable_max_mm": 14.7,
+    "z_spot_ohm": 50
+   },
+   {
+    "mpn": "GTFCK-28-16-20",
+    "cable_max_mm": 14.7,
+    "z_spot_ohm": 70
+   },
+   {
+    "mpn": "GTFCK-41-27-16",
+    "cable_max_mm": 26,
+    "z_spot_ohm": 50
+   }
+  ],
+  "shape_norm100": {
+   "1": 0.032,
+   "3": 0.095,
+   "10": 0.266,
+   "30": 0.575,
+   "100": 1.0,
+   "300": 1.52,
+   "1000": 2.5
+  },
+  "verify_note": "GTFCK.pdf contains NO impedance-vs-frequency graphs (only the parts table); it is the chassis-mount (M4 screw) variant of GTFC using the IDENTICAL toroidal ferrite cores - same core designations (16-8-13 ... 41-27-16), same applicable cable diameters, and same published Z minima (45/55/40/55/40/50/70/50 ohm at 100 MHz). The normalized shape is therefore INHERITED from the GTFC catalog graphs (same cores). Shape averaged from pixel-digitization of 5 clearest GTFC log-log curves; curves plot only to ~500 MHz so the 1000 MHz normalized value (2.5) is an extrapolation of the flattening HF tail, not read. Verify-back cross-checks the GTFC curves' digitized 100 MHz Z (78/96/67/97/65 ohm) against these same published minima -> consistent ~1.7x, expected because >=N is a guaranteed floor vs reference-measured typicals."
+ },
+ "GTFCR": {
+  "series": "GTFCR",
+  "spec_freq_mhz": 100,
+  "parts": [
+   {
+    "mpn": "GTFCR-16-8-16",
+    "cable_max_mm": 7.2,
+    "z_spot_ohm": 55
+   },
+   {
+    "mpn": "GTFCR-41-27-16",
+    "cable_max_mm": 26,
+    "z_spot_ohm": 50
+   }
+  ],
+  "shape_norm100": {
+   "1": 0.032,
+   "3": 0.095,
+   "10": 0.266,
+   "30": 0.575,
+   "100": 1.0,
+   "300": 1.52,
+   "1000": 2.5
+  },
+  "verify_note": "GTFCR.pdf is a single page with only the parts table and mechanical profiles; it contains NO impedance-vs-frequency graph, so no curve could be digitized (shape_norm100 left empty, per the same convention as sibling GRFC/RFC-A data files). Parts table verified verbatim: GTFCR-16-8-16 Max.phi7.2mm, >=55 ohm; GTFCR-41-27-16 Max.phi26mm, >=50 ohm at 100MHz/1turn. Both rows match the reference kitagawa_tables.json exactly.",
+  "shape_inherited_from": "GTFC"
+ },
+ "RFCW": {
+  "series": "RFCW",
+  "spec_freq_mhz": 100,
+  "parts": [
+   {
+    "mpn": "RFCW-C10-A-BK-1PC",
+    "cable_max_mm": 10.0,
+    "z_spot_ohm": 140,
+    "spec_freq_mhz": 100
+   },
+   {
+    "mpn": "RFCW-13MA-BK-1PC",
+    "cable_max_mm": 13.5,
+    "z_spot_ohm": 20,
+    "spec_freq_mhz": 10
+   }
+  ],
+  "shape_norm100": {
+   "1": 0.06,
+   "3": 0.2,
+   "10": 0.4,
+   "30": 0.66,
+   "100": 1.0,
+   "300": 1.35,
+   "1000": 2.3
+  },
+  "shape_13ma_norm10": {
+   "0.1": 0.14,
+   "0.3": 0.42,
+   "1": 1.28,
+   "3": 1.37,
+   "10": 1.0,
+   "30": 0.82,
+   "100": 1.49
+  },
+  "verify_note": "shape_norm100 = RFCW-C10 (high-frequency, spec'd at 100 MHz) red curve, digitized by color+log-log calibration. The two RFCW parts have DIFFERENT shapes: C10 is a smooth monotonic rise (high-freq sleeve clamp); RFCW-13MA is a low-cut resonant shape (rises to a ~2 MHz peak ~1.4x, dips to a ~30 MHz min ~0.8x, rises again toward 100 MHz) captured in shape_13ma_norm10 (normalized at its 10 MHz spec freq; its x-axis spans 0.1-100 MHz only). Verify-back: C10 red at 100 MHz digitizes to ~222 ohm vs published >=140 (ratio 1.59); 13MA red at 10 MHz digitizes to ~34 ohm vs published >=20 (ratio 1.7). Both run ~55-70% ABOVE the table spot (outside +/-25%) for the same reason as KRFC: table spots are guaranteed minimums (>=) while the graphs are 'measured data for reference, not guaranteed' (typical) -- a ~1.6x guard band. C10 red trace ends ~500 MHz at ~1.9x the 100 MHz value; the 1000 MHz shape point (2.3) is a modest extrapolation beyond the measured data. Normalized shapes are robust regardless of the absolute offset."
+ },
+ "GRFC": {
+  "series": "GRFC",
+  "spec_freq_mhz": 100,
+  "parts": [
+   {
+    "mpn": "GRFC-3",
+    "cable_max_mm": 4.0,
+    "z_spot_ohm": 35
+   },
+   {
+    "mpn": "GRFC-4",
+    "cable_max_mm": 4.5,
+    "z_spot_ohm": 75
+   },
+   {
+    "mpn": "GRFC-5",
+    "cable_max_mm": 5.5,
+    "z_spot_ohm": 100
+   },
+   {
+    "mpn": "GRFC-6",
+    "cable_max_mm": 6.5,
+    "z_spot_ohm": 100
+   },
+   {
+    "mpn": "GRFC-7",
+    "cable_max_mm": 7.0,
+    "z_spot_ohm": 45
+   },
+   {
+    "mpn": "GRFC-8",
+    "cable_max_mm": 8.5,
+    "z_spot_ohm": 75
+   },
+   {
+    "mpn": "GRFC-9",
+    "cable_max_mm": 9.5,
+    "z_spot_ohm": 75
+   },
+   {
+    "mpn": "GRFC-10",
+    "cable_max_mm": 10.5,
+    "z_spot_ohm": 105
+   },
+   {
+    "mpn": "GRFC-13",
+    "cable_max_mm": 13.5,
+    "z_spot_ohm": 95
+   },
+   {
+    "mpn": "RFC-H13",
+    "cable_max_mm": 13.5,
+    "z_spot_ohm": 170
+   },
+   {
+    "mpn": "RFC-20",
+    "cable_max_mm": 20.0,
+    "z_spot_ohm": 180
+   }
+  ],
+  "shape_norm100": {
+   "1": 0.024,
+   "3": 0.079,
+   "10": 0.245,
+   "30": 0.559,
+   "100": 1.0,
+   "300": 1.672,
+   "1000": 2.4
+  },
+  "verify_note": "Shape digitized from the per-part log-log Impedance-vs-frequency graphs (median of the 6 standard Profile-1 parts: GRFC-5,6,8,9,10,13). Red curves start near 10 ohm at 1 MHz and end at ~490-506 MHz (they do NOT extend to 1000 MHz), so the 1000 MHz point is a mild extrapolation anchored on the real ~500 MHz reading (norm ~2.5) plus a quadratic log-log fit (~2.1); 2.4 used as a near-plateau value. Verify-back at 100 MHz: digitized absolute Z(100MHz) = GRFC-5:138, -6:133, -8:102, -9:99, -10:147, -13:130, -7:55 ohm vs published minima (>=100,100,75,75,105,95,45). Digitized runs consistently ~1.33-1.40x the published '>=N' (GRFC-7 is +23%, within +/-25%; the rest ~+33 to +40%). The graphs plot typical measured data while the table gives the guaranteed floor, so digitized exceeding the '>=' minimum by a consistent ~35% is expected and confirms the digitization tracks the family; the z_spot_ohm field keeps the published catalog minima verbatim."
+ },
+ "MRFC": {
+  "series": "MRFC",
+  "spec_freq_mhz": 10,
+  "parts": [
+   {
+    "mpn": "MRFC-8",
+    "cable_max_mm": 8.5,
+    "z_spot_ohm": 20,
+    "spec_freq_mhz": 10
+   },
+   {
+    "mpn": "MRFC-13",
+    "cable_max_mm": 13.5,
+    "z_spot_ohm": 20,
+    "spec_freq_mhz": 10
+   },
+   {
+    "mpn": "MRFC-20",
+    "cable_max_mm": 20.0,
+    "z_spot_ohm": 20,
+    "spec_freq_mhz": 10
+   }
+  ],
+  "shape_norm10": {
+   "0.3": 0.43,
+   "1": 1.26,
+   "3": 1.33,
+   "10": 1.0,
+   "30": 0.78,
+   "100": 1.33,
+   "300": 1.9
+  },
+  "verify_note": "Shape = average of the 3 digitized MRFC-8/-13/-20 log-log Impedance-vs-frequency curves (label-anchored calibration: 0.01MHz-100MHz decade lines, 117px/dec; 1000ohm top, 155px/dec). Curves: inductive rise (slope +1) to a broad peak ~1-3MHz (norm ~1.3), fall through 10MHz (=1.0) to a dip ~30MHz (0.78), then a second rise toward the 100MHz edge (1.33). VERIFY-BACK: digitized raw Z@10MHz per part = 50.9/35.6/34.8 ohm (avg ~40). Published spot 'Impedance >=20 ohm/10MHz(1turn)' is a GUARANTEED MINIMUM, while graph is 'measured data for reference, not guaranteed'; digitized ~40 ohm is comfortably above the >=20 guarantee (typical~2x guaranteed-min), so consistent. z_spot_ohm=20 copied exactly from '>= 20'. NOTE: chart x-axis ends at 100MHz (data traces to ~125MHz); the 300MHz point is EXTRAPOLATED from the rising second-hump tail (~2x/decade) and is uncertain."
+ },
+ "BFCWN": {
+  "series": "BFCWN",
+  "parts": [
+   {
+    "mpn": "BFCWN-2010MA-NC",
+    "cable_max_mm": 9,
+    "z_spot_ohm": 20,
+    "spec_freq_mhz": 1
+   },
+   {
+    "mpn": "BFCWN-2010-A-BK",
+    "cable_max_mm": 9,
+    "z_spot_ohm": 117,
+    "spec_freq_mhz": 100
+   },
+   {
+    "mpn": "BFCWN-3515MA-NC",
+    "cable_max_mm": 14,
+    "z_spot_ohm": 16,
+    "spec_freq_mhz": 1
+   },
+   {
+    "mpn": "BFCWN-3515-A-BK",
+    "cable_max_mm": 14,
+    "z_spot_ohm": 117,
+    "spec_freq_mhz": 100
+   }
+  ],
+  "shapes": {
+   "BFCWN-2010MA-NC": {
+    "spec_freq_mhz": 1,
+    "shape_norm": {
+     "0.01": null,
+     "0.03": 0.032,
+     "0.1": 0.109,
+     "0.3": 0.356,
+     "1": 1.0,
+     "3": 0.811,
+     "10": 0.657,
+     "30": 0.596,
+     "100": 1.337,
+     "300": null,
+     "1000": null
+    }
+   },
+   "BFCWN-2010-A-BK": {
+    "spec_freq_mhz": 100,
+    "shape_norm100": {
+     "1": 0.07,
+     "3": 0.19,
+     "10": 0.405,
+     "30": 0.701,
+     "100": 1.0,
+     "300": 1.521,
+     "1000": null
+    }
+   },
+   "BFCWN-3515MA-NC": {
+    "spec_freq_mhz": 1,
+    "shape_norm": {
+     "0.01": null,
+     "0.03": 0.056,
+     "0.1": 0.187,
+     "0.3": 0.587,
+     "1": 1.0,
+     "3": 0.824,
+     "10": 0.657,
+     "30": 0.772,
+     "100": 1.97,
+     "300": null,
+     "1000": null
+    }
+   },
+   "BFCWN-3515-A-BK": {
+    "spec_freq_mhz": 100,
+    "shape_norm100": {
+     "1": 0.061,
+     "3": 0.167,
+     "10": 0.374,
+     "30": 0.657,
+     "100": 1.0,
+     "300": 1.623,
+     "1000": null
+    }
+   }
+  },
+  "verify_note": "Each part has its own single red 1-turn curve; all 4 frames pixel-calibrated (Z=1..1000 ohm, 71.33 px/decade; MA-NC x=0.01..100 MHz, A-BK x=1..1000 MHz). Raw digitized Z at spec freq: 2010MA-NC=39.7 ohm @1MHz (pub >=20), 2010-A-BK=181 ohm @100MHz (pub >=117), 3515MA-NC=30.6 ohm @1MHz (pub >=16), 3515-A-BK=181 ohm @100MHz (pub >=117). Digitized-vs-published: measured curve runs ~1.5-2x above the published spot in every case, consistent because the published values are GUARANTEED MINIMUMS (>=), while the graph is 'measured data for reference, not guaranteed' (typical exceeds min). Direction and shape verified visually. MA-NC curves are the low-cut double-hump (peak ~1MHz, dip ~10-30MHz, rise to 100MHz) and do not extend past 100 MHz. A-BK curves terminate near ~500 MHz, so no 1000 MHz reading (null, not invented)."
+ }
+}
