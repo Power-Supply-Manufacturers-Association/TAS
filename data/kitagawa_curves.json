@@ -532,5 +532,998 @@
    }
   },
   "verify_note": "Each part has its own single red 1-turn curve; all 4 frames pixel-calibrated (Z=1..1000 ohm, 71.33 px/decade; MA-NC x=0.01..100 MHz, A-BK x=1..1000 MHz). Raw digitized Z at spec freq: 2010MA-NC=39.7 ohm @1MHz (pub >=20), 2010-A-BK=181 ohm @100MHz (pub >=117), 3515MA-NC=30.6 ohm @1MHz (pub >=16), 3515-A-BK=181 ohm @100MHz (pub >=117). Digitized-vs-published: measured curve runs ~1.5-2x above the published spot in every case, consistent because the published values are GUARANTEED MINIMUMS (>=), while the graph is 'measured data for reference, not guaranteed' (typical exceeds min). Direction and shape verified visually. MA-NC curves are the low-cut double-hump (peak ~1MHz, dip ~10-30MHz, rise to 100MHz) and do not extend past 100 MHz. A-BK curves terminate near ~500 MHz, so no 1000 MHz reading (null, not invented)."
+ },
+ "BCN": {
+  "series": "BCN",
+  "spec_freq_mhz": 100,
+  "form": "solidRing",
+  "parts": [
+   {
+    "mpn": "BCN-26-R",
+    "cable_max_mm": 34.0,
+    "z_spot_ohm": 125
+   },
+   {
+    "mpn": "BCN-40-R",
+    "cable_max_mm": 52.0,
+    "z_spot_ohm": 95
+   },
+   {
+    "mpn": "BCN-50-R",
+    "cable_max_mm": 64.5,
+    "z_spot_ohm": 105
+   }
+  ],
+  "shape_norm100": {
+   "1": 0.046,
+   "3": 0.145,
+   "10": 0.299,
+   "30": 0.547,
+   "100": 1.0,
+   "300": 1.971,
+   "1000": null
+  },
+  "verify_note": "Block core, ferrite core inside a nylon-66 clamp; treated as solidRing thread-through. cable_max_mm = E, the larger (long) inner-window dimension the flat cable passes through (short dim B~2.0mm). z_spot values read directly from the parts table. NOTE: the BCN impedance-graph x-axis prints its leftmost tick as '0.01' but the confirmed one-decade-per-77px minor-gridline pattern proves the four decade lines are consecutive (10,100,1000 self-consistent), so the axis is 1-10-100-1000 MHz and '0.01' is a datasheet misprint for '1'; this reading also matches the published 100MHz spot. Shape digitized from the BCN-26 graph. Curve ends ~490MHz so 1000MHz=null. Verify-back: digitized 100MHz=202ohm vs published spot >=125ohm -> ratio 1.62 (measured curve above guaranteed-minimum spec)."
+ },
+ "BREK": {
+  "series": "BREK",
+  "spec_freq_mhz": 1,
+  "form": "solidRing",
+  "parts": [
+   {
+    "mpn": "BREK-45-60-20",
+    "cable_max_mm": 40.0,
+    "z_spot_ohm": 20,
+    "spec_freq_mhz": 1
+   },
+   {
+    "mpn": "BREK-55-75-25",
+    "cable_max_mm": 50.6,
+    "z_spot_ohm": 27,
+    "spec_freq_mhz": 1
+   },
+   {
+    "mpn": "BREK-85-110-25",
+    "cable_max_mm": 76.8,
+    "z_spot_ohm": 28,
+    "spec_freq_mhz": 1
+   },
+   {
+    "mpn": "BREK-100-140-30",
+    "cable_max_mm": 96.2,
+    "z_spot_ohm": 40,
+    "spec_freq_mhz": 1
+   },
+   {
+    "mpn": "BREK-160-200-30",
+    "cable_max_mm": 155.0,
+    "z_spot_ohm": 27,
+    "spec_freq_mhz": 1
+   }
+  ],
+  "shape_norm": {
+   "0.1": 0.48,
+   "0.3": 0.67,
+   "1": 1.0,
+   "3": 1.38,
+   "10": 1.8,
+   "30": 2.15,
+   "100": 2.58
+  },
+  "verify_note": "1-turn (blue) curve digitized from BREK-45-60-20 graph (clean 4-decade log-log calibration). Digitized 1 MHz = 36.4 ohm vs published spot >=20 ohm; ratio 1.82. Published spot is a guaranteed MINIMUM (>=), typical measured curve running ~1.8x above the floor. Shape near-identical to BRE (same nanocrystalline material), monotonic 0.48 (0.1MHz) -> 2.58 (100MHz)."
+ },
+ "BRE": {
+  "series": "BRE",
+  "spec_freq_mhz": 1,
+  "form": "solidRing",
+  "parts": [
+   {
+    "mpn": "BRE-16-25-10",
+    "cable_max_mm": 13.8,
+    "z_spot_ohm": 28,
+    "spec_freq_mhz": 1
+   },
+   {
+    "mpn": "BRE-20-30-15",
+    "cable_max_mm": 17.7,
+    "z_spot_ohm": 36,
+    "spec_freq_mhz": 1
+   },
+   {
+    "mpn": "BRE-23-33-15",
+    "cable_max_mm": 21.0,
+    "z_spot_ohm": 28,
+    "spec_freq_mhz": 1
+   },
+   {
+    "mpn": "BRE-35-45-15",
+    "cable_max_mm": 31.6,
+    "z_spot_ohm": 21,
+    "spec_freq_mhz": 1
+   },
+   {
+    "mpn": "BRE-50-65-25",
+    "cable_max_mm": 46.7,
+    "z_spot_ohm": 34,
+    "spec_freq_mhz": 1
+   },
+   {
+    "mpn": "BRE-50-80-25",
+    "cable_max_mm": 47.0,
+    "z_spot_ohm": 38,
+    "spec_freq_mhz": 1
+   },
+   {
+    "mpn": "BRE-76-102-25",
+    "cable_max_mm": 70.2,
+    "z_spot_ohm": 31,
+    "spec_freq_mhz": 1
+   }
+  ],
+  "shape_norm": {
+   "0.1": 0.44,
+   "0.3": 0.64,
+   "1": 1.0,
+   "3": 1.39,
+   "10": 1.89,
+   "30": 2.32,
+   "100": 2.63
+  },
+  "verify_note": "1-turn (blue) curve digitized from BRE-16-25-10 graph (clean 4-decade log-log calibration). Digitized 1 MHz = 45.8 ohm vs published spot >=28 ohm; ratio 1.64. The published spot is a guaranteed MINIMUM (>=), so typical measured curve running ~1.6x above the floor is expected/consistent. Shape rises monotonically 0.44 (0.1MHz) -> 2.63 (100MHz)."
+ },
+ "GFPC": {
+  "series": "GFPC",
+  "spec_freq_mhz": 100,
+  "form": "solidRing",
+  "parts": [
+   {
+    "mpn": "GFPC-11-8-2",
+    "cable_max_mm": 9.0,
+    "z_spot_ohm": 25
+   },
+   {
+    "mpn": "GFPC-16-8-2",
+    "cable_max_mm": 12.0,
+    "z_spot_ohm": 25
+   },
+   {
+    "mpn": "GFPC-18-3-2",
+    "cable_max_mm": 14.5,
+    "z_spot_ohm": 20
+   },
+   {
+    "mpn": "GFPC-18-8-2",
+    "cable_max_mm": 14.5,
+    "z_spot_ohm": 25
+   },
+   {
+    "mpn": "GFPC-22-8-2",
+    "cable_max_mm": 18.0,
+    "z_spot_ohm": 25
+   },
+   {
+    "mpn": "GFPC-16-5-3",
+    "cable_max_mm": 11.5,
+    "z_spot_ohm": 20
+   },
+   {
+    "mpn": "GFPC-16-8-3",
+    "cable_max_mm": 11.5,
+    "z_spot_ohm": 25
+   },
+   {
+    "mpn": "GFPC-24-12-3",
+    "cable_max_mm": 20.0,
+    "z_spot_ohm": 30
+   },
+   {
+    "mpn": "GFPC-25-10-3",
+    "cable_max_mm": 21.5,
+    "z_spot_ohm": 25
+   },
+   {
+    "mpn": "GFPC-25-15-3",
+    "cable_max_mm": 21.5,
+    "z_spot_ohm": 35
+   },
+   {
+    "mpn": "GFPC-31-12-3",
+    "cable_max_mm": 27.0,
+    "z_spot_ohm": 30
+   },
+   {
+    "mpn": "GFPC-16-12",
+    "cable_max_mm": 11.5,
+    "z_spot_ohm": 45
+   },
+   {
+    "mpn": "GFPC-16-20",
+    "cable_max_mm": 11.5,
+    "z_spot_ohm": 60
+   },
+   {
+    "mpn": "GFPC-25-12",
+    "cable_max_mm": 20.0,
+    "z_spot_ohm": 35
+   },
+   {
+    "mpn": "GFPC-25-20",
+    "cable_max_mm": 20.0,
+    "z_spot_ohm": 50
+   },
+   {
+    "mpn": "GFPC-31-12",
+    "cable_max_mm": 27.0,
+    "z_spot_ohm": 40
+   },
+   {
+    "mpn": "GFPC-46-12",
+    "cable_max_mm": 41.5,
+    "z_spot_ohm": 40
+   },
+   {
+    "mpn": "GFPC-56-12",
+    "cable_max_mm": 52.4,
+    "z_spot_ohm": 35
+   }
+  ],
+  "shape_norm100": {
+   "1": 0.022,
+   "3": 0.073,
+   "10": 0.2,
+   "30": 0.4,
+   "100": 1.0,
+   "300": 2.0,
+   "1000": null
+  },
+  "verify_note": "Spots read directly from parts-table Impedance column (guaranteed >= at 100MHz), not the graph. Shape digitized from GFPC-16-8-2 graph (representative mid-range curve; all 18 graphs share the same soft-ferrite log-log rise). Digitized Z(100MHz) ~ 45 ohm vs published spot >= 25 for that part; ratio ~1.8 (graph is typical reference data above the guaranteed minimum, expected). Curve ends ~600 MHz so 1000 MHz = null."
+ },
+ "GFPH": {
+  "series": "GFPH",
+  "spec_freq_mhz": 100,
+  "form": "solidRing",
+  "parts": [
+   {
+    "mpn": "GFPH-10-6-5",
+    "cable_max_mm": 6.8,
+    "z_spot_ohm": 25
+   }
+  ],
+  "shape_norm100": {
+   "1": 0.025,
+   "3": 0.068,
+   "10": 0.238,
+   "30": 0.475,
+   "100": 1.0,
+   "300": 1.875,
+   "1000": null
+  },
+  "verify_note": "Single graph (GFPH-10-6-5). Digitized Z(100MHz) ~ 40 ohm vs published spot >= 25; ratio ~1.6 (graph is typical reference data above the guaranteed minimum, expected). Curve ends ~550 MHz so 1000 MHz = null."
+ },
+ "GFPO": {
+  "series": "GFPO",
+  "spec_freq_mhz": 100,
+  "form": "solidRing",
+  "parts": [
+   {
+    "mpn": "GFPO-23-8-3",
+    "cable_max_mm": 19.0,
+    "z_spot_ohm": 30
+   },
+   {
+    "mpn": "GFPO-25-12-3",
+    "cable_max_mm": 21.0,
+    "z_spot_ohm": 35
+   },
+   {
+    "mpn": "GFPO-31-12-3",
+    "cable_max_mm": 27.0,
+    "z_spot_ohm": 35
+   }
+  ],
+  "shape_norm100": {
+   "1": 0.018,
+   "3": 0.06,
+   "10": 0.18,
+   "30": 0.49,
+   "100": 1.0,
+   "300": 2.2,
+   "1000": null
+  },
+  "verify_note": "Shape digitized from GFPO-25-12-3 graph (all 3 graphs share the same soft-ferrite log-log rise). Digitized Z(100MHz) ~ 55 ohm vs published spot >= 35 for that part; ratio ~1.6 (graph is typical reference data above the guaranteed minimum, expected). Curve ends ~550 MHz so 1000 MHz = null."
+ },
+ "GRIB": {
+  "series": "GRIB",
+  "spec_freq_mhz": 100,
+  "form": "twoHoleRibCore",
+  "parts": [
+   {
+    "mpn": "GRIB-3.5-7-7",
+    "cable_max_mm": 1.5,
+    "z_spot_ohm": 75
+   }
+  ],
+  "shape_norm100": {
+   "1": 0.105,
+   "3": 0.293,
+   "10": 0.525,
+   "30": 0.79,
+   "100": 1.0,
+   "300": 1.175,
+   "1000": null
+  },
+  "verify_note": "Single published curve digitized; matches GRI ferrite-bead shape. Verify-back: digitized 100MHz=111 ohm vs published >= 75 (ratio 1.48, consistent with GRI small cores). Curve ends ~500 MHz so 1000MHz=null. GRIB is a 2-hole rib core; cable threads the phi-D hole so cable_max_mm = D = 1.5 (per-hole diameter)."
+ },
+ "GRIP": {
+  "series": "GRIP",
+  "spec_freq_mhz": 100,
+  "form": "gripCore",
+  "parts": [
+   {
+    "mpn": "GRIP-3.5-1.8-2",
+    "cable_max_mm": 1.6,
+    "z_spot_ohm": 32
+   }
+  ],
+  "shape_norm100": {
+   "1": 0.042,
+   "3": 0.107,
+   "10": 0.238,
+   "30": 0.467,
+   "100": 1.0,
+   "300": 2.492,
+   "1000": null
+  },
+  "verify_note": "NO impedance spot column in the catalog table; z_spot_ohm=32 was READ from the graph at 100 MHz (digitized 31.6 ohm), not published. Verify-back N/A (no published spot to compare). Shape is a near-straight rising log-log line (inductive, Z proportional to f), distinct from the GRI/GRIB bead plateau. cable_max_mm=1.6 = MAX of the cylindrical lead outer diameter range phi0.6-1.6 (grips a discrete-device lead; also rectangular leads 0.8-1.5W x 0.3-0.7T). Curve ends ~500 MHz so 1000MHz=null."
+ },
+ "GRI": {
+  "series": "GRI",
+  "spec_freq_mhz": 100,
+  "form": "solidRing",
+  "parts": [
+   {
+    "mpn": "GRI-3-4-1",
+    "cable_max_mm": 1,
+    "z_spot_ohm": 25
+   },
+   {
+    "mpn": "GRI-3.5-3.5-1.2",
+    "cable_max_mm": 1.2,
+    "z_spot_ohm": 25
+   },
+   {
+    "mpn": "GRI-3.5-7-1.2",
+    "cable_max_mm": 1.2,
+    "z_spot_ohm": 40
+   },
+   {
+    "mpn": "GRI-4-5-1.5",
+    "cable_max_mm": 1.5,
+    "z_spot_ohm": 30
+   },
+   {
+    "mpn": "GRI-11-18-5",
+    "cable_max_mm": 5,
+    "z_spot_ohm": 85
+   },
+   {
+    "mpn": "GRI-11-20-5",
+    "cable_max_mm": 5,
+    "z_spot_ohm": 90
+   },
+   {
+    "mpn": "GRI-11-25-5",
+    "cable_max_mm": 5,
+    "z_spot_ohm": 105
+   },
+   {
+    "mpn": "GRI-12-16-8.5",
+    "cable_max_mm": 8.5,
+    "z_spot_ohm": 35
+   },
+   {
+    "mpn": "GRI-12.3-20-7",
+    "cable_max_mm": 7,
+    "z_spot_ohm": 70
+   },
+   {
+    "mpn": "GRI-14-28-6",
+    "cable_max_mm": 6.3,
+    "z_spot_ohm": 130
+   },
+   {
+    "mpn": "GRI-16-20-7",
+    "cable_max_mm": 7,
+    "z_spot_ohm": 95
+   },
+   {
+    "mpn": "GRI-16-28-7",
+    "cable_max_mm": 7,
+    "z_spot_ohm": 130
+   },
+   {
+    "mpn": "GRI-16-28-8",
+    "cable_max_mm": 8,
+    "z_spot_ohm": 115
+   },
+   {
+    "mpn": "GRI-16-28-9",
+    "cable_max_mm": 9,
+    "z_spot_ohm": 95
+   },
+   {
+    "mpn": "GRI-17.5-28.5-10.7",
+    "cable_max_mm": 10.7,
+    "z_spot_ohm": 85
+   },
+   {
+    "mpn": "GRI-18-28-10",
+    "cable_max_mm": 10,
+    "z_spot_ohm": 100
+   },
+   {
+    "mpn": "GRI-26-28-13",
+    "cable_max_mm": 13,
+    "z_spot_ohm": 120
+   }
+  ],
+  "shape_norm100": {
+   "1": 0.095,
+   "3": 0.266,
+   "10": 0.51,
+   "30": 0.772,
+   "100": 1.0,
+   "300": 1.38,
+   "1000": null
+  },
+  "verify_note": "Shape is the average of 8 digitized part curves (normalization cancels absolute offset; per-point SD<=0.04 except 300MHz SD=0.15 from varying end upturn). y-axis calibration verified: decade lines at 155 px/decade. Curves end ~500 MHz so 1000MHz=null. Verify-back: digitized 100MHz sits ~1.3-1.5x above the conservative published >= spot; e.g. GRI-11-25-5 digitized 152 vs spot 105 (1.44), GRI-14-28-6 187 vs 130 (1.44); larger 16/17.5 cores lower ~1.16-1.21."
+ },
+ "GSSC": {
+  "series": "GSSC",
+  "spec_freq_mhz": 100,
+  "form": "solidRing",
+  "parts": [
+   {
+    "mpn": "GSSC-33.5-8",
+    "cable_max_mm": 28.4,
+    "z_spot_ohm": 30
+   },
+   {
+    "mpn": "GSSC-33.5-10",
+    "cable_max_mm": 28.4,
+    "z_spot_ohm": 30
+   },
+   {
+    "mpn": "GSSC-33.5-10-2",
+    "cable_max_mm": 27.0,
+    "z_spot_ohm": 30
+   },
+   {
+    "mpn": "GSSC-33.5-12",
+    "cable_max_mm": 28.4,
+    "z_spot_ohm": 35
+   },
+   {
+    "mpn": "GSSC-33.5-20",
+    "cable_max_mm": 27.8,
+    "z_spot_ohm": 50
+   },
+   {
+    "mpn": "GSSC-40-12",
+    "cable_max_mm": 35.0,
+    "z_spot_ohm": 35
+   },
+   {
+    "mpn": "GSSC-45-8",
+    "cable_max_mm": 40.0,
+    "z_spot_ohm": 30
+   },
+   {
+    "mpn": "GSSC-45-12",
+    "cable_max_mm": 40.0,
+    "z_spot_ohm": 35
+   },
+   {
+    "mpn": "GSSC-50-12",
+    "cable_max_mm": 44.9,
+    "z_spot_ohm": 35
+   },
+   {
+    "mpn": "GSSC-58-12",
+    "cable_max_mm": 52.0,
+    "z_spot_ohm": 35
+   }
+  ],
+  "shape_norm100": {
+   "1": 0.036,
+   "3": 0.108,
+   "10": 0.239,
+   "30": 0.467,
+   "100": 1.0,
+   "300": 2.417,
+   "1000": null
+  },
+  "verify_note": "cable_max_mm = E, the larger (long) opening dimension of the flat through-slot (short dim B~1.3-2.2mm). All 10 z_spot values read directly from the parts table (not the graph). Shape digitized from the GSSC-33.5-8 impedance graph (all 10 curves near-identical straight log-log lines). Curve ends ~490MHz so 1000MHz=null. Verify-back: digitized 100MHz=43.5ohm vs published spot >=30ohm -> ratio 1.45 (measured curve above guaranteed-minimum spec)."
+ },
+ "GSSH": {
+  "series": "GSSH",
+  "spec_freq_mhz": 100,
+  "form": "solidRing",
+  "parts": [
+   {
+    "mpn": "GSSH-33.5-12",
+    "cable_max_mm": 27.0,
+    "z_spot_ohm": 35
+   },
+   {
+    "mpn": "GSSH-33.5-20",
+    "cable_max_mm": 27.0,
+    "z_spot_ohm": 50
+   },
+   {
+    "mpn": "GSSH-40-12",
+    "cable_max_mm": 34.8,
+    "z_spot_ohm": 35
+   },
+   {
+    "mpn": "GSSH-45-12",
+    "cable_max_mm": 40.0,
+    "z_spot_ohm": 35
+   }
+  ],
+  "shape_norm100": {
+   "1": 0.032,
+   "3": 0.093,
+   "10": 0.239,
+   "30": 0.497,
+   "100": 1.0,
+   "300": 2.274,
+   "1000": null
+  },
+  "verify_note": "cable_max_mm = E, the larger (long) opening dimension of the flat through-slot (short dim B~1.2mm). Shape digitized from the GSSH-33.5-12 impedance graph (all 4 curves near-identical straight log-log lines). Curve ends ~490MHz so 1000MHz=null. Verify-back: digitized 100MHz=50.7ohm vs published spot >=35ohm -> ratio 1.45 (measured curve above guaranteed-minimum spec)."
+ },
+ "GTRCA": {
+  "series": "GTRCA",
+  "spec_freq_mhz": 100,
+  "form": "solidRing",
+  "parts": [
+   {
+    "mpn": "GTRCA-20-10-10",
+    "cable_max_mm": 8.2,
+    "z_spot_ohm": 45
+   },
+   {
+    "mpn": "GTRCA-25-15-12",
+    "cable_max_mm": 12.8,
+    "z_spot_ohm": 40
+   }
+  ],
+  "shape_norm100": {
+   "1": 0.1,
+   "3": 0.27,
+   "10": 0.45,
+   "30": 0.68,
+   "100": 1.0,
+   "300": 1.53,
+   "1000": null
+  },
+  "verify_note": "Round toroidal core with PA66 housing, non-split. cable_max_mm = actual inner-hole phi B (8.2 / 12.8), smaller than nominal in the part name due to the housing. Spots read from the parts table (>=45 / >=40). 1-turn (red) curve of GTRCA-20-10-10 digitized. At 100 MHz ~62 ohm vs published spot >=45 ohm, ratio ~1.38 (reference measured data exceeds guaranteed min). Curve ends ~600 MHz -> 1000 MHz null."
+ },
+ "GTRE": {
+  "series": "GTRE",
+  "spec_freq_mhz": 100,
+  "form": "solidRing",
+  "parts": [
+   {
+    "mpn": "GTRE-14-12.5-8",
+    "cable_max_mm": 4.0,
+    "z_spot_ohm": 30
+   },
+   {
+    "mpn": "GTRE-14-14-8",
+    "cable_max_mm": 4.0,
+    "z_spot_ohm": 35
+   }
+  ],
+  "shape_norm100": {
+   "1": 0.13,
+   "3": 0.32,
+   "10": 0.55,
+   "30": 0.78,
+   "100": 1.0,
+   "300": 1.6,
+   "1000": null
+  },
+  "verify_note": "Oval (elliptical) toroidal core, non-split. Inner opening C(inner height)=10.0 x D(inner width)=4.0 mm; max round cable limited by narrow dim D=4.0 mm. 1-turn (red) curve of GTRE-14-12.5-8 digitized. At 100 MHz ~40 ohm vs published spot >=30 ohm, ratio ~1.33 (reference measured data exceeds guaranteed min). Curve ends ~500 MHz -> 1000 MHz null."
+ },
+ "GTR": {
+  "series": "GTR",
+  "spec_freq_mhz": 100,
+  "form": "solidRing",
+  "parts": [
+   {
+    "mpn": "GTR-7-3-4",
+    "cable_max_mm": 3.5,
+    "z_spot_ohm": 20
+   },
+   {
+    "mpn": "GTR-9-5-8",
+    "cable_max_mm": 5,
+    "z_spot_ohm": 30
+   },
+   {
+    "mpn": "GTR-10-5-5",
+    "cable_max_mm": 5,
+    "z_spot_ohm": 25
+   },
+   {
+    "mpn": "GTR-11-5-9",
+    "cable_max_mm": 5,
+    "z_spot_ohm": 45
+   },
+   {
+    "mpn": "GTR-12.5-8-12",
+    "cable_max_mm": 8.1,
+    "z_spot_ohm": 35
+   },
+   {
+    "mpn": "GTR-13-7-6",
+    "cable_max_mm": 7,
+    "z_spot_ohm": 25
+   },
+   {
+    "mpn": "GTR-13-7-12.7",
+    "cable_max_mm": 7.1,
+    "z_spot_ohm": 45
+   },
+   {
+    "mpn": "GTR-14.5-10-8",
+    "cable_max_mm": 10.2,
+    "z_spot_ohm": 20
+   },
+   {
+    "mpn": "GTR-16-8-13",
+    "cable_max_mm": 8.2,
+    "z_spot_ohm": 55
+   },
+   {
+    "mpn": "GTR-16-8-16",
+    "cable_max_mm": 8.2,
+    "z_spot_ohm": 65
+   },
+   {
+    "mpn": "GTR-16-10-7",
+    "cable_max_mm": 10,
+    "z_spot_ohm": 25
+   },
+   {
+    "mpn": "GTR-16-10-10",
+    "cable_max_mm": 10,
+    "z_spot_ohm": 30
+   },
+   {
+    "mpn": "GTR-18-10-6",
+    "cable_max_mm": 10,
+    "z_spot_ohm": 25
+   },
+   {
+    "mpn": "GTR-20-10-5",
+    "cable_max_mm": 10.2,
+    "z_spot_ohm": 25
+   },
+   {
+    "mpn": "GTR-20-10-10",
+    "cable_max_mm": 10.2,
+    "z_spot_ohm": 45
+   },
+   {
+    "mpn": "GTR-21-13-6",
+    "cable_max_mm": 12.7,
+    "z_spot_ohm": 25
+   },
+   {
+    "mpn": "GTR-22-14-10",
+    "cable_max_mm": 14,
+    "z_spot_ohm": 30
+   },
+   {
+    "mpn": "GTR-23-11-14",
+    "cable_max_mm": 11.4,
+    "z_spot_ohm": 60
+   },
+   {
+    "mpn": "GTR-25-15-8",
+    "cable_max_mm": 15,
+    "z_spot_ohm": 30
+   },
+   {
+    "mpn": "GTR-25-15-12",
+    "cable_max_mm": 15,
+    "z_spot_ohm": 40
+   },
+   {
+    "mpn": "GTR-28-16-13",
+    "cable_max_mm": 16,
+    "z_spot_ohm": 45
+   },
+   {
+    "mpn": "GTR-28-16-20",
+    "cable_max_mm": 16,
+    "z_spot_ohm": 70
+   },
+   {
+    "mpn": "GTR-31-19-8",
+    "cable_max_mm": 19,
+    "z_spot_ohm": 30
+   },
+   {
+    "mpn": "GTR-40-27-15",
+    "cable_max_mm": 27.4,
+    "z_spot_ohm": 45
+   }
+  ],
+  "shape_norm100": {
+   "1": 0.09,
+   "3": 0.26,
+   "10": 0.46,
+   "30": 0.67,
+   "100": 1.0,
+   "300": 1.55,
+   "1000": null
+  },
+  "verify_note": "Shape = mean of 3 digitized curves (GTR-40-27-15, GTR-28-16-20, GTR-16-8-16), monotonic rising log-log, normalized to 1.0 at 100MHz. 1000MHz=null: all measured curves terminate ~500-600MHz (never reach 1GHz gridline), not extrapolated. Verify-back at 100MHz vs published guaranteed minimum: GTR-40-27-15 ~70 vs >=45 (1.56x), GTR-28-16-20 ~95 vs >=70 (1.36x), GTR-16-8-16 ~102 vs >=65 (1.57x); typicals run 1.36-1.57x the >=N floor, within the expected 1.3-2x band. Note per catalog these graph values are reference measured data, not guaranteed."
+ },
+ "KTR": {
+  "series": "KTR",
+  "spec_freq_mhz": 100,
+  "form": "solidRing",
+  "parts": [
+   {
+    "mpn": "KTR-25-15-18E",
+    "cable_max_mm": 15.0,
+    "z_spot_ohm": 54
+   },
+   {
+    "mpn": "KTR-28-16-20E",
+    "cable_max_mm": 16.0,
+    "z_spot_ohm": 65
+   },
+   {
+    "mpn": "KTR-35-21-18E",
+    "cable_max_mm": 20.8,
+    "z_spot_ohm": 80
+   },
+   {
+    "mpn": "KTR-40-27-15E",
+    "cable_max_mm": 27.4,
+    "z_spot_ohm": 50
+   },
+   {
+    "mpn": "KTR-47-35-20E",
+    "cable_max_mm": 35.0,
+    "z_spot_ohm": 54
+   }
+  ],
+  "shape_norm100": {
+   "1": 0.18,
+   "3": 0.33,
+   "10": 0.65,
+   "30": 0.83,
+   "100": 1.0,
+   "300": 1.6,
+   "1000": null
+  },
+  "verify_note": "1-turn (blue) curve of KTR-25-15-18E digitized. At 100 MHz ~72 ohm vs published spot >=54 ohm, ratio ~1.33 (graph is reference measured data, exceeds guaranteed minimum -- consistent). Blue curve ends ~550 MHz, so 1000 MHz null."
+ },
+ "MPTR": {
+  "series": "MPTR",
+  "spec_freq_mhz": 1,
+  "form": "solidRing",
+  "parts": [
+   {
+    "mpn": "MPTR-20-13-10E",
+    "cable_max_mm": 11.8,
+    "z_spot_ohm": 7,
+    "spec_freq_mhz": 1
+   },
+   {
+    "mpn": "MPTR-27-15-11E",
+    "cable_max_mm": 13.8,
+    "z_spot_ohm": 12,
+    "spec_freq_mhz": 1
+   },
+   {
+    "mpn": "MPTR-40-24-15E",
+    "cable_max_mm": 23.1,
+    "z_spot_ohm": 12,
+    "spec_freq_mhz": 1
+   }
+  ],
+  "shape_norm": {
+   "0.1": 0.11,
+   "0.3": 0.3,
+   "1": 1.0,
+   "3": 2.87,
+   "10": 8.42,
+   "30": 22.3,
+   "100": 32.1
+  },
+  "verify_note": "SPEC IS 5-TURN (not 1-turn like BRE/BREK): catalog header 'Impedance* Ohm/1MHz (5turn)'. Single red curve digitized from MPTR-40-24-15E graph (clean 4-decade log-log). Digitized 1 MHz = 25.2 ohm vs published spot >=12 ohm; ratio 2.1 (spot is guaranteed MINIMUM). Metal-powder core => INDUCTIVE shape (Z ~ proportional to f, slope ~1) rising from 0.11 (0.1MHz) to a broad peak, still climbing to 32x by 100MHz -- fundamentally steeper than the lossy nanocrystalline BRE/BREK. Curve starts ~0.037MHz, continuous to 100MHz (no nulls). All 3 MPTR graphs share this shape; z-spot ratios differ slightly (7,12,12 floors)."
+ },
+ "TRCB": {
+  "series": "TRCB",
+  "spec_freq_mhz": 10,
+  "form": "solidRing",
+  "parts": [
+   {
+    "mpn": "TRCB-19-10-10",
+    "cable_max_mm": 8.1,
+    "z_spot_ohm": 11
+   },
+   {
+    "mpn": "TRCB-25-15-12",
+    "cable_max_mm": 13.3,
+    "z_spot_ohm": 8
+   },
+   {
+    "mpn": "TRCB-38-19-13",
+    "cable_max_mm": 16.6,
+    "z_spot_ohm": 7
+   }
+  ],
+  "shape_norm10": {
+   "0.1": 0.18,
+   "0.3": 0.45,
+   "1": 1.23,
+   "3": 1.36,
+   "10": 1.0,
+   "30": 0.86,
+   "100": 2.36,
+   "300": null,
+   "1000": null
+  },
+  "verify_note": "DEVIATION: TRCB is a Mn-Zn soft-ferrite LOW-frequency cased toroid, non-split; its published spot is at 10 MHz (table header 'Impedance Ohm/10MHz (1 turn)'), NOT 100 MHz like KTR/GTRE/GTRCA. Graph x-axis spans 0.01-100 MHz. Shape is normalized at 10 MHz (the spec frequency) so Z(f)=z_spot*shape is self-consistent -- key is shape_norm10, not shape_norm100. Characteristic double-hump: peak ~32 ohm near 2 MHz, dip ~19 ohm near 25-30 MHz, rising again to ~52 ohm at 100 MHz. cable_max_mm = inner phi B (8.1/13.3/16.6). 1-turn (red) curve of TRCB-19-10-10 digitized. Verify-back at 10 MHz: digitized ~22 ohm vs published spot >=11 ohm, ratio ~2.0 (reference measured data well above the conservative guaranteed minimum). Curve ends ~130 MHz -> 300 & 1000 MHz null."
+ },
+ "TRMH": {
+  "series": "TRMH",
+  "spec_freq_mhz": 1,
+  "form": "solidRing",
+  "parts": [
+   {
+    "mpn": "TRMH-16-8-16E",
+    "cable_max_mm": 7.2,
+    "z_spot_ohm": 18,
+    "spec_freq_mhz": 1
+   },
+   {
+    "mpn": "TRMH-20-10-10E",
+    "cable_max_mm": 9.2,
+    "z_spot_ohm": 11,
+    "spec_freq_mhz": 1
+   },
+   {
+    "mpn": "TRMH-25-15-12E",
+    "cable_max_mm": 14.1,
+    "z_spot_ohm": 9,
+    "spec_freq_mhz": 1
+   },
+   {
+    "mpn": "TRMH-27-19-15",
+    "cable_max_mm": 19.0,
+    "z_spot_ohm": 9,
+    "spec_freq_mhz": 1
+   },
+   {
+    "mpn": "TRMH-31-20-15E",
+    "cable_max_mm": 19.0,
+    "z_spot_ohm": 9,
+    "spec_freq_mhz": 1
+   },
+   {
+    "mpn": "TRMH-38-19-13E",
+    "cable_max_mm": 18.0,
+    "z_spot_ohm": 11,
+    "spec_freq_mhz": 1
+   },
+   {
+    "mpn": "TRMH-47-27-15E",
+    "cable_max_mm": 26.0,
+    "z_spot_ohm": 10,
+    "spec_freq_mhz": 1
+   },
+   {
+    "mpn": "TRMH-65-38-30E",
+    "cable_max_mm": 36.6,
+    "z_spot_ohm": 12,
+    "spec_freq_mhz": 1
+   },
+   {
+    "mpn": "TRMH-74-46-20E",
+    "cable_max_mm": 44.22,
+    "z_spot_ohm": 6,
+    "spec_freq_mhz": 1
+   },
+   {
+    "mpn": "TRMH-103-66-25E",
+    "cable_max_mm": 63.1,
+    "z_spot_ohm": 6,
+    "spec_freq_mhz": 1
+   },
+   {
+    "mpn": "TRMH-160-90-26E",
+    "cable_max_mm": 87.9,
+    "z_spot_ohm": 6,
+    "spec_freq_mhz": 1
+   }
+  ],
+  "shape_norm": {
+   "0.3": 0.77,
+   "1": 1.0,
+   "3": 0.9,
+   "10": 0.77,
+   "30": 0.77,
+   "100": 1.51,
+   "300": null
+  },
+  "verify_note": "Shape = per-part MEDIAN of the digitized 1-turn (blue) |Z|(f) curve across all 11 TRMH panels, normalized to 1.0 at the 1 MHz spec freq. Curve rises to a first peak near 0.5-1 MHz, dips to ~0.77 through 3-30 MHz, then rises strongly toward 100 MHz. The 100 MHz upturn is STRONGLY size-dependent: small cores norm~1.1-1.5, large high-mu cores (65/74/103/160) norm~7-55 (second dimensional resonance), so median 1.51 represents the typical/smaller cores. Axis ends at 100 MHz so 300 MHz = null. VERIFY-BACK: digitized 1-turn value at 1 MHz vs published spot per part ratio = [1.66,2.37,2.29,2.67,3.81,3.01,2.58,2.71,2.77,2.82,2.45], median 2.67. Graph reads ~2.7x the table spot because the table gives GUARANTEED MINIMUMS (>=) while graphs are typical reference measured data (not guaranteed). Note: graph panel labels the TRMH-27 part 'TRMH-27-19-16' but the parts table (used here) says TRMH-27-19-15."
+ },
+ "TRM": {
+  "series": "TRM",
+  "spec_freq_mhz": 10,
+  "form": "solidRing",
+  "parts": [
+   {
+    "mpn": "TRM-14.3-6.3-5.5E-WE",
+    "cable_max_mm": 5.6,
+    "z_spot_ohm": 40,
+    "spec_freq_mhz": 10
+   },
+   {
+    "mpn": "TRM-16-8-16E-WE",
+    "cable_max_mm": 7.1,
+    "z_spot_ohm": 70,
+    "spec_freq_mhz": 10
+   },
+   {
+    "mpn": "TRM-20-10-10E-WE",
+    "cable_max_mm": 9.1,
+    "z_spot_ohm": 35,
+    "spec_freq_mhz": 10
+   },
+   {
+    "mpn": "TRM-25-15-12E-WE",
+    "cable_max_mm": 14.1,
+    "z_spot_ohm": 35,
+    "spec_freq_mhz": 10
+   },
+   {
+    "mpn": "TRM-31-20-15E-WE",
+    "cable_max_mm": 19.0,
+    "z_spot_ohm": 30,
+    "spec_freq_mhz": 10
+   },
+   {
+    "mpn": "TRM-38-19-13E-WE",
+    "cable_max_mm": 17.9,
+    "z_spot_ohm": 35,
+    "spec_freq_mhz": 10
+   },
+   {
+    "mpn": "TRM-47-27-15E-WE",
+    "cable_max_mm": 25.7,
+    "z_spot_ohm": 25,
+    "spec_freq_mhz": 10
+   }
+  ],
+  "shape_norm": {
+   "0.3": 0.83,
+   "1": 1.55,
+   "3": 1.38,
+   "10": 1.0,
+   "30": 0.73,
+   "100": 1.0,
+   "300": null
+  },
+  "verify_note": "Shape = per-part MEDIAN of the digitized 2-turn (orange) |Z|(f) curve across all 7 TRM panels, normalized to 1.0 at the 10 MHz spec freq. Curve rises from ~0.05 MHz, peaks ~1-2 MHz (norm~1.4-1.6 vs 10 MHz), dips to ~0.73 near 30 MHz, then rises back toward 100 MHz (norm~1.0, size-dependent range 0.6-1.7). Axis ends at 100 MHz so 300 MHz = null. VERIFY-BACK: digitized 2-turn value at 10 MHz vs published spot per part ratio = [1.81,2.23,3.18,2.17,2.48,2.23,2.88], median 2.23. Graph reads ~2.2x the table spot because the catalog table gives GUARANTEED MINIMUMS (>=) while the graphs are typical reference measured data (not guaranteed), per the catalog footnote."
  }
 }

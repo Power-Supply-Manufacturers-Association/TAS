@@ -44,7 +44,29 @@ FAMILY = {
     "MRFC": "Low-Cut Ferrite Clamp Cable Core", "RFC-MA": "Low-Cut Ferrite Clamp Cable Core",
     "GTFC": "Toroidal Ferrite Clamp Cable Core", "GTFCK": "Toroidal Ferrite Clamp Cable Core",
     "GTFCR": "Toroidal Ferrite Clamp Cable Core",
+    # non-split (solid-ring) core families
+    "GTR": "Toroidal Ferrite Cable Core", "GTRE": "Toroidal Ferrite Cable Core",
+    "GTRCA": "Toroidal Ferrite Cable Core", "KTR": "Toroidal Ferrite Cable Core",
+    "TRCB": "Low-Cut Toroidal Cable Core", "TRM": "Low-Cut Toroidal Cable Core",
+    "TRMH": "Low-Cut High-µ Toroidal Cable Core", "GRI": "Sleeve Ferrite Cable Core",
+    "GRIB": "Rib Ferrite Cable Core", "GRIP": "Grip Ferrite Cable Core",
+    "GSSH": "Flat Cable Ferrite Core", "GSSC": "Flat Cable Ferrite Core",
+    "BCN": "Block Ferrite Cable Core", "GFPC": "FPC Ferrite Cable Core",
+    "GFPH": "FPC Ferrite Cable Core", "GFPO": "FPC Ferrite Cable Core",
+    "BRE": "Broadband Ferrite Cable Core", "BREK": "Broadband Ferrite Cable Core",
+    "MPTR": "Metal-Composite Cable Core",
 }
+# the 11 split-clamp series default to snapOn; everything else is non-split -> solidRing
+CLAMP_SERIES = {"GRFC", "RFC-A", "RFCW", "KRFC", "KTFC", "BFCWN", "MRFC", "RFC-MA", "GTFC", "GTFCK", "GTFCR"}
+VALID_FORM = {"solidRing", "snapOn", "split", "screwable"}
+TURNS = {"TRM": 2, "MPTR": 5}          # per-series spec turn count (default 1)
+
+
+def form_for(series, series_obj):
+    f = series_obj.get("form")
+    if f in VALID_FORM:
+        return f
+    return "snapOn" if series in CLAMP_SERIES else "solidRing"
 
 
 def part_shape(series_obj, part):
@@ -60,10 +82,11 @@ def part_shape(series_obj, part):
     # RFCW low-freq variant carries a distinct shape
     if series_obj["series"] == "RFCW" and spec == 10 and "shape_13ma_norm10" in series_obj:
         return series_obj["shape_13ma_norm10"], 10
-    # low-cut series normalized at 10 MHz
-    if "shape_norm10" in series_obj:
-        return series_obj["shape_norm10"], spec
-    return series_obj.get("shape_norm100", {}), spec
+    # generic: first key starting with shape_norm that is a freq->value dict
+    for k, v in series_obj.items():
+        if k.startswith("shape_norm") and isinstance(v, dict) and v:
+            return v, spec
+    return {}, spec
 
 
 def build(series, series_obj, part):
@@ -83,10 +106,12 @@ def build(series, series_obj, part):
     family = FAMILY.get(series, "Ferrite Clamp Cable Core")
     cm = part.get("cable_max_mm")
     zspec = float(part["z_spot_ohm"])
+    turns = TURNS.get(series, 1)
+    form = form_for(series, series_obj)
     desc = (f"Kitagawa {family} ("
             f"{'≤%g mm cable, ' % cm if cm else ''}"
-            f"|Z|≥{zspec:g} Ω @ {spec:g} MHz published min, 1 turn)")
-    electrical = {"subtype": "cableCore", "numberTurns": 1, "impedancePoints": pts, "mountingForm": "snapOn"}
+            f"|Z|≥{zspec:g} Ω @ {spec:g} MHz published min, {turns} turn{'s' if turns > 1 else ''})")
+    electrical = {"subtype": "cableCore", "numberTurns": turns, "impedancePoints": pts, "mountingForm": form}
     if cm and cm > 0:
         electrical["maximumCableOuterDiameter"] = float(cm) / 1000.0
     return {"magnetic": {"manufacturerInfo": {
