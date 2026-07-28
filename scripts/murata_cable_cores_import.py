@@ -25,13 +25,35 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 DATA = HERE.parent / "data"
 RAW = DATA / "murata" / "FSRC_data.json"
+TYPE_SHAPES = DATA / "murata" / "fsrc_type_shapes.json"   # per-FSRC-type digitized shapes
 OUT = DATA / "murata_cable_cores.ndjson"
 APPLY = "--apply" in sys.argv
-RETRIEVED = "2026-07-28"
+RETRIEVED = "2026-07-29"
 URL = "https://www.murata.com/en-us/products/emc/emifil"
-# FSRC family-representative |Z|(f) shape, normalized to 1.0 at 100 MHz,
-# digitized from the O63E "Impedance vs Frequency Characteristics" charts.
-SHAPE = {1e6: 0.09, 3e6: 0.20, 10e6: 0.42, 30e6: 0.70, 100e6: 1.0, 300e6: 1.70}
+# Fallback family shape (only if a part's per-type shape is unavailable), normalized
+# to 1.0 at 100 MHz. The per-type shapes (fsrc_type_shapes.json) are preferred —
+# each part uses ITS OWN FSRC<nnn> type curve digitized from the O63E charts.
+FALLBACK_SHAPE = {"1": 0.09, "3": 0.20, "10": 0.42, "30": 0.70, "100": 1.0, "300": 1.70}
+
+_TYPE_SHAPES = None
+
+
+def _type_shapes():
+    global _TYPE_SHAPES
+    if _TYPE_SHAPES is None:
+        try:
+            d = json.load(open(TYPE_SHAPES))
+            _TYPE_SHAPES = {k: v for k, v in d.items() if k.startswith("FSRC") and isinstance(v, dict)}
+        except (FileNotFoundError, ValueError):
+            _TYPE_SHAPES = {}
+    return _TYPE_SHAPES
+
+
+def _shape_for(mpn):
+    """The FSRC<nnn> per-type shape for this part (mpn = FSRC + 3-digit type code + ...)."""
+    ts = _type_shapes()
+    typ = "FSRC" + mpn[4:7] if mpn.startswith("FSRC") and len(mpn) >= 7 else None
+    return ts.get(typ) or FALLBACK_SHAPE
 
 
 def build(part):
@@ -39,9 +61,12 @@ def build(part):
     z100 = spots.get(100000000)
     if z100 is None:
         return None
+    shape = _shape_for(part["mpn"])
     pts = {}
-    for f, s in SHAPE.items():
-        pts[f] = round(z100 * s, 2)
+    for k, s in shape.items():
+        if s is None:
+            continue
+        pts[float(k) * 1e6] = round(z100 * float(s), 2)
     # override with any real measured spots (e.g. the recovered 10 MHz value)
     for f, z in spots.items():
         pts[float(f)] = z
@@ -64,8 +89,8 @@ def build(part):
             "electrical": [electrical],
             "provenance": [{"source": "manufacturerParametric",
                             "sourceName": ("Murata catalog Cat.No.O63E-10 (discontinued FSRC line) — |Z| @ "
-                                           "100 MHz spot exact; frequency shape digitized from the O63E |Z|(f) "
-                                           "charts (family-representative), 10 MHz measured spot used where published"),
+                                           "100 MHz spot exact; frequency shape digitized from this part's own "
+                                           "FSRC-type |Z|(f) chart in O63E, 10 MHz measured spot used where published"),
                             "sourceUrl": URL, "retrievedDate": RETRIEVED}],
         }}}}
 
