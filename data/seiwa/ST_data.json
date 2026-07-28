@@ -1,0 +1,48 @@
+{
+  "series": "ST",
+  "vendor": "Seiwa",
+  "form": "snapOn",
+  "spec_freq_mhz": 100,
+  "parts": [
+    {
+      "mpn": "E04ST161014D",
+      "cable_max_mm": 10.0,
+      "z_spot_ohm": 97.1,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04ST201010D",
+      "cable_max_mm": 10.0,
+      "z_spot_ohm": 103.0,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04ST251512D",
+      "cable_max_mm": 15.0,
+      "z_spot_ohm": 109.2,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04ST281613D",
+      "cable_max_mm": 16.0,
+      "z_spot_ohm": 109.2,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04ST402715D",
+      "cable_max_mm": 27.0,
+      "z_spot_ohm": 109.2,
+      "spec_freq_mhz": 100
+    }
+  ],
+  "shape_norm100": {
+    "1": 0.047,
+    "3": 0.1238,
+    "10": 0.3058,
+    "30": 0.5896,
+    "100": 1.0,
+    "300": 2.5267,
+    "1000": null
+  },
+  "verify_note": "Digitized 1-Turn (single-pass) trace via colour-segmentation+trace-follow of the per-part Impedance-frequency curves. Shape=geomean of 5 normalized curve(s), =1.000 at 100 MHz by construction (verify-back ratio at spot=1.00). Family shape RMS refit error across its curves = 21.1% (pixel digitization ~+-10-15%)."
+}

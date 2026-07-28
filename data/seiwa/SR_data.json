@@ -1,0 +1,108 @@
+{
+  "series": "SR",
+  "vendor": "Seiwa",
+  "form": "snapOn",
+  "spec_freq_mhz": 100,
+  "parts": [
+    {
+      "mpn": "E04SR311835F",
+      "cable_max_mm": 17.5,
+      "z_spot_ohm": 199.8,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04SR150718",
+      "cable_max_mm": 7.0,
+      "z_spot_ohm": 103.1,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04SR200917",
+      "cable_max_mm": 9.0,
+      "z_spot_ohm": 91.4,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04SR200932",
+      "cable_max_mm": 9.0,
+      "z_spot_ohm": 225.4,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04SR211132",
+      "cable_max_mm": 11.0,
+      "z_spot_ohm": 166.8,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04SR301334",
+      "cable_max_mm": 13.0,
+      "z_spot_ohm": 270.0,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04SR401938",
+      "cable_max_mm": 19.0,
+      "z_spot_ohm": 323.4,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04SR130525A",
+      "cable_max_mm": 5.0,
+      "z_spot_ohm": 177.2,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04SR130525AB",
+      "cable_max_mm": 5.0,
+      "z_spot_ohm": 177.2,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04SR170730A",
+      "cable_max_mm": 7.0,
+      "z_spot_ohm": 157.1,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04SR170730AB",
+      "cable_max_mm": 7.0,
+      "z_spot_ohm": 157.1,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04SR200935A",
+      "cable_max_mm": 9.0,
+      "z_spot_ohm": 199.8,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04SR200935AB",
+      "cable_max_mm": 9.0,
+      "z_spot_ohm": 199.8,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04SR241336A",
+      "cable_max_mm": 13.0,
+      "z_spot_ohm": 157.1,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04SR241336AB",
+      "cable_max_mm": 13.0,
+      "z_spot_ohm": 157.1,
+      "spec_freq_mhz": 100
+    }
+  ],
+  "shape_norm100": {
+    "1": 0.1002,
+    "3": 0.2338,
+    "10": 0.4777,
+    "30": 0.7223,
+    "100": 1.0,
+    "300": 1.6713,
+    "1000": null
+  },
+  "verify_note": "Digitized 1-Turn (single-pass) trace via colour-segmentation+trace-follow of the per-part Impedance-frequency curves. Shape=geomean of 15 normalized curve(s), =1.000 at 100 MHz by construction (verify-back ratio at spot=1.00). Family shape RMS refit error across its curves = 39.8% (pixel digitization ~+-10-15%)."
+}

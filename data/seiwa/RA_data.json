@@ -1,0 +1,102 @@
+{
+  "series": "RA",
+  "vendor": "Seiwa",
+  "form": "solidRing",
+  "spec_freq_mhz": 100,
+  "parts": [
+    {
+      "mpn": "E04RA080040030",
+      "cable_max_mm": 4.0,
+      "z_spot_ohm": null,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04RA100060100",
+      "cable_max_mm": 6.0,
+      "z_spot_ohm": null,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04RA100060140",
+      "cable_max_mm": 6.0,
+      "z_spot_ohm": null,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04RA120070060",
+      "cable_max_mm": 7.0,
+      "z_spot_ohm": null,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04RA120080130",
+      "cable_max_mm": 8.0,
+      "z_spot_ohm": null,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04RA140035280",
+      "cable_max_mm": 3.5,
+      "z_spot_ohm": null,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04RA140064280",
+      "cable_max_mm": 6.3,
+      "z_spot_ohm": null,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04RA140070100",
+      "cable_max_mm": 7.0,
+      "z_spot_ohm": null,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04RA160070200",
+      "cable_max_mm": 7.0,
+      "z_spot_ohm": null,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04RA160100140",
+      "cable_max_mm": 10.0,
+      "z_spot_ohm": null,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04RA190120080",
+      "cable_max_mm": 12.0,
+      "z_spot_ohm": null,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04RA260130280",
+      "cable_max_mm": 13.0,
+      "z_spot_ohm": null,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04RA310190100",
+      "cable_max_mm": 19.0,
+      "z_spot_ohm": null,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04RA400270150",
+      "cable_max_mm": 27.0,
+      "z_spot_ohm": null,
+      "spec_freq_mhz": 100
+    }
+  ],
+  "shape_norm100": {
+    "1": null,
+    "3": null,
+    "10": null,
+    "30": null,
+    "100": null,
+    "300": null,
+    "1000": null
+  },
+  "verify_note": "NO impedance-frequency curve is published in the Seiwa catalog for ANY of the 14 RA parts (the RA family shows dimensions only). z_spot_ohm and shape_norm100 are therefore null for all parts (not invented, per no-fallback). cable_max_mm = ferrite inner diameter (bore). Full Z-f curves are available on the vendor site (seiwa.co.jp/emc/)."
+}

@@ -1,0 +1,132 @@
+{
+  "series": "RC",
+  "vendor": "Seiwa",
+  "form": "solidRing",
+  "spec_freq_mhz": 100,
+  "parts": [
+    {
+      "mpn": "E04RC100505",
+      "cable_max_mm": 5.0,
+      "z_spot_ohm": null,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04RC110519",
+      "cable_max_mm": 5.0,
+      "z_spot_ohm": null,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04RC120715",
+      "cable_max_mm": 7.3,
+      "z_spot_ohm": null,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04RC120916",
+      "cable_max_mm": 8.5,
+      "z_spot_ohm": 76.8,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04RC150719",
+      "cable_max_mm": 7.0,
+      "z_spot_ohm": null,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04RC151008",
+      "cable_max_mm": 10.2,
+      "z_spot_ohm": null,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04RC160928",
+      "cable_max_mm": 9.0,
+      "z_spot_ohm": null,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04RC161010",
+      "cable_max_mm": 10.0,
+      "z_spot_ohm": 64.4,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04RC170813",
+      "cable_max_mm": 8.2,
+      "z_spot_ohm": null,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04RC170816",
+      "cable_max_mm": 8.2,
+      "z_spot_ohm": null,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04RC181006",
+      "cable_max_mm": 9.5,
+      "z_spot_ohm": null,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04RC181029",
+      "cable_max_mm": 9.5,
+      "z_spot_ohm": null,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04RC211010",
+      "cable_max_mm": 10.2,
+      "z_spot_ohm": null,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04RC241114",
+      "cable_max_mm": 11.4,
+      "z_spot_ohm": null,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04RC251512",
+      "cable_max_mm": 15.0,
+      "z_spot_ohm": 86.4,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04RC281613",
+      "cable_max_mm": 16.0,
+      "z_spot_ohm": null,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04RC281620",
+      "cable_max_mm": 16.0,
+      "z_spot_ohm": null,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04RC311908",
+      "cable_max_mm": 19.0,
+      "z_spot_ohm": null,
+      "spec_freq_mhz": 100
+    },
+    {
+      "mpn": "E04RC613620",
+      "cable_max_mm": 35.5,
+      "z_spot_ohm": null,
+      "spec_freq_mhz": 100
+    }
+  ],
+  "shape_norm100": {
+    "1": 0.0712,
+    "3": 0.186,
+    "10": 0.3617,
+    "30": 0.6131,
+    "100": 1.0,
+    "300": 2.5556,
+    "1000": null
+  },
+  "verify_note": "Digitized 1-Turn (single-pass) trace via colour-segmentation+trace-follow of the per-part Impedance-frequency curves. Shape=geomean of 3 normalized curve(s), =1.000 at 100 MHz by construction (verify-back ratio at spot=1.00). Family shape RMS refit error across its curves = 5.0% (pixel digitization ~+-10-15%). DATA GAP: 16 of 19 parts have NO impedance curve in the catalog (z_spot_ohm=null, not invented): E04RC100505, E04RC110519, E04RC120715, E04RC150719, E04RC151008, E04RC160928, E04RC170813, E04RC170816, E04RC181006, E04RC181029, E04RC211010, E04RC241114, E04RC281613, E04RC281620, E04RC311908, E04RC613620. Seiwa publishes only representative curves; full Z-f at seiwa.co.jp/emc/."
+}
