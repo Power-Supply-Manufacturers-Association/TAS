@@ -18,6 +18,17 @@ fetches each affected series' datasheet and reads the unit off it; four came bac
 mA (C50000, C26000, C27000, XT30000). Two came back A, and the rest were
 undetermined — none of those are touched.
 
+AC1 / AC2 / AC3 (air-core, 127 rows) were added after their per-part datasheet
+rows were checked directly — the summary regex could not read their unit, but the
+part tables settle it:
+
+    AC1-10J   attr "1500 (A)"  datasheet row: 120 nH, 17.3 mOhm, 1.5 A   -> 1500 mA
+    AC2-13K   attr "6000 (A)"  datasheet range: 4 to 10 A                -> 6000 mA
+    AC3-15K   attr "1200 (A)"  datasheet range: 1.2 to 3 A               -> 1200 mA
+
+In each case the inductance and DCR attributes match the datasheet exactly and
+only the current is off by 1000x, which is the signature of the same mislabel.
+
 TWO GROUPS DELIBERATELY LEFT ALONE, both of which a blanket fix would have damaged:
 
   * CURRENT-SENSE TRANSFORMERS (136 rows: CS/SCS/CSN/SCSN series). These are FALSE
@@ -25,8 +36,6 @@ TWO GROUPS DELIBERATELY LEFT ALONE, both of which a blanket fix would have damag
     transformer the rated current is the PRIMARY current and the DC resistance is
     a WINDING resistance — multiplying them is not a physical quantity, so the
     test says nothing. Their datasheets say "A", and that is correct.
-  * AC1 / AC2 / AC3 air-core inductors (127 rows). The unit could not be read off
-    their datasheets, so nothing is assumed.
   * XT30000 (196 rows). Its datasheet scan returned mA, but its corpus values are
     already amps (0.015-0.75, matching the vendor attribute). Excluded — see below.
 
@@ -56,7 +65,7 @@ AUDIT = REPO / "staging" / "vanguard_ma_rescale_audit.json"
 # attribute agrees (XT30048 -> 0.028). Those are already AMPS — 28 mA correctly
 # stored. Rescaling them would turn 28 mA into 28 uA, i.e. break correct data. The
 # datasheet hit was a stray "(mA)" elsewhere in that PDF.
-MA_SERIES_PREFIXES = ("C50000", "C26000", "C27000")
+MA_SERIES_PREFIXES = ("C50000", "C26000", "C27000", "AC1", "AC2", "AC3")
 
 # Second, independent guard against the XT30000 trap: only a value of at least
 # 1 A is the mislabel signature. A chip inductor genuinely rated under 1 A is

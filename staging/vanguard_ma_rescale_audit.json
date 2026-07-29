@@ -5906,6 +5906,1150 @@
    "dcResistanceOhm": 0.03,
    "impliedWattsBefore": 11907.0,
    "impliedWattsAfter": 0.0119
+  },
+  {
+   "reference": "AC3-15K",
+   "series": "AC3",
+   "wasA": 1200.0,
+   "nowA": 1.2,
+   "dcResistanceOhm": 0.02,
+   "impliedWattsBefore": 28800.0,
+   "impliedWattsAfter": 0.0288
+  },
+  {
+   "reference": "AC3-15J",
+   "series": "AC3",
+   "wasA": 1200.0,
+   "nowA": 1.2,
+   "dcResistanceOhm": 0.02,
+   "impliedWattsBefore": 28800.0,
+   "impliedWattsAfter": 0.0288
+  },
+  {
+   "reference": "AC3-15",
+   "series": "AC3",
+   "wasA": 1200.0,
+   "nowA": 1.2,
+   "dcResistanceOhm": 0.02,
+   "impliedWattsBefore": 28800.0,
+   "impliedWattsAfter": 0.0288
+  },
+  {
+   "reference": "AC3-14K",
+   "series": "AC3",
+   "wasA": 1200.0,
+   "nowA": 1.2,
+   "dcResistanceOhm": 0.02,
+   "impliedWattsBefore": 28800.0,
+   "impliedWattsAfter": 0.0288
+  },
+  {
+   "reference": "AC3-14J",
+   "series": "AC3",
+   "wasA": 1200.0,
+   "nowA": 1.2,
+   "dcResistanceOhm": 0.02,
+   "impliedWattsBefore": 28800.0,
+   "impliedWattsAfter": 0.0288
+  },
+  {
+   "reference": "AC3-14",
+   "series": "AC3",
+   "wasA": 1200.0,
+   "nowA": 1.2,
+   "dcResistanceOhm": 0.02,
+   "impliedWattsBefore": 28800.0,
+   "impliedWattsAfter": 0.0288
+  },
+  {
+   "reference": "AC3-13K",
+   "series": "AC3",
+   "wasA": 1200.0,
+   "nowA": 1.2,
+   "dcResistanceOhm": 0.02,
+   "impliedWattsBefore": 28800.0,
+   "impliedWattsAfter": 0.0288
+  },
+  {
+   "reference": "AC3-13J",
+   "series": "AC3",
+   "wasA": 1200.0,
+   "nowA": 1.2,
+   "dcResistanceOhm": 0.02,
+   "impliedWattsBefore": 28800.0,
+   "impliedWattsAfter": 0.0288
+  },
+  {
+   "reference": "AC3-13",
+   "series": "AC3",
+   "wasA": 1200.0,
+   "nowA": 1.2,
+   "dcResistanceOhm": 0.02,
+   "impliedWattsBefore": 28800.0,
+   "impliedWattsAfter": 0.0288
+  },
+  {
+   "reference": "AC3-12K",
+   "series": "AC3",
+   "wasA": 1200.0,
+   "nowA": 1.2,
+   "dcResistanceOhm": 0.02,
+   "impliedWattsBefore": 28800.0,
+   "impliedWattsAfter": 0.0288
+  },
+  {
+   "reference": "AC3-12J",
+   "series": "AC3",
+   "wasA": 1200.0,
+   "nowA": 1.2,
+   "dcResistanceOhm": 0.02,
+   "impliedWattsBefore": 28800.0,
+   "impliedWattsAfter": 0.0288
+  },
+  {
+   "reference": "AC3-12",
+   "series": "AC3",
+   "wasA": 1200.0,
+   "nowA": 1.2,
+   "dcResistanceOhm": 0.02,
+   "impliedWattsBefore": 28800.0,
+   "impliedWattsAfter": 0.0288
+  },
+  {
+   "reference": "AC3-11K",
+   "series": "AC3",
+   "wasA": 1200.0,
+   "nowA": 1.2,
+   "dcResistanceOhm": 0.02,
+   "impliedWattsBefore": 28800.0,
+   "impliedWattsAfter": 0.0288
+  },
+  {
+   "reference": "AC3-11J",
+   "series": "AC3",
+   "wasA": 1200.0,
+   "nowA": 1.2,
+   "dcResistanceOhm": 0.02,
+   "impliedWattsBefore": 28800.0,
+   "impliedWattsAfter": 0.0288
+  },
+  {
+   "reference": "AC3-11",
+   "series": "AC3",
+   "wasA": 1200.0,
+   "nowA": 1.2,
+   "dcResistanceOhm": 0.02,
+   "impliedWattsBefore": 28800.0,
+   "impliedWattsAfter": 0.0288
+  },
+  {
+   "reference": "AC3-10K",
+   "series": "AC3",
+   "wasA": 1200.0,
+   "nowA": 1.2,
+   "dcResistanceOhm": 0.02,
+   "impliedWattsBefore": 28800.0,
+   "impliedWattsAfter": 0.0288
+  },
+  {
+   "reference": "AC3-10J",
+   "series": "AC3",
+   "wasA": 1200.0,
+   "nowA": 1.2,
+   "dcResistanceOhm": 0.02,
+   "impliedWattsBefore": 28800.0,
+   "impliedWattsAfter": 0.0288
+  },
+  {
+   "reference": "AC3-10",
+   "series": "AC3",
+   "wasA": 1200.0,
+   "nowA": 1.2,
+   "dcResistanceOhm": 0.02,
+   "impliedWattsBefore": 28800.0,
+   "impliedWattsAfter": 0.0288
+  },
+  {
+   "reference": "AC3-09K",
+   "series": "AC3",
+   "wasA": 1200.0,
+   "nowA": 1.2,
+   "dcResistanceOhm": 0.02,
+   "impliedWattsBefore": 28800.0,
+   "impliedWattsAfter": 0.0288
+  },
+  {
+   "reference": "AC3-09J",
+   "series": "AC3",
+   "wasA": 1200.0,
+   "nowA": 1.2,
+   "dcResistanceOhm": 0.02,
+   "impliedWattsBefore": 28800.0,
+   "impliedWattsAfter": 0.0288
+  },
+  {
+   "reference": "AC3-09",
+   "series": "AC3",
+   "wasA": 1200.0,
+   "nowA": 1.2,
+   "dcResistanceOhm": 0.02,
+   "impliedWattsBefore": 28800.0,
+   "impliedWattsAfter": 0.0288
+  },
+  {
+   "reference": "AC3-08K",
+   "series": "AC3",
+   "wasA": 1200.0,
+   "nowA": 1.2,
+   "dcResistanceOhm": 0.02,
+   "impliedWattsBefore": 28800.0,
+   "impliedWattsAfter": 0.0288
+  },
+  {
+   "reference": "AC3-08J",
+   "series": "AC3",
+   "wasA": 1200.0,
+   "nowA": 1.2,
+   "dcResistanceOhm": 0.02,
+   "impliedWattsBefore": 28800.0,
+   "impliedWattsAfter": 0.0288
+  },
+  {
+   "reference": "AC3-08",
+   "series": "AC3",
+   "wasA": 1200.0,
+   "nowA": 1.2,
+   "dcResistanceOhm": 0.02,
+   "impliedWattsBefore": 28800.0,
+   "impliedWattsAfter": 0.0288
+  },
+  {
+   "reference": "AC3-07K",
+   "series": "AC3",
+   "wasA": 1200.0,
+   "nowA": 1.2,
+   "dcResistanceOhm": 0.02,
+   "impliedWattsBefore": 28800.0,
+   "impliedWattsAfter": 0.0288
+  },
+  {
+   "reference": "AC3-07J",
+   "series": "AC3",
+   "wasA": 1200.0,
+   "nowA": 1.2,
+   "dcResistanceOhm": 0.02,
+   "impliedWattsBefore": 28800.0,
+   "impliedWattsAfter": 0.0288
+  },
+  {
+   "reference": "AC3-07",
+   "series": "AC3",
+   "wasA": 1200.0,
+   "nowA": 1.2,
+   "dcResistanceOhm": 0.02,
+   "impliedWattsBefore": 28800.0,
+   "impliedWattsAfter": 0.0288
+  },
+  {
+   "reference": "AC3-06K",
+   "series": "AC3",
+   "wasA": 3000.0,
+   "nowA": 3.0,
+   "dcResistanceOhm": 0.02,
+   "impliedWattsBefore": 180000.0,
+   "impliedWattsAfter": 0.18
+  },
+  {
+   "reference": "AC3-06J",
+   "series": "AC3",
+   "wasA": 3000.0,
+   "nowA": 3.0,
+   "dcResistanceOhm": 0.02,
+   "impliedWattsBefore": 180000.0,
+   "impliedWattsAfter": 0.18
+  },
+  {
+   "reference": "AC3-06",
+   "series": "AC3",
+   "wasA": 3000.0,
+   "nowA": 3.0,
+   "dcResistanceOhm": 0.02,
+   "impliedWattsBefore": 180000.0,
+   "impliedWattsAfter": 0.18
+  },
+  {
+   "reference": "AC3-05K",
+   "series": "AC3",
+   "wasA": 3000.0,
+   "nowA": 3.0,
+   "dcResistanceOhm": 0.02,
+   "impliedWattsBefore": 180000.0,
+   "impliedWattsAfter": 0.18
+  },
+  {
+   "reference": "AC3-05J",
+   "series": "AC3",
+   "wasA": 3000.0,
+   "nowA": 3.0,
+   "dcResistanceOhm": 0.02,
+   "impliedWattsBefore": 180000.0,
+   "impliedWattsAfter": 0.18
+  },
+  {
+   "reference": "AC3-05",
+   "series": "AC3",
+   "wasA": 3000.0,
+   "nowA": 3.0,
+   "dcResistanceOhm": 0.02,
+   "impliedWattsBefore": 180000.0,
+   "impliedWattsAfter": 0.18
+  },
+  {
+   "reference": "AC3-04K",
+   "series": "AC3",
+   "wasA": 3000.0,
+   "nowA": 3.0,
+   "dcResistanceOhm": 0.02,
+   "impliedWattsBefore": 180000.0,
+   "impliedWattsAfter": 0.18
+  },
+  {
+   "reference": "AC3-04J",
+   "series": "AC3",
+   "wasA": 3000.0,
+   "nowA": 3.0,
+   "dcResistanceOhm": 0.02,
+   "impliedWattsBefore": 180000.0,
+   "impliedWattsAfter": 0.18
+  },
+  {
+   "reference": "AC3-04",
+   "series": "AC3",
+   "wasA": 3000.0,
+   "nowA": 3.0,
+   "dcResistanceOhm": 0.02,
+   "impliedWattsBefore": 180000.0,
+   "impliedWattsAfter": 0.18
+  },
+  {
+   "reference": "AC3-03K",
+   "series": "AC3",
+   "wasA": 3000.0,
+   "nowA": 3.0,
+   "dcResistanceOhm": 0.02,
+   "impliedWattsBefore": 180000.0,
+   "impliedWattsAfter": 0.18
+  },
+  {
+   "reference": "AC3-03J",
+   "series": "AC3",
+   "wasA": 3000.0,
+   "nowA": 3.0,
+   "dcResistanceOhm": 0.02,
+   "impliedWattsBefore": 180000.0,
+   "impliedWattsAfter": 0.18
+  },
+  {
+   "reference": "AC3-03",
+   "series": "AC3",
+   "wasA": 3000.0,
+   "nowA": 3.0,
+   "dcResistanceOhm": 0.02,
+   "impliedWattsBefore": 180000.0,
+   "impliedWattsAfter": 0.18
+  },
+  {
+   "reference": "AC3-02K",
+   "series": "AC3",
+   "wasA": 3000.0,
+   "nowA": 3.0,
+   "dcResistanceOhm": 0.02,
+   "impliedWattsBefore": 180000.0,
+   "impliedWattsAfter": 0.18
+  },
+  {
+   "reference": "AC3-02J",
+   "series": "AC3",
+   "wasA": 3000.0,
+   "nowA": 3.0,
+   "dcResistanceOhm": 0.02,
+   "impliedWattsBefore": 180000.0,
+   "impliedWattsAfter": 0.18
+  },
+  {
+   "reference": "AC3-02",
+   "series": "AC3",
+   "wasA": 3000.0,
+   "nowA": 3.0,
+   "dcResistanceOhm": 0.02,
+   "impliedWattsBefore": 180000.0,
+   "impliedWattsAfter": 0.18
+  },
+  {
+   "reference": "AC3-01K",
+   "series": "AC3",
+   "wasA": 3000.0,
+   "nowA": 3.0,
+   "dcResistanceOhm": 0.02,
+   "impliedWattsBefore": 180000.0,
+   "impliedWattsAfter": 0.18
+  },
+  {
+   "reference": "AC3-01J",
+   "series": "AC3",
+   "wasA": 3000.0,
+   "nowA": 3.0,
+   "dcResistanceOhm": 0.02,
+   "impliedWattsBefore": 180000.0,
+   "impliedWattsAfter": 0.18
+  },
+  {
+   "reference": "AC3-01",
+   "series": "AC3",
+   "wasA": 3000.0,
+   "nowA": 3.0,
+   "dcResistanceOhm": 0.02,
+   "impliedWattsBefore": 180000.0,
+   "impliedWattsAfter": 0.18
+  },
+  {
+   "reference": "AC2-13K",
+   "series": "AC2",
+   "wasA": 6000.0,
+   "nowA": 6.0,
+   "dcResistanceOhm": 0.01,
+   "impliedWattsBefore": 360000.0,
+   "impliedWattsAfter": 0.36
+  },
+  {
+   "reference": "AC2-13J",
+   "series": "AC2",
+   "wasA": 6000.0,
+   "nowA": 6.0,
+   "dcResistanceOhm": 0.01,
+   "impliedWattsBefore": 360000.0,
+   "impliedWattsAfter": 0.36
+  },
+  {
+   "reference": "AC2-13G",
+   "series": "AC2",
+   "wasA": 6000.0,
+   "nowA": 6.0,
+   "dcResistanceOhm": 0.01,
+   "impliedWattsBefore": 360000.0,
+   "impliedWattsAfter": 0.36
+  },
+  {
+   "reference": "AC2-13",
+   "series": "AC2",
+   "wasA": 6000.0,
+   "nowA": 6.0,
+   "dcResistanceOhm": 0.01,
+   "impliedWattsBefore": 360000.0,
+   "impliedWattsAfter": 0.36
+  },
+  {
+   "reference": "AC2-12K",
+   "series": "AC2",
+   "wasA": 9000.0,
+   "nowA": 9.0,
+   "dcResistanceOhm": 0.005,
+   "impliedWattsBefore": 405000.0,
+   "impliedWattsAfter": 0.405
+  },
+  {
+   "reference": "AC2-12J",
+   "series": "AC2",
+   "wasA": 9000.0,
+   "nowA": 9.0,
+   "dcResistanceOhm": 0.005,
+   "impliedWattsBefore": 405000.0,
+   "impliedWattsAfter": 0.405
+  },
+  {
+   "reference": "AC2-12G",
+   "series": "AC2",
+   "wasA": 9000.0,
+   "nowA": 9.0,
+   "dcResistanceOhm": 0.005,
+   "impliedWattsBefore": 405000.0,
+   "impliedWattsAfter": 0.405
+  },
+  {
+   "reference": "AC2-12",
+   "series": "AC2",
+   "wasA": 9000.0,
+   "nowA": 9.0,
+   "dcResistanceOhm": 0.005,
+   "impliedWattsBefore": 405000.0,
+   "impliedWattsAfter": 0.405
+  },
+  {
+   "reference": "AC2-11K",
+   "series": "AC2",
+   "wasA": 10000.0,
+   "nowA": 10.0,
+   "dcResistanceOhm": 0.0042,
+   "impliedWattsBefore": 420000.0,
+   "impliedWattsAfter": 0.42
+  },
+  {
+   "reference": "AC2-11J",
+   "series": "AC2",
+   "wasA": 10000.0,
+   "nowA": 10.0,
+   "dcResistanceOhm": 0.0042,
+   "impliedWattsBefore": 420000.0,
+   "impliedWattsAfter": 0.42
+  },
+  {
+   "reference": "AC2-11G",
+   "series": "AC2",
+   "wasA": 10000.0,
+   "nowA": 10.0,
+   "dcResistanceOhm": 0.0042,
+   "impliedWattsBefore": 420000.0,
+   "impliedWattsAfter": 0.42
+  },
+  {
+   "reference": "AC2-11",
+   "series": "AC2",
+   "wasA": 10000.0,
+   "nowA": 10.0,
+   "dcResistanceOhm": 0.0042,
+   "impliedWattsBefore": 420000.0,
+   "impliedWattsAfter": 0.42
+  },
+  {
+   "reference": "AC2-10K",
+   "series": "AC2",
+   "wasA": 4000.0,
+   "nowA": 4.0,
+   "dcResistanceOhm": 0.0079,
+   "impliedWattsBefore": 126400.0,
+   "impliedWattsAfter": 0.1264
+  },
+  {
+   "reference": "AC2-10J",
+   "series": "AC2",
+   "wasA": 4000.0,
+   "nowA": 4.0,
+   "dcResistanceOhm": 0.0079,
+   "impliedWattsBefore": 126400.0,
+   "impliedWattsAfter": 0.1264
+  },
+  {
+   "reference": "AC2-10G",
+   "series": "AC2",
+   "wasA": 4000.0,
+   "nowA": 4.0,
+   "dcResistanceOhm": 0.0079,
+   "impliedWattsBefore": 126400.0,
+   "impliedWattsAfter": 0.1264
+  },
+  {
+   "reference": "AC2-10",
+   "series": "AC2",
+   "wasA": 4000.0,
+   "nowA": 4.0,
+   "dcResistanceOhm": 0.0079,
+   "impliedWattsBefore": 126400.0,
+   "impliedWattsAfter": 0.1264
+  },
+  {
+   "reference": "AC2-09K",
+   "series": "AC2",
+   "wasA": 4000.0,
+   "nowA": 4.0,
+   "dcResistanceOhm": 0.0068,
+   "impliedWattsBefore": 108800.0,
+   "impliedWattsAfter": 0.1088
+  },
+  {
+   "reference": "AC2-09J",
+   "series": "AC2",
+   "wasA": 4000.0,
+   "nowA": 4.0,
+   "dcResistanceOhm": 0.0068,
+   "impliedWattsBefore": 108800.0,
+   "impliedWattsAfter": 0.1088
+  },
+  {
+   "reference": "AC2-09G",
+   "series": "AC2",
+   "wasA": 4000.0,
+   "nowA": 4.0,
+   "dcResistanceOhm": 0.0068,
+   "impliedWattsBefore": 108800.0,
+   "impliedWattsAfter": 0.1088
+  },
+  {
+   "reference": "AC2-09",
+   "series": "AC2",
+   "wasA": 4000.0,
+   "nowA": 4.0,
+   "dcResistanceOhm": 0.0068,
+   "impliedWattsBefore": 108800.0,
+   "impliedWattsAfter": 0.1088
+  },
+  {
+   "reference": "AC2-08K",
+   "series": "AC2",
+   "wasA": 4000.0,
+   "nowA": 4.0,
+   "dcResistanceOhm": 0.006,
+   "impliedWattsBefore": 96000.0,
+   "impliedWattsAfter": 0.096
+  },
+  {
+   "reference": "AC2-08J",
+   "series": "AC2",
+   "wasA": 4000.0,
+   "nowA": 4.0,
+   "dcResistanceOhm": 0.006,
+   "impliedWattsBefore": 96000.0,
+   "impliedWattsAfter": 0.096
+  },
+  {
+   "reference": "AC2-08G",
+   "series": "AC2",
+   "wasA": 4000.0,
+   "nowA": 4.0,
+   "dcResistanceOhm": 0.006,
+   "impliedWattsBefore": 96000.0,
+   "impliedWattsAfter": 0.096
+  },
+  {
+   "reference": "AC2-08",
+   "series": "AC2",
+   "wasA": 4000.0,
+   "nowA": 4.0,
+   "dcResistanceOhm": 0.006,
+   "impliedWattsBefore": 96000.0,
+   "impliedWattsAfter": 0.096
+  },
+  {
+   "reference": "AC2-07K",
+   "series": "AC2",
+   "wasA": 4000.0,
+   "nowA": 4.0,
+   "dcResistanceOhm": 0.0052,
+   "impliedWattsBefore": 83200.0,
+   "impliedWattsAfter": 0.0832
+  },
+  {
+   "reference": "AC2-07J",
+   "series": "AC2",
+   "wasA": 4000.0,
+   "nowA": 4.0,
+   "dcResistanceOhm": 0.0052,
+   "impliedWattsBefore": 83200.0,
+   "impliedWattsAfter": 0.0832
+  },
+  {
+   "reference": "AC2-07G",
+   "series": "AC2",
+   "wasA": 4000.0,
+   "nowA": 4.0,
+   "dcResistanceOhm": 0.0052,
+   "impliedWattsBefore": 83200.0,
+   "impliedWattsAfter": 0.0832
+  },
+  {
+   "reference": "AC2-07",
+   "series": "AC2",
+   "wasA": 4000.0,
+   "nowA": 4.0,
+   "dcResistanceOhm": 0.0052,
+   "impliedWattsBefore": 83200.0,
+   "impliedWattsAfter": 0.0832
+  },
+  {
+   "reference": "AC2-06K",
+   "series": "AC2",
+   "wasA": 4000.0,
+   "nowA": 4.0,
+   "dcResistanceOhm": 0.0045,
+   "impliedWattsBefore": 72000.0,
+   "impliedWattsAfter": 0.072
+  },
+  {
+   "reference": "AC2-06J",
+   "series": "AC2",
+   "wasA": 4000.0,
+   "nowA": 4.0,
+   "dcResistanceOhm": 0.0045,
+   "impliedWattsBefore": 72000.0,
+   "impliedWattsAfter": 0.072
+  },
+  {
+   "reference": "AC2-06G",
+   "series": "AC2",
+   "wasA": 4000.0,
+   "nowA": 4.0,
+   "dcResistanceOhm": 0.0045,
+   "impliedWattsBefore": 72000.0,
+   "impliedWattsAfter": 0.072
+  },
+  {
+   "reference": "AC2-06",
+   "series": "AC2",
+   "wasA": 4000.0,
+   "nowA": 4.0,
+   "dcResistanceOhm": 0.0045,
+   "impliedWattsBefore": 72000.0,
+   "impliedWattsAfter": 0.072
+  },
+  {
+   "reference": "AC2-05K",
+   "series": "AC2",
+   "wasA": 4000.0,
+   "nowA": 4.0,
+   "dcResistanceOhm": 0.0039,
+   "impliedWattsBefore": 62400.0,
+   "impliedWattsAfter": 0.0624
+  },
+  {
+   "reference": "AC2-05J",
+   "series": "AC2",
+   "wasA": 4000.0,
+   "nowA": 4.0,
+   "dcResistanceOhm": 0.0039,
+   "impliedWattsBefore": 62400.0,
+   "impliedWattsAfter": 0.0624
+  },
+  {
+   "reference": "AC2-05G",
+   "series": "AC2",
+   "wasA": 4000.0,
+   "nowA": 4.0,
+   "dcResistanceOhm": 0.0039,
+   "impliedWattsBefore": 62400.0,
+   "impliedWattsAfter": 0.0624
+  },
+  {
+   "reference": "AC2-05",
+   "series": "AC2",
+   "wasA": 4000.0,
+   "nowA": 4.0,
+   "dcResistanceOhm": 0.0039,
+   "impliedWattsBefore": 62400.0,
+   "impliedWattsAfter": 0.0624
+  },
+  {
+   "reference": "AC2-04K",
+   "series": "AC2",
+   "wasA": 4000.0,
+   "nowA": 4.0,
+   "dcResistanceOhm": 0.0034,
+   "impliedWattsBefore": 54400.0,
+   "impliedWattsAfter": 0.0544
+  },
+  {
+   "reference": "AC2-04J",
+   "series": "AC2",
+   "wasA": 4000.0,
+   "nowA": 4.0,
+   "dcResistanceOhm": 0.0034,
+   "impliedWattsBefore": 54400.0,
+   "impliedWattsAfter": 0.0544
+  },
+  {
+   "reference": "AC2-04G",
+   "series": "AC2",
+   "wasA": 4000.0,
+   "nowA": 4.0,
+   "dcResistanceOhm": 0.0034,
+   "impliedWattsBefore": 54400.0,
+   "impliedWattsAfter": 0.0544
+  },
+  {
+   "reference": "AC2-04",
+   "series": "AC2",
+   "wasA": 4000.0,
+   "nowA": 4.0,
+   "dcResistanceOhm": 0.0034,
+   "impliedWattsBefore": 54400.0,
+   "impliedWattsAfter": 0.0544
+  },
+  {
+   "reference": "AC2-03K",
+   "series": "AC2",
+   "wasA": 4000.0,
+   "nowA": 4.0,
+   "dcResistanceOhm": 0.0026,
+   "impliedWattsBefore": 41600.0,
+   "impliedWattsAfter": 0.0416
+  },
+  {
+   "reference": "AC2-03J",
+   "series": "AC2",
+   "wasA": 4000.0,
+   "nowA": 4.0,
+   "dcResistanceOhm": 0.0026,
+   "impliedWattsBefore": 41600.0,
+   "impliedWattsAfter": 0.0416
+  },
+  {
+   "reference": "AC2-03G",
+   "series": "AC2",
+   "wasA": 4000.0,
+   "nowA": 4.0,
+   "dcResistanceOhm": 0.0026,
+   "impliedWattsBefore": 41600.0,
+   "impliedWattsAfter": 0.0416
+  },
+  {
+   "reference": "AC2-03",
+   "series": "AC2",
+   "wasA": 4000.0,
+   "nowA": 4.0,
+   "dcResistanceOhm": 0.0026,
+   "impliedWattsBefore": 41600.0,
+   "impliedWattsAfter": 0.0416
+  },
+  {
+   "reference": "AC2-02K",
+   "series": "AC2",
+   "wasA": 4000.0,
+   "nowA": 4.0,
+   "dcResistanceOhm": 0.0018,
+   "impliedWattsBefore": 28800.0,
+   "impliedWattsAfter": 0.0288
+  },
+  {
+   "reference": "AC2-02J",
+   "series": "AC2",
+   "wasA": 4000.0,
+   "nowA": 4.0,
+   "dcResistanceOhm": 0.0018,
+   "impliedWattsBefore": 28800.0,
+   "impliedWattsAfter": 0.0288
+  },
+  {
+   "reference": "AC2-02G",
+   "series": "AC2",
+   "wasA": 4000.0,
+   "nowA": 4.0,
+   "dcResistanceOhm": 0.0018,
+   "impliedWattsBefore": 28800.0,
+   "impliedWattsAfter": 0.0288
+  },
+  {
+   "reference": "AC2-02",
+   "series": "AC2",
+   "wasA": 4000.0,
+   "nowA": 4.0,
+   "dcResistanceOhm": 0.0018,
+   "impliedWattsBefore": 28800.0,
+   "impliedWattsAfter": 0.0288
+  },
+  {
+   "reference": "AC2-01K",
+   "series": "AC2",
+   "wasA": 4000.0,
+   "nowA": 4.0,
+   "dcResistanceOhm": 0.0011,
+   "impliedWattsBefore": 17600.0,
+   "impliedWattsAfter": 0.0176
+  },
+  {
+   "reference": "AC2-01J",
+   "series": "AC2",
+   "wasA": 4000.0,
+   "nowA": 4.0,
+   "dcResistanceOhm": 0.0011,
+   "impliedWattsBefore": 17600.0,
+   "impliedWattsAfter": 0.0176
+  },
+  {
+   "reference": "AC2-01G",
+   "series": "AC2",
+   "wasA": 4000.0,
+   "nowA": 4.0,
+   "dcResistanceOhm": 0.0011,
+   "impliedWattsBefore": 17600.0,
+   "impliedWattsAfter": 0.0176
+  },
+  {
+   "reference": "AC2-01",
+   "series": "AC2",
+   "wasA": 4000.0,
+   "nowA": 4.0,
+   "dcResistanceOhm": 0.0011,
+   "impliedWattsBefore": 17600.0,
+   "impliedWattsAfter": 0.0176
+  },
+  {
+   "reference": "AC1-10J",
+   "series": "AC1",
+   "wasA": 1500.0,
+   "nowA": 1.5,
+   "dcResistanceOhm": 0.0173,
+   "impliedWattsBefore": 38925.0,
+   "impliedWattsAfter": 0.0389
+  },
+  {
+   "reference": "AC1-10G",
+   "series": "AC1",
+   "wasA": 1500.0,
+   "nowA": 1.5,
+   "dcResistanceOhm": 0.0173,
+   "impliedWattsBefore": 38925.0,
+   "impliedWattsAfter": 0.0389
+  },
+  {
+   "reference": "AC1-10",
+   "series": "AC1",
+   "wasA": 1500.0,
+   "nowA": 1.5,
+   "dcResistanceOhm": 0.0173,
+   "impliedWattsBefore": 38925.0,
+   "impliedWattsAfter": 0.0389
+  },
+  {
+   "reference": "AC1-09J",
+   "series": "AC1",
+   "wasA": 1700.0,
+   "nowA": 1.7,
+   "dcResistanceOhm": 0.0123,
+   "impliedWattsBefore": 35547.0,
+   "impliedWattsAfter": 0.0355
+  },
+  {
+   "reference": "AC1-09G",
+   "series": "AC1",
+   "wasA": 1700.0,
+   "nowA": 1.7,
+   "dcResistanceOhm": 0.0123,
+   "impliedWattsBefore": 35547.0,
+   "impliedWattsAfter": 0.0355
+  },
+  {
+   "reference": "AC1-09",
+   "series": "AC1",
+   "wasA": 1700.0,
+   "nowA": 1.7,
+   "dcResistanceOhm": 0.0123,
+   "impliedWattsBefore": 35547.0,
+   "impliedWattsAfter": 0.0355
+  },
+  {
+   "reference": "AC1-08J",
+   "series": "AC1",
+   "wasA": 2500.0,
+   "nowA": 2.5,
+   "dcResistanceOhm": 0.0094,
+   "impliedWattsBefore": 58750.0,
+   "impliedWattsAfter": 0.0587
+  },
+  {
+   "reference": "AC1-08G",
+   "series": "AC1",
+   "wasA": 2500.0,
+   "nowA": 2.5,
+   "dcResistanceOhm": 0.0094,
+   "impliedWattsBefore": 58750.0,
+   "impliedWattsAfter": 0.0587
+  },
+  {
+   "reference": "AC1-08",
+   "series": "AC1",
+   "wasA": 2500.0,
+   "nowA": 2.5,
+   "dcResistanceOhm": 0.0094,
+   "impliedWattsBefore": 58750.0,
+   "impliedWattsAfter": 0.0587
+  },
+  {
+   "reference": "AC1-07J",
+   "series": "AC1",
+   "wasA": 2500.0,
+   "nowA": 2.5,
+   "dcResistanceOhm": 0.0082,
+   "impliedWattsBefore": 51250.0,
+   "impliedWattsAfter": 0.0513
+  },
+  {
+   "reference": "AC1-07G",
+   "series": "AC1",
+   "wasA": 2500.0,
+   "nowA": 2.5,
+   "dcResistanceOhm": 0.0082,
+   "impliedWattsBefore": 51250.0,
+   "impliedWattsAfter": 0.0513
+  },
+  {
+   "reference": "AC1-07",
+   "series": "AC1",
+   "wasA": 2500.0,
+   "nowA": 2.5,
+   "dcResistanceOhm": 0.0082,
+   "impliedWattsBefore": 51250.0,
+   "impliedWattsAfter": 0.0513
+  },
+  {
+   "reference": "AC1-06J",
+   "series": "AC1",
+   "wasA": 3000.0,
+   "nowA": 3.0,
+   "dcResistanceOhm": 0.0062,
+   "impliedWattsBefore": 55800.0,
+   "impliedWattsAfter": 0.0558
+  },
+  {
+   "reference": "AC1-06G",
+   "series": "AC1",
+   "wasA": 3000.0,
+   "nowA": 3.0,
+   "dcResistanceOhm": 0.0062,
+   "impliedWattsBefore": 55800.0,
+   "impliedWattsAfter": 0.0558
+  },
+  {
+   "reference": "AC1-06",
+   "series": "AC1",
+   "wasA": 3000.0,
+   "nowA": 3.0,
+   "dcResistanceOhm": 0.0062,
+   "impliedWattsBefore": 55800.0,
+   "impliedWattsAfter": 0.0558
+  },
+  {
+   "reference": "AC1-05J",
+   "series": "AC1",
+   "wasA": 3000.0,
+   "nowA": 3.0,
+   "dcResistanceOhm": 0.0056,
+   "impliedWattsBefore": 50400.0,
+   "impliedWattsAfter": 0.0504
+  },
+  {
+   "reference": "AC1-05G",
+   "series": "AC1",
+   "wasA": 3000.0,
+   "nowA": 3.0,
+   "dcResistanceOhm": 0.0056,
+   "impliedWattsBefore": 50400.0,
+   "impliedWattsAfter": 0.0504
+  },
+  {
+   "reference": "AC1-05",
+   "series": "AC1",
+   "wasA": 3000.0,
+   "nowA": 3.0,
+   "dcResistanceOhm": 0.0056,
+   "impliedWattsBefore": 50400.0,
+   "impliedWattsAfter": 0.0504
+  },
+  {
+   "reference": "AC1-04J",
+   "series": "AC1",
+   "wasA": 3000.0,
+   "nowA": 3.0,
+   "dcResistanceOhm": 0.005,
+   "impliedWattsBefore": 45000.0,
+   "impliedWattsAfter": 0.045
+  },
+  {
+   "reference": "AC1-04G",
+   "series": "AC1",
+   "wasA": 3000.0,
+   "nowA": 3.0,
+   "dcResistanceOhm": 0.005,
+   "impliedWattsBefore": 45000.0,
+   "impliedWattsAfter": 0.045
+  },
+  {
+   "reference": "AC1-04",
+   "series": "AC1",
+   "wasA": 3000.0,
+   "nowA": 3.0,
+   "dcResistanceOhm": 0.005,
+   "impliedWattsBefore": 45000.0,
+   "impliedWattsAfter": 0.045
+  },
+  {
+   "reference": "AC1-03J",
+   "series": "AC1",
+   "wasA": 3000.0,
+   "nowA": 3.0,
+   "dcResistanceOhm": 0.0048,
+   "impliedWattsBefore": 43200.0,
+   "impliedWattsAfter": 0.0432
+  },
+  {
+   "reference": "AC1-03G",
+   "series": "AC1",
+   "wasA": 3000.0,
+   "nowA": 3.0,
+   "dcResistanceOhm": 0.0048,
+   "impliedWattsBefore": 43200.0,
+   "impliedWattsAfter": 0.0432
+  },
+  {
+   "reference": "AC1-03",
+   "series": "AC1",
+   "wasA": 3000.0,
+   "nowA": 3.0,
+   "dcResistanceOhm": 0.0048,
+   "impliedWattsBefore": 43200.0,
+   "impliedWattsAfter": 0.0432
+  },
+  {
+   "reference": "AC1-02J",
+   "series": "AC1",
+   "wasA": 3500.0,
+   "nowA": 3.5,
+   "dcResistanceOhm": 0.004,
+   "impliedWattsBefore": 49000.0,
+   "impliedWattsAfter": 0.049
+  },
+  {
+   "reference": "AC1-02G",
+   "series": "AC1",
+   "wasA": 3500.0,
+   "nowA": 3.5,
+   "dcResistanceOhm": 0.004,
+   "impliedWattsBefore": 49000.0,
+   "impliedWattsAfter": 0.049
+  },
+  {
+   "reference": "AC1-02",
+   "series": "AC1",
+   "wasA": 3500.0,
+   "nowA": 3.5,
+   "dcResistanceOhm": 0.004,
+   "impliedWattsBefore": 49000.0,
+   "impliedWattsAfter": 0.049
+  },
+  {
+   "reference": "AC1-01J",
+   "series": "AC1",
+   "wasA": 3500.0,
+   "nowA": 3.5,
+   "dcResistanceOhm": 0.004,
+   "impliedWattsBefore": 49000.0,
+   "impliedWattsAfter": 0.049
+  },
+  {
+   "reference": "AC1-01G",
+   "series": "AC1",
+   "wasA": 3500.0,
+   "nowA": 3.5,
+   "dcResistanceOhm": 0.004,
+   "impliedWattsBefore": 49000.0,
+   "impliedWattsAfter": 0.049
+  },
+  {
+   "reference": "AC1-01",
+   "series": "AC1",
+   "wasA": 3500.0,
+   "nowA": 3.5,
+   "dcResistanceOhm": 0.004,
+   "impliedWattsBefore": 49000.0,
+   "impliedWattsAfter": 0.049
   }
- ]
+ ],
+ "note": "Two passes: 656 chip-inductor rows (C50000/C26000/C27000), then 127 air-core rows (AC1/AC2/AC3) once their per-part datasheet rows confirmed the same mislabel."
 }
