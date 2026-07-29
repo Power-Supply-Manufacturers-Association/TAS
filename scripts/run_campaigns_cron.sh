@@ -35,6 +35,15 @@ case "${1:-}" in
       python3 scripts/murata_bias_harvest.py fetch --delay 0.35 \
       >> "$TAS/staging/murata/cron_stdout.log" 2>&1
     ;;
+  tdk)
+    # ABT #304 TDK MLCC DC-bias curves. Headless: playwright channel="chromium"
+    # (full Chrome-for-Testing under --headless=new) passes Akamai where curl 403s,
+    # so this needs no DISPLAY and no headed exception.
+    [ -f "$TAS/staging/tdk/STOP" ] && exit 0
+    exec flock -n "$TAS/staging/tdk/.lock" \
+      python3 scripts/tdk_bias_harvest.py fetch --delay 0.5 --pace 0.2 --batch 20 \
+      >> "$TAS/staging/tdk/cron_stdout.log" 2>&1
+    ;;
   molex)
     [ -f "$TAS/staging/molex/STOP" ] && exit 0
     exec flock -n "$TAS/staging/molex/.lock" \

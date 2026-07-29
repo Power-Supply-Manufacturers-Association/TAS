@@ -42,6 +42,7 @@ SRC = TAS / "data" / "capacitors.ndjson"
 STAGE = TAS / "staging" / "murata"
 OUT = STAGE / "bias.jsonl"
 DONE = STAGE / "bias_done.json"
+UNSUPPORTED = STAGE / "unsupported.json"
 LOG = STAGE / "bias_harvest.log"
 STOP = STAGE / "STOP"
 
@@ -260,12 +261,20 @@ def cmd_fetch(a):
     if STOP.exists():
         STOP.unlink()
     done = set(json.loads(DONE.read_text())) if DONE.exists() else set()
+    # Parts the service answers for but whose measurement conditions it will not
+    # accept from ANY of the catalogue's real (tc, ac) pairs. They are recorded WITH
+    # the service's own last error rather than marked done, because they are not
+    # answered -- they need the conditions captured from the SimSurfing UI the way
+    # the request format itself was. Skipping them here only stops cron re-asking a
+    # question we already know the answer to; the count is logged every run.
+    unsupported = json.loads(UNSUPPORTED.read_text()) if UNSUPPORTED.exists() else {}
     pairs, unresolved = worklist()
-    pairs = [t for t in pairs if t[0] not in done]
+    pairs = [t for t in pairs if t[0] not in done and t[0] not in unsupported]
     if a.limit:
         pairs = pairs[:a.limit]
     log(f"FETCH start: {len(pairs)} resolvable Murata class-2/3 parts without a curve "
-        f"({len(done)} done, {unresolved} unresolvable against the bulk catalogue)")
+        f"({len(done)} done, {unresolved} unresolvable against the bulk catalogue, "
+        f"{len(unsupported)} with unsupported measurement conditions)")
 
     sess = requests.Session()
     ok = fail = 0
@@ -294,6 +303,10 @@ def cmd_fetch(a):
             if "not exist" in str(err):
                 done.add(pn)
                 DONE.write_text(json.dumps(sorted(done)))
+            elif is_retryable(err):
+                # every real (tc, ac) pair was rejected -- retrying changes nothing
+                unsupported[pn] = err
+                UNSUPPORTED.write_text(json.dumps(unsupported, indent=0, sort_keys=True))
         else:
             ok += 1
             with OUT.open("a", encoding="utf-8") as fh:
