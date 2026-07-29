@@ -1,0 +1,431 @@
+{
+ "ticket": "ABT #351 class A",
+ "file": "/home/alf/PSMA/TAS/data/magnetics.ndjson",
+ "rows": [
+  {
+   "reference": "PT61017XPEL",
+   "manufacturer": "Bourns",
+   "removed": {
+    "ratedCurrents": [
+     61017.0
+    ],
+    "inductance": {
+     "nominal": 0.0056500000000000005,
+     "minimum": 0.0056500000000000005,
+     "maximum": 100.0
+    }
+   },
+   "ratedCurrentAppearsInPartNumber": true
+  },
+  {
+   "reference": "PT61020EL",
+   "manufacturer": "Bourns",
+   "removed": {
+    "ratedCurrents": [
+     61020.0
+    ],
+    "inductance": {
+     "nominal": 0.006,
+     "minimum": 0.006,
+     "maximum": 61020.0
+    }
+   },
+   "ratedCurrentAppearsInPartNumber": true
+  },
+  {
+   "reference": "SM13143EL",
+   "manufacturer": "Bourns",
+   "removed": {
+    "ratedCurrents": [
+     13143.0
+    ],
+    "inductance": {
+     "nominal": 0.00835,
+     "minimum": 0.00835,
+     "maximum": 1000.0
+    }
+   },
+   "ratedCurrentAppearsInPartNumber": true
+  },
+  {
+   "reference": "SM51625EL",
+   "manufacturer": "Bourns",
+   "removed": {
+    "ratedCurrents": [
+     51625.0
+    ],
+    "inductance": {
+     "nominal": 10.0,
+     "minimum": 10.0,
+     "maximum": 1000.0
+    }
+   },
+   "ratedCurrentAppearsInPartNumber": true
+  },
+  {
+   "reference": "SM91071AL",
+   "manufacturer": "Bourns",
+   "removed": {
+    "ratedCurrents": [
+     91071.0
+    ],
+    "inductance": {
+     "nominal": 10.0,
+     "minimum": 10.0,
+     "maximum": 200.0
+    }
+   },
+   "ratedCurrentAppearsInPartNumber": true
+  },
+  {
+   "reference": "SM91072AL",
+   "manufacturer": "Bourns",
+   "removed": {
+    "ratedCurrents": [
+     91072.0
+    ],
+    "inductance": {
+     "nominal": 10.0,
+     "minimum": 10.0,
+     "maximum": 200.0
+    }
+   },
+   "ratedCurrentAppearsInPartNumber": true
+  },
+  {
+   "reference": "SM91076L",
+   "manufacturer": "Bourns",
+   "removed": {
+    "ratedCurrents": [
+     91076.0
+    ],
+    "inductance": {
+     "nominal": 10.0,
+     "minimum": 10.0,
+     "maximum": 1500.0
+    }
+   },
+   "ratedCurrentAppearsInPartNumber": true
+  },
+  {
+   "reference": "SM91078L",
+   "manufacturer": "Bourns",
+   "removed": {
+    "ratedCurrents": [
+     91078.0
+    ],
+    "inductance": {
+     "nominal": 1.2e-11,
+     "minimum": 1.2e-11,
+     "maximum": 4000.0
+    }
+   },
+   "ratedCurrentAppearsInPartNumber": true
+  },
+  {
+   "reference": "SM91604L",
+   "manufacturer": "Bourns",
+   "removed": {
+    "ratedCurrents": [
+     91604.0
+    ],
+    "inductance": {
+     "nominal": 24.0,
+     "minimum": 24.0,
+     "maximum": 4680.0
+    }
+   },
+   "ratedCurrentAppearsInPartNumber": true
+  },
+  {
+   "reference": "SM91801AL",
+   "manufacturer": "Bourns",
+   "removed": {
+    "ratedCurrents": [
+     91801.0
+    ]
+   },
+   "ratedCurrentAppearsInPartNumber": true
+  },
+  {
+   "reference": "SM91806AL",
+   "manufacturer": "Bourns",
+   "removed": {
+    "ratedCurrents": [
+     91806.0
+    ]
+   },
+   "ratedCurrentAppearsInPartNumber": true
+  },
+  {
+   "reference": "SM91501AL",
+   "manufacturer": "Bourns",
+   "removed": {
+    "ratedCurrents": [
+     91501.0
+    ]
+   },
+   "ratedCurrentAppearsInPartNumber": true
+  },
+  {
+   "reference": "SM91501ALO",
+   "manufacturer": "Bourns",
+   "removed": {
+    "ratedCurrents": [
+     91501.0
+    ]
+   },
+   "ratedCurrentAppearsInPartNumber": true
+  },
+  {
+   "reference": "SM91502AL",
+   "manufacturer": "Bourns",
+   "removed": {
+    "ratedCurrents": [
+     91502.0
+    ]
+   },
+   "ratedCurrentAppearsInPartNumber": true
+  },
+  {
+   "reference": "SM91502ALA",
+   "manufacturer": "Bourns",
+   "removed": {
+    "ratedCurrents": [
+     91502.0
+    ]
+   },
+   "ratedCurrentAppearsInPartNumber": true
+  },
+  {
+   "reference": "SM91508AL",
+   "manufacturer": "Bourns",
+   "removed": {
+    "ratedCurrents": [
+     91508.0
+    ]
+   },
+   "ratedCurrentAppearsInPartNumber": true
+  },
+  {
+   "reference": "SM91509AL",
+   "manufacturer": "Bourns",
+   "removed": {
+    "ratedCurrents": [
+     91509.0
+    ]
+   },
+   "ratedCurrentAppearsInPartNumber": true
+  },
+  {
+   "reference": "SM91514AL",
+   "manufacturer": "Bourns",
+   "removed": {
+    "ratedCurrents": [
+     91514.0
+    ]
+   },
+   "ratedCurrentAppearsInPartNumber": true
+  },
+  {
+   "reference": "SM91525AL",
+   "manufacturer": "Bourns",
+   "removed": {
+    "ratedCurrents": [
+     91525.0
+    ]
+   },
+   "ratedCurrentAppearsInPartNumber": true
+  },
+  {
+   "reference": "SM91542AL",
+   "manufacturer": "Bourns",
+   "removed": {
+    "ratedCurrents": [
+     91542.0
+    ]
+   },
+   "ratedCurrentAppearsInPartNumber": true
+  },
+  {
+   "reference": "SM91574AL",
+   "manufacturer": "Bourns",
+   "removed": {
+    "ratedCurrents": [
+     91574.0
+    ]
+   },
+   "ratedCurrentAppearsInPartNumber": true
+  },
+  {
+   "reference": "SM91519L",
+   "manufacturer": "Bourns",
+   "removed": {
+    "ratedCurrents": [
+     91519.0
+    ]
+   },
+   "ratedCurrentAppearsInPartNumber": true
+  },
+  {
+   "reference": "SM91523AL",
+   "manufacturer": "Bourns",
+   "removed": {
+    "ratedCurrents": [
+     91523.0
+    ]
+   },
+   "ratedCurrentAppearsInPartNumber": true
+  },
+  {
+   "reference": "SM91527L",
+   "manufacturer": "Bourns",
+   "removed": {
+    "ratedCurrents": [
+     91527.0
+    ]
+   },
+   "ratedCurrentAppearsInPartNumber": true
+  },
+  {
+   "reference": "SM91534AL",
+   "manufacturer": "Bourns",
+   "removed": {
+    "ratedCurrents": [
+     91534.0
+    ]
+   },
+   "ratedCurrentAppearsInPartNumber": true
+  },
+  {
+   "reference": "SM91536AL",
+   "manufacturer": "Bourns",
+   "removed": {
+    "ratedCurrents": [
+     91536.0
+    ]
+   },
+   "ratedCurrentAppearsInPartNumber": true
+  },
+  {
+   "reference": "SM91543AL",
+   "manufacturer": "Bourns",
+   "removed": {
+    "ratedCurrents": [
+     91543.0
+    ]
+   },
+   "ratedCurrentAppearsInPartNumber": true
+  },
+  {
+   "reference": "SM91872AL",
+   "manufacturer": "Bourns",
+   "removed": {
+    "ratedCurrents": [
+     91872.0
+    ]
+   },
+   "ratedCurrentAppearsInPartNumber": true
+  },
+  {
+   "reference": "SM41126EL",
+   "manufacturer": "Bourns",
+   "removed": {
+    "ratedCurrents": [
+     41126.0
+    ]
+   },
+   "ratedCurrentAppearsInPartNumber": true
+  },
+  {
+   "reference": "SM42002EL",
+   "manufacturer": "Bourns",
+   "removed": {
+    "ratedCurrents": [
+     42002.0
+    ]
+   },
+   "ratedCurrentAppearsInPartNumber": true
+  },
+  {
+   "reference": "SM453229-231N7Y",
+   "manufacturer": "Bourns",
+   "removed": {
+    "ratedCurrents": [
+     453229.0
+    ]
+   },
+   "ratedCurrentAppearsInPartNumber": true
+  },
+  {
+   "reference": "SM453229-381N7Y",
+   "manufacturer": "Bourns",
+   "removed": {
+    "ratedCurrents": [
+     453229.0
+    ]
+   },
+   "ratedCurrentAppearsInPartNumber": true
+  },
+  {
+   "reference": "SM453229A-381N7Y",
+   "manufacturer": "Bourns",
+   "removed": {
+    "ratedCurrents": [
+     453229.0
+    ]
+   },
+   "ratedCurrentAppearsInPartNumber": true
+  },
+  {
+   "reference": "SM453230-121N7Y",
+   "manufacturer": "Bourns",
+   "removed": {
+    "ratedCurrents": [
+     453230.0
+    ]
+   },
+   "ratedCurrentAppearsInPartNumber": true
+  },
+  {
+   "reference": "SM453230-121N7YP",
+   "manufacturer": "Bourns",
+   "removed": {
+    "ratedCurrents": [
+     453230.0
+    ]
+   },
+   "ratedCurrentAppearsInPartNumber": true
+  },
+  {
+   "reference": "SM453230-181N7Y",
+   "manufacturer": "Bourns",
+   "removed": {
+    "ratedCurrents": [
+     453230.0
+    ]
+   },
+   "ratedCurrentAppearsInPartNumber": true
+  },
+  {
+   "reference": "SM453230-231N7YP",
+   "manufacturer": "Bourns",
+   "removed": {
+    "ratedCurrents": [
+     453230.0
+    ]
+   },
+   "ratedCurrentAppearsInPartNumber": true
+  },
+  {
+   "reference": "SM51430EL",
+   "manufacturer": "Bourns",
+   "removed": {
+    "ratedCurrents": [
+     51430.0
+    ]
+   },
+   "ratedCurrentAppearsInPartNumber": true
+  }
+ ]
+}
