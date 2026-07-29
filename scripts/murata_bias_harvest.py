@@ -150,6 +150,39 @@ def murata_class2_parts():
 # and unambiguous.
 AC_CANDIDATES = ["1", "0.5", "1.0"]
 
+# *** THE MEASUREMENT TEMPERATURE IS ALSO PER-MODULE, NOT 25 degC EVERYWHERE. ***
+# The MLCC module measures at 25 degC / AC0.5Vrms, but the LEAD-TYPE safety-certified
+# module (pcategory=leadcap: the DE/RHE/RDE families) measures at **20 degC / AC1Vrms**
+# and rejects anything else with "Specified Temp. is out of range". That single
+# hardcoded tc=25 was failing 572 parts 100% of the time, forever, because cron kept
+# retrying the same rejected condition. Ask for the conditions the part actually
+# supports instead: there is no per-part query that answers this (ReqType=
+# GetCharaParamRangeOrChoice returns HTTP 500), so try the catalogue's real conditions
+# in order and let the service arbitrate. The accepted (tc, ac) is then stored ON the
+# points, so a 20 degC curve is never silently labelled 25 degC.
+TC_CANDIDATES = ["25", "20"]
+
+
+def condition_candidates(ac):
+    """(tc, ac) pairs to try, most-likely first. ac is the part's stated AC or None."""
+    acs = [ac] + [c for c in AC_CANDIDATES if c != ac] if ac else list(AC_CANDIDATES)
+    out = []
+    for tc in TC_CANDIDATES:
+        for a in acs:
+            if (tc, a) not in out:
+                out.append((tc, a))
+    return out
+
+
+def is_retryable(err):
+    """True when the service rejected the CONDITIONS, not the part.
+
+    "not exist" is a definitive answer about the part number itself -- trying other
+    conditions cannot change it, and re-asking wastes the whole budget on EOL parts.
+    """
+    e = str(err)
+    return ("Temp. is out of range" in e) or ("AC is not matched" in e)
+
 
 def worklist():
     """(our_pn, murata_pn, ac_vrms) triples the service should recognise.
@@ -171,9 +204,9 @@ def worklist():
     return triples, 0
 
 
-def fetch_curve(sess, pn, ac=AC, timeout=60):
+def fetch_curve(sess, pn, ac=AC, tc=TC, timeout=60):
     req = [{"partnumber": pn, "chara_type": CHARA,
-            "parameter": {"tc": TC, "ac": ac}}]
+            "parameter": {"tc": tc, "ac": ac}}]
     params = {"callback": "cb", "ReqType": "Characteristics",
               "ReqChara": json.dumps(req, separators=(",", ":"))}
     r = sess.get(SERVICE, params=params, timeout=timeout)
@@ -215,7 +248,7 @@ def fetch_curve(sess, pn, ac=AC, timeout=60):
             continue
         pts.append({"voltage": v,
                     "capacitance": cap * scale,        # -> F (SI)
-                    "temperature": float(TC),
+                    "temperature": float(tc),
                     "acVoltage": float(ac)})
     if not pts:
         return None, "no parseable points"
@@ -241,17 +274,15 @@ def cmd_fetch(a):
         if STOP.exists():
             log("STOP file -- exiting cleanly")
             break
-        if ac is None:
-            # unknown measurement condition (part not in the MLCC bulk file):
-            # try the catalogue's standard AC values until one is accepted.
-            pts = err = None
-            for cand in AC_CANDIDATES:
-                pts, err = fetch_curve(sess, murata_pn, cand)
-                if err is None or "AC is not matched" not in str(err):
-                    break
-                time.sleep(a.delay)
-        else:
-            pts, err = fetch_curve(sess, murata_pn, ac)
+        # The measurement CONDITIONS (temperature and AC drive) are per-module, and
+        # the service only tells us by rejecting a wrong one. Try the catalogue's real
+        # conditions until one is accepted; stop at the first definitive answer.
+        pts = err = None
+        for tc_c, ac_c in condition_candidates(ac):
+            pts, err = fetch_curve(sess, murata_pn, ac_c, tc_c)
+            if err is None or not is_retryable(err):
+                break
+            time.sleep(a.delay)
         if err:
             fail += 1
             errs[err] = errs.get(err, 0) + 1

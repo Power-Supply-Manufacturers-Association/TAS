@@ -19,3 +19,6 @@ __pycache__/
 /data/sources/
 /data/staging/*/
 /staging/*/
+
+# transient temp files from atomic-rewrite campaigns (never commit a partial file)
+*.ndjson.tmp
