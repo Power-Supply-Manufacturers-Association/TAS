@@ -1,0 +1,2309 @@
+{
+ "ticket": "ABT #281/#286",
+ "file": "/home/alf/PSMA/TAS/data/magnetics.ndjson",
+ "rows": [
+  {
+   "reference": "KCZ1210AH900HRTD25",
+   "changed": {
+    "dcResistances": {
+     "was": [
+      {
+       "maximum": 0.1
+      }
+     ],
+     "now": [
+      {
+       "maximum": 1.75
+      }
+     ]
+    },
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 90.0
+       }
+      }
+     ]
+    },
+    "ratedCurrents": {
+     "was": null,
+     "now": [
+      0.1
+     ]
+    }
+   }
+  },
+  {
+   "reference": "KCZ1210DH500HRTD25",
+   "changed": {
+    "dcResistances": {
+     "was": [
+      {
+       "nominal": 2.5
+      }
+     ],
+     "now": [
+      {
+       "maximum": 2.5
+      }
+     ]
+    },
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 45.0
+       }
+      }
+     ]
+    },
+    "ratedCurrents": {
+     "was": null,
+     "now": [
+      0.1
+     ]
+    },
+    "inductance": {
+     "was": {
+      "nominal": 4.5e-05
+     },
+     "now": null,
+     "why": "value equalled the |Z| code \u2014 impedance misread as henries"
+    }
+   }
+  },
+  {
+   "reference": "ACM2012H-900-2P-T06",
+   "changed": {
+    "dcResistances": {
+     "was": [
+      {
+       "maximum": 90.0
+      }
+     ],
+     "now": [
+      {
+       "maximum": 0.3
+      }
+     ]
+    },
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 90.0
+       }
+      }
+     ]
+    },
+    "inductance": {
+     "was": {
+      "nominal": 9e-05
+     },
+     "now": null,
+     "why": "value equalled the |Z| code \u2014 impedance misread as henries"
+    }
+   }
+  },
+  {
+   "reference": "ACM2012-900-2P-T001",
+   "changed": {
+    "dcResistances": {
+     "was": [
+      {
+       "maximum": 90.0
+      }
+     ],
+     "now": [
+      {
+       "maximum": 0.19
+      }
+     ]
+    },
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 90.0
+       }
+      }
+     ]
+    },
+    "inductance": {
+     "was": {
+      "nominal": 9e-05
+     },
+     "now": null,
+     "why": "value equalled the |Z| code \u2014 impedance misread as henries"
+    }
+   }
+  },
+  {
+   "reference": "ACM2012-201-2P-T002",
+   "changed": {
+    "dcResistances": {
+     "was": [
+      {
+       "maximum": 200.0
+      }
+     ],
+     "now": [
+      {
+       "maximum": 0.25
+      }
+     ]
+    },
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 200.0
+       }
+      }
+     ]
+    },
+    "ratedCurrents": {
+     "was": [
+      0.35000000000000003
+     ],
+     "now": [
+      0.35
+     ]
+    },
+    "inductance": {
+     "was": {
+      "nominal": 2.0000000000000002e-07,
+      "minimum": 1.6000000000000003e-07,
+      "maximum": 2.4000000000000003e-07
+     },
+     "now": null,
+     "why": "value equalled the |Z| code \u2014 impedance misread as henries"
+    }
+   }
+  },
+  {
+   "reference": "ACM2012-121-2P-T002",
+   "changed": {
+    "dcResistances": {
+     "was": [
+      {
+       "maximum": 120.0
+      }
+     ],
+     "now": [
+      {
+       "maximum": 0.22
+      }
+     ]
+    },
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 120.0
+       }
+      }
+     ]
+    },
+    "inductance": {
+     "was": {
+      "nominal": 1.2000000000000002e-07,
+      "minimum": 9.600000000000001e-08,
+      "maximum": 1.4400000000000002e-07
+     },
+     "now": null,
+     "why": "value equalled the |Z| code \u2014 impedance misread as henries"
+    }
+   }
+  },
+  {
+   "reference": "ACM2520-801-3P-T002",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 800.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "ACM2520-301-2P-T002",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 300.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "ACM2520-601-2P-T002",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 600.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "ACM2012-900-2P-T002",
+   "changed": {
+    "dcResistances": {
+     "was": [
+      {
+       "maximum": 90.0
+      }
+     ],
+     "now": [
+      {
+       "maximum": 0.19
+      }
+     ]
+    },
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 90.0
+       }
+      }
+     ]
+    },
+    "ratedCurrents": {
+     "was": null,
+     "now": [
+      0.4
+     ]
+    },
+    "inductance": {
+     "was": {
+      "nominal": 9e-05
+     },
+     "now": null,
+     "why": "value equalled the |Z| code \u2014 impedance misread as henries"
+    }
+   }
+  },
+  {
+   "reference": "ACM2012-361-2P-T002",
+   "changed": {
+    "dcResistances": {
+     "was": [
+      {
+       "maximum": 360.0
+      }
+     ],
+     "now": [
+      {
+       "maximum": 0.5
+      }
+     ]
+    },
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 360.0
+       }
+      }
+     ]
+    },
+    "inductance": {
+     "was": {
+      "nominal": 3.6000000000000005e-07,
+      "minimum": 2.8800000000000004e-07,
+      "maximum": 4.3200000000000006e-07
+     },
+     "now": null,
+     "why": "value equalled the |Z| code \u2014 impedance misread as henries"
+    }
+   }
+  },
+  {
+   "reference": "ACM2012-361-2P-T001",
+   "changed": {
+    "dcResistances": {
+     "was": [
+      {
+       "maximum": 360.0
+      }
+     ],
+     "now": [
+      {
+       "maximum": 0.5
+      }
+     ]
+    },
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 360.0
+       }
+      }
+     ]
+    },
+    "inductance": {
+     "was": {
+      "nominal": 3.6000000000000005e-07,
+      "minimum": 2.8800000000000004e-07,
+      "maximum": 4.3200000000000006e-07
+     },
+     "now": null,
+     "why": "value equalled the |Z| code \u2014 impedance misread as henries"
+    }
+   }
+  },
+  {
+   "reference": "ACM2012-121-2P-T001",
+   "changed": {
+    "dcResistances": {
+     "was": [
+      {
+       "maximum": 120.0
+      }
+     ],
+     "now": [
+      {
+       "maximum": 0.22
+      }
+     ]
+    },
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 120.0
+       }
+      }
+     ]
+    },
+    "inductance": {
+     "was": {
+      "nominal": 1.2000000000000002e-07,
+      "minimum": 9.600000000000001e-08,
+      "maximum": 1.4400000000000002e-07
+     },
+     "now": null,
+     "why": "value equalled the |Z| code \u2014 impedance misread as henries"
+    }
+   }
+  },
+  {
+   "reference": "ACM2012H-381-2P-T05",
+   "changed": {
+    "dcResistances": {
+     "was": [
+      {
+       "maximum": 280.0
+      }
+     ],
+     "now": [
+      {
+       "maximum": 0.5
+      }
+     ]
+    },
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 380.0
+       }
+      }
+     ]
+    },
+    "inductance": {
+     "was": {
+      "nominal": 3.8e-07,
+      "minimum": 3.04e-07,
+      "maximum": 4.56e-07
+     },
+     "now": null,
+     "why": "value equalled the |Z| code \u2014 impedance misread as henries"
+    }
+   }
+  },
+  {
+   "reference": "ACM2012H-900-2P-T03",
+   "changed": {
+    "dcResistances": {
+     "was": [
+      {
+       "maximum": 90.0
+      }
+     ],
+     "now": [
+      {
+       "maximum": 0.3
+      }
+     ]
+    },
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 90.0
+       }
+      }
+     ]
+    },
+    "inductance": {
+     "was": {
+      "nominal": 9e-05
+     },
+     "now": null,
+     "why": "value equalled the |Z| code \u2014 impedance misread as henries"
+    }
+   }
+  },
+  {
+   "reference": "ACM2520-451-2P-T002",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 450.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "ACM2012H-900-2P-T05",
+   "changed": {
+    "dcResistances": {
+     "was": [
+      {
+       "maximum": 90.0
+      }
+     ],
+     "now": [
+      {
+       "maximum": 0.3
+      }
+     ]
+    },
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 90.0
+       }
+      }
+     ]
+    },
+    "inductance": {
+     "was": {
+      "nominal": 9e-05
+     },
+     "now": null,
+     "why": "value equalled the |Z| code \u2014 impedance misread as henries"
+    }
+   }
+  },
+  {
+   "reference": "ACM2012-201-2P-T001",
+   "changed": {
+    "dcResistances": {
+     "was": [
+      {
+       "maximum": 200.0
+      }
+     ],
+     "now": [
+      {
+       "maximum": 0.25
+      }
+     ]
+    },
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 200.0
+       }
+      }
+     ]
+    },
+    "ratedCurrents": {
+     "was": [
+      0.35000000000000003
+     ],
+     "now": [
+      0.35
+     ]
+    },
+    "inductance": {
+     "was": {
+      "nominal": 2.0000000000000002e-07,
+      "minimum": 1.6000000000000003e-07,
+      "maximum": 2.4000000000000003e-07
+     },
+     "now": null,
+     "why": "value equalled the |Z| code \u2014 impedance misread as henries"
+    }
+   }
+  },
+  {
+   "reference": "ACM2520-102-2P-T002",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 1000.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "ACM2012-222-2P-T001",
+   "changed": {
+    "dcResistances": {
+     "was": [
+      {
+       "maximum": 2200.0
+      }
+     ],
+     "now": [
+      {
+       "maximum": 2.5
+      }
+     ]
+    },
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 2200.0
+       }
+      }
+     ]
+    },
+    "inductance": {
+     "was": {
+      "nominal": 2.2e-06,
+      "minimum": 1.76e-06,
+      "maximum": 2.64e-06
+     },
+     "now": null,
+     "why": "value equalled the |Z| code \u2014 impedance misread as henries"
+    }
+   }
+  },
+  {
+   "reference": "ACM2012-102-2P-T001",
+   "changed": {
+    "dcResistances": {
+     "was": [
+      {
+       "maximum": 800.0
+      }
+     ],
+     "now": [
+      {
+       "maximum": 1.5
+      }
+     ]
+    },
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 1000.0
+       }
+      }
+     ]
+    },
+    "ratedCurrents": {
+     "was": [
+      0.3
+     ],
+     "now": [
+      0.19
+     ]
+    },
+    "inductance": {
+     "was": {
+      "nominal": 1.0000000000000002e-06,
+      "minimum": 8.000000000000002e-07,
+      "maximum": 1.2000000000000002e-06
+     },
+     "now": null,
+     "why": "value equalled the |Z| code \u2014 impedance misread as henries"
+    }
+   }
+  },
+  {
+   "reference": "ACM2012D-900-2P-T00",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 90.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "ACM2012E-102-2P-T00",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 1000.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "ACM2012E-121-2P-T00",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 120.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "ACM2012E-121-2P-T01",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 120.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "ACM2012E-181-2P-T00",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 180.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "ACM2012E-251-2P-T00",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 250.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "ACM2012E-391-2P-T00",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 390.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "ACM2012E-670-2P-T00",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 67.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "ACM2012E-670-2P-T01",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 67.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "ACM2012E-681-2P-T00",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 680.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "ACM2012E-900-2P-T00",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 90.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "ACT1210-101-2P-TL00",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 10000000.0,
+       "impedance": {
+        "magnitude": 5100.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "ACT1210-110-2P-TL00",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 10000000.0,
+       "impedance": {
+        "magnitude": 550.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "ACT1210-220-2P-TL00",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 10000000.0,
+       "impedance": {
+        "magnitude": 1100.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "ACT1210-510-2P-TL00",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 10000000.0,
+       "impedance": {
+        "magnitude": 2600.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "ACT45B-510-2P-TL003",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 10000000.0,
+       "impedance": {
+        "magnitude": 2800.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "ACT45R-101-2P-TL001",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 10000000.0,
+       "impedance": {
+        "magnitude": 5500.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "ACM2012E-900-2P-T01",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 90.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "ACT45B-101-2P-TL003",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 10000000.0,
+       "impedance": {
+        "magnitude": 5800.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "ACT45B-110-2P-TL003",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 10000000.0,
+       "impedance": {
+        "magnitude": 600.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "ACT45B-220-2P-TL003",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 10000000.0,
+       "impedance": {
+        "magnitude": 1200.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "MCZ0605AH350SDT000",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 35.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "MCZ0605AH900SDT000",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 90.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "MCZ0806AH220L2TA0G",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 22.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "MCZ0806AH350L2TA0G",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 35.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "MCZ0806AH500L2TA0G",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 50.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "MCZ0806AH900L2TA0G",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 90.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "TCM0403S-350-2P-T210",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 35.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "TCM0605G-650-2P-T201",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 65.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "TCM0605G-900-2P-T201",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 90.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "TCM0605S-120-2P-T201",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 12.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "TCM0605S-350-2P-T201",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 35.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "MCZ1210AH201L2TA0G",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 200.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "MCZ1210AH301L2TA0G",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 300.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "MCZ1210AH360L2TA0G",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 36.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "MCZ1210AH900L2TA0G",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 90.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "MCZ1210CH240L2TA0G",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 24.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "MCZ1210CH900L2TA0G",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 90.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "MCZ1210DH120L2TA0G",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 12.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "MCZ1210DH500L2TA0G",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 50.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "MCZ1210DH900L2TA0G",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 90.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "MCZ2010AH121L4T000",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 120.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "MCZ2010AH201L4T000",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 200.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "MCZ2010AH900L4T000",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 90.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "MCZ2010CH240L4T000",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 24.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "MCZ2010CH900L4T000",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 90.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "MCZ2010DH900L4T000",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 90.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "TCE0806G-900-2P-T200",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 90.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "TCE0806S-120-2P-T200",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 12.0
+       }
+      }
+     ]
+    },
+    "inductance": {
+     "was": {
+      "nominal": 1.2e-08
+     },
+     "now": null,
+     "why": "value equalled the |Z| code \u2014 impedance misread as henries"
+    }
+   }
+  },
+  {
+   "reference": "TCE0806S-350-2P-T200",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 35.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "TCE0806S-500-2P-T200",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 50.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "TCE1608G-900-4P-T200",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 90.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "TCM0906C-400-3P-T200",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 40.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "TCM1608G-201-4P-T200",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 200.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "TCM1608G-350-4P-T200",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 35.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "TCM1608G-650-4P-T200",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 65.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "TCM1608G-900-4P-T200",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 90.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "ZJYS51R5-M4PAT-01",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 600.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "ZJYS81R5-2P24T-G01",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 10000000.0,
+       "impedance": {
+        "magnitude": 1000.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "ZJYS81R5-2P50T-G01",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 10000000.0,
+       "impedance": {
+        "magnitude": 2000.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "ZJYS51R5-2PBT-01",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 600.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "ZJYS51R5-2PLT-01",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 200.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "ZJYS51R5-2PT-01",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 600.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "ZJYS51R5-2PT-G01",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 600.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "ZJYS81R5-2PL25T-G01",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 10000000.0,
+       "impedance": {
+        "magnitude": 1000.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "ZJYS81R5-2PL51T-G01",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 10000000.0,
+       "impedance": {
+        "magnitude": 2000.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "ACT1210D-131-2P-TL00",
+   "changed": {
+    "inductance": {
+     "was": {
+      "nominal": 0.00013
+     },
+     "now": {
+      "nominal": 0.00013000000000000002
+     }
+    }
+   }
+  },
+  {
+   "reference": "ACT45C-101-2P-TL000",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 10000000.0,
+       "impedance": {
+        "magnitude": 5800.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "ACT45C-110-2P-TL000",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 10000000.0,
+       "impedance": {
+        "magnitude": 600.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "ACT45C-220-2P-TL000",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 10000000.0,
+       "impedance": {
+        "magnitude": 1200.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "ACT45C-510-2P-TL000",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 10000000.0,
+       "impedance": {
+        "magnitude": 2800.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "ACT1210E-131-2P-TL00",
+   "changed": {
+    "inductance": {
+     "was": {
+      "nominal": 0.00013
+     },
+     "now": {
+      "nominal": 0.00013000000000000002
+     }
+    }
+   }
+  },
+  {
+   "reference": "B82722S0862A020",
+   "changed": {
+    "inductance": {
+     "was": {
+      "nominal": 0.00081
+     },
+     "now": {
+      "nominal": 0.0008100000000000001
+     }
+    }
+   }
+  },
+  {
+   "reference": "ACM2012-681-2P-T001",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 680.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "ACM2012H-121-2P-T05",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 120.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "ACM2012H-900-2P-T00",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 90.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "TCM0605M-650-2P-T201",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 80.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "TCM0605M-900-2P-T201",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 105.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "MCZ1210AH201CPTA0G",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 200.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "MCZ1210AH301CPTA0G",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 300.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "MCZ1210DH120CPTA0G",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 12.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "MCZ1210DH500CPTA0G",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 45.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "MCZ1210DH120CPTD25",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 12.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "MCZ1210DH500CPTD25",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 45.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "KCZ1210DH120HRTD25",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 12.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "MCZ1210AH201CPTD25",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 200.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "MCZ1210AH301CPTD25",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 300.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "ALC2012-900-2P-T00",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 90.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "ALC2012-361-2P-T00",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 360.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "ALC2012H-900-2P-T10G",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 90.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "ALC2012H-381-2P-T05G",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 380.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "MCZ1210CH900CPTA0G",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 90.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "MCZ1210DH800CPTA0G",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 80.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "MCZ1210DH800CPTD25",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 80.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "KCZ1210DH800HRTD25",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 80.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "MCZ1210AH360L2TD0G",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 36.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "MCZ1210AH900L2TD0G",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 90.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "KCZ1210AH201HRTD25",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 200.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "KCZ1210AH301HRTD25",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 300.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "TCM0906C-080-3P-T200",
+   "changed": {
+    "impedancePoints": {
+     "was": null,
+     "now": [
+      {
+       "frequency": 100000000.0,
+       "impedance": {
+        "magnitude": 40.0
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "reference": "ACM2012MG-371-2P-T00",
+   "changed": "APPENDED \u2014 not previously in corpus"
+  },
+  {
+   "reference": "ACT1210D-131-2P-TL01",
+   "changed": "APPENDED \u2014 not previously in corpus"
+  },
+  {
+   "reference": "ACM2012-202-2P-T002",
+   "changed": "APPENDED \u2014 not previously in corpus"
+  }
+ ]
+}
