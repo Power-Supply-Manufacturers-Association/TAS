@@ -1,0 +1,131 @@
+{
+ "ticket": "ABT #351 B1 (Bourns)",
+ "rows": [
+  {
+   "reference": "1110-270K-RC",
+   "datasheet": "https://www.bourns.com/docs/Product-Datasheets/1110_series.pdf",
+   "wasDcrOhm": 4.5,
+   "nowDcrOhm": 0.03,
+   "ratedCurrentA": 4.5,
+   "impliedWattsBefore": 91.1,
+   "impliedWattsAfter": 0.6075,
+   "reason": "ratedCurrent had been copied into the DC resistance field"
+  },
+  {
+   "reference": "1110-330K-RC",
+   "datasheet": "https://www.bourns.com/docs/Product-Datasheets/1110_series.pdf",
+   "wasDcrOhm": 4.0,
+   "nowDcrOhm": 0.037,
+   "ratedCurrentA": 4.0,
+   "impliedWattsBefore": 64.0,
+   "impliedWattsAfter": 0.592,
+   "reason": "ratedCurrent had been copied into the DC resistance field"
+  },
+  {
+   "reference": "1120-121K-RC",
+   "datasheet": "https://www.bourns.com/docs/Product-Datasheets/1120_series.pdf",
+   "wasDcrOhm": 4.0,
+   "nowDcrOhm": 0.035,
+   "ratedCurrentA": 4.0,
+   "impliedWattsBefore": 64.0,
+   "impliedWattsAfter": 0.56,
+   "reason": "ratedCurrent had been copied into the DC resistance field"
+  },
+  {
+   "reference": "1120-181K-RC",
+   "datasheet": "https://www.bourns.com/docs/Product-Datasheets/1120_series.pdf",
+   "wasDcrOhm": 4.0,
+   "nowDcrOhm": 0.032,
+   "ratedCurrentA": 4.0,
+   "impliedWattsBefore": 64.0,
+   "impliedWattsAfter": 0.512,
+   "reason": "ratedCurrent had been copied into the DC resistance field"
+  },
+  {
+   "reference": "1130-271K-RC",
+   "datasheet": "https://www.bourns.com/docs/Product-Datasheets/1130_series.pdf",
+   "wasDcrOhm": 4.5,
+   "nowDcrOhm": 0.04,
+   "ratedCurrentA": 4.5,
+   "impliedWattsBefore": 91.1,
+   "impliedWattsAfter": 0.81,
+   "reason": "ratedCurrent had been copied into the DC resistance field"
+  },
+  {
+   "reference": "1130-331K-RC",
+   "datasheet": "https://www.bourns.com/docs/Product-Datasheets/1130_series.pdf",
+   "wasDcrOhm": 4.5,
+   "nowDcrOhm": 0.04,
+   "ratedCurrentA": 4.5,
+   "impliedWattsBefore": 91.1,
+   "impliedWattsAfter": 0.81,
+   "reason": "ratedCurrent had been copied into the DC resistance field"
+  },
+  {
+   "reference": "1130-391K-RC",
+   "datasheet": "https://www.bourns.com/docs/Product-Datasheets/1130_series.pdf",
+   "wasDcrOhm": 4.0,
+   "nowDcrOhm": 0.036,
+   "ratedCurrentA": 4.0,
+   "impliedWattsBefore": 64.0,
+   "impliedWattsAfter": 0.576,
+   "reason": "ratedCurrent had been copied into the DC resistance field"
+  },
+  {
+   "reference": "1140-681K-RC",
+   "datasheet": "https://www.bourns.com/docs/Product-Datasheets/1140_series.pdf",
+   "wasDcrOhm": 4.4,
+   "nowDcrOhm": 0.04,
+   "ratedCurrentA": 4.4,
+   "impliedWattsBefore": 85.2,
+   "impliedWattsAfter": 0.7744,
+   "reason": "ratedCurrent had been copied into the DC resistance field"
+  }
+ ],
+ "skipped": [
+  {
+   "reference": "1140-471K-RC",
+   "why": "no DCR identifiable on the datasheet line"
+  },
+  {
+   "reference": "AC3630R-12NJ",
+   "why": "no DCR identifiable on the datasheet line"
+  },
+  {
+   "reference": "AC3630R-12NK",
+   "why": "no DCR identifiable on the datasheet line"
+  },
+  {
+   "reference": "SRN4018BTA-R56M",
+   "why": "no DCR identifiable on the datasheet line"
+  },
+  {
+   "reference": "SRP0310F-1R0M",
+   "why": "no DCR identifiable on the datasheet line"
+  },
+  {
+   "reference": "SRP0310F-R68M",
+   "why": "no DCR identifiable on the datasheet line"
+  },
+  {
+   "reference": "SRR5828A-2R6Y",
+   "why": "no DCR identifiable on the datasheet line"
+  },
+  {
+   "reference": "SRR5228A-2R2Y",
+   "why": "no DCR identifiable on the datasheet line"
+  },
+  {
+   "reference": "SRP5030TA-3R6M",
+   "why": "no DCR identifiable on the datasheet line"
+  },
+  {
+   "reference": "SRP0410F-1R5M",
+   "why": "no DCR identifiable on the datasheet line"
+  },
+  {
+   "reference": "SRP0410F-2R2M",
+   "why": "no DCR identifiable on the datasheet line"
+  }
+ ]
+}
