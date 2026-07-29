@@ -1,0 +1,5911 @@
+{
+ "ticket": "ABT #351 class B2",
+ "file": "/home/alf/PSMA/TAS/data/magnetics.ndjson",
+ "evidence": "per-series datasheet states Current Rating (mA)",
+ "rows": [
+  {
+   "reference": "R50029-NT-J",
+   "series": "C50000",
+   "wasA": 170.0,
+   "nowA": 0.17,
+   "dcResistanceOhm": 1.7,
+   "impliedWattsBefore": 49130.0,
+   "impliedWattsAfter": 0.0491
+  },
+  {
+   "reference": "R50029-T-J",
+   "series": "C50000",
+   "wasA": 170.0,
+   "nowA": 0.17,
+   "dcResistanceOhm": 1.7,
+   "impliedWattsBefore": 49130.0,
+   "impliedWattsAfter": 0.0491
+  },
+  {
+   "reference": "R50028-NT-J",
+   "series": "C50000",
+   "wasA": 170.0,
+   "nowA": 0.17,
+   "dcResistanceOhm": 1.7,
+   "impliedWattsBefore": 49130.0,
+   "impliedWattsAfter": 0.0491
+  },
+  {
+   "reference": "R50028-T-J",
+   "series": "C50000",
+   "wasA": 170.0,
+   "nowA": 0.17,
+   "dcResistanceOhm": 1.7,
+   "impliedWattsBefore": 49130.0,
+   "impliedWattsAfter": 0.0491
+  },
+  {
+   "reference": "R50027-NT-J",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.6,
+   "impliedWattsBefore": 70560.0,
+   "impliedWattsAfter": 0.0706
+  },
+  {
+   "reference": "R50027-T-J",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.6,
+   "impliedWattsBefore": 70560.0,
+   "impliedWattsAfter": 0.0706
+  },
+  {
+   "reference": "R50026-NT-J",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.6,
+   "impliedWattsBefore": 70560.0,
+   "impliedWattsAfter": 0.0706
+  },
+  {
+   "reference": "R50026-T-J",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.6,
+   "impliedWattsBefore": 70560.0,
+   "impliedWattsAfter": 0.0706
+  },
+  {
+   "reference": "R50025-NT-J",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.4,
+   "impliedWattsBefore": 61740.0,
+   "impliedWattsAfter": 0.0617
+  },
+  {
+   "reference": "R50025-T-J",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.4,
+   "impliedWattsBefore": 61740.0,
+   "impliedWattsAfter": 0.0617
+  },
+  {
+   "reference": "R50024-NT-J",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.3,
+   "impliedWattsBefore": 57330.0,
+   "impliedWattsAfter": 0.0573
+  },
+  {
+   "reference": "R50024-T-J",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.3,
+   "impliedWattsBefore": 57330.0,
+   "impliedWattsAfter": 0.0573
+  },
+  {
+   "reference": "R50023-NT-J",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.0,
+   "impliedWattsBefore": 44100.0,
+   "impliedWattsAfter": 0.0441
+  },
+  {
+   "reference": "R50023-T-J",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.0,
+   "impliedWattsBefore": 44100.0,
+   "impliedWattsAfter": 0.0441
+  },
+  {
+   "reference": "R50022-NT-J",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.0,
+   "impliedWattsBefore": 44100.0,
+   "impliedWattsAfter": 0.0441
+  },
+  {
+   "reference": "R50022-T-J",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.0,
+   "impliedWattsBefore": 44100.0,
+   "impliedWattsAfter": 0.0441
+  },
+  {
+   "reference": "R50021-NT-J",
+   "series": "C50000",
+   "wasA": 250.0,
+   "nowA": 0.25,
+   "dcResistanceOhm": 0.58,
+   "impliedWattsBefore": 36250.0,
+   "impliedWattsAfter": 0.0362
+  },
+  {
+   "reference": "R50021-T-J",
+   "series": "C50000",
+   "wasA": 250.0,
+   "nowA": 0.25,
+   "dcResistanceOhm": 0.58,
+   "impliedWattsBefore": 36250.0,
+   "impliedWattsAfter": 0.0362
+  },
+  {
+   "reference": "R50020-NT-J",
+   "series": "C50000",
+   "wasA": 250.0,
+   "nowA": 0.25,
+   "dcResistanceOhm": 0.46,
+   "impliedWattsBefore": 28750.0,
+   "impliedWattsAfter": 0.0288
+  },
+  {
+   "reference": "R50020-T-J",
+   "series": "C50000",
+   "wasA": 250.0,
+   "nowA": 0.25,
+   "dcResistanceOhm": 0.46,
+   "impliedWattsBefore": 28750.0,
+   "impliedWattsAfter": 0.0288
+  },
+  {
+   "reference": "R50019-NT-J",
+   "series": "C50000",
+   "wasA": 250.0,
+   "nowA": 0.25,
+   "dcResistanceOhm": 0.35,
+   "impliedWattsBefore": 21875.0,
+   "impliedWattsAfter": 0.0219
+  },
+  {
+   "reference": "R50019-T-J",
+   "series": "C50000",
+   "wasA": 250.0,
+   "nowA": 0.25,
+   "dcResistanceOhm": 0.35,
+   "impliedWattsBefore": 21875.0,
+   "impliedWattsAfter": 0.0219
+  },
+  {
+   "reference": "R50018-NT-J",
+   "series": "C50000",
+   "wasA": 250.0,
+   "nowA": 0.25,
+   "dcResistanceOhm": 0.29,
+   "impliedWattsBefore": 18125.0,
+   "impliedWattsAfter": 0.0181
+  },
+  {
+   "reference": "R50018-T-J",
+   "series": "C50000",
+   "wasA": 250.0,
+   "nowA": 0.25,
+   "dcResistanceOhm": 0.29,
+   "impliedWattsBefore": 18125.0,
+   "impliedWattsAfter": 0.0181
+  },
+  {
+   "reference": "R50017-NT-J",
+   "series": "C50000",
+   "wasA": 290.0,
+   "nowA": 0.29,
+   "dcResistanceOhm": 0.21,
+   "impliedWattsBefore": 17661.0,
+   "impliedWattsAfter": 0.0177
+  },
+  {
+   "reference": "R50017-T-J",
+   "series": "C50000",
+   "wasA": 290.0,
+   "nowA": 0.29,
+   "dcResistanceOhm": 0.21,
+   "impliedWattsBefore": 17661.0,
+   "impliedWattsAfter": 0.0177
+  },
+  {
+   "reference": "R50016-NT-J",
+   "series": "C50000",
+   "wasA": 290.0,
+   "nowA": 0.29,
+   "dcResistanceOhm": 0.2,
+   "impliedWattsBefore": 16820.0,
+   "impliedWattsAfter": 0.0168
+  },
+  {
+   "reference": "R50016-T-J",
+   "series": "C50000",
+   "wasA": 290.0,
+   "nowA": 0.29,
+   "dcResistanceOhm": 0.2,
+   "impliedWattsBefore": 16820.0,
+   "impliedWattsAfter": 0.0168
+  },
+  {
+   "reference": "R50015-NT-J",
+   "series": "C50000",
+   "wasA": 290.0,
+   "nowA": 0.29,
+   "dcResistanceOhm": 0.17,
+   "impliedWattsBefore": 14297.0,
+   "impliedWattsAfter": 0.0143
+  },
+  {
+   "reference": "R50015-T-J",
+   "series": "C50000",
+   "wasA": 290.0,
+   "nowA": 0.29,
+   "dcResistanceOhm": 0.17,
+   "impliedWattsBefore": 14297.0,
+   "impliedWattsAfter": 0.0143
+  },
+  {
+   "reference": "R50014-NT-J",
+   "series": "C50000",
+   "wasA": 290.0,
+   "nowA": 0.29,
+   "dcResistanceOhm": 0.15,
+   "impliedWattsBefore": 12615.0,
+   "impliedWattsAfter": 0.0126
+  },
+  {
+   "reference": "R50014-T-J",
+   "series": "C50000",
+   "wasA": 290.0,
+   "nowA": 0.29,
+   "dcResistanceOhm": 0.15,
+   "impliedWattsBefore": 12615.0,
+   "impliedWattsAfter": 0.0126
+  },
+  {
+   "reference": "R50013-NT-J",
+   "series": "C50000",
+   "wasA": 340.0,
+   "nowA": 0.34,
+   "dcResistanceOhm": 0.14,
+   "impliedWattsBefore": 16184.0,
+   "impliedWattsAfter": 0.0162
+  },
+  {
+   "reference": "R50013-T-J",
+   "series": "C50000",
+   "wasA": 340.0,
+   "nowA": 0.34,
+   "dcResistanceOhm": 0.14,
+   "impliedWattsBefore": 16184.0,
+   "impliedWattsAfter": 0.0162
+  },
+  {
+   "reference": "R50012-NT-J",
+   "series": "C50000",
+   "wasA": 380.0,
+   "nowA": 0.38,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 17328.0,
+   "impliedWattsAfter": 0.0173
+  },
+  {
+   "reference": "R50012-T-J",
+   "series": "C50000",
+   "wasA": 380.0,
+   "nowA": 0.38,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 17328.0,
+   "impliedWattsAfter": 0.0173
+  },
+  {
+   "reference": "R50011-NT-J",
+   "series": "C50000",
+   "wasA": 420.0,
+   "nowA": 0.42,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 21168.0,
+   "impliedWattsAfter": 0.0212
+  },
+  {
+   "reference": "R50011-T-J",
+   "series": "C50000",
+   "wasA": 420.0,
+   "nowA": 0.42,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 21168.0,
+   "impliedWattsAfter": 0.0212
+  },
+  {
+   "reference": "R50010-NT-J",
+   "series": "C50000",
+   "wasA": 460.0,
+   "nowA": 0.46,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 25392.0,
+   "impliedWattsAfter": 0.0254
+  },
+  {
+   "reference": "R50010-T-J",
+   "series": "C50000",
+   "wasA": 460.0,
+   "nowA": 0.46,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 25392.0,
+   "impliedWattsAfter": 0.0254
+  },
+  {
+   "reference": "R50009-NT-J",
+   "series": "C50000",
+   "wasA": 510.0,
+   "nowA": 0.51,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 31212.0,
+   "impliedWattsAfter": 0.0312
+  },
+  {
+   "reference": "R50009-T-J",
+   "series": "C50000",
+   "wasA": 510.0,
+   "nowA": 0.51,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 31212.0,
+   "impliedWattsAfter": 0.0312
+  },
+  {
+   "reference": "R50008-NT-J",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "R50008-T-J",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "R50007-NT-J",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "R50007-T-J",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "R50006-NT-J",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "R50006-T-J",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "R50005-NT-J",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "R50005-T-J",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "R50004-NT-J",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "R50004-T-J",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "R50003-NT-J",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "R50003-T-J",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "R50002-NT-J",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "R50002-T-J",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "R50001-NT-J",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "R50001-T-J",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "C50039-NT-J",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 6.4,
+   "impliedWattsBefore": 46240.0,
+   "impliedWattsAfter": 0.0462
+  },
+  {
+   "reference": "C50039-T-J",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 6.4,
+   "impliedWattsBefore": 46240.0,
+   "impliedWattsAfter": 0.0462
+  },
+  {
+   "reference": "C50038-NT-J",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 5.2,
+   "impliedWattsBefore": 37570.0,
+   "impliedWattsAfter": 0.0376
+  },
+  {
+   "reference": "C50038-T-J",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 5.2,
+   "impliedWattsBefore": 37570.0,
+   "impliedWattsAfter": 0.0376
+  },
+  {
+   "reference": "C50037-NT-J",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 4.3,
+   "impliedWattsBefore": 31067.5,
+   "impliedWattsAfter": 0.0311
+  },
+  {
+   "reference": "C50037-T-J",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 4.3,
+   "impliedWattsBefore": 31067.5,
+   "impliedWattsAfter": 0.0311
+  },
+  {
+   "reference": "C50036-NT-J",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 3.5,
+   "impliedWattsBefore": 25287.5,
+   "impliedWattsAfter": 0.0253
+  },
+  {
+   "reference": "C50036-T-J",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 3.5,
+   "impliedWattsBefore": 25287.5,
+   "impliedWattsAfter": 0.0253
+  },
+  {
+   "reference": "C50035-NT-J",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 3.3,
+   "impliedWattsBefore": 23842.5,
+   "impliedWattsAfter": 0.0238
+  },
+  {
+   "reference": "C50035-T-J",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 3.3,
+   "impliedWattsBefore": 23842.5,
+   "impliedWattsAfter": 0.0238
+  },
+  {
+   "reference": "C50034-NT-J",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 3.3,
+   "impliedWattsBefore": 23842.5,
+   "impliedWattsAfter": 0.0238
+  },
+  {
+   "reference": "C50034-T-J",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 3.3,
+   "impliedWattsBefore": 23842.5,
+   "impliedWattsAfter": 0.0238
+  },
+  {
+   "reference": "C50033-NT-J",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 1.8,
+   "impliedWattsBefore": 13005.0,
+   "impliedWattsAfter": 0.013
+  },
+  {
+   "reference": "C50033-T-J",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 1.8,
+   "impliedWattsBefore": 13005.0,
+   "impliedWattsAfter": 0.013
+  },
+  {
+   "reference": "C50032-NT-J",
+   "series": "C50000",
+   "wasA": 120.0,
+   "nowA": 0.12,
+   "dcResistanceOhm": 1.8,
+   "impliedWattsBefore": 25920.0,
+   "impliedWattsAfter": 0.0259
+  },
+  {
+   "reference": "C50032-T-J",
+   "series": "C50000",
+   "wasA": 120.0,
+   "nowA": 0.12,
+   "dcResistanceOhm": 1.8,
+   "impliedWattsBefore": 25920.0,
+   "impliedWattsAfter": 0.0259
+  },
+  {
+   "reference": "C50031-NT-J",
+   "series": "C50000",
+   "wasA": 120.0,
+   "nowA": 0.12,
+   "dcResistanceOhm": 1.8,
+   "impliedWattsBefore": 25920.0,
+   "impliedWattsAfter": 0.0259
+  },
+  {
+   "reference": "C50031-T-J",
+   "series": "C50000",
+   "wasA": 120.0,
+   "nowA": 0.12,
+   "dcResistanceOhm": 1.8,
+   "impliedWattsBefore": 25920.0,
+   "impliedWattsAfter": 0.0259
+  },
+  {
+   "reference": "C50030-NT-J",
+   "series": "C50000",
+   "wasA": 170.0,
+   "nowA": 0.17,
+   "dcResistanceOhm": 1.8,
+   "impliedWattsBefore": 52020.0,
+   "impliedWattsAfter": 0.052
+  },
+  {
+   "reference": "C50030-T-J",
+   "series": "C50000",
+   "wasA": 170.0,
+   "nowA": 0.17,
+   "dcResistanceOhm": 1.8,
+   "impliedWattsBefore": 52020.0,
+   "impliedWattsAfter": 0.052
+  },
+  {
+   "reference": "C50029-NT-J",
+   "series": "C50000",
+   "wasA": 170.0,
+   "nowA": 0.17,
+   "dcResistanceOhm": 1.7,
+   "impliedWattsBefore": 49130.0,
+   "impliedWattsAfter": 0.0491
+  },
+  {
+   "reference": "C50029-T-J",
+   "series": "C50000",
+   "wasA": 170.0,
+   "nowA": 0.17,
+   "dcResistanceOhm": 1.7,
+   "impliedWattsBefore": 49130.0,
+   "impliedWattsAfter": 0.0491
+  },
+  {
+   "reference": "C50028-NT-J",
+   "series": "C50000",
+   "wasA": 170.0,
+   "nowA": 0.17,
+   "dcResistanceOhm": 1.7,
+   "impliedWattsBefore": 49130.0,
+   "impliedWattsAfter": 0.0491
+  },
+  {
+   "reference": "C50028-T-J",
+   "series": "C50000",
+   "wasA": 170.0,
+   "nowA": 0.17,
+   "dcResistanceOhm": 1.7,
+   "impliedWattsBefore": 49130.0,
+   "impliedWattsAfter": 0.0491
+  },
+  {
+   "reference": "C50027-NT-J",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.6,
+   "impliedWattsBefore": 70560.0,
+   "impliedWattsAfter": 0.0706
+  },
+  {
+   "reference": "C50027-T-J",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.6,
+   "impliedWattsBefore": 70560.0,
+   "impliedWattsAfter": 0.0706
+  },
+  {
+   "reference": "C50026-NT-J",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.6,
+   "impliedWattsBefore": 70560.0,
+   "impliedWattsAfter": 0.0706
+  },
+  {
+   "reference": "C50026-T-J",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.6,
+   "impliedWattsBefore": 70560.0,
+   "impliedWattsAfter": 0.0706
+  },
+  {
+   "reference": "C50025-NT-J",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.4,
+   "impliedWattsBefore": 61740.0,
+   "impliedWattsAfter": 0.0617
+  },
+  {
+   "reference": "C50025-T-J",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.4,
+   "impliedWattsBefore": 61740.0,
+   "impliedWattsAfter": 0.0617
+  },
+  {
+   "reference": "C50024-NT-J",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.3,
+   "impliedWattsBefore": 57330.0,
+   "impliedWattsAfter": 0.0573
+  },
+  {
+   "reference": "C50024-T-J",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.3,
+   "impliedWattsBefore": 57330.0,
+   "impliedWattsAfter": 0.0573
+  },
+  {
+   "reference": "C50023-NT-J",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.0,
+   "impliedWattsBefore": 44100.0,
+   "impliedWattsAfter": 0.0441
+  },
+  {
+   "reference": "C50023-T-J",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.0,
+   "impliedWattsBefore": 44100.0,
+   "impliedWattsAfter": 0.0441
+  },
+  {
+   "reference": "C50022-NT-J",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.0,
+   "impliedWattsBefore": 44100.0,
+   "impliedWattsAfter": 0.0441
+  },
+  {
+   "reference": "C50022-T-J",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.0,
+   "impliedWattsBefore": 44100.0,
+   "impliedWattsAfter": 0.0441
+  },
+  {
+   "reference": "C50021-NT-J",
+   "series": "C50000",
+   "wasA": 250.0,
+   "nowA": 0.25,
+   "dcResistanceOhm": 0.58,
+   "impliedWattsBefore": 36250.0,
+   "impliedWattsAfter": 0.0362
+  },
+  {
+   "reference": "C50021-T-J",
+   "series": "C50000",
+   "wasA": 250.0,
+   "nowA": 0.25,
+   "dcResistanceOhm": 0.58,
+   "impliedWattsBefore": 36250.0,
+   "impliedWattsAfter": 0.0362
+  },
+  {
+   "reference": "C50020-NT-J",
+   "series": "C50000",
+   "wasA": 250.0,
+   "nowA": 0.25,
+   "dcResistanceOhm": 0.46,
+   "impliedWattsBefore": 28750.0,
+   "impliedWattsAfter": 0.0288
+  },
+  {
+   "reference": "C50020-T-J",
+   "series": "C50000",
+   "wasA": 250.0,
+   "nowA": 0.25,
+   "dcResistanceOhm": 0.46,
+   "impliedWattsBefore": 28750.0,
+   "impliedWattsAfter": 0.0288
+  },
+  {
+   "reference": "C50019-NT-J",
+   "series": "C50000",
+   "wasA": 250.0,
+   "nowA": 0.25,
+   "dcResistanceOhm": 0.35,
+   "impliedWattsBefore": 21875.0,
+   "impliedWattsAfter": 0.0219
+  },
+  {
+   "reference": "C50019-T-J",
+   "series": "C50000",
+   "wasA": 250.0,
+   "nowA": 0.25,
+   "dcResistanceOhm": 0.35,
+   "impliedWattsBefore": 21875.0,
+   "impliedWattsAfter": 0.0219
+  },
+  {
+   "reference": "C50018-NT-J",
+   "series": "C50000",
+   "wasA": 250.0,
+   "nowA": 0.25,
+   "dcResistanceOhm": 0.29,
+   "impliedWattsBefore": 18125.0,
+   "impliedWattsAfter": 0.0181
+  },
+  {
+   "reference": "C50018-T-J",
+   "series": "C50000",
+   "wasA": 250.0,
+   "nowA": 0.25,
+   "dcResistanceOhm": 0.29,
+   "impliedWattsBefore": 18125.0,
+   "impliedWattsAfter": 0.0181
+  },
+  {
+   "reference": "C50017-NT-J",
+   "series": "C50000",
+   "wasA": 290.0,
+   "nowA": 0.29,
+   "dcResistanceOhm": 0.21,
+   "impliedWattsBefore": 17661.0,
+   "impliedWattsAfter": 0.0177
+  },
+  {
+   "reference": "C50017-T-J",
+   "series": "C50000",
+   "wasA": 290.0,
+   "nowA": 0.29,
+   "dcResistanceOhm": 0.21,
+   "impliedWattsBefore": 17661.0,
+   "impliedWattsAfter": 0.0177
+  },
+  {
+   "reference": "C50016-NT-J",
+   "series": "C50000",
+   "wasA": 290.0,
+   "nowA": 0.29,
+   "dcResistanceOhm": 0.2,
+   "impliedWattsBefore": 16820.0,
+   "impliedWattsAfter": 0.0168
+  },
+  {
+   "reference": "C50016-T-J",
+   "series": "C50000",
+   "wasA": 290.0,
+   "nowA": 0.29,
+   "dcResistanceOhm": 0.2,
+   "impliedWattsBefore": 16820.0,
+   "impliedWattsAfter": 0.0168
+  },
+  {
+   "reference": "C50015-NT-J",
+   "series": "C50000",
+   "wasA": 290.0,
+   "nowA": 0.29,
+   "dcResistanceOhm": 0.17,
+   "impliedWattsBefore": 14297.0,
+   "impliedWattsAfter": 0.0143
+  },
+  {
+   "reference": "C50015-T-J",
+   "series": "C50000",
+   "wasA": 290.0,
+   "nowA": 0.29,
+   "dcResistanceOhm": 0.17,
+   "impliedWattsBefore": 14297.0,
+   "impliedWattsAfter": 0.0143
+  },
+  {
+   "reference": "C50014-NT-J",
+   "series": "C50000",
+   "wasA": 290.0,
+   "nowA": 0.29,
+   "dcResistanceOhm": 0.15,
+   "impliedWattsBefore": 12615.0,
+   "impliedWattsAfter": 0.0126
+  },
+  {
+   "reference": "C50014-T-J",
+   "series": "C50000",
+   "wasA": 290.0,
+   "nowA": 0.29,
+   "dcResistanceOhm": 0.15,
+   "impliedWattsBefore": 12615.0,
+   "impliedWattsAfter": 0.0126
+  },
+  {
+   "reference": "C50013-NT-J",
+   "series": "C50000",
+   "wasA": 340.0,
+   "nowA": 0.34,
+   "dcResistanceOhm": 0.14,
+   "impliedWattsBefore": 16184.0,
+   "impliedWattsAfter": 0.0162
+  },
+  {
+   "reference": "C50013-T-J",
+   "series": "C50000",
+   "wasA": 340.0,
+   "nowA": 0.34,
+   "dcResistanceOhm": 0.14,
+   "impliedWattsBefore": 16184.0,
+   "impliedWattsAfter": 0.0162
+  },
+  {
+   "reference": "C50012-NT-J",
+   "series": "C50000",
+   "wasA": 380.0,
+   "nowA": 0.38,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 17328.0,
+   "impliedWattsAfter": 0.0173
+  },
+  {
+   "reference": "C50012-T-J",
+   "series": "C50000",
+   "wasA": 380.0,
+   "nowA": 0.38,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 17328.0,
+   "impliedWattsAfter": 0.0173
+  },
+  {
+   "reference": "C50011-NT-J",
+   "series": "C50000",
+   "wasA": 420.0,
+   "nowA": 0.42,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 21168.0,
+   "impliedWattsAfter": 0.0212
+  },
+  {
+   "reference": "C50011-T-J",
+   "series": "C50000",
+   "wasA": 420.0,
+   "nowA": 0.42,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 21168.0,
+   "impliedWattsAfter": 0.0212
+  },
+  {
+   "reference": "C50010-NT-J",
+   "series": "C50000",
+   "wasA": 460.0,
+   "nowA": 0.46,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 25392.0,
+   "impliedWattsAfter": 0.0254
+  },
+  {
+   "reference": "C50010-T-J",
+   "series": "C50000",
+   "wasA": 460.0,
+   "nowA": 0.46,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 25392.0,
+   "impliedWattsAfter": 0.0254
+  },
+  {
+   "reference": "C50009-NT-J",
+   "series": "C50000",
+   "wasA": 510.0,
+   "nowA": 0.51,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 31212.0,
+   "impliedWattsAfter": 0.0312
+  },
+  {
+   "reference": "C50009-T-J",
+   "series": "C50000",
+   "wasA": 510.0,
+   "nowA": 0.51,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 31212.0,
+   "impliedWattsAfter": 0.0312
+  },
+  {
+   "reference": "C50008-NT-J",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "C50008-T-J",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "C50007-NT-J",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "C50007-T-J",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "C50006-NT-J",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "C50006-T-J",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "C50005-NT-J",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "C50005-T-J",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "C50004-NT-J",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "C50004-T-J",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "C50003-NT-J",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "C50003-T-J",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "C50002-NT-J",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "C50002-T-J",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "C50001-NT-J",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "C50001-T-J",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "R50039-NT-K",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 6.4,
+   "impliedWattsBefore": 46240.0,
+   "impliedWattsAfter": 0.0462
+  },
+  {
+   "reference": "R50039-T-K",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 6.4,
+   "impliedWattsBefore": 46240.0,
+   "impliedWattsAfter": 0.0462
+  },
+  {
+   "reference": "R50038-NT-K",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 5.2,
+   "impliedWattsBefore": 37570.0,
+   "impliedWattsAfter": 0.0376
+  },
+  {
+   "reference": "R50038-T-K",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 5.2,
+   "impliedWattsBefore": 37570.0,
+   "impliedWattsAfter": 0.0376
+  },
+  {
+   "reference": "R50037-NT-K",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 4.3,
+   "impliedWattsBefore": 31067.5,
+   "impliedWattsAfter": 0.0311
+  },
+  {
+   "reference": "R50037-T-K",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 4.3,
+   "impliedWattsBefore": 31067.5,
+   "impliedWattsAfter": 0.0311
+  },
+  {
+   "reference": "R50036-NT-K",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 3.5,
+   "impliedWattsBefore": 25287.5,
+   "impliedWattsAfter": 0.0253
+  },
+  {
+   "reference": "R50036-T-K",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 3.5,
+   "impliedWattsBefore": 25287.5,
+   "impliedWattsAfter": 0.0253
+  },
+  {
+   "reference": "R50035-NT-K",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 3.3,
+   "impliedWattsBefore": 23842.5,
+   "impliedWattsAfter": 0.0238
+  },
+  {
+   "reference": "R50035-T-K",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 3.3,
+   "impliedWattsBefore": 23842.5,
+   "impliedWattsAfter": 0.0238
+  },
+  {
+   "reference": "R50034-NT-K",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 3.3,
+   "impliedWattsBefore": 23842.5,
+   "impliedWattsAfter": 0.0238
+  },
+  {
+   "reference": "R50034-T-K",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 3.3,
+   "impliedWattsBefore": 23842.5,
+   "impliedWattsAfter": 0.0238
+  },
+  {
+   "reference": "R50033-NT-K",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 1.8,
+   "impliedWattsBefore": 13005.0,
+   "impliedWattsAfter": 0.013
+  },
+  {
+   "reference": "R50033-T-K",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 1.8,
+   "impliedWattsBefore": 13005.0,
+   "impliedWattsAfter": 0.013
+  },
+  {
+   "reference": "R50032-NT-K",
+   "series": "C50000",
+   "wasA": 120.0,
+   "nowA": 0.12,
+   "dcResistanceOhm": 1.8,
+   "impliedWattsBefore": 25920.0,
+   "impliedWattsAfter": 0.0259
+  },
+  {
+   "reference": "R50032-T-K",
+   "series": "C50000",
+   "wasA": 120.0,
+   "nowA": 0.12,
+   "dcResistanceOhm": 1.8,
+   "impliedWattsBefore": 25920.0,
+   "impliedWattsAfter": 0.0259
+  },
+  {
+   "reference": "R50031-NT-K",
+   "series": "C50000",
+   "wasA": 120.0,
+   "nowA": 0.12,
+   "dcResistanceOhm": 1.8,
+   "impliedWattsBefore": 25920.0,
+   "impliedWattsAfter": 0.0259
+  },
+  {
+   "reference": "R50031-T-K",
+   "series": "C50000",
+   "wasA": 120.0,
+   "nowA": 0.12,
+   "dcResistanceOhm": 1.8,
+   "impliedWattsBefore": 25920.0,
+   "impliedWattsAfter": 0.0259
+  },
+  {
+   "reference": "R50030-NT-K",
+   "series": "C50000",
+   "wasA": 170.0,
+   "nowA": 0.17,
+   "dcResistanceOhm": 1.8,
+   "impliedWattsBefore": 52020.0,
+   "impliedWattsAfter": 0.052
+  },
+  {
+   "reference": "R50030-T-K",
+   "series": "C50000",
+   "wasA": 170.0,
+   "nowA": 0.17,
+   "dcResistanceOhm": 1.8,
+   "impliedWattsBefore": 52020.0,
+   "impliedWattsAfter": 0.052
+  },
+  {
+   "reference": "R50029-NT-K",
+   "series": "C50000",
+   "wasA": 170.0,
+   "nowA": 0.17,
+   "dcResistanceOhm": 1.7,
+   "impliedWattsBefore": 49130.0,
+   "impliedWattsAfter": 0.0491
+  },
+  {
+   "reference": "R50029-T-K",
+   "series": "C50000",
+   "wasA": 170.0,
+   "nowA": 0.17,
+   "dcResistanceOhm": 1.7,
+   "impliedWattsBefore": 49130.0,
+   "impliedWattsAfter": 0.0491
+  },
+  {
+   "reference": "R50028-NT-K",
+   "series": "C50000",
+   "wasA": 170.0,
+   "nowA": 0.17,
+   "dcResistanceOhm": 1.7,
+   "impliedWattsBefore": 49130.0,
+   "impliedWattsAfter": 0.0491
+  },
+  {
+   "reference": "R50028-T-K",
+   "series": "C50000",
+   "wasA": 170.0,
+   "nowA": 0.17,
+   "dcResistanceOhm": 1.7,
+   "impliedWattsBefore": 49130.0,
+   "impliedWattsAfter": 0.0491
+  },
+  {
+   "reference": "R50027-NT-K",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.6,
+   "impliedWattsBefore": 70560.0,
+   "impliedWattsAfter": 0.0706
+  },
+  {
+   "reference": "R50027-T-K",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.6,
+   "impliedWattsBefore": 70560.0,
+   "impliedWattsAfter": 0.0706
+  },
+  {
+   "reference": "R50026-NT-K",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.6,
+   "impliedWattsBefore": 70560.0,
+   "impliedWattsAfter": 0.0706
+  },
+  {
+   "reference": "R50026-T-K",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.6,
+   "impliedWattsBefore": 70560.0,
+   "impliedWattsAfter": 0.0706
+  },
+  {
+   "reference": "R50025-NT-K",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.4,
+   "impliedWattsBefore": 61740.0,
+   "impliedWattsAfter": 0.0617
+  },
+  {
+   "reference": "R50025-T-K",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.4,
+   "impliedWattsBefore": 61740.0,
+   "impliedWattsAfter": 0.0617
+  },
+  {
+   "reference": "R50024-NT-K",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.3,
+   "impliedWattsBefore": 57330.0,
+   "impliedWattsAfter": 0.0573
+  },
+  {
+   "reference": "R50024-T-K",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.3,
+   "impliedWattsBefore": 57330.0,
+   "impliedWattsAfter": 0.0573
+  },
+  {
+   "reference": "R50023-NT-K",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.0,
+   "impliedWattsBefore": 44100.0,
+   "impliedWattsAfter": 0.0441
+  },
+  {
+   "reference": "R50023-T-K",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.0,
+   "impliedWattsBefore": 44100.0,
+   "impliedWattsAfter": 0.0441
+  },
+  {
+   "reference": "R50022-NT-K",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.0,
+   "impliedWattsBefore": 44100.0,
+   "impliedWattsAfter": 0.0441
+  },
+  {
+   "reference": "R50022-T-K",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.0,
+   "impliedWattsBefore": 44100.0,
+   "impliedWattsAfter": 0.0441
+  },
+  {
+   "reference": "R50021-NT-K",
+   "series": "C50000",
+   "wasA": 250.0,
+   "nowA": 0.25,
+   "dcResistanceOhm": 0.58,
+   "impliedWattsBefore": 36250.0,
+   "impliedWattsAfter": 0.0362
+  },
+  {
+   "reference": "R50021-T-K",
+   "series": "C50000",
+   "wasA": 250.0,
+   "nowA": 0.25,
+   "dcResistanceOhm": 0.58,
+   "impliedWattsBefore": 36250.0,
+   "impliedWattsAfter": 0.0362
+  },
+  {
+   "reference": "R50020-NT-K",
+   "series": "C50000",
+   "wasA": 250.0,
+   "nowA": 0.25,
+   "dcResistanceOhm": 0.46,
+   "impliedWattsBefore": 28750.0,
+   "impliedWattsAfter": 0.0288
+  },
+  {
+   "reference": "R50020-T-K",
+   "series": "C50000",
+   "wasA": 250.0,
+   "nowA": 0.25,
+   "dcResistanceOhm": 0.46,
+   "impliedWattsBefore": 28750.0,
+   "impliedWattsAfter": 0.0288
+  },
+  {
+   "reference": "R50019-NT-K",
+   "series": "C50000",
+   "wasA": 250.0,
+   "nowA": 0.25,
+   "dcResistanceOhm": 0.35,
+   "impliedWattsBefore": 21875.0,
+   "impliedWattsAfter": 0.0219
+  },
+  {
+   "reference": "R50019-T-K",
+   "series": "C50000",
+   "wasA": 250.0,
+   "nowA": 0.25,
+   "dcResistanceOhm": 0.35,
+   "impliedWattsBefore": 21875.0,
+   "impliedWattsAfter": 0.0219
+  },
+  {
+   "reference": "R50018-NT-K",
+   "series": "C50000",
+   "wasA": 250.0,
+   "nowA": 0.25,
+   "dcResistanceOhm": 0.29,
+   "impliedWattsBefore": 18125.0,
+   "impliedWattsAfter": 0.0181
+  },
+  {
+   "reference": "R50018-T-K",
+   "series": "C50000",
+   "wasA": 250.0,
+   "nowA": 0.25,
+   "dcResistanceOhm": 0.29,
+   "impliedWattsBefore": 18125.0,
+   "impliedWattsAfter": 0.0181
+  },
+  {
+   "reference": "R50017-NT-K",
+   "series": "C50000",
+   "wasA": 290.0,
+   "nowA": 0.29,
+   "dcResistanceOhm": 0.21,
+   "impliedWattsBefore": 17661.0,
+   "impliedWattsAfter": 0.0177
+  },
+  {
+   "reference": "R50017-T-K",
+   "series": "C50000",
+   "wasA": 290.0,
+   "nowA": 0.29,
+   "dcResistanceOhm": 0.21,
+   "impliedWattsBefore": 17661.0,
+   "impliedWattsAfter": 0.0177
+  },
+  {
+   "reference": "R50016-NT-K",
+   "series": "C50000",
+   "wasA": 290.0,
+   "nowA": 0.29,
+   "dcResistanceOhm": 0.2,
+   "impliedWattsBefore": 16820.0,
+   "impliedWattsAfter": 0.0168
+  },
+  {
+   "reference": "R50016-T-K",
+   "series": "C50000",
+   "wasA": 290.0,
+   "nowA": 0.29,
+   "dcResistanceOhm": 0.2,
+   "impliedWattsBefore": 16820.0,
+   "impliedWattsAfter": 0.0168
+  },
+  {
+   "reference": "R50015-NT-K",
+   "series": "C50000",
+   "wasA": 290.0,
+   "nowA": 0.29,
+   "dcResistanceOhm": 0.17,
+   "impliedWattsBefore": 14297.0,
+   "impliedWattsAfter": 0.0143
+  },
+  {
+   "reference": "R50015-T-K",
+   "series": "C50000",
+   "wasA": 290.0,
+   "nowA": 0.29,
+   "dcResistanceOhm": 0.17,
+   "impliedWattsBefore": 14297.0,
+   "impliedWattsAfter": 0.0143
+  },
+  {
+   "reference": "R50014-NT-K",
+   "series": "C50000",
+   "wasA": 290.0,
+   "nowA": 0.29,
+   "dcResistanceOhm": 0.15,
+   "impliedWattsBefore": 12615.0,
+   "impliedWattsAfter": 0.0126
+  },
+  {
+   "reference": "R50014-T-K",
+   "series": "C50000",
+   "wasA": 290.0,
+   "nowA": 0.29,
+   "dcResistanceOhm": 0.15,
+   "impliedWattsBefore": 12615.0,
+   "impliedWattsAfter": 0.0126
+  },
+  {
+   "reference": "R50013-NT-K",
+   "series": "C50000",
+   "wasA": 340.0,
+   "nowA": 0.34,
+   "dcResistanceOhm": 0.14,
+   "impliedWattsBefore": 16184.0,
+   "impliedWattsAfter": 0.0162
+  },
+  {
+   "reference": "R50013-T-K",
+   "series": "C50000",
+   "wasA": 340.0,
+   "nowA": 0.34,
+   "dcResistanceOhm": 0.14,
+   "impliedWattsBefore": 16184.0,
+   "impliedWattsAfter": 0.0162
+  },
+  {
+   "reference": "R50012-NT-K",
+   "series": "C50000",
+   "wasA": 380.0,
+   "nowA": 0.38,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 17328.0,
+   "impliedWattsAfter": 0.0173
+  },
+  {
+   "reference": "R50012-T-K",
+   "series": "C50000",
+   "wasA": 380.0,
+   "nowA": 0.38,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 17328.0,
+   "impliedWattsAfter": 0.0173
+  },
+  {
+   "reference": "R50011-NT-K",
+   "series": "C50000",
+   "wasA": 420.0,
+   "nowA": 0.42,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 21168.0,
+   "impliedWattsAfter": 0.0212
+  },
+  {
+   "reference": "R50011-T-K",
+   "series": "C50000",
+   "wasA": 420.0,
+   "nowA": 0.42,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 21168.0,
+   "impliedWattsAfter": 0.0212
+  },
+  {
+   "reference": "R50010-NT-K",
+   "series": "C50000",
+   "wasA": 460.0,
+   "nowA": 0.46,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 25392.0,
+   "impliedWattsAfter": 0.0254
+  },
+  {
+   "reference": "R50010-T-K",
+   "series": "C50000",
+   "wasA": 460.0,
+   "nowA": 0.46,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 25392.0,
+   "impliedWattsAfter": 0.0254
+  },
+  {
+   "reference": "R50009-NT-K",
+   "series": "C50000",
+   "wasA": 510.0,
+   "nowA": 0.51,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 31212.0,
+   "impliedWattsAfter": 0.0312
+  },
+  {
+   "reference": "R50009-T-K",
+   "series": "C50000",
+   "wasA": 510.0,
+   "nowA": 0.51,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 31212.0,
+   "impliedWattsAfter": 0.0312
+  },
+  {
+   "reference": "R50008-NT-K",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "R50008-T-K",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "R50007-NT-K",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "R50007-T-K",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "R50006-NT-K",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "R50006-T-K",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "R50005-NT-K",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "R50005-T-K",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "R50004-NT-K",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "R50004-T-K",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "R50003-NT-K",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "R50003-T-K",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "R50002-NT-K",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "R50002-T-K",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "R50001-NT-K",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "R50001-T-K",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "C50039-NT-K",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 6.4,
+   "impliedWattsBefore": 46240.0,
+   "impliedWattsAfter": 0.0462
+  },
+  {
+   "reference": "C50039-T-K",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 6.4,
+   "impliedWattsBefore": 46240.0,
+   "impliedWattsAfter": 0.0462
+  },
+  {
+   "reference": "C50038-NT-K",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 5.2,
+   "impliedWattsBefore": 37570.0,
+   "impliedWattsAfter": 0.0376
+  },
+  {
+   "reference": "C50038-T-K",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 5.2,
+   "impliedWattsBefore": 37570.0,
+   "impliedWattsAfter": 0.0376
+  },
+  {
+   "reference": "C50037-NT-K",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 4.3,
+   "impliedWattsBefore": 31067.5,
+   "impliedWattsAfter": 0.0311
+  },
+  {
+   "reference": "C50037-T-K",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 4.3,
+   "impliedWattsBefore": 31067.5,
+   "impliedWattsAfter": 0.0311
+  },
+  {
+   "reference": "C50036-NT-K",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 3.5,
+   "impliedWattsBefore": 25287.5,
+   "impliedWattsAfter": 0.0253
+  },
+  {
+   "reference": "C50036-T-K",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 3.5,
+   "impliedWattsBefore": 25287.5,
+   "impliedWattsAfter": 0.0253
+  },
+  {
+   "reference": "C50035-NT-K",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 3.3,
+   "impliedWattsBefore": 23842.5,
+   "impliedWattsAfter": 0.0238
+  },
+  {
+   "reference": "C50035-T-K",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 3.3,
+   "impliedWattsBefore": 23842.5,
+   "impliedWattsAfter": 0.0238
+  },
+  {
+   "reference": "C50034-NT-K",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 3.3,
+   "impliedWattsBefore": 23842.5,
+   "impliedWattsAfter": 0.0238
+  },
+  {
+   "reference": "C50034-T-K",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 3.3,
+   "impliedWattsBefore": 23842.5,
+   "impliedWattsAfter": 0.0238
+  },
+  {
+   "reference": "C50033-NT-K",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 1.8,
+   "impliedWattsBefore": 13005.0,
+   "impliedWattsAfter": 0.013
+  },
+  {
+   "reference": "C50033-T-K",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 1.8,
+   "impliedWattsBefore": 13005.0,
+   "impliedWattsAfter": 0.013
+  },
+  {
+   "reference": "C50032-NT-K",
+   "series": "C50000",
+   "wasA": 120.0,
+   "nowA": 0.12,
+   "dcResistanceOhm": 1.8,
+   "impliedWattsBefore": 25920.0,
+   "impliedWattsAfter": 0.0259
+  },
+  {
+   "reference": "C50032-T-K",
+   "series": "C50000",
+   "wasA": 120.0,
+   "nowA": 0.12,
+   "dcResistanceOhm": 1.8,
+   "impliedWattsBefore": 25920.0,
+   "impliedWattsAfter": 0.0259
+  },
+  {
+   "reference": "C50031-NT-K",
+   "series": "C50000",
+   "wasA": 120.0,
+   "nowA": 0.12,
+   "dcResistanceOhm": 1.8,
+   "impliedWattsBefore": 25920.0,
+   "impliedWattsAfter": 0.0259
+  },
+  {
+   "reference": "C50031-T-K",
+   "series": "C50000",
+   "wasA": 120.0,
+   "nowA": 0.12,
+   "dcResistanceOhm": 1.8,
+   "impliedWattsBefore": 25920.0,
+   "impliedWattsAfter": 0.0259
+  },
+  {
+   "reference": "C50030-NT-K",
+   "series": "C50000",
+   "wasA": 170.0,
+   "nowA": 0.17,
+   "dcResistanceOhm": 1.8,
+   "impliedWattsBefore": 52020.0,
+   "impliedWattsAfter": 0.052
+  },
+  {
+   "reference": "C50030-T-K",
+   "series": "C50000",
+   "wasA": 170.0,
+   "nowA": 0.17,
+   "dcResistanceOhm": 1.8,
+   "impliedWattsBefore": 52020.0,
+   "impliedWattsAfter": 0.052
+  },
+  {
+   "reference": "C50029-NT-K",
+   "series": "C50000",
+   "wasA": 170.0,
+   "nowA": 0.17,
+   "dcResistanceOhm": 1.7,
+   "impliedWattsBefore": 49130.0,
+   "impliedWattsAfter": 0.0491
+  },
+  {
+   "reference": "C50029-T-K",
+   "series": "C50000",
+   "wasA": 170.0,
+   "nowA": 0.17,
+   "dcResistanceOhm": 1.7,
+   "impliedWattsBefore": 49130.0,
+   "impliedWattsAfter": 0.0491
+  },
+  {
+   "reference": "C50028-NT-K",
+   "series": "C50000",
+   "wasA": 170.0,
+   "nowA": 0.17,
+   "dcResistanceOhm": 1.7,
+   "impliedWattsBefore": 49130.0,
+   "impliedWattsAfter": 0.0491
+  },
+  {
+   "reference": "C50028-T-K",
+   "series": "C50000",
+   "wasA": 170.0,
+   "nowA": 0.17,
+   "dcResistanceOhm": 1.7,
+   "impliedWattsBefore": 49130.0,
+   "impliedWattsAfter": 0.0491
+  },
+  {
+   "reference": "C50027-NT-K",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.6,
+   "impliedWattsBefore": 70560.0,
+   "impliedWattsAfter": 0.0706
+  },
+  {
+   "reference": "C50027-T-K",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.6,
+   "impliedWattsBefore": 70560.0,
+   "impliedWattsAfter": 0.0706
+  },
+  {
+   "reference": "C50026-NT-K",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.6,
+   "impliedWattsBefore": 70560.0,
+   "impliedWattsAfter": 0.0706
+  },
+  {
+   "reference": "C50026-T-K",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.6,
+   "impliedWattsBefore": 70560.0,
+   "impliedWattsAfter": 0.0706
+  },
+  {
+   "reference": "C50025-NT-K",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.4,
+   "impliedWattsBefore": 61740.0,
+   "impliedWattsAfter": 0.0617
+  },
+  {
+   "reference": "C50025-T-K",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.4,
+   "impliedWattsBefore": 61740.0,
+   "impliedWattsAfter": 0.0617
+  },
+  {
+   "reference": "C50024-NT-K",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.3,
+   "impliedWattsBefore": 57330.0,
+   "impliedWattsAfter": 0.0573
+  },
+  {
+   "reference": "C50024-T-K",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.3,
+   "impliedWattsBefore": 57330.0,
+   "impliedWattsAfter": 0.0573
+  },
+  {
+   "reference": "C50023-NT-K",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.0,
+   "impliedWattsBefore": 44100.0,
+   "impliedWattsAfter": 0.0441
+  },
+  {
+   "reference": "C50023-T-K",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.0,
+   "impliedWattsBefore": 44100.0,
+   "impliedWattsAfter": 0.0441
+  },
+  {
+   "reference": "C50022-NT-K",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.0,
+   "impliedWattsBefore": 44100.0,
+   "impliedWattsAfter": 0.0441
+  },
+  {
+   "reference": "C50022-T-K",
+   "series": "C50000",
+   "wasA": 210.0,
+   "nowA": 0.21,
+   "dcResistanceOhm": 1.0,
+   "impliedWattsBefore": 44100.0,
+   "impliedWattsAfter": 0.0441
+  },
+  {
+   "reference": "C50021-NT-K",
+   "series": "C50000",
+   "wasA": 250.0,
+   "nowA": 0.25,
+   "dcResistanceOhm": 0.58,
+   "impliedWattsBefore": 36250.0,
+   "impliedWattsAfter": 0.0362
+  },
+  {
+   "reference": "C50021-T-K",
+   "series": "C50000",
+   "wasA": 250.0,
+   "nowA": 0.25,
+   "dcResistanceOhm": 0.58,
+   "impliedWattsBefore": 36250.0,
+   "impliedWattsAfter": 0.0362
+  },
+  {
+   "reference": "C50020-NT-K",
+   "series": "C50000",
+   "wasA": 250.0,
+   "nowA": 0.25,
+   "dcResistanceOhm": 0.46,
+   "impliedWattsBefore": 28750.0,
+   "impliedWattsAfter": 0.0288
+  },
+  {
+   "reference": "C50020-T-K",
+   "series": "C50000",
+   "wasA": 250.0,
+   "nowA": 0.25,
+   "dcResistanceOhm": 0.46,
+   "impliedWattsBefore": 28750.0,
+   "impliedWattsAfter": 0.0288
+  },
+  {
+   "reference": "C50019-NT-K",
+   "series": "C50000",
+   "wasA": 250.0,
+   "nowA": 0.25,
+   "dcResistanceOhm": 0.35,
+   "impliedWattsBefore": 21875.0,
+   "impliedWattsAfter": 0.0219
+  },
+  {
+   "reference": "C50019-T-K",
+   "series": "C50000",
+   "wasA": 250.0,
+   "nowA": 0.25,
+   "dcResistanceOhm": 0.35,
+   "impliedWattsBefore": 21875.0,
+   "impliedWattsAfter": 0.0219
+  },
+  {
+   "reference": "C50018-NT-K",
+   "series": "C50000",
+   "wasA": 250.0,
+   "nowA": 0.25,
+   "dcResistanceOhm": 0.29,
+   "impliedWattsBefore": 18125.0,
+   "impliedWattsAfter": 0.0181
+  },
+  {
+   "reference": "C50018-T-K",
+   "series": "C50000",
+   "wasA": 250.0,
+   "nowA": 0.25,
+   "dcResistanceOhm": 0.29,
+   "impliedWattsBefore": 18125.0,
+   "impliedWattsAfter": 0.0181
+  },
+  {
+   "reference": "C50017-NT-K",
+   "series": "C50000",
+   "wasA": 290.0,
+   "nowA": 0.29,
+   "dcResistanceOhm": 0.21,
+   "impliedWattsBefore": 17661.0,
+   "impliedWattsAfter": 0.0177
+  },
+  {
+   "reference": "C50017-T-K",
+   "series": "C50000",
+   "wasA": 290.0,
+   "nowA": 0.29,
+   "dcResistanceOhm": 0.21,
+   "impliedWattsBefore": 17661.0,
+   "impliedWattsAfter": 0.0177
+  },
+  {
+   "reference": "C50016-NT-K",
+   "series": "C50000",
+   "wasA": 290.0,
+   "nowA": 0.29,
+   "dcResistanceOhm": 0.2,
+   "impliedWattsBefore": 16820.0,
+   "impliedWattsAfter": 0.0168
+  },
+  {
+   "reference": "C50016-T-K",
+   "series": "C50000",
+   "wasA": 290.0,
+   "nowA": 0.29,
+   "dcResistanceOhm": 0.2,
+   "impliedWattsBefore": 16820.0,
+   "impliedWattsAfter": 0.0168
+  },
+  {
+   "reference": "C50015-NT-K",
+   "series": "C50000",
+   "wasA": 290.0,
+   "nowA": 0.29,
+   "dcResistanceOhm": 0.17,
+   "impliedWattsBefore": 14297.0,
+   "impliedWattsAfter": 0.0143
+  },
+  {
+   "reference": "C50015-T-K",
+   "series": "C50000",
+   "wasA": 290.0,
+   "nowA": 0.29,
+   "dcResistanceOhm": 0.17,
+   "impliedWattsBefore": 14297.0,
+   "impliedWattsAfter": 0.0143
+  },
+  {
+   "reference": "C50014-NT-K",
+   "series": "C50000",
+   "wasA": 290.0,
+   "nowA": 0.29,
+   "dcResistanceOhm": 0.15,
+   "impliedWattsBefore": 12615.0,
+   "impliedWattsAfter": 0.0126
+  },
+  {
+   "reference": "C50014-T-K",
+   "series": "C50000",
+   "wasA": 290.0,
+   "nowA": 0.29,
+   "dcResistanceOhm": 0.15,
+   "impliedWattsBefore": 12615.0,
+   "impliedWattsAfter": 0.0126
+  },
+  {
+   "reference": "C50013-NT-K",
+   "series": "C50000",
+   "wasA": 340.0,
+   "nowA": 0.34,
+   "dcResistanceOhm": 0.14,
+   "impliedWattsBefore": 16184.0,
+   "impliedWattsAfter": 0.0162
+  },
+  {
+   "reference": "C50013-T-K",
+   "series": "C50000",
+   "wasA": 340.0,
+   "nowA": 0.34,
+   "dcResistanceOhm": 0.14,
+   "impliedWattsBefore": 16184.0,
+   "impliedWattsAfter": 0.0162
+  },
+  {
+   "reference": "C50012-NT-K",
+   "series": "C50000",
+   "wasA": 380.0,
+   "nowA": 0.38,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 17328.0,
+   "impliedWattsAfter": 0.0173
+  },
+  {
+   "reference": "C50012-T-K",
+   "series": "C50000",
+   "wasA": 380.0,
+   "nowA": 0.38,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 17328.0,
+   "impliedWattsAfter": 0.0173
+  },
+  {
+   "reference": "C50011-NT-K",
+   "series": "C50000",
+   "wasA": 420.0,
+   "nowA": 0.42,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 21168.0,
+   "impliedWattsAfter": 0.0212
+  },
+  {
+   "reference": "C50011-T-K",
+   "series": "C50000",
+   "wasA": 420.0,
+   "nowA": 0.42,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 21168.0,
+   "impliedWattsAfter": 0.0212
+  },
+  {
+   "reference": "C50010-NT-K",
+   "series": "C50000",
+   "wasA": 460.0,
+   "nowA": 0.46,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 25392.0,
+   "impliedWattsAfter": 0.0254
+  },
+  {
+   "reference": "C50010-T-K",
+   "series": "C50000",
+   "wasA": 460.0,
+   "nowA": 0.46,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 25392.0,
+   "impliedWattsAfter": 0.0254
+  },
+  {
+   "reference": "C50009-NT-K",
+   "series": "C50000",
+   "wasA": 510.0,
+   "nowA": 0.51,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 31212.0,
+   "impliedWattsAfter": 0.0312
+  },
+  {
+   "reference": "C50009-T-K",
+   "series": "C50000",
+   "wasA": 510.0,
+   "nowA": 0.51,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 31212.0,
+   "impliedWattsAfter": 0.0312
+  },
+  {
+   "reference": "C50008-NT-K",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "C50008-T-K",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "C50007-NT-K",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "C50007-T-K",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "C50006-NT-K",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "C50006-T-K",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "C50005-NT-K",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "C50005-T-K",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "C50004-NT-K",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "C50004-T-K",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "C50003-NT-K",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "C50003-T-K",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "C50002-NT-K",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "C50002-T-K",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "C50001-NT-K",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "C50001-T-K",
+   "series": "C50000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 47628.0,
+   "impliedWattsAfter": 0.0476
+  },
+  {
+   "reference": "R50039-NT-J",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 6.4,
+   "impliedWattsBefore": 46240.0,
+   "impliedWattsAfter": 0.0462
+  },
+  {
+   "reference": "R50039-T-J",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 6.4,
+   "impliedWattsBefore": 46240.0,
+   "impliedWattsAfter": 0.0462
+  },
+  {
+   "reference": "R50038-NT-J",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 5.2,
+   "impliedWattsBefore": 37570.0,
+   "impliedWattsAfter": 0.0376
+  },
+  {
+   "reference": "R50038-T-J",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 5.2,
+   "impliedWattsBefore": 37570.0,
+   "impliedWattsAfter": 0.0376
+  },
+  {
+   "reference": "R50037-NT-J",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 4.3,
+   "impliedWattsBefore": 31067.5,
+   "impliedWattsAfter": 0.0311
+  },
+  {
+   "reference": "R50037-T-J",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 4.3,
+   "impliedWattsBefore": 31067.5,
+   "impliedWattsAfter": 0.0311
+  },
+  {
+   "reference": "R50036-NT-J",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 3.5,
+   "impliedWattsBefore": 25287.5,
+   "impliedWattsAfter": 0.0253
+  },
+  {
+   "reference": "R50036-T-J",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 3.5,
+   "impliedWattsBefore": 25287.5,
+   "impliedWattsAfter": 0.0253
+  },
+  {
+   "reference": "R50035-NT-J",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 3.3,
+   "impliedWattsBefore": 23842.5,
+   "impliedWattsAfter": 0.0238
+  },
+  {
+   "reference": "R50035-T-J",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 3.3,
+   "impliedWattsBefore": 23842.5,
+   "impliedWattsAfter": 0.0238
+  },
+  {
+   "reference": "R50034-NT-J",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 3.3,
+   "impliedWattsBefore": 23842.5,
+   "impliedWattsAfter": 0.0238
+  },
+  {
+   "reference": "R50034-T-J",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 3.3,
+   "impliedWattsBefore": 23842.5,
+   "impliedWattsAfter": 0.0238
+  },
+  {
+   "reference": "R50033-NT-J",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 1.8,
+   "impliedWattsBefore": 13005.0,
+   "impliedWattsAfter": 0.013
+  },
+  {
+   "reference": "R50033-T-J",
+   "series": "C50000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 1.8,
+   "impliedWattsBefore": 13005.0,
+   "impliedWattsAfter": 0.013
+  },
+  {
+   "reference": "R50032-NT-J",
+   "series": "C50000",
+   "wasA": 120.0,
+   "nowA": 0.12,
+   "dcResistanceOhm": 1.8,
+   "impliedWattsBefore": 25920.0,
+   "impliedWattsAfter": 0.0259
+  },
+  {
+   "reference": "R50032-T-J",
+   "series": "C50000",
+   "wasA": 120.0,
+   "nowA": 0.12,
+   "dcResistanceOhm": 1.8,
+   "impliedWattsBefore": 25920.0,
+   "impliedWattsAfter": 0.0259
+  },
+  {
+   "reference": "R50031-NT-J",
+   "series": "C50000",
+   "wasA": 120.0,
+   "nowA": 0.12,
+   "dcResistanceOhm": 1.8,
+   "impliedWattsBefore": 25920.0,
+   "impliedWattsAfter": 0.0259
+  },
+  {
+   "reference": "R50031-T-J",
+   "series": "C50000",
+   "wasA": 120.0,
+   "nowA": 0.12,
+   "dcResistanceOhm": 1.8,
+   "impliedWattsBefore": 25920.0,
+   "impliedWattsAfter": 0.0259
+  },
+  {
+   "reference": "R50030-NT-J",
+   "series": "C50000",
+   "wasA": 170.0,
+   "nowA": 0.17,
+   "dcResistanceOhm": 1.8,
+   "impliedWattsBefore": 52020.0,
+   "impliedWattsAfter": 0.052
+  },
+  {
+   "reference": "R50030-T-J",
+   "series": "C50000",
+   "wasA": 170.0,
+   "nowA": 0.17,
+   "dcResistanceOhm": 1.8,
+   "impliedWattsBefore": 52020.0,
+   "impliedWattsAfter": 0.052
+  },
+  {
+   "reference": "C27060-NT",
+   "series": "C27000",
+   "wasA": 12.0,
+   "nowA": 0.012,
+   "dcResistanceOhm": 138.0,
+   "impliedWattsBefore": 19872.0,
+   "impliedWattsAfter": 0.0199
+  },
+  {
+   "reference": "C27060",
+   "series": "C27000",
+   "wasA": 12.0,
+   "nowA": 0.012,
+   "dcResistanceOhm": 138.0,
+   "impliedWattsBefore": 19872.0,
+   "impliedWattsAfter": 0.0199
+  },
+  {
+   "reference": "C27059-NT",
+   "series": "C27000",
+   "wasA": 13.0,
+   "nowA": 0.013,
+   "dcResistanceOhm": 115.0,
+   "impliedWattsBefore": 19435.0,
+   "impliedWattsAfter": 0.0194
+  },
+  {
+   "reference": "C27059",
+   "series": "C27000",
+   "wasA": 13.0,
+   "nowA": 0.013,
+   "dcResistanceOhm": 115.0,
+   "impliedWattsBefore": 19435.0,
+   "impliedWattsAfter": 0.0194
+  },
+  {
+   "reference": "C27058-NT",
+   "series": "C27000",
+   "wasA": 14.0,
+   "nowA": 0.014,
+   "dcResistanceOhm": 98.0,
+   "impliedWattsBefore": 19208.0,
+   "impliedWattsAfter": 0.0192
+  },
+  {
+   "reference": "C27058",
+   "series": "C27000",
+   "wasA": 14.0,
+   "nowA": 0.014,
+   "dcResistanceOhm": 98.0,
+   "impliedWattsBefore": 19208.0,
+   "impliedWattsAfter": 0.0192
+  },
+  {
+   "reference": "C27057-NT",
+   "series": "C27000",
+   "wasA": 15.0,
+   "nowA": 0.015,
+   "dcResistanceOhm": 89.0,
+   "impliedWattsBefore": 20025.0,
+   "impliedWattsAfter": 0.02
+  },
+  {
+   "reference": "C27057",
+   "series": "C27000",
+   "wasA": 15.0,
+   "nowA": 0.015,
+   "dcResistanceOhm": 89.0,
+   "impliedWattsBefore": 20025.0,
+   "impliedWattsAfter": 0.02
+  },
+  {
+   "reference": "C27056-NT",
+   "series": "C27000",
+   "wasA": 16.0,
+   "nowA": 0.016,
+   "dcResistanceOhm": 79.0,
+   "impliedWattsBefore": 20224.0,
+   "impliedWattsAfter": 0.0202
+  },
+  {
+   "reference": "C27056",
+   "series": "C27000",
+   "wasA": 16.0,
+   "nowA": 0.016,
+   "dcResistanceOhm": 79.0,
+   "impliedWattsBefore": 20224.0,
+   "impliedWattsAfter": 0.0202
+  },
+  {
+   "reference": "C27055-NT",
+   "series": "C27000",
+   "wasA": 19.0,
+   "nowA": 0.019,
+   "dcResistanceOhm": 53.0,
+   "impliedWattsBefore": 19133.0,
+   "impliedWattsAfter": 0.0191
+  },
+  {
+   "reference": "C27055",
+   "series": "C27000",
+   "wasA": 19.0,
+   "nowA": 0.019,
+   "dcResistanceOhm": 53.0,
+   "impliedWattsBefore": 19133.0,
+   "impliedWattsAfter": 0.0191
+  },
+  {
+   "reference": "C27054-NT",
+   "series": "C27000",
+   "wasA": 20.0,
+   "nowA": 0.02,
+   "dcResistanceOhm": 49.0,
+   "impliedWattsBefore": 19600.0,
+   "impliedWattsAfter": 0.0196
+  },
+  {
+   "reference": "C27054",
+   "series": "C27000",
+   "wasA": 20.0,
+   "nowA": 0.02,
+   "dcResistanceOhm": 49.0,
+   "impliedWattsBefore": 19600.0,
+   "impliedWattsAfter": 0.0196
+  },
+  {
+   "reference": "C27053-NT",
+   "series": "C27000",
+   "wasA": 22.0,
+   "nowA": 0.022,
+   "dcResistanceOhm": 42.0,
+   "impliedWattsBefore": 20328.0,
+   "impliedWattsAfter": 0.0203
+  },
+  {
+   "reference": "C27053",
+   "series": "C27000",
+   "wasA": 22.0,
+   "nowA": 0.022,
+   "dcResistanceOhm": 42.0,
+   "impliedWattsBefore": 20328.0,
+   "impliedWattsAfter": 0.0203
+  },
+  {
+   "reference": "C27052-NT",
+   "series": "C27000",
+   "wasA": 23.0,
+   "nowA": 0.023,
+   "dcResistanceOhm": 37.0,
+   "impliedWattsBefore": 19573.0,
+   "impliedWattsAfter": 0.0196
+  },
+  {
+   "reference": "C27052",
+   "series": "C27000",
+   "wasA": 23.0,
+   "nowA": 0.023,
+   "dcResistanceOhm": 37.0,
+   "impliedWattsBefore": 19573.0,
+   "impliedWattsAfter": 0.0196
+  },
+  {
+   "reference": "C27051-NT",
+   "series": "C27000",
+   "wasA": 24.0,
+   "nowA": 0.024,
+   "dcResistanceOhm": 33.0,
+   "impliedWattsBefore": 19008.0,
+   "impliedWattsAfter": 0.019
+  },
+  {
+   "reference": "C27051",
+   "series": "C27000",
+   "wasA": 24.0,
+   "nowA": 0.024,
+   "dcResistanceOhm": 33.0,
+   "impliedWattsBefore": 19008.0,
+   "impliedWattsAfter": 0.019
+  },
+  {
+   "reference": "C27050-NT",
+   "series": "C27000",
+   "wasA": 26.0,
+   "nowA": 0.026,
+   "dcResistanceOhm": 30.0,
+   "impliedWattsBefore": 20280.0,
+   "impliedWattsAfter": 0.0203
+  },
+  {
+   "reference": "C27050",
+   "series": "C27000",
+   "wasA": 26.0,
+   "nowA": 0.026,
+   "dcResistanceOhm": 30.0,
+   "impliedWattsBefore": 20280.0,
+   "impliedWattsAfter": 0.0203
+  },
+  {
+   "reference": "C27049-NT",
+   "series": "C27000",
+   "wasA": 28.0,
+   "nowA": 0.028,
+   "dcResistanceOhm": 25.0,
+   "impliedWattsBefore": 19600.0,
+   "impliedWattsAfter": 0.0196
+  },
+  {
+   "reference": "C27049",
+   "series": "C27000",
+   "wasA": 28.0,
+   "nowA": 0.028,
+   "dcResistanceOhm": 25.0,
+   "impliedWattsBefore": 19600.0,
+   "impliedWattsAfter": 0.0196
+  },
+  {
+   "reference": "C27048-NT",
+   "series": "C27000",
+   "wasA": 30.0,
+   "nowA": 0.03,
+   "dcResistanceOhm": 21.0,
+   "impliedWattsBefore": 18900.0,
+   "impliedWattsAfter": 0.0189
+  },
+  {
+   "reference": "C27048",
+   "series": "C27000",
+   "wasA": 30.0,
+   "nowA": 0.03,
+   "dcResistanceOhm": 21.0,
+   "impliedWattsBefore": 18900.0,
+   "impliedWattsAfter": 0.0189
+  },
+  {
+   "reference": "C27047-NT",
+   "series": "C27000",
+   "wasA": 34.0,
+   "nowA": 0.034,
+   "dcResistanceOhm": 18.0,
+   "impliedWattsBefore": 20808.0,
+   "impliedWattsAfter": 0.0208
+  },
+  {
+   "reference": "C27047",
+   "series": "C27000",
+   "wasA": 34.0,
+   "nowA": 0.034,
+   "dcResistanceOhm": 18.0,
+   "impliedWattsBefore": 20808.0,
+   "impliedWattsAfter": 0.0208
+  },
+  {
+   "reference": "C27046-NT",
+   "series": "C27000",
+   "wasA": 35.0,
+   "nowA": 0.035,
+   "dcResistanceOhm": 15.0,
+   "impliedWattsBefore": 18375.0,
+   "impliedWattsAfter": 0.0184
+  },
+  {
+   "reference": "C27046",
+   "series": "C27000",
+   "wasA": 35.0,
+   "nowA": 0.035,
+   "dcResistanceOhm": 15.0,
+   "impliedWattsBefore": 18375.0,
+   "impliedWattsAfter": 0.0184
+  },
+  {
+   "reference": "C27045-NT",
+   "series": "C27000",
+   "wasA": 39.0,
+   "nowA": 0.039,
+   "dcResistanceOhm": 14.0,
+   "impliedWattsBefore": 21294.0,
+   "impliedWattsAfter": 0.0213
+  },
+  {
+   "reference": "C27045",
+   "series": "C27000",
+   "wasA": 39.0,
+   "nowA": 0.039,
+   "dcResistanceOhm": 14.0,
+   "impliedWattsBefore": 21294.0,
+   "impliedWattsAfter": 0.0213
+  },
+  {
+   "reference": "C27044-NT",
+   "series": "C27000",
+   "wasA": 45.0,
+   "nowA": 0.045,
+   "dcResistanceOhm": 9.8,
+   "impliedWattsBefore": 19845.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "C27044",
+   "series": "C27000",
+   "wasA": 45.0,
+   "nowA": 0.045,
+   "dcResistanceOhm": 9.8,
+   "impliedWattsBefore": 19845.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "C27043-NT",
+   "series": "C27000",
+   "wasA": 51.0,
+   "nowA": 0.051,
+   "dcResistanceOhm": 7.5,
+   "impliedWattsBefore": 19507.5,
+   "impliedWattsAfter": 0.0195
+  },
+  {
+   "reference": "C27043",
+   "series": "C27000",
+   "wasA": 51.0,
+   "nowA": 0.051,
+   "dcResistanceOhm": 7.5,
+   "impliedWattsBefore": 19507.5,
+   "impliedWattsAfter": 0.0195
+  },
+  {
+   "reference": "C27042-NT",
+   "series": "C27000",
+   "wasA": 57.0,
+   "nowA": 0.057,
+   "dcResistanceOhm": 6.4,
+   "impliedWattsBefore": 20793.6,
+   "impliedWattsAfter": 0.0208
+  },
+  {
+   "reference": "C27042",
+   "series": "C27000",
+   "wasA": 57.0,
+   "nowA": 0.057,
+   "dcResistanceOhm": 6.4,
+   "impliedWattsBefore": 20793.6,
+   "impliedWattsAfter": 0.0208
+  },
+  {
+   "reference": "C27041-NT",
+   "series": "C27000",
+   "wasA": 63.0,
+   "nowA": 0.063,
+   "dcResistanceOhm": 5.0,
+   "impliedWattsBefore": 19845.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "C27041",
+   "series": "C27000",
+   "wasA": 63.0,
+   "nowA": 0.063,
+   "dcResistanceOhm": 5.0,
+   "impliedWattsBefore": 19845.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "C27040-NT",
+   "series": "C27000",
+   "wasA": 72.0,
+   "nowA": 0.072,
+   "dcResistanceOhm": 4.1,
+   "impliedWattsBefore": 21254.4,
+   "impliedWattsAfter": 0.0213
+  },
+  {
+   "reference": "C27040",
+   "series": "C27000",
+   "wasA": 72.0,
+   "nowA": 0.072,
+   "dcResistanceOhm": 4.1,
+   "impliedWattsBefore": 21254.4,
+   "impliedWattsAfter": 0.0213
+  },
+  {
+   "reference": "C27039-NT",
+   "series": "C27000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 3.3,
+   "impliedWattsBefore": 23842.5,
+   "impliedWattsAfter": 0.0238
+  },
+  {
+   "reference": "C27039",
+   "series": "C27000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 3.3,
+   "impliedWattsBefore": 23842.5,
+   "impliedWattsAfter": 0.0238
+  },
+  {
+   "reference": "C27038-NT",
+   "series": "C27000",
+   "wasA": 89.0,
+   "nowA": 0.089,
+   "dcResistanceOhm": 2.6,
+   "impliedWattsBefore": 20594.6,
+   "impliedWattsAfter": 0.0206
+  },
+  {
+   "reference": "C27038",
+   "series": "C27000",
+   "wasA": 89.0,
+   "nowA": 0.089,
+   "dcResistanceOhm": 2.6,
+   "impliedWattsBefore": 20594.6,
+   "impliedWattsAfter": 0.0206
+  },
+  {
+   "reference": "C27037-NT",
+   "series": "C27000",
+   "wasA": 93.0,
+   "nowA": 0.093,
+   "dcResistanceOhm": 2.3,
+   "impliedWattsBefore": 19892.7,
+   "impliedWattsAfter": 0.0199
+  },
+  {
+   "reference": "C27037",
+   "series": "C27000",
+   "wasA": 93.0,
+   "nowA": 0.093,
+   "dcResistanceOhm": 2.3,
+   "impliedWattsBefore": 19892.7,
+   "impliedWattsAfter": 0.0199
+  },
+  {
+   "reference": "R26036-T-K",
+   "series": "C26000",
+   "wasA": 73.0,
+   "nowA": 0.073,
+   "dcResistanceOhm": 3.8,
+   "impliedWattsBefore": 20250.2,
+   "impliedWattsAfter": 0.0203
+  },
+  {
+   "reference": "R26036-T-J",
+   "series": "C26000",
+   "wasA": 73.0,
+   "nowA": 0.073,
+   "dcResistanceOhm": 3.8,
+   "impliedWattsBefore": 20250.2,
+   "impliedWattsAfter": 0.0203
+  },
+  {
+   "reference": "R26036-NT-K",
+   "series": "C26000",
+   "wasA": 73.0,
+   "nowA": 0.073,
+   "dcResistanceOhm": 3.8,
+   "impliedWattsBefore": 20250.2,
+   "impliedWattsAfter": 0.0203
+  },
+  {
+   "reference": "R26036-NT-J",
+   "series": "C26000",
+   "wasA": 73.0,
+   "nowA": 0.073,
+   "dcResistanceOhm": 3.8,
+   "impliedWattsBefore": 20250.2,
+   "impliedWattsAfter": 0.0203
+  },
+  {
+   "reference": "R26035-T-K",
+   "series": "C26000",
+   "wasA": 80.0,
+   "nowA": 0.08,
+   "dcResistanceOhm": 3.2,
+   "impliedWattsBefore": 20480.0,
+   "impliedWattsAfter": 0.0205
+  },
+  {
+   "reference": "R26035-T-J",
+   "series": "C26000",
+   "wasA": 80.0,
+   "nowA": 0.08,
+   "dcResistanceOhm": 3.2,
+   "impliedWattsBefore": 20480.0,
+   "impliedWattsAfter": 0.0205
+  },
+  {
+   "reference": "R26035-NT-K",
+   "series": "C26000",
+   "wasA": 80.0,
+   "nowA": 0.08,
+   "dcResistanceOhm": 3.2,
+   "impliedWattsBefore": 20480.0,
+   "impliedWattsAfter": 0.0205
+  },
+  {
+   "reference": "R26035-NT-J",
+   "series": "C26000",
+   "wasA": 80.0,
+   "nowA": 0.08,
+   "dcResistanceOhm": 3.2,
+   "impliedWattsBefore": 20480.0,
+   "impliedWattsAfter": 0.0205
+  },
+  {
+   "reference": "R26034-T-K",
+   "series": "C26000",
+   "wasA": 83.0,
+   "nowA": 0.083,
+   "dcResistanceOhm": 3.0,
+   "impliedWattsBefore": 20667.0,
+   "impliedWattsAfter": 0.0207
+  },
+  {
+   "reference": "R26034-T-J",
+   "series": "C26000",
+   "wasA": 83.0,
+   "nowA": 0.083,
+   "dcResistanceOhm": 3.0,
+   "impliedWattsBefore": 20667.0,
+   "impliedWattsAfter": 0.0207
+  },
+  {
+   "reference": "R26034-NT-K",
+   "series": "C26000",
+   "wasA": 83.0,
+   "nowA": 0.083,
+   "dcResistanceOhm": 3.0,
+   "impliedWattsBefore": 20667.0,
+   "impliedWattsAfter": 0.0207
+  },
+  {
+   "reference": "R26034-NT-J",
+   "series": "C26000",
+   "wasA": 83.0,
+   "nowA": 0.083,
+   "dcResistanceOhm": 3.0,
+   "impliedWattsBefore": 20667.0,
+   "impliedWattsAfter": 0.0207
+  },
+  {
+   "reference": "R26033-T-K",
+   "series": "C26000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 2.9,
+   "impliedWattsBefore": 20952.5,
+   "impliedWattsAfter": 0.021
+  },
+  {
+   "reference": "R26033-T-J",
+   "series": "C26000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 2.9,
+   "impliedWattsBefore": 20952.5,
+   "impliedWattsAfter": 0.021
+  },
+  {
+   "reference": "R26033-NT-K",
+   "series": "C26000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 2.9,
+   "impliedWattsBefore": 20952.5,
+   "impliedWattsAfter": 0.021
+  },
+  {
+   "reference": "R26033-NT-J",
+   "series": "C26000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 2.9,
+   "impliedWattsBefore": 20952.5,
+   "impliedWattsAfter": 0.021
+  },
+  {
+   "reference": "R26032-T-K",
+   "series": "C26000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 2.7,
+   "impliedWattsBefore": 19507.5,
+   "impliedWattsAfter": 0.0195
+  },
+  {
+   "reference": "R26032-T-J",
+   "series": "C26000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 2.7,
+   "impliedWattsBefore": 19507.5,
+   "impliedWattsAfter": 0.0195
+  },
+  {
+   "reference": "R26032-NT-K",
+   "series": "C26000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 2.7,
+   "impliedWattsBefore": 19507.5,
+   "impliedWattsAfter": 0.0195
+  },
+  {
+   "reference": "R26032-NT-J",
+   "series": "C26000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 2.7,
+   "impliedWattsBefore": 19507.5,
+   "impliedWattsAfter": 0.0195
+  },
+  {
+   "reference": "R26031-T-K",
+   "series": "C26000",
+   "wasA": 93.0,
+   "nowA": 0.093,
+   "dcResistanceOhm": 2.3,
+   "impliedWattsBefore": 19892.7,
+   "impliedWattsAfter": 0.0199
+  },
+  {
+   "reference": "R26031-T-J",
+   "series": "C26000",
+   "wasA": 93.0,
+   "nowA": 0.093,
+   "dcResistanceOhm": 2.3,
+   "impliedWattsBefore": 19892.7,
+   "impliedWattsAfter": 0.0199
+  },
+  {
+   "reference": "R26031-NT-K",
+   "series": "C26000",
+   "wasA": 93.0,
+   "nowA": 0.093,
+   "dcResistanceOhm": 2.3,
+   "impliedWattsBefore": 19892.7,
+   "impliedWattsAfter": 0.0199
+  },
+  {
+   "reference": "R26031-NT-J",
+   "series": "C26000",
+   "wasA": 93.0,
+   "nowA": 0.093,
+   "dcResistanceOhm": 2.3,
+   "impliedWattsBefore": 19892.7,
+   "impliedWattsAfter": 0.0199
+  },
+  {
+   "reference": "R26030-T-K",
+   "series": "C26000",
+   "wasA": 100.0,
+   "nowA": 0.1,
+   "dcResistanceOhm": 2.1,
+   "impliedWattsBefore": 21000.0,
+   "impliedWattsAfter": 0.021
+  },
+  {
+   "reference": "R26030-T-J",
+   "series": "C26000",
+   "wasA": 100.0,
+   "nowA": 0.1,
+   "dcResistanceOhm": 2.1,
+   "impliedWattsBefore": 21000.0,
+   "impliedWattsAfter": 0.021
+  },
+  {
+   "reference": "R26030-NT-K",
+   "series": "C26000",
+   "wasA": 100.0,
+   "nowA": 0.1,
+   "dcResistanceOhm": 2.1,
+   "impliedWattsBefore": 21000.0,
+   "impliedWattsAfter": 0.021
+  },
+  {
+   "reference": "R26030-NT-J",
+   "series": "C26000",
+   "wasA": 100.0,
+   "nowA": 0.1,
+   "dcResistanceOhm": 2.1,
+   "impliedWattsBefore": 21000.0,
+   "impliedWattsAfter": 0.021
+  },
+  {
+   "reference": "R26029-T-K",
+   "series": "C26000",
+   "wasA": 110.0,
+   "nowA": 0.11,
+   "dcResistanceOhm": 1.7,
+   "impliedWattsBefore": 20570.0,
+   "impliedWattsAfter": 0.0206
+  },
+  {
+   "reference": "R26029-T-J",
+   "series": "C26000",
+   "wasA": 110.0,
+   "nowA": 0.11,
+   "dcResistanceOhm": 1.7,
+   "impliedWattsBefore": 20570.0,
+   "impliedWattsAfter": 0.0206
+  },
+  {
+   "reference": "R26029-NT-K",
+   "series": "C26000",
+   "wasA": 110.0,
+   "nowA": 0.11,
+   "dcResistanceOhm": 1.7,
+   "impliedWattsBefore": 20570.0,
+   "impliedWattsAfter": 0.0206
+  },
+  {
+   "reference": "R26029-NT-J",
+   "series": "C26000",
+   "wasA": 110.0,
+   "nowA": 0.11,
+   "dcResistanceOhm": 1.7,
+   "impliedWattsBefore": 20570.0,
+   "impliedWattsAfter": 0.0206
+  },
+  {
+   "reference": "R26028-T-K",
+   "series": "C26000",
+   "wasA": 110.0,
+   "nowA": 0.11,
+   "dcResistanceOhm": 1.5,
+   "impliedWattsBefore": 18150.0,
+   "impliedWattsAfter": 0.0181
+  },
+  {
+   "reference": "R26028-T-J",
+   "series": "C26000",
+   "wasA": 110.0,
+   "nowA": 0.11,
+   "dcResistanceOhm": 1.5,
+   "impliedWattsBefore": 18150.0,
+   "impliedWattsAfter": 0.0181
+  },
+  {
+   "reference": "R26028-NT-K",
+   "series": "C26000",
+   "wasA": 110.0,
+   "nowA": 0.11,
+   "dcResistanceOhm": 1.5,
+   "impliedWattsBefore": 18150.0,
+   "impliedWattsAfter": 0.0181
+  },
+  {
+   "reference": "R26028-NT-J",
+   "series": "C26000",
+   "wasA": 110.0,
+   "nowA": 0.11,
+   "dcResistanceOhm": 1.5,
+   "impliedWattsBefore": 18150.0,
+   "impliedWattsAfter": 0.0181
+  },
+  {
+   "reference": "R26027-T-K",
+   "series": "C26000",
+   "wasA": 120.0,
+   "nowA": 0.12,
+   "dcResistanceOhm": 1.4,
+   "impliedWattsBefore": 20160.0,
+   "impliedWattsAfter": 0.0202
+  },
+  {
+   "reference": "R26027-T-J",
+   "series": "C26000",
+   "wasA": 120.0,
+   "nowA": 0.12,
+   "dcResistanceOhm": 1.4,
+   "impliedWattsBefore": 20160.0,
+   "impliedWattsAfter": 0.0202
+  },
+  {
+   "reference": "R26027-NT-K",
+   "series": "C26000",
+   "wasA": 120.0,
+   "nowA": 0.12,
+   "dcResistanceOhm": 1.4,
+   "impliedWattsBefore": 20160.0,
+   "impliedWattsAfter": 0.0202
+  },
+  {
+   "reference": "R26027-NT-J",
+   "series": "C26000",
+   "wasA": 120.0,
+   "nowA": 0.12,
+   "dcResistanceOhm": 1.4,
+   "impliedWattsBefore": 20160.0,
+   "impliedWattsAfter": 0.0202
+  },
+  {
+   "reference": "R26026-T-K",
+   "series": "C26000",
+   "wasA": 130.0,
+   "nowA": 0.13,
+   "dcResistanceOhm": 1.3,
+   "impliedWattsBefore": 21970.0,
+   "impliedWattsAfter": 0.022
+  },
+  {
+   "reference": "R26026-T-J",
+   "series": "C26000",
+   "wasA": 130.0,
+   "nowA": 0.13,
+   "dcResistanceOhm": 1.3,
+   "impliedWattsBefore": 21970.0,
+   "impliedWattsAfter": 0.022
+  },
+  {
+   "reference": "R26026-NT-K",
+   "series": "C26000",
+   "wasA": 130.0,
+   "nowA": 0.13,
+   "dcResistanceOhm": 1.3,
+   "impliedWattsBefore": 21970.0,
+   "impliedWattsAfter": 0.022
+  },
+  {
+   "reference": "R26026-NT-J",
+   "series": "C26000",
+   "wasA": 130.0,
+   "nowA": 0.13,
+   "dcResistanceOhm": 1.3,
+   "impliedWattsBefore": 21970.0,
+   "impliedWattsAfter": 0.022
+  },
+  {
+   "reference": "R26025-T-K",
+   "series": "C26000",
+   "wasA": 150.0,
+   "nowA": 0.15,
+   "dcResistanceOhm": 0.87,
+   "impliedWattsBefore": 19575.0,
+   "impliedWattsAfter": 0.0196
+  },
+  {
+   "reference": "R26025-T-J",
+   "series": "C26000",
+   "wasA": 150.0,
+   "nowA": 0.15,
+   "dcResistanceOhm": 0.87,
+   "impliedWattsBefore": 19575.0,
+   "impliedWattsAfter": 0.0196
+  },
+  {
+   "reference": "R26025-NT-K",
+   "series": "C26000",
+   "wasA": 150.0,
+   "nowA": 0.15,
+   "dcResistanceOhm": 0.87,
+   "impliedWattsBefore": 19575.0,
+   "impliedWattsAfter": 0.0196
+  },
+  {
+   "reference": "R26025-NT-J",
+   "series": "C26000",
+   "wasA": 150.0,
+   "nowA": 0.15,
+   "dcResistanceOhm": 0.87,
+   "impliedWattsBefore": 19575.0,
+   "impliedWattsAfter": 0.0196
+  },
+  {
+   "reference": "R26024-T-K",
+   "series": "C26000",
+   "wasA": 160.0,
+   "nowA": 0.16,
+   "dcResistanceOhm": 0.75,
+   "impliedWattsBefore": 19200.0,
+   "impliedWattsAfter": 0.0192
+  },
+  {
+   "reference": "R26024-T-J",
+   "series": "C26000",
+   "wasA": 160.0,
+   "nowA": 0.16,
+   "dcResistanceOhm": 0.75,
+   "impliedWattsBefore": 19200.0,
+   "impliedWattsAfter": 0.0192
+  },
+  {
+   "reference": "R26024-NT-K",
+   "series": "C26000",
+   "wasA": 160.0,
+   "nowA": 0.16,
+   "dcResistanceOhm": 0.75,
+   "impliedWattsBefore": 19200.0,
+   "impliedWattsAfter": 0.0192
+  },
+  {
+   "reference": "R26024-NT-J",
+   "series": "C26000",
+   "wasA": 160.0,
+   "nowA": 0.16,
+   "dcResistanceOhm": 0.75,
+   "impliedWattsBefore": 19200.0,
+   "impliedWattsAfter": 0.0192
+  },
+  {
+   "reference": "R26023-T-K",
+   "series": "C26000",
+   "wasA": 170.0,
+   "nowA": 0.17,
+   "dcResistanceOhm": 0.69,
+   "impliedWattsBefore": 19941.0,
+   "impliedWattsAfter": 0.0199
+  },
+  {
+   "reference": "R26023-T-J",
+   "series": "C26000",
+   "wasA": 170.0,
+   "nowA": 0.17,
+   "dcResistanceOhm": 0.69,
+   "impliedWattsBefore": 19941.0,
+   "impliedWattsAfter": 0.0199
+  },
+  {
+   "reference": "R26023-NT-K",
+   "series": "C26000",
+   "wasA": 170.0,
+   "nowA": 0.17,
+   "dcResistanceOhm": 0.69,
+   "impliedWattsBefore": 19941.0,
+   "impliedWattsAfter": 0.0199
+  },
+  {
+   "reference": "R26023-NT-J",
+   "series": "C26000",
+   "wasA": 170.0,
+   "nowA": 0.17,
+   "dcResistanceOhm": 0.69,
+   "impliedWattsBefore": 19941.0,
+   "impliedWattsAfter": 0.0199
+  },
+  {
+   "reference": "R26022-T-K",
+   "series": "C26000",
+   "wasA": 170.0,
+   "nowA": 0.17,
+   "dcResistanceOhm": 0.67,
+   "impliedWattsBefore": 19363.0,
+   "impliedWattsAfter": 0.0194
+  },
+  {
+   "reference": "R26022-T-J",
+   "series": "C26000",
+   "wasA": 170.0,
+   "nowA": 0.17,
+   "dcResistanceOhm": 0.67,
+   "impliedWattsBefore": 19363.0,
+   "impliedWattsAfter": 0.0194
+  },
+  {
+   "reference": "R26022-NT-K",
+   "series": "C26000",
+   "wasA": 170.0,
+   "nowA": 0.17,
+   "dcResistanceOhm": 0.67,
+   "impliedWattsBefore": 19363.0,
+   "impliedWattsAfter": 0.0194
+  },
+  {
+   "reference": "R26022-NT-J",
+   "series": "C26000",
+   "wasA": 170.0,
+   "nowA": 0.17,
+   "dcResistanceOhm": 0.67,
+   "impliedWattsBefore": 19363.0,
+   "impliedWattsAfter": 0.0194
+  },
+  {
+   "reference": "R26021-T-K",
+   "series": "C26000",
+   "wasA": 180.0,
+   "nowA": 0.18,
+   "dcResistanceOhm": 0.64,
+   "impliedWattsBefore": 20736.0,
+   "impliedWattsAfter": 0.0207
+  },
+  {
+   "reference": "R26021-T-J",
+   "series": "C26000",
+   "wasA": 180.0,
+   "nowA": 0.18,
+   "dcResistanceOhm": 0.64,
+   "impliedWattsBefore": 20736.0,
+   "impliedWattsAfter": 0.0207
+  },
+  {
+   "reference": "R26021-NT-K",
+   "series": "C26000",
+   "wasA": 180.0,
+   "nowA": 0.18,
+   "dcResistanceOhm": 0.64,
+   "impliedWattsBefore": 20736.0,
+   "impliedWattsAfter": 0.0207
+  },
+  {
+   "reference": "R26021-NT-J",
+   "series": "C26000",
+   "wasA": 180.0,
+   "nowA": 0.18,
+   "dcResistanceOhm": 0.64,
+   "impliedWattsBefore": 20736.0,
+   "impliedWattsAfter": 0.0207
+  },
+  {
+   "reference": "R26020-T-K",
+   "series": "C26000",
+   "wasA": 190.0,
+   "nowA": 0.19,
+   "dcResistanceOhm": 0.58,
+   "impliedWattsBefore": 20938.0,
+   "impliedWattsAfter": 0.0209
+  },
+  {
+   "reference": "R26020-T-J",
+   "series": "C26000",
+   "wasA": 190.0,
+   "nowA": 0.19,
+   "dcResistanceOhm": 0.58,
+   "impliedWattsBefore": 20938.0,
+   "impliedWattsAfter": 0.0209
+  },
+  {
+   "reference": "R26020-NT-K",
+   "series": "C26000",
+   "wasA": 190.0,
+   "nowA": 0.19,
+   "dcResistanceOhm": 0.58,
+   "impliedWattsBefore": 20938.0,
+   "impliedWattsAfter": 0.0209
+  },
+  {
+   "reference": "R26020-NT-J",
+   "series": "C26000",
+   "wasA": 190.0,
+   "nowA": 0.19,
+   "dcResistanceOhm": 0.58,
+   "impliedWattsBefore": 20938.0,
+   "impliedWattsAfter": 0.0209
+  },
+  {
+   "reference": "R26019-T-K",
+   "series": "C26000",
+   "wasA": 200.0,
+   "nowA": 0.2,
+   "dcResistanceOhm": 0.52,
+   "impliedWattsBefore": 20800.0,
+   "impliedWattsAfter": 0.0208
+  },
+  {
+   "reference": "R26019-T-J",
+   "series": "C26000",
+   "wasA": 200.0,
+   "nowA": 0.2,
+   "dcResistanceOhm": 0.52,
+   "impliedWattsBefore": 20800.0,
+   "impliedWattsAfter": 0.0208
+  },
+  {
+   "reference": "R26019-NT-K",
+   "series": "C26000",
+   "wasA": 200.0,
+   "nowA": 0.2,
+   "dcResistanceOhm": 0.52,
+   "impliedWattsBefore": 20800.0,
+   "impliedWattsAfter": 0.0208
+  },
+  {
+   "reference": "R26019-NT-J",
+   "series": "C26000",
+   "wasA": 200.0,
+   "nowA": 0.2,
+   "dcResistanceOhm": 0.52,
+   "impliedWattsBefore": 20800.0,
+   "impliedWattsAfter": 0.0208
+  },
+  {
+   "reference": "R26018-T-K",
+   "series": "C26000",
+   "wasA": 230.0,
+   "nowA": 0.23,
+   "dcResistanceOhm": 0.35,
+   "impliedWattsBefore": 18515.0,
+   "impliedWattsAfter": 0.0185
+  },
+  {
+   "reference": "R26018-T-J",
+   "series": "C26000",
+   "wasA": 230.0,
+   "nowA": 0.23,
+   "dcResistanceOhm": 0.35,
+   "impliedWattsBefore": 18515.0,
+   "impliedWattsAfter": 0.0185
+  },
+  {
+   "reference": "R26018-NT-K",
+   "series": "C26000",
+   "wasA": 230.0,
+   "nowA": 0.23,
+   "dcResistanceOhm": 0.35,
+   "impliedWattsBefore": 18515.0,
+   "impliedWattsAfter": 0.0185
+  },
+  {
+   "reference": "R26018-NT-J",
+   "series": "C26000",
+   "wasA": 230.0,
+   "nowA": 0.23,
+   "dcResistanceOhm": 0.35,
+   "impliedWattsBefore": 18515.0,
+   "impliedWattsAfter": 0.0185
+  },
+  {
+   "reference": "R26017-T-K",
+   "series": "C26000",
+   "wasA": 260.0,
+   "nowA": 0.26,
+   "dcResistanceOhm": 0.29,
+   "impliedWattsBefore": 19604.0,
+   "impliedWattsAfter": 0.0196
+  },
+  {
+   "reference": "R26017-T-J",
+   "series": "C26000",
+   "wasA": 260.0,
+   "nowA": 0.26,
+   "dcResistanceOhm": 0.29,
+   "impliedWattsBefore": 19604.0,
+   "impliedWattsAfter": 0.0196
+  },
+  {
+   "reference": "R26017-NT-K",
+   "series": "C26000",
+   "wasA": 260.0,
+   "nowA": 0.26,
+   "dcResistanceOhm": 0.29,
+   "impliedWattsBefore": 19604.0,
+   "impliedWattsAfter": 0.0196
+  },
+  {
+   "reference": "R26017-NT-J",
+   "series": "C26000",
+   "wasA": 260.0,
+   "nowA": 0.26,
+   "dcResistanceOhm": 0.29,
+   "impliedWattsBefore": 19604.0,
+   "impliedWattsAfter": 0.0196
+  },
+  {
+   "reference": "R26016-T-K",
+   "series": "C26000",
+   "wasA": 290.0,
+   "nowA": 0.29,
+   "dcResistanceOhm": 0.23,
+   "impliedWattsBefore": 19343.0,
+   "impliedWattsAfter": 0.0193
+  },
+  {
+   "reference": "R26016-T-J",
+   "series": "C26000",
+   "wasA": 290.0,
+   "nowA": 0.29,
+   "dcResistanceOhm": 0.23,
+   "impliedWattsBefore": 19343.0,
+   "impliedWattsAfter": 0.0193
+  },
+  {
+   "reference": "R26016-NT-K",
+   "series": "C26000",
+   "wasA": 290.0,
+   "nowA": 0.29,
+   "dcResistanceOhm": 0.23,
+   "impliedWattsBefore": 19343.0,
+   "impliedWattsAfter": 0.0193
+  },
+  {
+   "reference": "R26016-NT-J",
+   "series": "C26000",
+   "wasA": 290.0,
+   "nowA": 0.29,
+   "dcResistanceOhm": 0.23,
+   "impliedWattsBefore": 19343.0,
+   "impliedWattsAfter": 0.0193
+  },
+  {
+   "reference": "R26015-T-K",
+   "series": "C26000",
+   "wasA": 360.0,
+   "nowA": 0.36,
+   "dcResistanceOhm": 0.17,
+   "impliedWattsBefore": 22032.0,
+   "impliedWattsAfter": 0.022
+  },
+  {
+   "reference": "R26015-T-J",
+   "series": "C26000",
+   "wasA": 360.0,
+   "nowA": 0.36,
+   "dcResistanceOhm": 0.17,
+   "impliedWattsBefore": 22032.0,
+   "impliedWattsAfter": 0.022
+  },
+  {
+   "reference": "R26015-NT-K",
+   "series": "C26000",
+   "wasA": 360.0,
+   "nowA": 0.36,
+   "dcResistanceOhm": 0.17,
+   "impliedWattsBefore": 22032.0,
+   "impliedWattsAfter": 0.022
+  },
+  {
+   "reference": "R26015-NT-J",
+   "series": "C26000",
+   "wasA": 360.0,
+   "nowA": 0.36,
+   "dcResistanceOhm": 0.17,
+   "impliedWattsBefore": 22032.0,
+   "impliedWattsAfter": 0.022
+  },
+  {
+   "reference": "R26014-T-K",
+   "series": "C26000",
+   "wasA": 380.0,
+   "nowA": 0.38,
+   "dcResistanceOhm": 0.14,
+   "impliedWattsBefore": 20216.0,
+   "impliedWattsAfter": 0.0202
+  },
+  {
+   "reference": "R26014-T-J",
+   "series": "C26000",
+   "wasA": 380.0,
+   "nowA": 0.38,
+   "dcResistanceOhm": 0.14,
+   "impliedWattsBefore": 20216.0,
+   "impliedWattsAfter": 0.0202
+  },
+  {
+   "reference": "R26014-NT-K",
+   "series": "C26000",
+   "wasA": 380.0,
+   "nowA": 0.38,
+   "dcResistanceOhm": 0.14,
+   "impliedWattsBefore": 20216.0,
+   "impliedWattsAfter": 0.0202
+  },
+  {
+   "reference": "R26014-NT-J",
+   "series": "C26000",
+   "wasA": 380.0,
+   "nowA": 0.38,
+   "dcResistanceOhm": 0.14,
+   "impliedWattsBefore": 20216.0,
+   "impliedWattsAfter": 0.0202
+  },
+  {
+   "reference": "R26013-T-K",
+   "series": "C26000",
+   "wasA": 390.0,
+   "nowA": 0.39,
+   "dcResistanceOhm": 0.13,
+   "impliedWattsBefore": 19773.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "R26013-T-J",
+   "series": "C26000",
+   "wasA": 390.0,
+   "nowA": 0.39,
+   "dcResistanceOhm": 0.13,
+   "impliedWattsBefore": 19773.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "R26013-NT-K",
+   "series": "C26000",
+   "wasA": 390.0,
+   "nowA": 0.39,
+   "dcResistanceOhm": 0.13,
+   "impliedWattsBefore": 19773.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "R26013-NT-J",
+   "series": "C26000",
+   "wasA": 390.0,
+   "nowA": 0.39,
+   "dcResistanceOhm": 0.13,
+   "impliedWattsBefore": 19773.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "R26012-T-K",
+   "series": "C26000",
+   "wasA": 390.0,
+   "nowA": 0.39,
+   "dcResistanceOhm": 0.13,
+   "impliedWattsBefore": 19773.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "R26012-T-J",
+   "series": "C26000",
+   "wasA": 390.0,
+   "nowA": 0.39,
+   "dcResistanceOhm": 0.13,
+   "impliedWattsBefore": 19773.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "R26012-NT-K",
+   "series": "C26000",
+   "wasA": 390.0,
+   "nowA": 0.39,
+   "dcResistanceOhm": 0.13,
+   "impliedWattsBefore": 19773.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "R26012-NT-J",
+   "series": "C26000",
+   "wasA": 390.0,
+   "nowA": 0.39,
+   "dcResistanceOhm": 0.13,
+   "impliedWattsBefore": 19773.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "R26011-T-K",
+   "series": "C26000",
+   "wasA": 390.0,
+   "nowA": 0.39,
+   "dcResistanceOhm": 0.13,
+   "impliedWattsBefore": 19773.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "R26011-T-J",
+   "series": "C26000",
+   "wasA": 390.0,
+   "nowA": 0.39,
+   "dcResistanceOhm": 0.13,
+   "impliedWattsBefore": 19773.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "R26011-NT-K",
+   "series": "C26000",
+   "wasA": 390.0,
+   "nowA": 0.39,
+   "dcResistanceOhm": 0.13,
+   "impliedWattsBefore": 19773.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "R26011-NT-J",
+   "series": "C26000",
+   "wasA": 390.0,
+   "nowA": 0.39,
+   "dcResistanceOhm": 0.13,
+   "impliedWattsBefore": 19773.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "R26010-T-K",
+   "series": "C26000",
+   "wasA": 400.0,
+   "nowA": 0.4,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 19200.0,
+   "impliedWattsAfter": 0.0192
+  },
+  {
+   "reference": "R26010-T-J",
+   "series": "C26000",
+   "wasA": 400.0,
+   "nowA": 0.4,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 19200.0,
+   "impliedWattsAfter": 0.0192
+  },
+  {
+   "reference": "R26010-NT-K",
+   "series": "C26000",
+   "wasA": 400.0,
+   "nowA": 0.4,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 19200.0,
+   "impliedWattsAfter": 0.0192
+  },
+  {
+   "reference": "R26010-NT-J",
+   "series": "C26000",
+   "wasA": 400.0,
+   "nowA": 0.4,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 19200.0,
+   "impliedWattsAfter": 0.0192
+  },
+  {
+   "reference": "R26009-T-K",
+   "series": "C26000",
+   "wasA": 440.0,
+   "nowA": 0.44,
+   "dcResistanceOhm": 0.11,
+   "impliedWattsBefore": 21296.0,
+   "impliedWattsAfter": 0.0213
+  },
+  {
+   "reference": "R26009-T-J",
+   "series": "C26000",
+   "wasA": 440.0,
+   "nowA": 0.44,
+   "dcResistanceOhm": 0.11,
+   "impliedWattsBefore": 21296.0,
+   "impliedWattsAfter": 0.0213
+  },
+  {
+   "reference": "R26009-NT-K",
+   "series": "C26000",
+   "wasA": 440.0,
+   "nowA": 0.44,
+   "dcResistanceOhm": 0.11,
+   "impliedWattsBefore": 21296.0,
+   "impliedWattsAfter": 0.0213
+  },
+  {
+   "reference": "R26009-NT-J",
+   "series": "C26000",
+   "wasA": 440.0,
+   "nowA": 0.44,
+   "dcResistanceOhm": 0.11,
+   "impliedWattsBefore": 21296.0,
+   "impliedWattsAfter": 0.0213
+  },
+  {
+   "reference": "R26008-T-K",
+   "series": "C26000",
+   "wasA": 460.0,
+   "nowA": 0.46,
+   "dcResistanceOhm": 0.1,
+   "impliedWattsBefore": 21160.0,
+   "impliedWattsAfter": 0.0212
+  },
+  {
+   "reference": "R26008-T-J",
+   "series": "C26000",
+   "wasA": 460.0,
+   "nowA": 0.46,
+   "dcResistanceOhm": 0.1,
+   "impliedWattsBefore": 21160.0,
+   "impliedWattsAfter": 0.0212
+  },
+  {
+   "reference": "R26008-NT-K",
+   "series": "C26000",
+   "wasA": 460.0,
+   "nowA": 0.46,
+   "dcResistanceOhm": 0.1,
+   "impliedWattsBefore": 21160.0,
+   "impliedWattsAfter": 0.0212
+  },
+  {
+   "reference": "R26008-NT-J",
+   "series": "C26000",
+   "wasA": 460.0,
+   "nowA": 0.46,
+   "dcResistanceOhm": 0.1,
+   "impliedWattsBefore": 21160.0,
+   "impliedWattsAfter": 0.0212
+  },
+  {
+   "reference": "R26007-T-K",
+   "series": "C26000",
+   "wasA": 510.0,
+   "nowA": 0.51,
+   "dcResistanceOhm": 0.09,
+   "impliedWattsBefore": 23409.0,
+   "impliedWattsAfter": 0.0234
+  },
+  {
+   "reference": "R26007-T-J",
+   "series": "C26000",
+   "wasA": 510.0,
+   "nowA": 0.51,
+   "dcResistanceOhm": 0.09,
+   "impliedWattsBefore": 23409.0,
+   "impliedWattsAfter": 0.0234
+  },
+  {
+   "reference": "R26007-NT-K",
+   "series": "C26000",
+   "wasA": 510.0,
+   "nowA": 0.51,
+   "dcResistanceOhm": 0.09,
+   "impliedWattsBefore": 23409.0,
+   "impliedWattsAfter": 0.0234
+  },
+  {
+   "reference": "R26007-NT-J",
+   "series": "C26000",
+   "wasA": 510.0,
+   "nowA": 0.51,
+   "dcResistanceOhm": 0.09,
+   "impliedWattsBefore": 23409.0,
+   "impliedWattsAfter": 0.0234
+  },
+  {
+   "reference": "R26006-T-K",
+   "series": "C26000",
+   "wasA": 540.0,
+   "nowA": 0.54,
+   "dcResistanceOhm": 0.06,
+   "impliedWattsBefore": 17496.0,
+   "impliedWattsAfter": 0.0175
+  },
+  {
+   "reference": "R26006-T-J",
+   "series": "C26000",
+   "wasA": 540.0,
+   "nowA": 0.54,
+   "dcResistanceOhm": 0.06,
+   "impliedWattsBefore": 17496.0,
+   "impliedWattsAfter": 0.0175
+  },
+  {
+   "reference": "R26006-NT-K",
+   "series": "C26000",
+   "wasA": 540.0,
+   "nowA": 0.54,
+   "dcResistanceOhm": 0.06,
+   "impliedWattsBefore": 17496.0,
+   "impliedWattsAfter": 0.0175
+  },
+  {
+   "reference": "R26006-NT-J",
+   "series": "C26000",
+   "wasA": 540.0,
+   "nowA": 0.54,
+   "dcResistanceOhm": 0.06,
+   "impliedWattsBefore": 17496.0,
+   "impliedWattsAfter": 0.0175
+  },
+  {
+   "reference": "R26005-T-K",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.05,
+   "impliedWattsBefore": 19845.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "R26005-T-J",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.05,
+   "impliedWattsBefore": 19845.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "R26005-NT-K",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.05,
+   "impliedWattsBefore": 19845.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "R26005-NT-J",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.05,
+   "impliedWattsBefore": 19845.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "R26004-T-K",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.05,
+   "impliedWattsBefore": 19845.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "R26004-T-J",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.05,
+   "impliedWattsBefore": 19845.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "R26004-NT-K",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.05,
+   "impliedWattsBefore": 19845.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "R26004-NT-J",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.05,
+   "impliedWattsBefore": 19845.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "R26003-T-K",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.05,
+   "impliedWattsBefore": 19845.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "R26003-T-J",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.05,
+   "impliedWattsBefore": 19845.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "R26003-NT-K",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.05,
+   "impliedWattsBefore": 19845.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "R26003-NT-J",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.05,
+   "impliedWattsBefore": 19845.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "R26002-T-K",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.05,
+   "impliedWattsBefore": 19845.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "R26002-T-J",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.05,
+   "impliedWattsBefore": 19845.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "R26002-NT-K",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.05,
+   "impliedWattsBefore": 19845.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "R26002-NT-J",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.05,
+   "impliedWattsBefore": 19845.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "R26001-T-K",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.03,
+   "impliedWattsBefore": 11907.0,
+   "impliedWattsAfter": 0.0119
+  },
+  {
+   "reference": "R26001-T-J",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.03,
+   "impliedWattsBefore": 11907.0,
+   "impliedWattsAfter": 0.0119
+  },
+  {
+   "reference": "R26001-NT-K",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.03,
+   "impliedWattsBefore": 11907.0,
+   "impliedWattsAfter": 0.0119
+  },
+  {
+   "reference": "R26001-NT-J",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.03,
+   "impliedWattsBefore": 11907.0,
+   "impliedWattsAfter": 0.0119
+  },
+  {
+   "reference": "R26000-T-K",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.03,
+   "impliedWattsBefore": 11907.0,
+   "impliedWattsAfter": 0.0119
+  },
+  {
+   "reference": "R26000-T-J",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.03,
+   "impliedWattsBefore": 11907.0,
+   "impliedWattsAfter": 0.0119
+  },
+  {
+   "reference": "R26000-NT-K",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.03,
+   "impliedWattsBefore": 11907.0,
+   "impliedWattsAfter": 0.0119
+  },
+  {
+   "reference": "R26000-NT-J",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.03,
+   "impliedWattsBefore": 11907.0,
+   "impliedWattsAfter": 0.0119
+  },
+  {
+   "reference": "C26036-T-K",
+   "series": "C26000",
+   "wasA": 73.0,
+   "nowA": 0.073,
+   "dcResistanceOhm": 3.8,
+   "impliedWattsBefore": 20250.2,
+   "impliedWattsAfter": 0.0203
+  },
+  {
+   "reference": "C26036-T-J",
+   "series": "C26000",
+   "wasA": 73.0,
+   "nowA": 0.073,
+   "dcResistanceOhm": 3.8,
+   "impliedWattsBefore": 20250.2,
+   "impliedWattsAfter": 0.0203
+  },
+  {
+   "reference": "C26036-NT-K",
+   "series": "C26000",
+   "wasA": 73.0,
+   "nowA": 0.073,
+   "dcResistanceOhm": 3.8,
+   "impliedWattsBefore": 20250.2,
+   "impliedWattsAfter": 0.0203
+  },
+  {
+   "reference": "C26036-NT-J",
+   "series": "C26000",
+   "wasA": 73.0,
+   "nowA": 0.073,
+   "dcResistanceOhm": 3.8,
+   "impliedWattsBefore": 20250.2,
+   "impliedWattsAfter": 0.0203
+  },
+  {
+   "reference": "C26035-T-K",
+   "series": "C26000",
+   "wasA": 80.0,
+   "nowA": 0.08,
+   "dcResistanceOhm": 3.2,
+   "impliedWattsBefore": 20480.0,
+   "impliedWattsAfter": 0.0205
+  },
+  {
+   "reference": "C26035-T-J",
+   "series": "C26000",
+   "wasA": 80.0,
+   "nowA": 0.08,
+   "dcResistanceOhm": 3.2,
+   "impliedWattsBefore": 20480.0,
+   "impliedWattsAfter": 0.0205
+  },
+  {
+   "reference": "C26035-NT-K",
+   "series": "C26000",
+   "wasA": 80.0,
+   "nowA": 0.08,
+   "dcResistanceOhm": 3.2,
+   "impliedWattsBefore": 20480.0,
+   "impliedWattsAfter": 0.0205
+  },
+  {
+   "reference": "C26035-NT-J",
+   "series": "C26000",
+   "wasA": 80.0,
+   "nowA": 0.08,
+   "dcResistanceOhm": 3.2,
+   "impliedWattsBefore": 20480.0,
+   "impliedWattsAfter": 0.0205
+  },
+  {
+   "reference": "C26034-T-K",
+   "series": "C26000",
+   "wasA": 83.0,
+   "nowA": 0.083,
+   "dcResistanceOhm": 3.0,
+   "impliedWattsBefore": 20667.0,
+   "impliedWattsAfter": 0.0207
+  },
+  {
+   "reference": "C26034-T-J",
+   "series": "C26000",
+   "wasA": 83.0,
+   "nowA": 0.083,
+   "dcResistanceOhm": 3.0,
+   "impliedWattsBefore": 20667.0,
+   "impliedWattsAfter": 0.0207
+  },
+  {
+   "reference": "C26034-NT-K",
+   "series": "C26000",
+   "wasA": 83.0,
+   "nowA": 0.083,
+   "dcResistanceOhm": 3.0,
+   "impliedWattsBefore": 20667.0,
+   "impliedWattsAfter": 0.0207
+  },
+  {
+   "reference": "C26034-NT-J",
+   "series": "C26000",
+   "wasA": 83.0,
+   "nowA": 0.083,
+   "dcResistanceOhm": 3.0,
+   "impliedWattsBefore": 20667.0,
+   "impliedWattsAfter": 0.0207
+  },
+  {
+   "reference": "C26033-T-K",
+   "series": "C26000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 2.9,
+   "impliedWattsBefore": 20952.5,
+   "impliedWattsAfter": 0.021
+  },
+  {
+   "reference": "C26033-T-J",
+   "series": "C26000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 2.9,
+   "impliedWattsBefore": 20952.5,
+   "impliedWattsAfter": 0.021
+  },
+  {
+   "reference": "C26033-NT-K",
+   "series": "C26000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 2.9,
+   "impliedWattsBefore": 20952.5,
+   "impliedWattsAfter": 0.021
+  },
+  {
+   "reference": "C26033-NT-J",
+   "series": "C26000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 2.9,
+   "impliedWattsBefore": 20952.5,
+   "impliedWattsAfter": 0.021
+  },
+  {
+   "reference": "C26032-T-K",
+   "series": "C26000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 2.7,
+   "impliedWattsBefore": 19507.5,
+   "impliedWattsAfter": 0.0195
+  },
+  {
+   "reference": "C26032-T-J",
+   "series": "C26000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 2.7,
+   "impliedWattsBefore": 19507.5,
+   "impliedWattsAfter": 0.0195
+  },
+  {
+   "reference": "C26032-NT-K",
+   "series": "C26000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 2.7,
+   "impliedWattsBefore": 19507.5,
+   "impliedWattsAfter": 0.0195
+  },
+  {
+   "reference": "C26032-NT-J",
+   "series": "C26000",
+   "wasA": 85.0,
+   "nowA": 0.085,
+   "dcResistanceOhm": 2.7,
+   "impliedWattsBefore": 19507.5,
+   "impliedWattsAfter": 0.0195
+  },
+  {
+   "reference": "C26031-T-K",
+   "series": "C26000",
+   "wasA": 93.0,
+   "nowA": 0.093,
+   "dcResistanceOhm": 2.3,
+   "impliedWattsBefore": 19892.7,
+   "impliedWattsAfter": 0.0199
+  },
+  {
+   "reference": "C26031-T-J",
+   "series": "C26000",
+   "wasA": 93.0,
+   "nowA": 0.093,
+   "dcResistanceOhm": 2.3,
+   "impliedWattsBefore": 19892.7,
+   "impliedWattsAfter": 0.0199
+  },
+  {
+   "reference": "C26031-NT-K",
+   "series": "C26000",
+   "wasA": 93.0,
+   "nowA": 0.093,
+   "dcResistanceOhm": 2.3,
+   "impliedWattsBefore": 19892.7,
+   "impliedWattsAfter": 0.0199
+  },
+  {
+   "reference": "C26031-NT-J",
+   "series": "C26000",
+   "wasA": 93.0,
+   "nowA": 0.093,
+   "dcResistanceOhm": 2.3,
+   "impliedWattsBefore": 19892.7,
+   "impliedWattsAfter": 0.0199
+  },
+  {
+   "reference": "C26030-T-K",
+   "series": "C26000",
+   "wasA": 100.0,
+   "nowA": 0.1,
+   "dcResistanceOhm": 2.1,
+   "impliedWattsBefore": 21000.0,
+   "impliedWattsAfter": 0.021
+  },
+  {
+   "reference": "C26030-T-J",
+   "series": "C26000",
+   "wasA": 100.0,
+   "nowA": 0.1,
+   "dcResistanceOhm": 2.1,
+   "impliedWattsBefore": 21000.0,
+   "impliedWattsAfter": 0.021
+  },
+  {
+   "reference": "C26030-NT-K",
+   "series": "C26000",
+   "wasA": 100.0,
+   "nowA": 0.1,
+   "dcResistanceOhm": 2.1,
+   "impliedWattsBefore": 21000.0,
+   "impliedWattsAfter": 0.021
+  },
+  {
+   "reference": "C26030-NT-J",
+   "series": "C26000",
+   "wasA": 100.0,
+   "nowA": 0.1,
+   "dcResistanceOhm": 2.1,
+   "impliedWattsBefore": 21000.0,
+   "impliedWattsAfter": 0.021
+  },
+  {
+   "reference": "C26029-T-K",
+   "series": "C26000",
+   "wasA": 110.0,
+   "nowA": 0.11,
+   "dcResistanceOhm": 1.7,
+   "impliedWattsBefore": 20570.0,
+   "impliedWattsAfter": 0.0206
+  },
+  {
+   "reference": "C26029-T-J",
+   "series": "C26000",
+   "wasA": 110.0,
+   "nowA": 0.11,
+   "dcResistanceOhm": 1.7,
+   "impliedWattsBefore": 20570.0,
+   "impliedWattsAfter": 0.0206
+  },
+  {
+   "reference": "C26029-NT-K",
+   "series": "C26000",
+   "wasA": 110.0,
+   "nowA": 0.11,
+   "dcResistanceOhm": 1.7,
+   "impliedWattsBefore": 20570.0,
+   "impliedWattsAfter": 0.0206
+  },
+  {
+   "reference": "C26029-NT-J",
+   "series": "C26000",
+   "wasA": 110.0,
+   "nowA": 0.11,
+   "dcResistanceOhm": 1.7,
+   "impliedWattsBefore": 20570.0,
+   "impliedWattsAfter": 0.0206
+  },
+  {
+   "reference": "C26028-T-K",
+   "series": "C26000",
+   "wasA": 110.0,
+   "nowA": 0.11,
+   "dcResistanceOhm": 1.5,
+   "impliedWattsBefore": 18150.0,
+   "impliedWattsAfter": 0.0181
+  },
+  {
+   "reference": "C26028-T-J",
+   "series": "C26000",
+   "wasA": 110.0,
+   "nowA": 0.11,
+   "dcResistanceOhm": 1.5,
+   "impliedWattsBefore": 18150.0,
+   "impliedWattsAfter": 0.0181
+  },
+  {
+   "reference": "C26028-NT-K",
+   "series": "C26000",
+   "wasA": 110.0,
+   "nowA": 0.11,
+   "dcResistanceOhm": 1.5,
+   "impliedWattsBefore": 18150.0,
+   "impliedWattsAfter": 0.0181
+  },
+  {
+   "reference": "C26028-NT-J",
+   "series": "C26000",
+   "wasA": 110.0,
+   "nowA": 0.11,
+   "dcResistanceOhm": 1.5,
+   "impliedWattsBefore": 18150.0,
+   "impliedWattsAfter": 0.0181
+  },
+  {
+   "reference": "C26027-T-K",
+   "series": "C26000",
+   "wasA": 120.0,
+   "nowA": 0.12,
+   "dcResistanceOhm": 1.4,
+   "impliedWattsBefore": 20160.0,
+   "impliedWattsAfter": 0.0202
+  },
+  {
+   "reference": "C26027-T-J",
+   "series": "C26000",
+   "wasA": 120.0,
+   "nowA": 0.12,
+   "dcResistanceOhm": 1.4,
+   "impliedWattsBefore": 20160.0,
+   "impliedWattsAfter": 0.0202
+  },
+  {
+   "reference": "C26027-NT-K",
+   "series": "C26000",
+   "wasA": 120.0,
+   "nowA": 0.12,
+   "dcResistanceOhm": 1.4,
+   "impliedWattsBefore": 20160.0,
+   "impliedWattsAfter": 0.0202
+  },
+  {
+   "reference": "C26027-NT-J",
+   "series": "C26000",
+   "wasA": 120.0,
+   "nowA": 0.12,
+   "dcResistanceOhm": 1.4,
+   "impliedWattsBefore": 20160.0,
+   "impliedWattsAfter": 0.0202
+  },
+  {
+   "reference": "C26026-T-K",
+   "series": "C26000",
+   "wasA": 130.0,
+   "nowA": 0.13,
+   "dcResistanceOhm": 1.3,
+   "impliedWattsBefore": 21970.0,
+   "impliedWattsAfter": 0.022
+  },
+  {
+   "reference": "C26026-T-J",
+   "series": "C26000",
+   "wasA": 130.0,
+   "nowA": 0.13,
+   "dcResistanceOhm": 1.3,
+   "impliedWattsBefore": 21970.0,
+   "impliedWattsAfter": 0.022
+  },
+  {
+   "reference": "C26026-NT-K",
+   "series": "C26000",
+   "wasA": 130.0,
+   "nowA": 0.13,
+   "dcResistanceOhm": 1.3,
+   "impliedWattsBefore": 21970.0,
+   "impliedWattsAfter": 0.022
+  },
+  {
+   "reference": "C26026-NT-J",
+   "series": "C26000",
+   "wasA": 130.0,
+   "nowA": 0.13,
+   "dcResistanceOhm": 1.3,
+   "impliedWattsBefore": 21970.0,
+   "impliedWattsAfter": 0.022
+  },
+  {
+   "reference": "C26025-T-K",
+   "series": "C26000",
+   "wasA": 150.0,
+   "nowA": 0.15,
+   "dcResistanceOhm": 0.87,
+   "impliedWattsBefore": 19575.0,
+   "impliedWattsAfter": 0.0196
+  },
+  {
+   "reference": "C26025-T-J",
+   "series": "C26000",
+   "wasA": 150.0,
+   "nowA": 0.15,
+   "dcResistanceOhm": 0.87,
+   "impliedWattsBefore": 19575.0,
+   "impliedWattsAfter": 0.0196
+  },
+  {
+   "reference": "C26025-NT-K",
+   "series": "C26000",
+   "wasA": 150.0,
+   "nowA": 0.15,
+   "dcResistanceOhm": 0.87,
+   "impliedWattsBefore": 19575.0,
+   "impliedWattsAfter": 0.0196
+  },
+  {
+   "reference": "C26025-NT-J",
+   "series": "C26000",
+   "wasA": 150.0,
+   "nowA": 0.15,
+   "dcResistanceOhm": 0.87,
+   "impliedWattsBefore": 19575.0,
+   "impliedWattsAfter": 0.0196
+  },
+  {
+   "reference": "C26024-T-K",
+   "series": "C26000",
+   "wasA": 160.0,
+   "nowA": 0.16,
+   "dcResistanceOhm": 0.75,
+   "impliedWattsBefore": 19200.0,
+   "impliedWattsAfter": 0.0192
+  },
+  {
+   "reference": "C26024-T-J",
+   "series": "C26000",
+   "wasA": 160.0,
+   "nowA": 0.16,
+   "dcResistanceOhm": 0.75,
+   "impliedWattsBefore": 19200.0,
+   "impliedWattsAfter": 0.0192
+  },
+  {
+   "reference": "C26024-NT-K",
+   "series": "C26000",
+   "wasA": 160.0,
+   "nowA": 0.16,
+   "dcResistanceOhm": 0.75,
+   "impliedWattsBefore": 19200.0,
+   "impliedWattsAfter": 0.0192
+  },
+  {
+   "reference": "C26024-NT-J",
+   "series": "C26000",
+   "wasA": 160.0,
+   "nowA": 0.16,
+   "dcResistanceOhm": 0.75,
+   "impliedWattsBefore": 19200.0,
+   "impliedWattsAfter": 0.0192
+  },
+  {
+   "reference": "C26023-T-K",
+   "series": "C26000",
+   "wasA": 170.0,
+   "nowA": 0.17,
+   "dcResistanceOhm": 0.69,
+   "impliedWattsBefore": 19941.0,
+   "impliedWattsAfter": 0.0199
+  },
+  {
+   "reference": "C26023-T-J",
+   "series": "C26000",
+   "wasA": 170.0,
+   "nowA": 0.17,
+   "dcResistanceOhm": 0.69,
+   "impliedWattsBefore": 19941.0,
+   "impliedWattsAfter": 0.0199
+  },
+  {
+   "reference": "C26023-NT-K",
+   "series": "C26000",
+   "wasA": 170.0,
+   "nowA": 0.17,
+   "dcResistanceOhm": 0.69,
+   "impliedWattsBefore": 19941.0,
+   "impliedWattsAfter": 0.0199
+  },
+  {
+   "reference": "C26023-NT-J",
+   "series": "C26000",
+   "wasA": 170.0,
+   "nowA": 0.17,
+   "dcResistanceOhm": 0.69,
+   "impliedWattsBefore": 19941.0,
+   "impliedWattsAfter": 0.0199
+  },
+  {
+   "reference": "C26022-T-K",
+   "series": "C26000",
+   "wasA": 170.0,
+   "nowA": 0.17,
+   "dcResistanceOhm": 0.67,
+   "impliedWattsBefore": 19363.0,
+   "impliedWattsAfter": 0.0194
+  },
+  {
+   "reference": "C26022-T-J",
+   "series": "C26000",
+   "wasA": 170.0,
+   "nowA": 0.17,
+   "dcResistanceOhm": 0.67,
+   "impliedWattsBefore": 19363.0,
+   "impliedWattsAfter": 0.0194
+  },
+  {
+   "reference": "C26022-NT-K",
+   "series": "C26000",
+   "wasA": 170.0,
+   "nowA": 0.17,
+   "dcResistanceOhm": 0.67,
+   "impliedWattsBefore": 19363.0,
+   "impliedWattsAfter": 0.0194
+  },
+  {
+   "reference": "C26022-NT-J",
+   "series": "C26000",
+   "wasA": 170.0,
+   "nowA": 0.17,
+   "dcResistanceOhm": 0.67,
+   "impliedWattsBefore": 19363.0,
+   "impliedWattsAfter": 0.0194
+  },
+  {
+   "reference": "C26021-T-K",
+   "series": "C26000",
+   "wasA": 180.0,
+   "nowA": 0.18,
+   "dcResistanceOhm": 0.64,
+   "impliedWattsBefore": 20736.0,
+   "impliedWattsAfter": 0.0207
+  },
+  {
+   "reference": "C26021-T-J",
+   "series": "C26000",
+   "wasA": 180.0,
+   "nowA": 0.18,
+   "dcResistanceOhm": 0.64,
+   "impliedWattsBefore": 20736.0,
+   "impliedWattsAfter": 0.0207
+  },
+  {
+   "reference": "C26021-NT-K",
+   "series": "C26000",
+   "wasA": 180.0,
+   "nowA": 0.18,
+   "dcResistanceOhm": 0.64,
+   "impliedWattsBefore": 20736.0,
+   "impliedWattsAfter": 0.0207
+  },
+  {
+   "reference": "C26021-NT-J",
+   "series": "C26000",
+   "wasA": 180.0,
+   "nowA": 0.18,
+   "dcResistanceOhm": 0.64,
+   "impliedWattsBefore": 20736.0,
+   "impliedWattsAfter": 0.0207
+  },
+  {
+   "reference": "C26020-T-K",
+   "series": "C26000",
+   "wasA": 190.0,
+   "nowA": 0.19,
+   "dcResistanceOhm": 0.58,
+   "impliedWattsBefore": 20938.0,
+   "impliedWattsAfter": 0.0209
+  },
+  {
+   "reference": "C26020-T-J",
+   "series": "C26000",
+   "wasA": 190.0,
+   "nowA": 0.19,
+   "dcResistanceOhm": 0.58,
+   "impliedWattsBefore": 20938.0,
+   "impliedWattsAfter": 0.0209
+  },
+  {
+   "reference": "C26020-NT-K",
+   "series": "C26000",
+   "wasA": 190.0,
+   "nowA": 0.19,
+   "dcResistanceOhm": 0.58,
+   "impliedWattsBefore": 20938.0,
+   "impliedWattsAfter": 0.0209
+  },
+  {
+   "reference": "C26020-NT-J",
+   "series": "C26000",
+   "wasA": 190.0,
+   "nowA": 0.19,
+   "dcResistanceOhm": 0.58,
+   "impliedWattsBefore": 20938.0,
+   "impliedWattsAfter": 0.0209
+  },
+  {
+   "reference": "C26019-T-K",
+   "series": "C26000",
+   "wasA": 200.0,
+   "nowA": 0.2,
+   "dcResistanceOhm": 0.52,
+   "impliedWattsBefore": 20800.0,
+   "impliedWattsAfter": 0.0208
+  },
+  {
+   "reference": "C26019-T-J",
+   "series": "C26000",
+   "wasA": 200.0,
+   "nowA": 0.2,
+   "dcResistanceOhm": 0.52,
+   "impliedWattsBefore": 20800.0,
+   "impliedWattsAfter": 0.0208
+  },
+  {
+   "reference": "C26019-NT-K",
+   "series": "C26000",
+   "wasA": 200.0,
+   "nowA": 0.2,
+   "dcResistanceOhm": 0.52,
+   "impliedWattsBefore": 20800.0,
+   "impliedWattsAfter": 0.0208
+  },
+  {
+   "reference": "C26019-NT-J",
+   "series": "C26000",
+   "wasA": 200.0,
+   "nowA": 0.2,
+   "dcResistanceOhm": 0.52,
+   "impliedWattsBefore": 20800.0,
+   "impliedWattsAfter": 0.0208
+  },
+  {
+   "reference": "C26018-T-K",
+   "series": "C26000",
+   "wasA": 230.0,
+   "nowA": 0.23,
+   "dcResistanceOhm": 0.35,
+   "impliedWattsBefore": 18515.0,
+   "impliedWattsAfter": 0.0185
+  },
+  {
+   "reference": "C26018-T-J",
+   "series": "C26000",
+   "wasA": 230.0,
+   "nowA": 0.23,
+   "dcResistanceOhm": 0.35,
+   "impliedWattsBefore": 18515.0,
+   "impliedWattsAfter": 0.0185
+  },
+  {
+   "reference": "C26018-NT-K",
+   "series": "C26000",
+   "wasA": 230.0,
+   "nowA": 0.23,
+   "dcResistanceOhm": 0.35,
+   "impliedWattsBefore": 18515.0,
+   "impliedWattsAfter": 0.0185
+  },
+  {
+   "reference": "C26018-NT-J",
+   "series": "C26000",
+   "wasA": 230.0,
+   "nowA": 0.23,
+   "dcResistanceOhm": 0.35,
+   "impliedWattsBefore": 18515.0,
+   "impliedWattsAfter": 0.0185
+  },
+  {
+   "reference": "C26017-T-K",
+   "series": "C26000",
+   "wasA": 260.0,
+   "nowA": 0.26,
+   "dcResistanceOhm": 0.29,
+   "impliedWattsBefore": 19604.0,
+   "impliedWattsAfter": 0.0196
+  },
+  {
+   "reference": "C26017-T-J",
+   "series": "C26000",
+   "wasA": 260.0,
+   "nowA": 0.26,
+   "dcResistanceOhm": 0.29,
+   "impliedWattsBefore": 19604.0,
+   "impliedWattsAfter": 0.0196
+  },
+  {
+   "reference": "C26017-NT-K",
+   "series": "C26000",
+   "wasA": 260.0,
+   "nowA": 0.26,
+   "dcResistanceOhm": 0.29,
+   "impliedWattsBefore": 19604.0,
+   "impliedWattsAfter": 0.0196
+  },
+  {
+   "reference": "C26017-NT-J",
+   "series": "C26000",
+   "wasA": 260.0,
+   "nowA": 0.26,
+   "dcResistanceOhm": 0.29,
+   "impliedWattsBefore": 19604.0,
+   "impliedWattsAfter": 0.0196
+  },
+  {
+   "reference": "C26016-T-K",
+   "series": "C26000",
+   "wasA": 290.0,
+   "nowA": 0.29,
+   "dcResistanceOhm": 0.23,
+   "impliedWattsBefore": 19343.0,
+   "impliedWattsAfter": 0.0193
+  },
+  {
+   "reference": "C26016-T-J",
+   "series": "C26000",
+   "wasA": 290.0,
+   "nowA": 0.29,
+   "dcResistanceOhm": 0.23,
+   "impliedWattsBefore": 19343.0,
+   "impliedWattsAfter": 0.0193
+  },
+  {
+   "reference": "C26016-NT-K",
+   "series": "C26000",
+   "wasA": 290.0,
+   "nowA": 0.29,
+   "dcResistanceOhm": 0.23,
+   "impliedWattsBefore": 19343.0,
+   "impliedWattsAfter": 0.0193
+  },
+  {
+   "reference": "C26016-NT-J",
+   "series": "C26000",
+   "wasA": 290.0,
+   "nowA": 0.29,
+   "dcResistanceOhm": 0.23,
+   "impliedWattsBefore": 19343.0,
+   "impliedWattsAfter": 0.0193
+  },
+  {
+   "reference": "C26015-T-K",
+   "series": "C26000",
+   "wasA": 360.0,
+   "nowA": 0.36,
+   "dcResistanceOhm": 0.17,
+   "impliedWattsBefore": 22032.0,
+   "impliedWattsAfter": 0.022
+  },
+  {
+   "reference": "C26015-T-J",
+   "series": "C26000",
+   "wasA": 360.0,
+   "nowA": 0.36,
+   "dcResistanceOhm": 0.17,
+   "impliedWattsBefore": 22032.0,
+   "impliedWattsAfter": 0.022
+  },
+  {
+   "reference": "C26015-NT-K",
+   "series": "C26000",
+   "wasA": 360.0,
+   "nowA": 0.36,
+   "dcResistanceOhm": 0.17,
+   "impliedWattsBefore": 22032.0,
+   "impliedWattsAfter": 0.022
+  },
+  {
+   "reference": "C26015-NT-J",
+   "series": "C26000",
+   "wasA": 360.0,
+   "nowA": 0.36,
+   "dcResistanceOhm": 0.17,
+   "impliedWattsBefore": 22032.0,
+   "impliedWattsAfter": 0.022
+  },
+  {
+   "reference": "C26014-T-K",
+   "series": "C26000",
+   "wasA": 380.0,
+   "nowA": 0.38,
+   "dcResistanceOhm": 0.14,
+   "impliedWattsBefore": 20216.0,
+   "impliedWattsAfter": 0.0202
+  },
+  {
+   "reference": "C26014-T-J",
+   "series": "C26000",
+   "wasA": 380.0,
+   "nowA": 0.38,
+   "dcResistanceOhm": 0.14,
+   "impliedWattsBefore": 20216.0,
+   "impliedWattsAfter": 0.0202
+  },
+  {
+   "reference": "C26014-NT-K",
+   "series": "C26000",
+   "wasA": 380.0,
+   "nowA": 0.38,
+   "dcResistanceOhm": 0.14,
+   "impliedWattsBefore": 20216.0,
+   "impliedWattsAfter": 0.0202
+  },
+  {
+   "reference": "C26014-NT-J",
+   "series": "C26000",
+   "wasA": 380.0,
+   "nowA": 0.38,
+   "dcResistanceOhm": 0.14,
+   "impliedWattsBefore": 20216.0,
+   "impliedWattsAfter": 0.0202
+  },
+  {
+   "reference": "C26013-T-K",
+   "series": "C26000",
+   "wasA": 390.0,
+   "nowA": 0.39,
+   "dcResistanceOhm": 0.13,
+   "impliedWattsBefore": 19773.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "C26013-T-J",
+   "series": "C26000",
+   "wasA": 390.0,
+   "nowA": 0.39,
+   "dcResistanceOhm": 0.13,
+   "impliedWattsBefore": 19773.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "C26013-NT-K",
+   "series": "C26000",
+   "wasA": 390.0,
+   "nowA": 0.39,
+   "dcResistanceOhm": 0.13,
+   "impliedWattsBefore": 19773.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "C26013-NT-J",
+   "series": "C26000",
+   "wasA": 390.0,
+   "nowA": 0.39,
+   "dcResistanceOhm": 0.13,
+   "impliedWattsBefore": 19773.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "C26012-T-K",
+   "series": "C26000",
+   "wasA": 390.0,
+   "nowA": 0.39,
+   "dcResistanceOhm": 0.13,
+   "impliedWattsBefore": 19773.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "C26012-T-J",
+   "series": "C26000",
+   "wasA": 390.0,
+   "nowA": 0.39,
+   "dcResistanceOhm": 0.13,
+   "impliedWattsBefore": 19773.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "C26012-NT-K",
+   "series": "C26000",
+   "wasA": 390.0,
+   "nowA": 0.39,
+   "dcResistanceOhm": 0.13,
+   "impliedWattsBefore": 19773.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "C26012-NT-J",
+   "series": "C26000",
+   "wasA": 390.0,
+   "nowA": 0.39,
+   "dcResistanceOhm": 0.13,
+   "impliedWattsBefore": 19773.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "C26011-T-K",
+   "series": "C26000",
+   "wasA": 390.0,
+   "nowA": 0.39,
+   "dcResistanceOhm": 0.13,
+   "impliedWattsBefore": 19773.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "C26011-T-J",
+   "series": "C26000",
+   "wasA": 390.0,
+   "nowA": 0.39,
+   "dcResistanceOhm": 0.13,
+   "impliedWattsBefore": 19773.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "C26011-NT-K",
+   "series": "C26000",
+   "wasA": 390.0,
+   "nowA": 0.39,
+   "dcResistanceOhm": 0.13,
+   "impliedWattsBefore": 19773.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "C26011-NT-J",
+   "series": "C26000",
+   "wasA": 390.0,
+   "nowA": 0.39,
+   "dcResistanceOhm": 0.13,
+   "impliedWattsBefore": 19773.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "C26010-T-K",
+   "series": "C26000",
+   "wasA": 400.0,
+   "nowA": 0.4,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 19200.0,
+   "impliedWattsAfter": 0.0192
+  },
+  {
+   "reference": "C26010-T-J",
+   "series": "C26000",
+   "wasA": 400.0,
+   "nowA": 0.4,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 19200.0,
+   "impliedWattsAfter": 0.0192
+  },
+  {
+   "reference": "C26010-NT-K",
+   "series": "C26000",
+   "wasA": 400.0,
+   "nowA": 0.4,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 19200.0,
+   "impliedWattsAfter": 0.0192
+  },
+  {
+   "reference": "C26010-NT-J",
+   "series": "C26000",
+   "wasA": 400.0,
+   "nowA": 0.4,
+   "dcResistanceOhm": 0.12,
+   "impliedWattsBefore": 19200.0,
+   "impliedWattsAfter": 0.0192
+  },
+  {
+   "reference": "C26009-T-K",
+   "series": "C26000",
+   "wasA": 440.0,
+   "nowA": 0.44,
+   "dcResistanceOhm": 0.11,
+   "impliedWattsBefore": 21296.0,
+   "impliedWattsAfter": 0.0213
+  },
+  {
+   "reference": "C26009-T-J",
+   "series": "C26000",
+   "wasA": 440.0,
+   "nowA": 0.44,
+   "dcResistanceOhm": 0.11,
+   "impliedWattsBefore": 21296.0,
+   "impliedWattsAfter": 0.0213
+  },
+  {
+   "reference": "C26009-NT-K",
+   "series": "C26000",
+   "wasA": 440.0,
+   "nowA": 0.44,
+   "dcResistanceOhm": 0.11,
+   "impliedWattsBefore": 21296.0,
+   "impliedWattsAfter": 0.0213
+  },
+  {
+   "reference": "C26009-NT-J",
+   "series": "C26000",
+   "wasA": 440.0,
+   "nowA": 0.44,
+   "dcResistanceOhm": 0.11,
+   "impliedWattsBefore": 21296.0,
+   "impliedWattsAfter": 0.0213
+  },
+  {
+   "reference": "C26008-T-K",
+   "series": "C26000",
+   "wasA": 460.0,
+   "nowA": 0.46,
+   "dcResistanceOhm": 0.1,
+   "impliedWattsBefore": 21160.0,
+   "impliedWattsAfter": 0.0212
+  },
+  {
+   "reference": "C26008-T-J",
+   "series": "C26000",
+   "wasA": 460.0,
+   "nowA": 0.46,
+   "dcResistanceOhm": 0.1,
+   "impliedWattsBefore": 21160.0,
+   "impliedWattsAfter": 0.0212
+  },
+  {
+   "reference": "C26008-NT-K",
+   "series": "C26000",
+   "wasA": 460.0,
+   "nowA": 0.46,
+   "dcResistanceOhm": 0.1,
+   "impliedWattsBefore": 21160.0,
+   "impliedWattsAfter": 0.0212
+  },
+  {
+   "reference": "C26008-NT-J",
+   "series": "C26000",
+   "wasA": 460.0,
+   "nowA": 0.46,
+   "dcResistanceOhm": 0.1,
+   "impliedWattsBefore": 21160.0,
+   "impliedWattsAfter": 0.0212
+  },
+  {
+   "reference": "C26007-T-K",
+   "series": "C26000",
+   "wasA": 510.0,
+   "nowA": 0.51,
+   "dcResistanceOhm": 0.09,
+   "impliedWattsBefore": 23409.0,
+   "impliedWattsAfter": 0.0234
+  },
+  {
+   "reference": "C26007-T-J",
+   "series": "C26000",
+   "wasA": 510.0,
+   "nowA": 0.51,
+   "dcResistanceOhm": 0.09,
+   "impliedWattsBefore": 23409.0,
+   "impliedWattsAfter": 0.0234
+  },
+  {
+   "reference": "C26007-NT-K",
+   "series": "C26000",
+   "wasA": 510.0,
+   "nowA": 0.51,
+   "dcResistanceOhm": 0.09,
+   "impliedWattsBefore": 23409.0,
+   "impliedWattsAfter": 0.0234
+  },
+  {
+   "reference": "C26007-NT-J",
+   "series": "C26000",
+   "wasA": 510.0,
+   "nowA": 0.51,
+   "dcResistanceOhm": 0.09,
+   "impliedWattsBefore": 23409.0,
+   "impliedWattsAfter": 0.0234
+  },
+  {
+   "reference": "C26006-T-K",
+   "series": "C26000",
+   "wasA": 540.0,
+   "nowA": 0.54,
+   "dcResistanceOhm": 0.06,
+   "impliedWattsBefore": 17496.0,
+   "impliedWattsAfter": 0.0175
+  },
+  {
+   "reference": "C26006-T-J",
+   "series": "C26000",
+   "wasA": 540.0,
+   "nowA": 0.54,
+   "dcResistanceOhm": 0.06,
+   "impliedWattsBefore": 17496.0,
+   "impliedWattsAfter": 0.0175
+  },
+  {
+   "reference": "C26006-NT-K",
+   "series": "C26000",
+   "wasA": 540.0,
+   "nowA": 0.54,
+   "dcResistanceOhm": 0.06,
+   "impliedWattsBefore": 17496.0,
+   "impliedWattsAfter": 0.0175
+  },
+  {
+   "reference": "C26006-NT-J",
+   "series": "C26000",
+   "wasA": 540.0,
+   "nowA": 0.54,
+   "dcResistanceOhm": 0.06,
+   "impliedWattsBefore": 17496.0,
+   "impliedWattsAfter": 0.0175
+  },
+  {
+   "reference": "C26005-T-K",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.05,
+   "impliedWattsBefore": 19845.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "C26005-T-J",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.05,
+   "impliedWattsBefore": 19845.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "C26005-NT-K",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.05,
+   "impliedWattsBefore": 19845.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "C26005-NT-J",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.05,
+   "impliedWattsBefore": 19845.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "C26004-T-K",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.05,
+   "impliedWattsBefore": 19845.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "C26004-T-J",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.05,
+   "impliedWattsBefore": 19845.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "C26004-NT-K",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.05,
+   "impliedWattsBefore": 19845.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "C26004-NT-J",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.05,
+   "impliedWattsBefore": 19845.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "C26003-T-K",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.05,
+   "impliedWattsBefore": 19845.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "C26003-T-J",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.05,
+   "impliedWattsBefore": 19845.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "C26003-NT-K",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.05,
+   "impliedWattsBefore": 19845.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "C26003-NT-J",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.05,
+   "impliedWattsBefore": 19845.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "C26002-T-K",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.05,
+   "impliedWattsBefore": 19845.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "C26002-T-J",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.05,
+   "impliedWattsBefore": 19845.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "C26002-NT-K",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.05,
+   "impliedWattsBefore": 19845.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "C26002-NT-J",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.05,
+   "impliedWattsBefore": 19845.0,
+   "impliedWattsAfter": 0.0198
+  },
+  {
+   "reference": "C26001-T-K",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.03,
+   "impliedWattsBefore": 11907.0,
+   "impliedWattsAfter": 0.0119
+  },
+  {
+   "reference": "C26001-T-J",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.03,
+   "impliedWattsBefore": 11907.0,
+   "impliedWattsAfter": 0.0119
+  },
+  {
+   "reference": "C26001-NT-K",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.03,
+   "impliedWattsBefore": 11907.0,
+   "impliedWattsAfter": 0.0119
+  },
+  {
+   "reference": "C26001-NT-J",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.03,
+   "impliedWattsBefore": 11907.0,
+   "impliedWattsAfter": 0.0119
+  },
+  {
+   "reference": "C26000-T-K",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.03,
+   "impliedWattsBefore": 11907.0,
+   "impliedWattsAfter": 0.0119
+  },
+  {
+   "reference": "C26000-T-J",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.03,
+   "impliedWattsBefore": 11907.0,
+   "impliedWattsAfter": 0.0119
+  },
+  {
+   "reference": "C26000-NT-K",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.03,
+   "impliedWattsBefore": 11907.0,
+   "impliedWattsAfter": 0.0119
+  },
+  {
+   "reference": "C26000-NT-J",
+   "series": "C26000",
+   "wasA": 630.0,
+   "nowA": 0.63,
+   "dcResistanceOhm": 0.03,
+   "impliedWattsBefore": 11907.0,
+   "impliedWattsAfter": 0.0119
+  }
+ ]
+}
