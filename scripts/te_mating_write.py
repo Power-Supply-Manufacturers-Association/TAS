@@ -76,6 +76,10 @@ def merge(existing, incoming):
 
 
 def main():
+    sys.path.insert(0, str(Path(__file__).parent))
+    from blade_gate import BladeGate
+    gate = BladeGate("connector")   # physics gate; schema alone cannot catch a units error
+
     ap = argparse.ArgumentParser()
     ap.add_argument("--apply", action="store_true")
     a = ap.parse_args()
@@ -129,6 +133,13 @@ def main():
                 out_lines.append(s)          # leave the ORIGINAL line untouched
                 continue
 
+            ok_bl, why_bl = gate.check(conn)
+            if not ok_bl:
+                stats["rejected_blade"] += 1
+                if len(invalid_samples) < 5:
+                    invalid_samples.append(f"{ref}: BLADE {why_bl}")
+                out_lines.append(s)
+                continue
             for m in mating["matesWith"]:
                 rel_written[m["relation"]] += 1
             stats["patched"] += 1

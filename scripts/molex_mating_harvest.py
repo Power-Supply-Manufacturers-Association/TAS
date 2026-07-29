@@ -187,6 +187,10 @@ def build_validator():
 
 
 def cmd_write(a):
+    sys.path.insert(0, str(Path(__file__).parent))
+    from blade_gate import BladeGate
+    gate = BladeGate("connector")   # physics gate; schema alone cannot catch a units error
+
     rel = {}
     if OUT.exists():
         for line in OUT.read_text(encoding="utf-8").splitlines():
@@ -228,9 +232,17 @@ def cmd_write(a):
                     bad.append(f"{pn}: {errs[0].message[:140]}")
                 out_lines.append(s)
                 continue
+            ok_bl, why_bl = gate.check(c)
+            if not ok_bl:
+                rejected += 1
+                if len(bad) < 5:
+                    bad.append(f"{pn}: BLADE {why_bl}")
+                out_lines.append(s)
+                continue
             patched += 1
             out_lines.append(json.dumps(obj, ensure_ascii=False))
     log(f"WRITE {'APPLIED' if a.apply else 'DRY RUN'}: patched={patched} rejected={rejected}")
+    log(gate.summary())
     for b in bad:
         log(f"  rejected: {b}")
     if a.apply and patched:
