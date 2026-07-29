@@ -1,0 +1,95 @@
+{
+ "ticket": "ABT #351 B1 (Bourns SRP/SRR/SRN/AC)",
+ "rows": [
+  {
+   "reference": "SRP0310F-1R0M",
+   "series": "SRP0310F",
+   "datasheet": "https://www.bourns.com/docs/Product-Datasheets/SRP0310F.pdf",
+   "wasDcrOhm": 4.0,
+   "nowDcrOhm": 0.0564,
+   "datasheetDcrTypMilliohm": 47.0,
+   "datasheetDcrMaxMilliohm": 56.4,
+   "anchors": {
+    "inductanceH": 1e-06,
+    "ratedCurrentA": 4.0
+   },
+   "impliedWattsBefore": 64.0,
+   "impliedWattsAfter": 0.9024
+  },
+  {
+   "reference": "SRP0310F-R68M",
+   "series": "SRP0310F",
+   "datasheet": "https://www.bourns.com/docs/Product-Datasheets/SRP0310F.pdf",
+   "wasDcrOhm": 5.0,
+   "nowDcrOhm": 0.0351,
+   "datasheetDcrTypMilliohm": 30.5,
+   "datasheetDcrMaxMilliohm": 35.1,
+   "anchors": {
+    "inductanceH": 6.800000000000001e-07,
+    "ratedCurrentA": 5.0
+   },
+   "impliedWattsBefore": 125.0,
+   "impliedWattsAfter": 0.8775
+  },
+  {
+   "reference": "SRP0410F-1R5M",
+   "series": "SRP0410F",
+   "datasheet": "https://www.bourns.com/docs/Product-Datasheets/SRP0410F.pdf",
+   "wasDcrOhm": 4.9,
+   "nowDcrOhm": 0.054,
+   "datasheetDcrTypMilliohm": 45.0,
+   "datasheetDcrMaxMilliohm": 54.0,
+   "anchors": {
+    "inductanceH": 1.5e-06,
+    "ratedCurrentA": 4.9
+   },
+   "impliedWattsBefore": 117.6,
+   "impliedWattsAfter": 1.2965
+  },
+  {
+   "reference": "SRP0410F-2R2M",
+   "series": "SRP0410F",
+   "datasheet": "https://www.bourns.com/docs/Product-Datasheets/SRP0410F.pdf",
+   "wasDcrOhm": 3.9,
+   "nowDcrOhm": 0.072,
+   "datasheetDcrTypMilliohm": 60.0,
+   "datasheetDcrMaxMilliohm": 72.0,
+   "anchors": {
+    "inductanceH": 2.2e-06,
+    "ratedCurrentA": 3.9
+   },
+   "impliedWattsBefore": 59.3,
+   "impliedWattsAfter": 1.0951
+  }
+ ],
+ "skipped": [
+  {
+   "reference": "1140-471K-RC",
+   "why": "DCR column header does not prove milliohms"
+  },
+  {
+   "reference": "AC3630R-12NJ",
+   "why": "inductance/rated-current anchors not both found on the row"
+  },
+  {
+   "reference": "AC3630R-12NK",
+   "why": "inductance/rated-current anchors not both found on the row"
+  },
+  {
+   "reference": "SRN4018BTA-R56M",
+   "why": "DCR column header does not prove milliohms"
+  },
+  {
+   "reference": "SRR5828A-2R6Y",
+   "why": "DCR column header does not prove milliohms"
+  },
+  {
+   "reference": "SRR5228A-2R2Y",
+   "why": "DCR column header does not prove milliohms"
+  },
+  {
+   "reference": "SRP5030TA-3R6M",
+   "why": "DCR column header does not prove milliohms"
+  }
+ ]
+}
