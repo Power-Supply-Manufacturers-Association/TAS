@@ -1,0 +1,580 @@
+{
+ "source": "https://www.laird.com/products/inductive-components-emc-components-and-ferrite-cores/common-mode-chokes",
+ "columns": [
+  "Product image",
+  "Product name",
+  "Filter Type 1",
+  "Impedance (Ohm) at 100 MHz",
+  "Impedance (Ohm) at 10 MHz",
+  "Inductance (µH) at 100 KHz",
+  "Rated Current (A) Max",
+  "Rating Voltage Max (VDC)",
+  "Rating Voltage Max (Vrms)",
+  "DCR (Ω) Max",
+  "Width(mm)",
+  "Technical datasheet"
+ ],
+ "rows": [
+  {
+   "cells": [
+    "",
+    "CC1812 Series",
+    "Signal Line",
+    "",
+    "",
+    "51.00",
+    "0.20",
+    "",
+    "",
+    "0.50",
+    "4.00",
+    ""
+   ],
+   "datasheet": null
+  },
+  {
+   "cells": [
+    "",
+    "CC2824 Series",
+    "Signal Line",
+    "",
+    "",
+    "5.00",
+    "0.12",
+    "",
+    "",
+    "0.10",
+    "6.00",
+    ""
+   ],
+   "datasheet": null
+  },
+  {
+   "cells": [
+    "",
+    "CF0504 Series",
+    "Signal Line",
+    "90.00",
+    "",
+    "",
+    "0.30",
+    "",
+    "",
+    "0.60",
+    "1.00",
+    ""
+   ],
+   "datasheet": null
+  },
+  {
+   "cells": [
+    "",
+    "CF0805 Series",
+    "Signal Line",
+    "90.00",
+    "",
+    "",
+    "0.40",
+    "",
+    "",
+    "0.40",
+    "1.00",
+    ""
+   ],
+   "datasheet": null
+  },
+  {
+   "cells": [
+    "",
+    "CH0805 Series",
+    "Signal Line",
+    "90.00",
+    "",
+    "",
+    "0.40",
+    "",
+    "",
+    "0.30",
+    "1.00",
+    ""
+   ],
+   "datasheet": null
+  },
+  {
+   "cells": [
+    "",
+    "CM0805 Series",
+    "Signal Line",
+    "90.00",
+    "",
+    "",
+    "0.40",
+    "",
+    "",
+    "0.30",
+    "1.00",
+    ""
+   ],
+   "datasheet": null
+  },
+  {
+   "cells": [
+    "",
+    "CM1206 Series",
+    "Signal Line",
+    "160.00",
+    "",
+    "",
+    "0.34",
+    "",
+    "",
+    "0.40",
+    "2.00",
+    ""
+   ],
+   "datasheet": null
+  },
+  {
+   "cells": [
+    "",
+    "CM1210A Series",
+    "Signal Line",
+    "",
+    "",
+    "200.00",
+    "0.07",
+    "80.00",
+    "",
+    "5.50",
+    "2.00",
+    ""
+   ],
+   "datasheet": null
+  },
+  {
+   "cells": [
+    "",
+    "CM1210B Series",
+    "Signal Line",
+    "",
+    "2600.00",
+    "51.00",
+    "0.20",
+    "80.00",
+    "",
+    "0.70",
+    "2.00",
+    ""
+   ],
+   "datasheet": null
+  },
+  {
+   "cells": [
+    "",
+    "CM1210C Series",
+    "Signal Line",
+    "",
+    "550.00",
+    "11.00",
+    "0.30",
+    "80.00",
+    "",
+    "0.40",
+    "2.00",
+    ""
+   ],
+   "datasheet": null
+  },
+  {
+   "cells": [
+    "",
+    "CM1812 Series",
+    "Signal Line",
+    "2800.00",
+    "1900.00",
+    "",
+    "0.20",
+    "",
+    "",
+    "0.50",
+    "4.00",
+    ""
+   ],
+   "datasheet": null
+  },
+  {
+   "cells": [
+    "",
+    "CM1812A Series",
+    "Signal Line",
+    "",
+    "",
+    "200.00",
+    "0.10",
+    "50.00",
+    "",
+    "4.50",
+    "3.00",
+    ""
+   ],
+   "datasheet": null
+  },
+  {
+   "cells": [
+    "",
+    "CM1812B Series",
+    "Signal Line",
+    "",
+    "2800.00",
+    "51.00",
+    "0.23",
+    "50.00",
+    "",
+    "1.00",
+    "3.00",
+    ""
+   ],
+   "datasheet": null
+  },
+  {
+   "cells": [
+    "",
+    "CM2021 Series",
+    "Power Line",
+    "33.00",
+    "",
+    "",
+    "15.00",
+    "285.00",
+    "",
+    "0.00",
+    "6.00",
+    ""
+   ],
+   "datasheet": null
+  },
+  {
+   "cells": [
+    "",
+    "CM2545 Series",
+    "Power Line",
+    "170.00",
+    "",
+    "",
+    "10.00",
+    "285.00",
+    "",
+    "0.01",
+    "11.00",
+    ""
+   ],
+   "datasheet": null
+  },
+  {
+   "cells": [
+    "",
+    "CM2722 Series",
+    "Power Line",
+    "80.00",
+    "",
+    "",
+    "5.00",
+    "30.00",
+    "",
+    "0.02",
+    "6.00",
+    ""
+   ],
+   "datasheet": null
+  },
+  {
+   "cells": [
+    "",
+    "CM2824 Series",
+    "Signal Line",
+    "800.00",
+    "5800.00",
+    "",
+    "0.70",
+    "",
+    "",
+    "0.26",
+    "6.00",
+    ""
+   ],
+   "datasheet": null
+  },
+  {
+   "cells": [
+    "",
+    "CM3032 Series",
+    "Power Line",
+    "300.00",
+    "",
+    "",
+    "8.00",
+    "30.00",
+    "",
+    "0.01",
+    "8.00",
+    ""
+   ],
+   "datasheet": null
+  },
+  {
+   "cells": [
+    "",
+    "CM3421 Series",
+    "Power Line",
+    "60.00",
+    "",
+    "",
+    "15.00",
+    "285.00",
+    "",
+    "0.00",
+    "6.00",
+    ""
+   ],
+   "datasheet": null
+  },
+  {
+   "cells": [
+    "",
+    "CM3440 Series",
+    "Power Line",
+    "170.00",
+    "",
+    "",
+    "20.00",
+    "100.00",
+    "",
+    "0.00",
+    "10.00",
+    ""
+   ],
+   "datasheet": null
+  },
+  {
+   "cells": [
+    "",
+    "CM3822 Series",
+    "Power Line",
+    "80.00",
+    "",
+    "",
+    "5.00",
+    "30.00",
+    "",
+    "0.02",
+    "6.00",
+    ""
+   ],
+   "datasheet": null
+  },
+  {
+   "cells": [
+    "",
+    "CM4440 Series",
+    "Power Line",
+    "120.00",
+    "",
+    "",
+    "20.00",
+    "100.00",
+    "",
+    "0.00",
+    "10.00",
+    ""
+   ],
+   "datasheet": null
+  },
+  {
+   "cells": [
+    "",
+    "CM4545 Series",
+    "Power Line",
+    "130.00",
+    "",
+    "",
+    "10.00",
+    "285.00",
+    "",
+    "0.01",
+    "11.00",
+    ""
+   ],
+   "datasheet": null
+  },
+  {
+   "cells": [
+    "",
+    "CM4732 Series",
+    "Power Line",
+    "300.00",
+    "",
+    "",
+    "8.00",
+    "30.00",
+    "",
+    "0.01",
+    "8.00",
+    ""
+   ],
+   "datasheet": null
+  },
+  {
+   "cells": [
+    "",
+    "CM5022 Series",
+    "Power Line",
+    "80.00",
+    "",
+    "",
+    "5.00",
+    "30.00",
+    "",
+    "0.02",
+    "6.00",
+    ""
+   ],
+   "datasheet": null
+  },
+  {
+   "cells": [
+    "",
+    "CM5441 Series",
+    "Power Line",
+    "160.00",
+    "",
+    "",
+    "70.00",
+    "340.00",
+    "",
+    "0.00",
+    "10.00",
+    ""
+   ],
+   "datasheet": null
+  },
+  {
+   "cells": [
+    "",
+    "CM5740 Series",
+    "Power Line",
+    "100.00",
+    "173.00",
+    "",
+    "20.00",
+    "100.00",
+    "",
+    "0.00",
+    "10.00",
+    ""
+   ],
+   "datasheet": null
+  },
+  {
+   "cells": [
+    "",
+    "CM6032 Series",
+    "Power Line",
+    "300.00",
+    "",
+    "",
+    "8.00",
+    "30.00",
+    "",
+    "0.01",
+    "8.00",
+    ""
+   ],
+   "datasheet": null
+  },
+  {
+   "cells": [
+    "",
+    "CM6050 Series",
+    "Power Line",
+    "",
+    "500.00",
+    "",
+    "3.10",
+    "80.00",
+    "",
+    "0.02",
+    "5.00",
+    ""
+   ],
+   "datasheet": null
+  },
+  {
+   "cells": [
+    "",
+    "CM8663 Series",
+    "Power Line",
+    "160.00",
+    "",
+    "",
+    "82.00",
+    "984.00",
+    "",
+    "0.00",
+    "16.00",
+    ""
+   ],
+   "datasheet": null
+  },
+  {
+   "cells": [
+    "",
+    "CMA0805",
+    "",
+    "90.00",
+    "",
+    "",
+    "0.40",
+    "50.00",
+    "",
+    "0.19",
+    "1.20",
+    "CMA0805 Series Datasheet"
+   ],
+   "datasheet": "https://www.laird.com/sites/default/files/2022-09/CMA0805%20Series%20Common%20Mode%20Choke.pdf"
+  },
+  {
+   "cells": [
+    "",
+    "CMX1211 Series",
+    "Power Line",
+    "",
+    "",
+    "68.00",
+    "50.00",
+    "",
+    "250.00",
+    "0.56",
+    "19.00",
+    ""
+   ],
+   "datasheet": null
+  },
+  {
+   "cells": [
+    "",
+    "CMX1616 Series",
+    "Power Line",
+    "",
+    "",
+    "704.00",
+    "33.00",
+    "",
+    "250.00",
+    "2.30",
+    "40.00",
+    ""
+   ],
+   "datasheet": null
+  }
+ ]
+}
