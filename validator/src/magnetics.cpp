@@ -15,6 +15,24 @@
 namespace tas {
 namespace {
 
+// Winding resistance, in EITHER shape the catalogue uses. An inductor carries a
+// singular `dcResistance`; a common-mode choke carries `dcResistances[]`, one entry
+// per winding.
+//
+// Reading only the singular form does not FAIL on a choke — it finds nothing, which
+// is indistinguishable from a clean part. That is how every common-mode choke in the
+// catalogue went unexamined by MAG_DCR_GEOM, MAG_DCR_PER_H and MAG_ISAT_POWER
+// (ABT #387): the checks reported success on a population they never looked at.
+// MAG_DISS_DENSITY was written later and read both shapes, which is precisely why it
+// found what the older checks had been silently skipping.
+std::optional<double> read_dcr(const json& pt) {
+    if (auto d = scalar_at(pt, {"dcResistance"})) return d;
+    if (pt.contains("dcResistances") && pt["dcResistances"].is_array() &&
+        !pt["dcResistances"].empty())
+        return scalar(&pt["dcResistances"][0], "dcResistances[0]");
+    return std::nullopt;
+}
+
 void check_point(const json& pt, int idx, const json& dims, const std::string& material,
                  const Ctx& ctx, std::vector<Finding>& out, std::vector<std::string>& skipped) {
     const std::string tag = "[op " + std::to_string(idx) + "] ";
@@ -62,7 +80,7 @@ void check_point(const json& pt, int idx, const json& dims, const std::string& m
         }
     }
 
-    auto DCR = scalar_at(pt, {"dcResistance"});
+    auto DCR = read_dcr(pt);
     auto Isat = scalar_at(pt, {"saturationCurrentPeak"});
     auto srf = scalar_at(pt, {"selfResonantFrequency"});
 
@@ -224,9 +242,9 @@ void check_point(const json& pt, int idx, const json& dims, const std::string& m
 //   F3 chip beads — vendor datasheets pair IR (dT=40K) with a NON-simultaneous
 //      small-signal RDC max (WE 7427920: 9600 mA next to 0.15 ohm), so I^2*R is
 //      not what the part dissipates at rating.
-// Unlike the older MAG_* checks this reads BOTH DCR shapes (singular
-// dcResistance and plural dcResistances[0]) — the plural is the common-mode-
-// choke form, which is exactly where the worst offenders lived.
+// Reads the winding resistance through read_dcr(), which handles both the singular
+// and the common-mode-choke shape. This check was written that way from the start,
+// and the older MAG_* checks have since been brought to the same reader (ABT #387).
 void check_dissipation_density(const json& pt, int idx, const json& dims,
                                const std::string& desc_lower, const Ctx& ctx,
                                std::vector<Finding>& out) {
@@ -244,10 +262,7 @@ void check_dissipation_density(const json& pt, int idx, const json& dims,
         desc_lower.find("bead") != std::string::npos)
         return;
 
-    auto dcr = scalar_at(pt, {"dcResistance"});
-    if (!dcr && pt.contains("dcResistances") && pt["dcResistances"].is_array() &&
-        !pt["dcResistances"].empty())
-        dcr = scalar(&pt["dcResistances"][0], "dcResistances[0]");
+    auto dcr = read_dcr(pt);
     if (!dcr || *dcr <= 0) return;
 
     std::optional<double> rated;

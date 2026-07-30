@@ -194,3 +194,68 @@ def test_severity_is_a_screaming_case_string_not_an_enum():
         assert f.severity in ("OK", "SUSPICIOUS", "IMPOSSIBLE"), f.severity
         assert not str(f.severity).endswith("Impossible")   # the trap, kept explicit
         assert not str(f.severity).endswith("Suspicious")
+
+
+# ── ABT #387: the three older MAG_* checks must see common-mode chokes ───────────
+#
+# An inductor stores its winding resistance as a singular `dcResistance`; a
+# common-mode choke stores `dcResistances[]`, one entry per winding. MAG_DCR_GEOM,
+# MAG_DCR_PER_H and MAG_ISAT_POWER read only the singular field, so on every choke
+# in the catalogue they found NOTHING — which is indistinguishable from a clean
+# part. They reported success on a population they had never looked at.
+#
+# These tests pin the fix by asserting the SAME record fires the SAME code in both
+# shapes. If a future reader regresses to the singular field, the plural case goes
+# quiet and these fail — which is the only way this class of bug is visible.
+
+def _both_shapes(dcr, **electrical):
+    """The same operating point written the inductor way and the choke way."""
+    singular = dict(electrical, dcResistance={"maximum": dcr})
+    plural = dict(electrical, dcResistances=[{"maximum": dcr}])
+    return singular, plural
+
+
+def test_dcr_geom_sees_the_plural_choke_shape():
+    """MAG_DCR_GEOM: DCR*size^2/L, on a 41x41x30 mm choke with an absurd 3.2 kohm."""
+    mech = {"length": {"nominal": 0.041}, "width": {"nominal": 0.041},
+            "height": {"nominal": 0.030}}
+    sing, plur = _both_shapes(3200.0, subtype="commonModeChoke",
+                              inductance={"nominal": 6e-04})
+    for rec in (_magnetic(sing, mech=mech), _magnetic(plur, mech=mech)):
+        assert any(c == "MAG_DCR_GEOM" for c, _ in _codes(rec)), _codes(rec)
+
+
+def test_dcr_per_h_sees_the_plural_choke_shape():
+    """MAG_DCR_PER_H: 5 kohm across a 1 mH choke is 5e6 ohm/H, either way round.
+
+    Deliberately NOT written at L = 1 uH: the suspicious tier requires L strictly
+    greater than 1 uH, so a fixture sitting exactly on the boundary reports nothing
+    and would look like the plural read had failed.
+    """
+    sing, plur = _both_shapes(5000.0, subtype="commonModeChoke",
+                              inductance={"nominal": 1e-03})
+    for rec in (_magnetic(sing), _magnetic(plur)):
+        assert any(c == "MAG_DCR_PER_H" for c, _ in _codes(rec)), _codes(rec)
+
+
+def test_isat_power_sees_the_plural_choke_shape():
+    """MAG_ISAT_POWER: Isat^2*DCR = 40^2 * 5 = 8 kW, however the DCR is stored."""
+    sing, plur = _both_shapes(5.0, subtype="commonModeChoke",
+                              inductance={"nominal": 1e-03},
+                              saturationCurrentPeak=40.0)
+    for rec in (_magnetic(sing), _magnetic(plur)):
+        assert any(c == "MAG_ISAT_POWER" for c, _ in _codes(rec)), _codes(rec)
+
+
+def test_a_sound_choke_stays_clean_in_the_plural_shape():
+    """The fix must not turn 'never examined' into 'always flagged'.
+
+    A real Wurth-class 600 uH CMC — 3.2 mohm across a 41x41x30 mm core — has to come
+    back clean, or the un-hidden population would drown in false positives.
+    """
+    rec = _magnetic({"subtype": "commonModeChoke", "inductance": {"nominal": 6e-04},
+                     "dcResistances": [{"maximum": 0.0032}], "ratedCurrents": [40.0]},
+                    mech={"length": {"nominal": 0.041}, "width": {"nominal": 0.041},
+                          "height": {"nominal": 0.030}})
+    for code in ("MAG_DCR_GEOM", "MAG_DCR_PER_H", "MAG_ISAT_POWER"):
+        assert not any(c == code for c, _ in _codes(rec)), _codes(rec)
