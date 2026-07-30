@@ -1,0 +1,1072 @@
+{
+ "ticket": "ABT #351 (Murata via PIM)",
+ "repaired": [
+  {
+   "reference": "#A915AY-101M=P3",
+   "changed": {
+    "dcResistance": {
+     "was": 33.0,
+     "now": 0.801
+    }
+   }
+  },
+  {
+   "reference": "#A915AY-4R7M=P3",
+   "changed": {
+    "dcResistance": {
+     "was": 2.92,
+     "now": 0.045
+    }
+   }
+  },
+  {
+   "reference": "#A921CY-1R0M=P3",
+   "changed": {
+    "dcResistance": {
+     "was": 11.0,
+     "now": 0.014
+    }
+   }
+  },
+  {
+   "reference": "#A921CY-220M=P3",
+   "changed": {
+    "dcResistance": {
+     "was": 4.7,
+     "now": 0.115
+    }
+   }
+  },
+  {
+   "reference": "#A921CY-270M=P3",
+   "changed": {
+    "dcResistance": {
+     "was": 4.7,
+     "now": 0.144
+    }
+   }
+  },
+  {
+   "reference": "#A921CY-330M=P3",
+   "changed": {
+    "dcResistance": {
+     "was": 22.0,
+     "now": 0.168
+    }
+   }
+  },
+  {
+   "reference": "#A921CY-3R6M=P3",
+   "changed": {
+    "dcResistance": {
+     "was": 2.28,
+     "now": 0.026
+    }
+   }
+  },
+  {
+   "reference": "#A921CY-560M=P3",
+   "changed": {
+    "dcResistance": {
+     "was": 22.0,
+     "now": 0.264
+    }
+   }
+  },
+  {
+   "reference": "#A921CY-6R2M=P3",
+   "changed": {
+    "dcResistance": {
+     "was": 3.59,
+     "now": 0.039
+    }
+   }
+  },
+  {
+   "reference": "LQM2HPNR24MGHL",
+   "changed": {
+    "dcResistance": {
+     "was": 4.5,
+     "now": 0.03
+    }
+   }
+  },
+  {
+   "reference": "1276AS-H-1R0M=P2",
+   "changed": {
+    "dcResistance": {
+     "was": 1.0,
+     "now": 0.062
+    }
+   }
+  },
+  {
+   "reference": "DFE252008C-1R0M=P2",
+   "changed": {
+    "dcResistance": {
+     "was": 3.0,
+     "now": 0.084
+    }
+   }
+  },
+  {
+   "reference": "LQM32PN1R0MG0L",
+   "changed": {
+    "dcResistance": {
+     "was": 1.8,
+     "now": 0.06
+    }
+   }
+  },
+  {
+   "reference": "1217AS-H-220M=P3",
+   "changed": {
+    "dcResistance": {
+     "was": 5.6,
+     "now": 0.0936
+    }
+   }
+  },
+  {
+   "reference": "1217AS-H-330M=P3",
+   "changed": {
+    "dcResistance": {
+     "was": 6.8,
+     "now": 0.132
+    }
+   }
+  },
+  {
+   "reference": "1264EY-220M=P3",
+   "changed": {
+    "dcResistance": {
+     "was": 4.7,
+     "now": 0.132
+    }
+   }
+  },
+  {
+   "reference": "1264EY-330M=P3",
+   "changed": {
+    "dcResistance": {
+     "was": 22.0,
+     "now": 0.204
+    }
+   }
+  },
+  {
+   "reference": "1264EY-3R3N=P3",
+   "changed": {
+    "dcResistance": {
+     "was": 0.325,
+     "now": 0.0252
+    }
+   }
+  },
+  {
+   "reference": "1264EY-470M=P3",
+   "changed": {
+    "dcResistance": {
+     "was": 4.7,
+     "now": 0.312
+    }
+   }
+  },
+  {
+   "reference": "1267AY-101M=P3",
+   "changed": {
+    "dcResistance": {
+     "was": 33.0,
+     "now": 0.336
+    },
+    "ratedCurrents": {
+     "was": 1.1,
+     "now": 1.3
+    }
+   }
+  },
+  {
+   "reference": "1267AY-1R0N=P3",
+   "changed": {
+    "dcResistance": {
+     "was": 0.1,
+     "now": 0.0084
+    },
+    "ratedCurrents": {
+     "was": 10.4,
+     "now": 8.4
+    }
+   }
+  },
+  {
+   "reference": "1267AY-1R5N=P3",
+   "changed": {
+    "dcResistance": {
+     "was": 0.1,
+     "now": 0.0108
+    },
+    "ratedCurrents": {
+     "was": 8.2,
+     "now": 7.3
+    }
+   }
+  },
+  {
+   "reference": "LQW18AN73NG8ZD",
+   "changed": {
+    "dcResistance": {
+     "was": 33.0,
+     "now": 0.41
+    }
+   }
+  },
+  {
+   "reference": "LQW18ANR12G8ZD",
+   "changed": {
+    "dcResistance": {
+     "was": 34.0,
+     "now": 0.72
+    }
+   }
+  },
+  {
+   "reference": "LQW18ANR12J8ZD",
+   "changed": {
+    "dcResistance": {
+     "was": 34.0,
+     "now": 0.72
+    }
+   }
+  },
+  {
+   "reference": "LQH2HPZR47MGRL",
+   "changed": {
+    "dcResistance": {
+     "was": 2.9,
+     "now": 0.054
+    }
+   }
+  },
+  {
+   "reference": "MDH7045C-4R7NB=P3",
+   "changed": {
+    "dcResistance": {
+     "was": 4.2,
+     "now": 0.0234
+    }
+   }
+  },
+  {
+   "reference": "MDH7045C-6R8NB=P3",
+   "changed": {
+    "dcResistance": {
+     "was": 3.4,
+     "now": 0.0286
+    }
+   }
+  },
+  {
+   "reference": "LQH5BPH3R3NT0L",
+   "changed": {
+    "dcResistance": {
+     "was": 2.5,
+     "now": 0.0528
+    }
+   }
+  },
+  {
+   "reference": "LQH5BPH6R8NT0L",
+   "changed": {
+    "dcResistance": {
+     "was": 2.0,
+     "now": 0.0996
+    }
+   }
+  },
+  {
+   "reference": "LQH2HPNR68MGRL",
+   "changed": {
+    "dcResistance": {
+     "was": 2.43,
+     "now": 0.066
+    }
+   }
+  },
+  {
+   "reference": "DEM8045Z-150M=P3",
+   "changed": {
+    "dcResistance": {
+     "was": 3.3,
+     "now": 0.0528
+    }
+   }
+  },
+  {
+   "reference": "DEM8045Z-220M=P3",
+   "changed": {
+    "dcResistance": {
+     "was": 2.9,
+     "now": 0.0936
+    }
+   }
+  },
+  {
+   "reference": "DEM8045Z-330M=P3",
+   "changed": {
+    "dcResistance": {
+     "was": 2.1,
+     "now": 0.132
+    }
+   }
+  },
+  {
+   "reference": "DEM8045Z-5R6N=P3",
+   "changed": {
+    "dcResistance": {
+     "was": 4.5,
+     "now": 0.0228
+    }
+   }
+  },
+  {
+   "reference": "FCUL0624-H-R47M=P3",
+   "changed": {
+    "dcResistance": {
+     "was": 3.27,
+     "now": 0.0034989
+    }
+   }
+  },
+  {
+   "reference": "FCUL0630-H-R12M=P3",
+   "changed": {
+    "dcResistance": {
+     "was": 0.77,
+     "now": 0.0008239
+    }
+   }
+  },
+  {
+   "reference": "FCUL0630-H-R22M=P3",
+   "changed": {
+    "dcResistance": {
+     "was": 1.12,
+     "now": 0.0011984
+    }
+   }
+  },
+  {
+   "reference": "FCUL0630-H-R36M=P3",
+   "changed": {
+    "dcResistance": {
+     "was": 1.9,
+     "now": 0.002033
+    }
+   }
+  },
+  {
+   "reference": "FCUL0630-H-R56M=P3",
+   "changed": {
+    "dcResistance": {
+     "was": 2.83,
+     "now": 0.0030281
+    }
+   }
+  },
+  {
+   "reference": "FCUL0630-H-R68M=P3",
+   "changed": {
+    "dcResistance": {
+     "was": 3.58,
+     "now": 0.0038306
+    }
+   }
+  },
+  {
+   "reference": "LQH2HPNR47MGRL",
+   "changed": {
+    "dcResistance": {
+     "was": 2.9,
+     "now": 0.054
+    }
+   }
+  },
+  {
+   "reference": "LQH2HPZ1R0MGRL",
+   "changed": {
+    "dcResistance": {
+     "was": 2.13,
+     "now": 0.0816
+    }
+   }
+  },
+  {
+   "reference": "LQH43PH2R2M26L",
+   "changed": {
+    "dcResistance": {
+     "was": 1.6,
+     "now": 0.0504
+    }
+   }
+  },
+  {
+   "reference": "LQH44PH1R0MPRL",
+   "changed": {
+    "dcResistance": {
+     "was": 4.5,
+     "now": 0.03
+    }
+   }
+  },
+  {
+   "reference": "LQH44PH4R7MPRL",
+   "changed": {
+    "dcResistance": {
+     "was": 2.2,
+     "now": 0.078
+    }
+   }
+  },
+  {
+   "reference": "LQH44PH680MPRL",
+   "changed": {
+    "dcResistance": {
+     "was": 21.0,
+     "now": 1.2
+    }
+   }
+  },
+  {
+   "reference": "LQH5BPN150M38L",
+   "changed": {
+    "dcResistance": {
+     "was": 1.6,
+     "now": 0.096
+    }
+   }
+  },
+  {
+   "reference": "LQM21PNR47MG0D",
+   "changed": {
+    "dcResistance": {
+     "was": 14.0,
+     "now": 0.094
+    }
+   }
+  },
+  {
+   "reference": "LQM21PZ1R0MC0D",
+   "changed": {
+    "dcResistance": {
+     "was": 15.0,
+     "now": 0.238
+    }
+   }
+  },
+  {
+   "reference": "LQM21PZ1R0NGRD",
+   "changed": {
+    "dcResistance": {
+     "was": 8.2,
+     "now": 0.0825
+    }
+   }
+  },
+  {
+   "reference": "LQM2HPN1R0MGHL",
+   "changed": {
+    "dcResistance": {
+     "was": 14.0,
+     "now": 0.063
+    }
+   }
+  },
+  {
+   "reference": "#A914BYW-2R2M=P3",
+   "changed": {
+    "dcResistance": {
+     "was": 4.7,
+     "now": 0.059
+    }
+   }
+  },
+  {
+   "reference": "#A915AY-1R1M=P3",
+   "changed": {
+    "dcResistance": {
+     "was": 3.3,
+     "now": 0.02
+    }
+   }
+  },
+  {
+   "reference": "#A915AY-330M=P3",
+   "changed": {
+    "dcResistance": {
+     "was": 57.0,
+     "now": 0.257
+    }
+   }
+  },
+  {
+   "reference": "#A915AY-3R3M=P3",
+   "changed": {
+    "dcResistance": {
+     "was": 4.7,
+     "now": 0.034
+    }
+   }
+  },
+  {
+   "reference": "#A915AY-470M=P3",
+   "changed": {
+    "dcResistance": {
+     "was": 57.0,
+     "now": 0.352
+    }
+   }
+  },
+  {
+   "reference": "#A921CY-1R5M=P3",
+   "changed": {
+    "dcResistance": {
+     "was": 11.0,
+     "now": 0.016
+    }
+   }
+  },
+  {
+   "reference": "1264EY-4R7M=P3",
+   "changed": {
+    "dcResistance": {
+     "was": 6.8,
+     "now": 0.0348
+    }
+   }
+  },
+  {
+   "reference": "LQG18HN3N3S00D",
+   "changed": {
+    "dcResistance": {
+     "was": 8.5,
+     "now": 0.12
+    }
+   }
+  },
+  {
+   "reference": "LQW18AN2N2D00D",
+   "changed": {
+    "dcResistance": {
+     "was": 75.0,
+     "now": 0.042
+    }
+   }
+  },
+  {
+   "reference": "LQH5BPN6R8NT0L",
+   "changed": {
+    "dcResistance": {
+     "was": 39.0,
+     "now": 0.0996
+    }
+   }
+  },
+  {
+   "reference": "LQW18AN6N5C8ZD",
+   "changed": {
+    "dcResistance": {
+     "was": 28.0,
+     "now": 0.04
+    }
+   }
+  },
+  {
+   "reference": "LQW18AN6N5G8ZD",
+   "changed": {
+    "dcResistance": {
+     "was": 30.0,
+     "now": 0.04
+    }
+   }
+  },
+  {
+   "reference": "LQW18AN6N8C8ZD",
+   "changed": {
+    "dcResistance": {
+     "was": 30.0,
+     "now": 0.04
+    }
+   }
+  },
+  {
+   "reference": "MDH7045C-3R3NB=P3",
+   "changed": {
+    "dcResistance": {
+     "was": 5.0,
+     "now": 0.0208
+    }
+   }
+  },
+  {
+   "reference": "LQG15WH1N0B02D",
+   "changed": {
+    "dcResistance": {
+     "was": 15.0,
+     "now": 0.03
+    }
+   }
+  },
+  {
+   "reference": "LQG15WH1N1B02D",
+   "changed": {
+    "dcResistance": {
+     "was": 14.0,
+     "now": 0.03
+    }
+   }
+  },
+  {
+   "reference": "LQG15WH1N3B02D",
+   "changed": {
+    "dcResistance": {
+     "was": 12.0,
+     "now": 0.03
+    }
+   }
+  },
+  {
+   "reference": "LQG15WZ1N0B02D",
+   "changed": {
+    "dcResistance": {
+     "was": 15.0,
+     "now": 0.03
+    }
+   }
+  },
+  {
+   "reference": "LQG15WZ1N1B02D",
+   "changed": {
+    "dcResistance": {
+     "was": 14.0,
+     "now": 0.03
+    }
+   }
+  },
+  {
+   "reference": "LQG15WZ1N2B02D",
+   "changed": {
+    "dcResistance": {
+     "was": 13.0,
+     "now": 0.03
+    }
+   }
+  },
+  {
+   "reference": "LQG15WZ1N3B02D",
+   "changed": {
+    "dcResistance": {
+     "was": 12.0,
+     "now": 0.03
+    }
+   }
+  },
+  {
+   "reference": "LQH2HPZ1R5MGRL",
+   "changed": {
+    "dcResistance": {
+     "was": 1.7,
+     "now": 0.1044
+    }
+   }
+  },
+  {
+   "reference": "LQH43PH100M26L",
+   "changed": {
+    "dcResistance": {
+     "was": 19.0,
+     "now": 0.1764
+    }
+   }
+  },
+  {
+   "reference": "LQH43PN100M26L",
+   "changed": {
+    "dcResistance": {
+     "was": 17.0,
+     "now": 0.1764
+    }
+   }
+  },
+  {
+   "reference": "LQH43PZ3R3M26L",
+   "changed": {
+    "dcResistance": {
+     "was": 5.0,
+     "now": 0.0624
+    }
+   }
+  },
+  {
+   "reference": "LQH44PH150MPRL",
+   "changed": {
+    "dcResistance": {
+     "was": 15.0,
+     "now": 0.24
+    }
+   }
+  },
+  {
+   "reference": "LQH44PH6R8MPRL",
+   "changed": {
+    "dcResistance": {
+     "was": 23.0,
+     "now": 0.12
+    }
+   }
+  }
+ ],
+ "confirmedOk": [],
+ "vendorDisagreesButStillImpossible": [
+  {
+   "reference": "1239AS-H-R47M=P2",
+   "changed": {
+    "dcResistance": {
+     "was": 1.0,
+     "now": 0.039
+    }
+   },
+   "note": "even the vendor values stay density-impossible \u2014 not applied"
+  },
+  {
+   "reference": "DFE201612P-R24M=P2",
+   "changed": {
+    "dcResistance": {
+     "was": 0.144,
+     "now": 0.023
+    },
+    "ratedCurrents": {
+     "was": 6.5,
+     "now": 4.4
+    }
+   },
+   "note": "even the vendor values stay density-impossible \u2014 not applied"
+  },
+  {
+   "reference": "DFE201612P-R47M=P2",
+   "changed": {
+    "dcResistance": {
+     "was": 2.0,
+     "now": 0.033
+    },
+    "ratedCurrents": {
+     "was": 4.8,
+     "now": 3.7
+    }
+   },
+   "note": "even the vendor values stay density-impossible \u2014 not applied"
+  },
+  {
+   "reference": "LQW15AN5N6B80D",
+   "changed": {
+    "dcResistance": {
+     "was": 2.4,
+     "now": 0.04
+    }
+   },
+   "note": "even the vendor values stay density-impossible \u2014 not applied"
+  },
+  {
+   "reference": "LQW15AN3N6G8ZD",
+   "changed": {
+    "dcResistance": {
+     "was": 1.7,
+     "now": 0.03
+    }
+   },
+   "note": "even the vendor values stay density-impossible \u2014 not applied"
+  },
+  {
+   "reference": "LQW15AN4N4D8ZD",
+   "changed": {
+    "dcResistance": {
+     "was": 2.2,
+     "now": 0.052
+    }
+   },
+   "note": "even the vendor values stay density-impossible \u2014 not applied"
+  },
+  {
+   "reference": "LQW15AN4N6D8ZD",
+   "changed": {
+    "dcResistance": {
+     "was": 2.4,
+     "now": 0.06
+    }
+   },
+   "note": "even the vendor values stay density-impossible \u2014 not applied"
+  },
+  {
+   "reference": "LQW15AN4N6G8ZD",
+   "changed": {
+    "dcResistance": {
+     "was": 3.0,
+     "now": 0.06
+    }
+   },
+   "note": "even the vendor values stay density-impossible \u2014 not applied"
+  },
+  {
+   "reference": "LQW15AN5N5D8ZD",
+   "changed": {
+    "dcResistance": {
+     "was": 3.4,
+     "now": 0.04
+    }
+   },
+   "note": "even the vendor values stay density-impossible \u2014 not applied"
+  },
+  {
+   "reference": "LQW15AN5N5G8ZD",
+   "changed": {
+    "dcResistance": {
+     "was": 3.5,
+     "now": 0.04
+    }
+   },
+   "note": "even the vendor values stay density-impossible \u2014 not applied"
+  },
+  {
+   "reference": "LQW15AN5N6B8ZD",
+   "changed": {
+    "dcResistance": {
+     "was": 3.5,
+     "now": 0.04
+    }
+   },
+   "note": "even the vendor values stay density-impossible \u2014 not applied"
+  },
+  {
+   "reference": "LQW15AN5N6C8ZD",
+   "changed": {
+    "dcResistance": {
+     "was": 3.5,
+     "now": 0.04
+    }
+   },
+   "note": "even the vendor values stay density-impossible \u2014 not applied"
+  },
+  {
+   "reference": "LQW15AN5N7B8ZD",
+   "changed": {
+    "dcResistance": {
+     "was": 3.6,
+     "now": 0.04
+    }
+   },
+   "note": "even the vendor values stay density-impossible \u2014 not applied"
+  },
+  {
+   "reference": "LQW15AN5N7C8ZD",
+   "changed": {
+    "dcResistance": {
+     "was": 3.6,
+     "now": 0.04
+    }
+   },
+   "note": "even the vendor values stay density-impossible \u2014 not applied"
+  },
+  {
+   "reference": "LQW15AN5N7D8ZD",
+   "changed": {
+    "dcResistance": {
+     "was": 4.4,
+     "now": 0.04
+    }
+   },
+   "note": "even the vendor values stay density-impossible \u2014 not applied"
+  },
+  {
+   "reference": "LQW15AN7N2J8ZD",
+   "changed": {
+    "dcResistance": {
+     "was": 4.7,
+     "now": 0.05
+    }
+   },
+   "note": "even the vendor values stay density-impossible \u2014 not applied"
+  },
+  {
+   "reference": "DFE201610E-1R0M=P2",
+   "changed": {
+    "dcResistance": {
+     "was": 2.4,
+     "now": 0.057
+    }
+   },
+   "note": "even the vendor values stay density-impossible \u2014 not applied"
+  },
+  {
+   "reference": "DFE201610E-R47M=P2",
+   "changed": {
+    "dcResistance": {
+     "was": 5.5,
+     "now": 0.032
+    }
+   },
+   "note": "even the vendor values stay density-impossible \u2014 not applied"
+  },
+  {
+   "reference": "LQW15AN2N4C8ZD",
+   "changed": {
+    "dcResistance": {
+     "was": 9.9,
+     "now": 0.022
+    }
+   },
+   "note": "even the vendor values stay density-impossible \u2014 not applied"
+  },
+  {
+   "reference": "LQW15AN3N0G8ZD",
+   "changed": {
+    "dcResistance": {
+     "was": 10.0,
+     "now": 0.063
+    }
+   },
+   "note": "even the vendor values stay density-impossible \u2014 not applied"
+  },
+  {
+   "reference": "LQW15AN3N3D8ZD",
+   "changed": {
+    "dcResistance": {
+     "was": 11.0,
+     "now": 0.03
+    }
+   },
+   "note": "even the vendor values stay density-impossible \u2014 not applied"
+  },
+  {
+   "reference": "LQW15AN3N3G8ZD",
+   "changed": {
+    "dcResistance": {
+     "was": 12.0,
+     "now": 0.03
+    }
+   },
+   "note": "even the vendor values stay density-impossible \u2014 not applied"
+  },
+  {
+   "reference": "LQW15AN3N4B8ZD",
+   "changed": {
+    "dcResistance": {
+     "was": 12.0,
+     "now": 0.03
+    }
+   },
+   "note": "even the vendor values stay density-impossible \u2014 not applied"
+  },
+  {
+   "reference": "LQW15AN3N4C8ZD",
+   "changed": {
+    "dcResistance": {
+     "was": 13.0,
+     "now": 0.03
+    }
+   },
+   "note": "even the vendor values stay density-impossible \u2014 not applied"
+  },
+  {
+   "reference": "LQW15AN3N4D8ZD",
+   "changed": {
+    "dcResistance": {
+     "was": 13.0,
+     "now": 0.03
+    }
+   },
+   "note": "even the vendor values stay density-impossible \u2014 not applied"
+  },
+  {
+   "reference": "LQW15AN3N4G8ZD",
+   "changed": {
+    "dcResistance": {
+     "was": 14.0,
+     "now": 0.03
+    }
+   },
+   "note": "even the vendor values stay density-impossible \u2014 not applied"
+  },
+  {
+   "reference": "LQW15AN3N5B8ZD",
+   "changed": {
+    "dcResistance": {
+     "was": 24.0,
+     "now": 0.03
+    }
+   },
+   "note": "even the vendor values stay density-impossible \u2014 not applied"
+  },
+  {
+   "reference": "LQW15AN3N5C8ZD",
+   "changed": {
+    "dcResistance": {
+     "was": 24.0,
+     "now": 0.03
+    }
+   },
+   "note": "even the vendor values stay density-impossible \u2014 not applied"
+  },
+  {
+   "reference": "LQW15AN3N5D8ZD",
+   "changed": {
+    "dcResistance": {
+     "was": 25.0,
+     "now": 0.03
+    }
+   },
+   "note": "even the vendor values stay density-impossible \u2014 not applied"
+  },
+  {
+   "reference": "LQW15AN3N5G8ZD",
+   "changed": {
+    "dcResistance": {
+     "was": 25.0,
+     "now": 0.03
+    }
+   },
+   "note": "even the vendor values stay density-impossible \u2014 not applied"
+  },
+  {
+   "reference": "LQW15AN3N6B8ZD",
+   "changed": {
+    "dcResistance": {
+     "was": 26.0,
+     "now": 0.03
+    }
+   },
+   "note": "even the vendor values stay density-impossible \u2014 not applied"
+  },
+  {
+   "reference": "LQW15AN3N6C8ZD",
+   "changed": {
+    "dcResistance": {
+     "was": 26.0,
+     "now": 0.03
+    }
+   },
+   "note": "even the vendor values stay density-impossible \u2014 not applied"
+  },
+  {
+   "reference": "LQW15AN3N6D8ZD",
+   "changed": {
+    "dcResistance": {
+     "was": 27.0,
+     "now": 0.03
+    }
+   },
+   "note": "even the vendor values stay density-impossible \u2014 not applied"
+  }
+ ],
+ "unmatched": [
+  "LQM2MPZR10MJH"
+ ]
+}
