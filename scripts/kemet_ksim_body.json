@@ -1,0 +1,182 @@
+{
+ "calculated": "No",
+ "combine": "No",
+ "freqList": [
+  10000,
+  50000,
+  100000,
+  500000,
+  1000000,
+  5000000,
+  10000000
+ ],
+ "highlight": 1,
+ "ind": 0,
+ "line": "50",
+ "parts": [
+  {
+   "appDef": "",
+   "basePn": "Combined",
+   "capDisplay": "",
+   "capType": "",
+   "capValue": 0,
+   "ceProps": [],
+   "dielectric": "-",
+   "displayAllCeProps": false,
+   "filmProps": {},
+   "hidden": false,
+   "id": 0,
+   "instances": 0,
+   "kemetPn": "Combined",
+   "maxTemp": 155,
+   "param": {
+    "bias": {
+     "disabled": false,
+     "max": 0,
+     "min": 0,
+     "select": 0,
+     "step": 0.1,
+     "title": "Bias (V)",
+     "width": 6
+    },
+    "qty": {
+     "disabled": true,
+     "max": 10,
+     "min": 1,
+     "select": 1,
+     "step": 1,
+     "title": "Qty",
+     "width": 4
+    },
+    "tempAmbient": {
+     "disabled": false,
+     "max": 155,
+     "min": -55,
+     "select": 25,
+     "step": 1,
+     "title": "Amb. (\u00b0C)",
+     "width": 6
+    }
+   },
+   "seedProps": [],
+   "series": "",
+   "spicePn": "Combined",
+   "tcc": "",
+   "tolerance": {
+    "disabled": true,
+    "options": [],
+    "select": "",
+    "title": "Tolerance"
+   },
+   "vcac": "",
+   "voltageRating": 0
+  },
+  {
+   "appDef": "Commercial/Standard Chips",
+   "basePn": "C0201C100K8GAC",
+   "capDisplay": "10 pF",
+   "capType": "Ceramic",
+   "capValue": 10,
+   "ceProps": [],
+   "dielectric": "C0G",
+   "displayAllCeProps": false,
+   "filmProps": {},
+   "hidden": false,
+   "id": 132646,
+   "instances": 1,
+   "kemetPn": "C0201C100K8GAC",
+   "maxTemp": 125,
+   "param": {
+    "bias": {
+     "disabled": false,
+     "max": 10,
+     "min": 0,
+     "select": 0,
+     "step": 0.1,
+     "title": "Bias (VDC)",
+     "width": 6
+    },
+    "qty": {
+     "disabled": false,
+     "max": 1000,
+     "min": 1,
+     "select": 1,
+     "step": 1,
+     "title": "Qty",
+     "width": 6
+    },
+    "tempAmbient": {
+     "disabled": false,
+     "max": 125,
+     "min": -55,
+     "select": 25,
+     "step": 1,
+     "title": "Amb (\u00b0C)",
+     "width": 6
+    }
+   },
+   "seedProps": [],
+   "series": "General Purpose Surface Mount (4V \u2013 10kV)",
+   "spicePn": "",
+   "tcc": "",
+   "tolerance": {
+    "disabled": false,
+    "hidden": false,
+    "options": [
+     {
+      "disabled": false,
+      "label": ".1pF",
+      "value": "B"
+     },
+     {
+      "disabled": false,
+      "label": ".25pF",
+      "value": "C"
+     },
+     {
+      "disabled": false,
+      "label": ".5pF",
+      "value": "D"
+     },
+     {
+      "disabled": false,
+      "label": "1%",
+      "value": "F"
+     },
+     {
+      "disabled": false,
+      "label": "2%",
+      "value": "G"
+     },
+     {
+      "disabled": false,
+      "label": "5%",
+      "value": "J"
+     },
+     {
+      "disabled": false,
+      "label": "10%",
+      "value": "K"
+     },
+     {
+      "disabled": false,
+      "label": "20%",
+      "value": "M"
+     }
+    ],
+    "select": "K",
+    "title": "Tolerance"
+   },
+   "vcac": "",
+   "voltageRating": 10
+  }
+ ],
+ "path": "Shunt",
+ "plotType": "Vbias",
+ "res": 0,
+ "spiceFileFormat": "CKT",
+ "spiceFreq": 10000,
+ "start": "10000",
+ "stop": "10000000000",
+ "tempRise": 20
+}

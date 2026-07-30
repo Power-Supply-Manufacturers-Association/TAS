@@ -35,6 +35,14 @@ case "${1:-}" in
       python3 scripts/murata_bias_harvest.py fetch --delay 0.35 \
       >> "$TAS/staging/murata/cron_stdout.log" 2>&1
     ;;
+  kemet)
+    # ABT #304 KEMET/Y-SIM bias curves. Plain HTTP -- no browser at all: the K-SIM CSV
+    # export endpoint answers a replayed JSON body.
+    [ -f "$TAS/staging/kemet/STOP" ] && exit 0
+    exec flock -n "$TAS/staging/kemet/.lock" \
+      python3 scripts/kemet_bias_harvest.py fetch --delay 0.2 \
+      >> "$TAS/staging/kemet/cron_stdout.log" 2>&1
+    ;;
   tdk)
     # ABT #304 TDK MLCC DC-bias curves. Headless: playwright channel="chromium"
     # (full Chrome-for-Testing under --headless=new) passes Akamai where curl 403s,
