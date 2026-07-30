@@ -33,8 +33,10 @@ const page = await (await browser.newContext({
 const CATS = [
   'https://product.tdk.com/en/search/inductor/inductor/smd/list',
   'https://product.tdk.com/en/search/inductor/inductor/tht/list',
-  'https://product.tdk.com/en/search/emc/emc/cmf_cmc_automotive/list',
-  'https://product.tdk.com/en/search/emc/emc/cmf_auto/list',
+  // line-filter = the automotive/power-line CMC category (ACM12V, ...): found via
+  // the site's own global search, not the lazy-loaded index pages.
+  'https://product.tdk.com/en/search/emc/emc/line-filter/list',
+  'https://product.tdk.com/en/search/emc/emc/cmf_cmc/list',
 ]
 
 const readGrid = () => page.evaluate(() => {
@@ -70,7 +72,31 @@ for (const fam of fams) {
     }
     if (got) { console.log(`  ${fam}: +${got} rows from ${cat.split('/').slice(-2)[0]}`); break }
   }
-  if (!got) console.log(`  ${fam}: NOT FOUND in any category`)
+  if (!got) {
+    // family prefix too specific (SPM3015T vs grid SPM3015T-1R0M is fine, but
+    // B82559A432 misses B82559A4322A033 listings keyed differently) — retry the
+    // first six characters before giving up
+    const short = fam.slice(0, 6)
+    for (const cat of CATS) {
+      const url = `${cat}#part_no=${encodeURIComponent(short)}&_l=100&_p=1`
+      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 90_000 }).catch(() => {})
+      const ok = await page.waitForFunction(
+        () => document.querySelectorAll('table tbody tr').length > 0
+              || /Number of Products Found\s*:\s*0/.test(document.body.innerText),
+        null, { timeout: 30_000 }).catch(() => false)
+      if (!ok) continue
+      await page.waitForTimeout(2000)
+      const grid = await readGrid()
+      if (!grid || !grid.rows.length) continue
+      const pnIdx = grid.head.findIndex((h) => /^Part No/i.test(h))
+      for (const row of grid.rows) {
+        const mpn = (row[pnIdx] || '').replace(/^New\s+/i, '').trim()
+        if (mpn && !found[mpn]) { found[mpn] = { category: cat, head: grid.head, row }; got += 1 }
+      }
+      if (got) { console.log(`  ${fam} (as ${short}): +${got} rows from ${cat.split('/').slice(-2)[0]}`); break }
+    }
+    if (!got) console.log(`  ${fam}: NOT FOUND in any category`)
+  }
 }
 
 const hits = refs.filter((r) => found[r]).length

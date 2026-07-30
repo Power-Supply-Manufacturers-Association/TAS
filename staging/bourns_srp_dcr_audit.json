@@ -2,64 +2,84 @@
  "ticket": "ABT #351 B1 (Bourns SRP/SRR/SRN/AC)",
  "rows": [
   {
-   "reference": "SRP0310F-1R0M",
-   "series": "SRP0310F",
-   "datasheet": "https://www.bourns.com/docs/Product-Datasheets/SRP0310F.pdf",
+   "reference": "AC3630R-12NJ",
+   "series": "AC3630R",
+   "datasheet": "https://www.bourns.com/docs/Product-Datasheets/AC3630R.pdf",
+   "sheetIrmsA": null,
    "wasDcrOhm": 4.0,
-   "nowDcrOhm": 0.0564,
-   "datasheetDcrTypMilliohm": 47.0,
-   "datasheetDcrMaxMilliohm": 56.4,
+   "nowDcrOhm": 0.0034,
+   "datasheetDcrTypMilliohm": 3.3,
+   "datasheetDcrMaxMilliohm": 3.4,
    "anchors": {
-    "inductanceH": 1e-06,
+    "inductanceH": 1.2500000000000001e-08,
     "ratedCurrentA": 4.0
    },
    "impliedWattsBefore": 64.0,
-   "impliedWattsAfter": 0.9024
+   "impliedWattsAfter": 0.0544
   },
   {
-   "reference": "SRP0310F-R68M",
-   "series": "SRP0310F",
-   "datasheet": "https://www.bourns.com/docs/Product-Datasheets/SRP0310F.pdf",
+   "reference": "AC3630R-12NK",
+   "series": "AC3630R",
+   "datasheet": "https://www.bourns.com/docs/Product-Datasheets/AC3630R.pdf",
+   "sheetIrmsA": null,
+   "wasDcrOhm": 4.0,
+   "nowDcrOhm": 0.0034,
+   "datasheetDcrTypMilliohm": 3.3,
+   "datasheetDcrMaxMilliohm": 3.4,
+   "anchors": {
+    "inductanceH": 1.2500000000000001e-08,
+    "ratedCurrentA": 4.0
+   },
+   "impliedWattsBefore": 64.0,
+   "impliedWattsAfter": 0.0544
+  },
+  {
+   "reference": "AC3630R-18NG",
+   "series": "AC3630R",
+   "datasheet": "https://www.bourns.com/docs/Product-Datasheets/AC3630R.pdf",
+   "sheetIrmsA": 5.0,
    "wasDcrOhm": 5.0,
-   "nowDcrOhm": 0.0351,
-   "datasheetDcrTypMilliohm": 30.5,
-   "datasheetDcrMaxMilliohm": 35.1,
+   "nowDcrOhm": 0.0039,
+   "datasheetDcrTypMilliohm": null,
+   "datasheetDcrMaxMilliohm": 3.9,
    "anchors": {
-    "inductanceH": 6.800000000000001e-07,
-    "ratedCurrentA": 5.0
+    "inductanceH": 1.85e-08,
+    "ratedCurrentA": 4.0
    },
-   "impliedWattsBefore": 125.0,
-   "impliedWattsAfter": 0.8775
+   "impliedWattsBefore": 80.0,
+   "impliedWattsAfter": 0.0624
   },
   {
-   "reference": "SRP0410F-1R5M",
-   "series": "SRP0410F",
-   "datasheet": "https://www.bourns.com/docs/Product-Datasheets/SRP0410F.pdf",
-   "wasDcrOhm": 4.9,
-   "nowDcrOhm": 0.054,
-   "datasheetDcrTypMilliohm": 45.0,
-   "datasheetDcrMaxMilliohm": 54.0,
+   "reference": "AC3630R-18NJ",
+   "series": "AC3630R",
+   "datasheet": "https://www.bourns.com/docs/Product-Datasheets/AC3630R.pdf",
+   "sheetIrmsA": 5.0,
+   "wasDcrOhm": 5.0,
+   "nowDcrOhm": 0.0039,
+   "datasheetDcrTypMilliohm": null,
+   "datasheetDcrMaxMilliohm": 3.9,
    "anchors": {
-    "inductanceH": 1.5e-06,
-    "ratedCurrentA": 4.9
+    "inductanceH": 1.85e-08,
+    "ratedCurrentA": 4.0
    },
-   "impliedWattsBefore": 117.6,
-   "impliedWattsAfter": 1.2965
+   "impliedWattsBefore": 80.0,
+   "impliedWattsAfter": 0.0624
   },
   {
-   "reference": "SRP0410F-2R2M",
-   "series": "SRP0410F",
-   "datasheet": "https://www.bourns.com/docs/Product-Datasheets/SRP0410F.pdf",
-   "wasDcrOhm": 3.9,
-   "nowDcrOhm": 0.072,
-   "datasheetDcrTypMilliohm": 60.0,
-   "datasheetDcrMaxMilliohm": 72.0,
+   "reference": "SRN8040HA-R50Y",
+   "series": "SRN8040HA",
+   "datasheet": "https://www.bourns.com/docs/Product-Datasheets/SRN8040HA.pdf",
+   "sheetIrmsA": null,
+   "wasDcrOhm": 5.0,
+   "nowDcrOhm": 0.007,
+   "datasheetDcrTypMilliohm": 5.0,
+   "datasheetDcrMaxMilliohm": 7.0,
    "anchors": {
-    "inductanceH": 2.2e-06,
-    "ratedCurrentA": 3.9
+    "inductanceH": 5.000000000000001e-07,
+    "ratedCurrentA": 10.0
    },
-   "impliedWattsBefore": 59.3,
-   "impliedWattsAfter": 1.0951
+   "impliedWattsBefore": 500.0,
+   "impliedWattsAfter": 0.7
   }
  ],
  "skipped": [
@@ -68,12 +88,20 @@
    "why": "DCR column header does not prove milliohms"
   },
   {
-   "reference": "AC3630R-12NJ",
-   "why": "inductance/rated-current anchors not both found on the row"
+   "reference": "153224",
+   "why": "DCR column header does not prove milliohms"
   },
   {
-   "reference": "AC3630R-12NK",
-   "why": "inductance/rated-current anchors not both found on the row"
+   "reference": "ER26A2DC-6R8K",
+   "why": "DCR column header does not prove milliohms"
+  },
+  {
+   "reference": "PM13656S-R22M-RC",
+   "why": "0.08 ohm still implies 162.00 W"
+  },
+  {
+   "reference": "PM13656S-R50M-RC",
+   "why": "0.055 ohm still implies 71.28 W"
   },
   {
    "reference": "SRN4018BTA-R56M",
@@ -89,6 +117,50 @@
   },
   {
    "reference": "SRP5030TA-3R6M",
+   "why": "DCR column header does not prove milliohms"
+  },
+  {
+   "reference": "SRF7038A-102Y",
+   "why": "inductance/rated-current anchors not both found on the row"
+  },
+  {
+   "reference": "SRF4532TA-282Y",
+   "why": "DCR column header does not prove milliohms"
+  },
+  {
+   "reference": "SRF3225TAP-102Y",
+   "why": "inductance/rated-current anchors not both found on the row"
+  },
+  {
+   "reference": "SRF0502-251Y",
+   "why": "inductance/rated-current anchors not both found on the row"
+  },
+  {
+   "reference": "SRF0502-142Y",
+   "why": "inductance/rated-current anchors not both found on the row"
+  },
+  {
+   "reference": "SRF0502-102Y",
+   "why": "inductance/rated-current anchors not both found on the row"
+  },
+  {
+   "reference": "SRF0502-501Y",
+   "why": "inductance/rated-current anchors not both found on the row"
+  },
+  {
+   "reference": "SRF3225TP-501Y",
+   "why": "inductance/rated-current anchors not both found on the row"
+  },
+  {
+   "reference": "SRF3225TP-102Y",
+   "why": "inductance/rated-current anchors not both found on the row"
+  },
+  {
+   "reference": "SRF2012A-801Y",
+   "why": "DCR column header does not prove milliohms"
+  },
+  {
+   "reference": "PM124SH-220M-RC",
    "why": "DCR column header does not prove milliohms"
   }
  ]

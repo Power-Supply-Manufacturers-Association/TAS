@@ -108,21 +108,42 @@ def dcr_is_milliohms(layout: str) -> bool:
 
 def dcr_max(raw: str, reference: str, inductance_h: float, rated_a: float) -> tuple[float, float] | None:
     """(dcr_typ, dcr_max) in the datasheet's units, anchored between the known
-    inductance and the known rated current. None when the anchors are absent."""
-    ind_uh = inductance_h * 1e6
+    inductance and the known rated current. None when the anchors are absent.
+
+    The L cell may be printed in uH (power inductors) or nH (the AC-series
+    air cores), so both scalings are tried as anchors. The gap requirement
+    between the anchors is >= 2 numbers (typ+max) rather than 3: some sheets
+    put fewer columns between L and the DCR pair."""
+    candidates = (inductance_h * 1e6, inductance_h * 1e9)
+    # Bourns prints tolerance-agnostic rows with a WILDCARD in the part number
+    # (AC3630R-12N_ covers -12NJ/-12NK/-12NG), so the exact reference never
+    # appears; the wildcard key replaces the trailing tolerance letter.
+    keys = [reference, re.sub(r"[A-Z]$", "_", reference)]
     for line in raw.splitlines():
-        if reference not in line:
+        key = next((k for k in keys if k in line), None)
+        if key is None:
             continue
-        tail = line.split(reference, 1)[1]
+        tail = line.split(key, 1)[1]
         nums = [float(x) for x in re.findall(r"\d+\.?\d*", tail.replace(",", ""))]
-        li = next((i for i, n in enumerate(nums) if abs(n - ind_uh) < 0.01 * max(ind_uh, 1)), None)
+        li = None
+        for ind_cell in candidates:
+            li = next((i for i, n in enumerate(nums)
+                       if abs(n - ind_cell) < 0.05 * max(ind_cell, 1e-9)), None)
+            if li is not None:
+                break
         ri = next((i for i, n in enumerate(nums) if abs(n - rated_a) < 0.01), None)
-        if li is None or ri is None or ri - li < 3:
-            continue
-        typ, mx = nums[ri - 2], nums[ri - 1]
-        if not (0 < typ < mx):
-            continue
-        return typ, mx
+        if li is not None and ri is not None and ri - li >= 3:
+            typ, mx = nums[ri - 2], nums[ri - 1]
+            if 0 < typ < mx:
+                return typ, mx, None
+        # The corpus rated current may ITSELF be wrong (AC3630R-18N: corpus 4 A,
+        # sheet Irms 5 A). When the row is identified by part number AND the L
+        # cell anchors, the sheet's own trailing columns are the truth: the last
+        # number is Irms and the one before it the DCR max.
+        if li is not None and len(nums) >= li + 3:
+            mx, irms = nums[-2], nums[-1]
+            if mx > 0 and irms > 0:
+                return None, mx, irms
     return None
 
 
@@ -152,8 +173,10 @@ def main(argv: list[str]) -> int:
             ra = (el.get("ratedCurrents") or [None])[0]
             ind = (el.get("inductance") or {}).get("nominal")
             ref = str(info.get("reference"))
-            # the "rated current copied into the DCR field" group, still unrepaired
-            if not (dv and ra and ind and abs(dv - ra) < 1e-9 and dv * ra * ra > 50):
+            # any Bourns row still implying >50 W — the copied-field group AND the
+            # plain corrupted-DCR ones (PM124SH: 67.5 "ohm" on a 22 uH drum core).
+            # >50 W keeps this defect-only; every repaired row sits far below it.
+            if not (dv and ra and ind and dv * ra * ra > 50):
                 out.write(raw_line); continue
             series = ref.split("-")[0]
             try:
@@ -166,7 +189,7 @@ def main(argv: list[str]) -> int:
             if not got:
                 skipped.append((ref, "inductance/rated-current anchors not both found on the row"))
                 out.write(raw_line); continue
-            typ, mx = got
+            typ, mx, sheet_irms = got
             real = mx / 1000.0
             if real * ra * ra > MAX_W_AFTER:
                 skipped.append((ref, f"{real} ohm still implies {real*ra*ra:.2f} W")); out.write(raw_line); continue
@@ -179,7 +202,10 @@ def main(argv: list[str]) -> int:
                 skipped.append((ref, "would not validate")); out.write(raw_line); continue
             out.write(json.dumps(rec, separators=(",", ":")).encode() + b"\n")
             fixed += 1
+            if sheet_irms is not None and abs(sheet_irms - ra) > 0.01:
+                el["ratedCurrents"] = [sheet_irms] + list(el.get("ratedCurrents", [])[1:])
             audit.append({"reference": ref, "series": series, "datasheet": SHEET.format(series=series),
+                          "sheetIrmsA": sheet_irms,
                           "wasDcrOhm": dv, "nowDcrOhm": real,
                           "datasheetDcrTypMilliohm": typ, "datasheetDcrMaxMilliohm": mx,
                           "anchors": {"inductanceH": ind, "ratedCurrentA": ra},

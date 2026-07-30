@@ -1,0 +1,25 @@
+{
+ "ticket": "ABT #351 singles",
+ "rows": [
+  {
+   "reference": "PE-0603CD3N3GTT",
+   "changed": {
+    "dcResistance": {
+     "was": 45.0,
+     "now": 0.045
+    }
+   },
+   "datasheet": "https://yageogroup.com/content/datasheet/asset/file/DATASHEET_WC709"
+  },
+  {
+   "reference": "ASMPH-0806-1R0M-T",
+   "changed": {
+    "ratedCurrents": {
+     "was": 14.0,
+     "now": 1.2
+    }
+   },
+   "datasheet": "https://abracon.com/Magnetics/power/ASMPH-0806.pdf"
+  }
+ ]
+}

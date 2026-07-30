@@ -86,9 +86,14 @@ def nominal(v):
 def density_ok(dcr, rated, dims_m):
     if len(dims_m) < 2 or not dcr or not rated:
         return True
+    watts = dcr * rated * rated
+    # below the absolute floor pad conduction dominates and the surface model is
+    # invalid — the tiny-TFM/Murata-0402 lesson (MAG_DISS_POWER_FLOOR_W)
+    if watts <= 5.0:
+        return True
     l, w = dims_m[0], dims_m[1]
     h = dims_m[2] if len(dims_m) > 2 else min(l, w)
-    return dcr * rated * rated / (2 * (l * w + l * h + w * h) * 1e4) <= 2.5
+    return watts / (2 * (l * w + l * h + w * h) * 1e4) <= 2.5
 
 
 def main(argv):
@@ -115,13 +120,30 @@ def main(argv):
                     ref = None
                 if ref in queue and ref not in seen and str(info.get("name")) == "TDK":
                     seen.add(ref)
-                    entry = specs.get(ref)
+                    # the grid lists parts without packaging suffixes (-CA, -D,
+                    # tape codes) that the corpus reference carries
+                    entry = None
+                    for cand in (ref, re.sub(r"-CA$", "", ref), re.sub(r"-D$", "", ref)):
+                        entry = specs.get(cand)
+                        if entry:
+                            break
                     why = None
                     if not entry:
                         why = "part not captured from any TDK grid"
                     else:
                         head, row = entry["head"], entry["row"]
                         is_cmc = col(head, r"Common-mode Impedance") is not None
+                        # the line-filter grid (automotive power-line CMCs like
+                        # ACM12V) publishes Inductance + Rated Current but NO Rdc
+                        # and no impedance column
+                        # decide by the CELL, not the column: line-filter rows
+                        # (ACM12V) sit in a grid that has an Rdc column but leaves
+                        # it empty for these parts
+                        _di = col(head, r"^Rdc")
+                        _rdc_cell = parse_qty(row[_di]) if _di is not None else None
+                        no_rdc_grid = (not is_cmc and _rdc_cell is None
+                                       and col(head, r"^Inductance") is not None
+                                       and col(head, r"^Rated Current") is not None)
                         d = el.get("dcResistances")
                         plural = bool(d)
                         d = d[0] if d else el.get("dcResistance")
@@ -130,7 +152,40 @@ def main(argv):
                         rated = (el.get("ratedCurrents") or [None])[0]
                         L = nominal(el.get("inductance"))
                         changed = {}
-                        if is_cmc:
+                        if no_rdc_grid:
+                            # D1 rows: the corpus L and DCR both carry the MPN's
+                            # EIA code, so no anchor is possible — the exact part
+                            # number is the row identity. Vendor gives the real L
+                            # and rated current; it publishes no DCR, so a
+                            # code-valued corpus DCR is REMOVED (Laird treatment),
+                            # never guessed.
+                            li = col(head, r"^Inductance")
+                            ri = col(head, r"^Rated Current")
+                            v_l = parse_qty(row[li]) if li is not None else None
+                            v_r = parse_qty(row[ri]) if ri is not None else None
+                            m = re.search(r"[-_](\d{3})(?=[-_]|$)", ref)
+                            code = int(m.group(1)[:2]) * 10 ** int(m.group(1)[2]) if m else None
+                            code_dcr = code is not None and dcr is not None and abs(dcr - code) < 0.01
+                            if v_l is None or v_r is None:
+                                why = "line-filter row missing L or rated current"
+                            elif not code_dcr:
+                                why = "corpus DCR is not the MPN code — not the D1 case; no vendor DCR to compare"
+                            else:
+                                changed["dcResistance"] = {"was": dcr, "now": None,
+                                    "why": "the MPN impedance code; vendor grid publishes no DCR"}
+                                if plural:
+                                    el.pop("dcResistances", None)
+                                else:
+                                    el.pop("dcResistance", None)
+                                dcr = None
+                                if L is None or abs(L - v_l) > 0.02 * v_l:
+                                    changed["inductance"] = {"was": L, "now": v_l}
+                                    el["inductance"] = {"nominal": v_l}
+                                if rated is None or abs(rated - v_r) > 0.02 * v_r:
+                                    changed["ratedCurrents"] = {"was": rated, "now": v_r}
+                                    el["ratedCurrents"] = [v_r] + list(el.get("ratedCurrents", [])[1:])
+                                    rated = v_r
+                        elif is_cmc:
                             zi = col(head, r"Common-mode Impedance")
                             li = col(head, r"Common-mode Inductance")
                             ri = col(head, r"Rated Current")
