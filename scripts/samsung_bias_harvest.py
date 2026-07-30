@@ -216,6 +216,12 @@ def cmd_fetch(a):
     nodata = json.loads(NODATA.read_text()) if NODATA.exists() else {}
     work = [(pn, nom) for pn, nom in samsung_class2_parts()
             if pn not in done and pn not in nodata]
+    # Part numbers containing a lowercase character are mangled in our own catalogue
+    # (CL05B100K0jFNNE) and SEMCO rejects every one of them -- 181 of 181 failures so
+    # far were of that shape, and each costs a dropped socket plus a session rebuild.
+    # They are still attempted (their verdict is worth recording), just LAST, so the
+    # usable part numbers are not stuck behind them.
+    work.sort(key=lambda t: bool(re.search(r"[a-z]", t[0])))
     if a.limit:
         work = work[:a.limit]
     log(f"FETCH start: {len(work)} Samsung class-2/3 part numbers "
