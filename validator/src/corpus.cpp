@@ -49,11 +49,33 @@ constexpr double Z_OUTLIER = 5.0;       // conservative (batch screen)
 // parts", which is simply what a product family looks like).
 bool ceiling_eligible(const std::string& field) {
     static const std::set<std::string> MEASURED = {
+        // capacitors
         "esr", "dissipationFactor", "leakageCurrent", "insulationResistance",
-        "rippleCurrent", "rdsOn", "vf", "vceSat", "gateCharge",
+        "rippleCurrent", "capacitanceMinimumLongTerm",
+        // semiconductors
+        "rdsOn", "onResistance", "vf", "vceSat", "gateCharge", "peakPulseCurrent",
+        // timing devices / crystals
+        "equivalentSeriesResistance",
+        // magnetics / connectors
+        "dcResistance", "contactResistance",
     };
     return MEASURED.count(field) != 0;
 }
+
+// Surveyed every catalogue before choosing the list above. Two families of hit were
+// DELIBERATELY excluded because the pile-up is how the spec is written, not a defect:
+//   - frequencyTolerance / frequencyStability (Abracon ×23, ECS ×12): crystals are sold
+//     at standard ±5/10/25/50 ppm grades, so the loosest grade is shared by design.
+//   - updateRate (TI ×9): a converter family shares one top-end sample rate; that is a
+//     product decision, not a clamp.
+// What the list DOES catch, beyond the capacitor ESR ceiling this screen was written
+// for: capacitanceMinimumLongTerm pinned at 8.55e-05 across Murata (64), TDK (40) AND
+// Samsung (13) — the same cross-manufacturer signature, in a different field.
+//
+// Single-manufacturer hits are screening-grade and can be legitimate family structure
+// (Nexperia sharing 4.5 Ω onResistance across 11 small-signal parts is plausible).
+// The finding is Suspicious for exactly that reason; a value repeated at the same
+// ceiling by SEVERAL independent manufacturers is the one that is nearly always ours.
 
 constexpr std::size_t CEILING_MIN_AT_MAX = 5;   // enough repeats to be systematic
 // max/median. Tuned on the live capacitor catalogue: at 10x this also catches honest
