@@ -2,84 +2,20 @@
  "ticket": "ABT #351 B1 (Bourns SRP/SRR/SRN/AC)",
  "rows": [
   {
-   "reference": "AC3630R-12NJ",
-   "series": "AC3630R",
-   "datasheet": "https://www.bourns.com/docs/Product-Datasheets/AC3630R.pdf",
+   "reference": "PM124SH-220M-RC",
+   "series": "PM124SH",
+   "datasheet": "https://www.bourns.com/docs/Product-Datasheets/PM124SH.pdf",
    "sheetIrmsA": null,
-   "wasDcrOhm": 4.0,
-   "nowDcrOhm": 0.0034,
-   "datasheetDcrTypMilliohm": 3.3,
-   "datasheetDcrMaxMilliohm": 3.4,
+   "wasDcrOhm": 67.5,
+   "nowDcrOhm": 0.0675,
+   "datasheetDcrTypMilliohm": 16.0,
+   "datasheetDcrMaxMilliohm": 67.5,
    "anchors": {
-    "inductanceH": 1.2500000000000001e-08,
-    "ratedCurrentA": 4.0
+    "inductanceH": 2.2e-05,
+    "ratedCurrentA": 3.0
    },
-   "impliedWattsBefore": 64.0,
-   "impliedWattsAfter": 0.0544
-  },
-  {
-   "reference": "AC3630R-12NK",
-   "series": "AC3630R",
-   "datasheet": "https://www.bourns.com/docs/Product-Datasheets/AC3630R.pdf",
-   "sheetIrmsA": null,
-   "wasDcrOhm": 4.0,
-   "nowDcrOhm": 0.0034,
-   "datasheetDcrTypMilliohm": 3.3,
-   "datasheetDcrMaxMilliohm": 3.4,
-   "anchors": {
-    "inductanceH": 1.2500000000000001e-08,
-    "ratedCurrentA": 4.0
-   },
-   "impliedWattsBefore": 64.0,
-   "impliedWattsAfter": 0.0544
-  },
-  {
-   "reference": "AC3630R-18NG",
-   "series": "AC3630R",
-   "datasheet": "https://www.bourns.com/docs/Product-Datasheets/AC3630R.pdf",
-   "sheetIrmsA": 5.0,
-   "wasDcrOhm": 5.0,
-   "nowDcrOhm": 0.0039,
-   "datasheetDcrTypMilliohm": null,
-   "datasheetDcrMaxMilliohm": 3.9,
-   "anchors": {
-    "inductanceH": 1.85e-08,
-    "ratedCurrentA": 4.0
-   },
-   "impliedWattsBefore": 80.0,
-   "impliedWattsAfter": 0.0624
-  },
-  {
-   "reference": "AC3630R-18NJ",
-   "series": "AC3630R",
-   "datasheet": "https://www.bourns.com/docs/Product-Datasheets/AC3630R.pdf",
-   "sheetIrmsA": 5.0,
-   "wasDcrOhm": 5.0,
-   "nowDcrOhm": 0.0039,
-   "datasheetDcrTypMilliohm": null,
-   "datasheetDcrMaxMilliohm": 3.9,
-   "anchors": {
-    "inductanceH": 1.85e-08,
-    "ratedCurrentA": 4.0
-   },
-   "impliedWattsBefore": 80.0,
-   "impliedWattsAfter": 0.0624
-  },
-  {
-   "reference": "SRN8040HA-R50Y",
-   "series": "SRN8040HA",
-   "datasheet": "https://www.bourns.com/docs/Product-Datasheets/SRN8040HA.pdf",
-   "sheetIrmsA": null,
-   "wasDcrOhm": 5.0,
-   "nowDcrOhm": 0.007,
-   "datasheetDcrTypMilliohm": 5.0,
-   "datasheetDcrMaxMilliohm": 7.0,
-   "anchors": {
-    "inductanceH": 5.000000000000001e-07,
-    "ratedCurrentA": 10.0
-   },
-   "impliedWattsBefore": 500.0,
-   "impliedWattsAfter": 0.7
+   "impliedWattsBefore": 607.5,
+   "impliedWattsAfter": 0.6075
   }
  ],
  "skipped": [
@@ -89,11 +25,11 @@
   },
   {
    "reference": "153224",
-   "why": "DCR column header does not prove milliohms"
+   "why": "datasheet fetch failed: HTTP Error 403: Forbidden"
   },
   {
    "reference": "ER26A2DC-6R8K",
-   "why": "DCR column header does not prove milliohms"
+   "why": "datasheet fetch failed: HTTP Error 403: Forbidden"
   },
   {
    "reference": "PM13656S-R22M-RC",
@@ -157,10 +93,6 @@
   },
   {
    "reference": "SRF2012A-801Y",
-   "why": "DCR column header does not prove milliohms"
-  },
-  {
-   "reference": "PM124SH-220M-RC",
    "why": "DCR column header does not prove milliohms"
   }
  ]

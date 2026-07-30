@@ -96,7 +96,10 @@ def dcr_is_milliohms(layout: str) -> bool:
     scaling. The unit lands on a later line than the word DCR."""
     lines = layout.splitlines()
     for i, line in enumerate(lines):
-        if not re.search(r"(?i)\bDCR\b", line):
+        # Bourns spells it BOTH ways across families: "DCR" on the SRP/SRR
+        # sheets, "RDC" on PM124SH. Matching only one silently reported
+        # "unit not stated" and skipped a repairable row.
+        if not re.search(r"(?i)\b(DCR|RDC)\b", line):
             continue
         window = " ".join(lines[i:i + 4])
         if re.search(r"(?i)\(\s*m\s*(?:W|Ω|ohm)\s*\)", window):
