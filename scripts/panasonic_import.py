@@ -148,7 +148,7 @@ def main(only=None):
                     verdict = cpp.validate(rec)
                     if not verdict.valid:
                         bad = ";".join(fd.code for fd in verdict.findings
-                                       if str(fd.severity).endswith("Impossible"))
+                                       if str(fd.severity).upper() == "IMPOSSIBLE")
                         quar_recs[tkey].append((rec, f"{cat}: physics: {bad}")); c["quar_phys"] += 1; continue
                 except Exception:
                     pass

@@ -163,7 +163,7 @@ def main(argv):
                             else:
                                 vd = tas_validator.validate(json.dumps(rec))
                                 bad = [str(x.code) for x in vd.findings
-                                       if str(x.severity).endswith("Impossible")]
+                                       if str(x.severity).upper() == "IMPOSSIBLE"]
                                 if bad:
                                     why = f"Blade Runner IMPOSSIBLE after repair: {bad}"
                     if why is None:

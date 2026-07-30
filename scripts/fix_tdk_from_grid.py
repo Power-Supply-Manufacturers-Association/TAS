@@ -261,7 +261,7 @@ def main(argv):
                                     why = "schema-invalid after repair"
                                 else:
                                     vd = tas_validator.validate(json.dumps(rec))
-                                    if any(str(f.severity).endswith("Impossible") for f in vd.findings):
+                                    if any(str(f.severity).upper() == "IMPOSSIBLE" for f in vd.findings):
                                         why = "Blade Runner IMPOSSIBLE after repair"
                         if why is None:
                             out.write(json.dumps(rec, separators=(",", ":")).encode() + b"\n")

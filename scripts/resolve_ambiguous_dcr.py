@@ -130,7 +130,7 @@ def validator_confirms(rec, el_key_plural, dcr_scaled, rated_scaled):
         code = str(f.code)
         if code in DCR_CHECKS:
             return False
-        if str(f.severity).endswith("Impossible"):
+        if str(f.severity).upper() == "IMPOSSIBLE":
             return False
     return True
 

@@ -167,3 +167,30 @@ def test_diss_density_excludes_the_false_positive_classes():
                            "height": {"nominal": 0.0009}})
     for rec in (ct, isat, bead):
         assert not any(c == "MAG_DISS_DENSITY" for c, _ in _codes(rec))
+
+
+def test_severity_is_a_screaming_case_string_not_an_enum():
+    """Pin the shape of Finding.severity — five repair scripts got this wrong.
+
+    The binding exposes a `Severity` enum whose members are `Impossible` and
+    `Suspicious`, which makes `str(f.severity).endswith("Impossible")` look right.
+    It is not: `severity` on a Finding is a plain str in SCREAMING case, so that
+    test is ALWAYS False. Five ABT #351 repair scripts used it as their
+    post-repair "reject anything Blade Runner calls impossible" gate, and every
+    one of those gates was a silent no-op — the worst kind, because it reported
+    success. Found 2026-07-30 when a corpus sweep written the same way returned
+    0 findings against a row that visibly fires MAG_DISS_DENSITY.
+
+    If this test fails, the comparison idiom in scripts/*.py must change with it.
+    """
+    rec = _magnetic({"subtype": "inductor", "inductance": {"nominal": 1e-07},
+                     "dcResistances": [{"maximum": 59.0}], "ratedCurrents": [70.0]},
+                    mech={"length": {"nominal": 0.012}, "width": {"nominal": 0.006},
+                          "height": {"nominal": 0.006}})
+    findings = tas_validator.validate(rec).findings
+    assert findings, "expected this row to fire MAG_DISS_DENSITY"
+    for f in findings:
+        assert isinstance(f.severity, str), f"severity is {type(f.severity)}, not str"
+        assert f.severity in ("OK", "SUSPICIOUS", "IMPOSSIBLE"), f.severity
+        assert not str(f.severity).endswith("Impossible")   # the trap, kept explicit
+        assert not str(f.severity).endswith("Suspicious")

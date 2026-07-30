@@ -71,6 +71,45 @@ KNOWN_TEMPLATES = [
     (re.compile(r"^MLCC\d{6}$"), "phase2 MLCC generator (generic fallback)"),
 ]
 
+# (1b) PROVENANCE CITING A URL THE VENDOR DOES NOT USE. A fabricator can mint a
+# convincing MPN, but it still has to name a source, and an invented source has to
+# be a URL nobody fetched. These templates were each checked against the live site:
+# every one returns the vendor's generic CATEGORY page, never a product page, so a
+# record citing one was provably never read from it.
+#
+# ABT #351 (2026-07-30), fourth fabrication batch — 195 Coilcraft magnetics across
+# 17 real family names (EPL2010, SER2918, MSD1514, SLC0402T, PA4310 ...). Coilcraft
+# product URLs are deep and category-bearing:
+#     /en-us/products/power/shielded-inductors/ferrite-drum/lps/lps4018/
+#         -> 235 KB, "LPS4018 Series Low Profile Shielded Power Inductors"
+# The flat /products/power-inductors/<family>/ shape below is not a Coilcraft route;
+# all 17 fabricated variants return one byte-identical 176,381-byte page titled
+# "Power Inductors". Corroborated by physics: those rows carry a single DC-resistance
+# constant per henry (median 30.0 mOhm/uH) across five DIFFERENT package sizes, where
+# the 4,134 genuine Coilcraft rows median 5.7 spread over 1.0-62 — bigger cores need
+# fewer turns of thicker wire, so a size-independent DCR/L cannot be measured data.
+# Checked against real EPL2010: corpus "EPL2010-100ML" claims 1.0uH/30mOhm/8.0A in
+# 5.0x2.5x2.0mm; the real EPL2010-102ML is 1.0uH/119mOhm/1.36A in 2.0x2.0x1.0mm.
+#
+# Narrow on purpose, like the MPN templates: only URL shapes VERIFIED to resolve to
+# a non-product page belong here. A merely unfamiliar URL is not evidence.
+FAKE_PROVENANCE_URLS = [
+    (re.compile(r"^https?://(?:www\.)?coilcraft\.com/en-us/products/power-inductors/[a-z0-9]+/?$", re.I),
+     "Coilcraft flat /products/power-inductors/<family>/ (ABT #351 batch); the real "
+     "route is /products/power/<category>/<subcategory>/<family>/ and this shape "
+     "serves the generic category page"),
+]
+
+
+def fake_provenance(info):
+    """The record's only cited source is a URL that is not a product page."""
+    provenance = (info.get("datasheetInfo") or {}).get("provenance") or []
+    if len(provenance) != 1 or not isinstance(provenance[0], dict):
+        return None  # a corroborated record cites more than the one bad URL
+    url = str(provenance[0].get("sourceUrl", ""))
+    return next((why for pattern, why in FAKE_PROVENANCE_URLS if pattern.match(url)), None)
+
+
 # (2) generator DCR formulas: dcr = base / (L/1uH) * package_scale
 FORMULA_BASES = (0.008, 0.01)
 # ABT #247 follow-up: manufacturer_sourcing's WE-LQM generator used the
@@ -231,6 +270,11 @@ def check_file(path, quarantined_refs=frozenset()):
                     findings.append((lineno, ids[0],
                                      "reference was previously quarantined as fabricated "
                                      "(*.quarantine_fabricated.ndjson) and must not reappear live"))
+                    continue
+                bad_url = fake_provenance(info)
+                if bad_url:
+                    findings.append((lineno, ids[0] if ids else reference,
+                                     f"sole provenance URL is not a product page: {bad_url}"))
                     continue
                 inductance = (electrical.get("inductance") or {}).get("nominal")
                 dcr = (electrical.get("dcResistance") or {}).get("maximum")
