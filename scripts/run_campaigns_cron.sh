@@ -35,6 +35,13 @@ case "${1:-}" in
       python3 scripts/murata_bias_harvest.py fetch --delay 0.35 \
       >> "$TAS/staging/murata/cron_stdout.log" 2>&1
     ;;
+  taiyo-esr)
+    # ABT #390 Taiyo Yuden measured ESR curves (gtype CIMP, series R). Plain HTTP.
+    [ -f "$TAS/staging/taiyo/STOP" ] && exit 0
+    exec flock -n "$TAS/staging/taiyo/.lock_esr_cron" \
+      python3 scripts/taiyo_esr_harvest.py fetch --delay 0.25 \
+      >> "$TAS/staging/taiyo/esr_cron.log" 2>&1
+    ;;
   taiyo)
     # ABT #304 Taiyo Yuden TY-COMPAS bias curves. Plain HTTP: resolve the part number
     # through their search API, then POST graphRest with gtype=CDCBB.
