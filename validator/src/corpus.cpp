@@ -14,6 +14,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <set>
 #include <sstream>
 #include <unordered_map>
 #include <vector>
@@ -23,6 +24,44 @@ namespace {
 
 constexpr std::size_t MIN_COHORT = 8;   // need enough mates for robust stats
 constexpr double Z_OUTLIER = 5.0;       // conservative (batch screen)
+
+// ---- ceiling pile-up (P7) -------------------------------------------------
+// A CLAMP is invisible to the robust-z screen above, and in fact defeats it: many
+// records sharing one value shrink the MAD, so the clamped group looks like the
+// norm and its honest neighbours start looking like the outliers.
+//
+// Found on the live catalogue via the capacitor ESR field: every major ceramic
+// cohort has a pile-up at an identical ROUND ceiling — 200 Ω (Murata, TDK, Samsung),
+// 160 Ω (YAGEO), 120 Ω (KEMET), 60/45 Ω for class-1 — at up to 1,880x the cohort
+// median. Four independent manufacturers do not converge on exactly 200.0000 Ω for
+// two dozen parts each; that is our own pipeline clamping, and the value is a
+// placeholder wearing a measurement's clothes. Per-record physics cannot catch it:
+// 200 Ω on a 10 pF ceramic implies tanδ≈0.013, perfectly plausible in isolation.
+//
+// Conditions, deliberately conservative so a genuine shared spec does not trip it:
+// the value must be the cohort MAXIMUM, shared by several parts, AND sit far above
+// the cohort median. A family quoting one honest ESR for its members sits NEAR the
+// median, not at a 10x+ extreme.
+// Only MEASURED, per-part continuous quantities are eligible. Catalogue AXES
+// (capacitance, ratedVoltage, positions…) are chosen from standard value lists, so
+// their largest value is shared by many parts BY CONSTRUCTION — screening those
+// produced 1,310 false positives on the first pass ("ratedVoltage=400 shared by 9
+// parts", which is simply what a product family looks like).
+bool ceiling_eligible(const std::string& field) {
+    static const std::set<std::string> MEASURED = {
+        "esr", "dissipationFactor", "leakageCurrent", "insulationResistance",
+        "rippleCurrent", "rdsOn", "vf", "vceSat", "gateCharge",
+    };
+    return MEASURED.count(field) != 0;
+}
+
+constexpr std::size_t CEILING_MIN_AT_MAX = 5;   // enough repeats to be systematic
+// max/median. Tuned on the live capacitor catalogue: at 10x this also catches honest
+// family structure (a Rubycon series whose smallest can legitimately sits 12x above
+// its cohort median); at 100x the survivors are exactly the round clamps — 120, 160
+// and 200 Ω — and nothing else. Deliberately biased to precision: a missed clamp is
+// a data-quality ticket, a false one wastes a human's afternoon.
+constexpr double CEILING_MIN_RATIO = 100.0;
 
 std::optional<double> field_scalar(const json& v) {
     if (v.is_number()) {
@@ -134,6 +173,34 @@ std::vector<CorpusFinding> validate_corpus(const std::vector<json>& records) {
             std::vector<double> xs;
             xs.reserve(vals.size());
             for (const auto& p : vals) xs.push_back(allPos ? std::log10(p.second) : p.second);
+
+            // ---- ceiling pile-up screen, in RAW units (a clamp is a raw-value
+            // artifact, and it must be reported before the MAD gate below, which the
+            // clamp itself can defeat by collapsing the spread to zero).
+            if (allPos && ceiling_eligible(field)) {
+                double mx = 0.0;
+                for (const auto& p : vals) mx = std::max(mx, p.second);
+                std::size_t at_max = 0;
+                for (const auto& p : vals)
+                    if (p.second == mx) ++at_max;
+                std::vector<double> raw;
+                raw.reserve(vals.size());
+                for (const auto& p : vals) raw.push_back(p.second);
+                double raw_med = median_sorted(raw);
+                if (at_max >= CEILING_MIN_AT_MAX && raw_med > 0 &&
+                    mx / raw_med >= CEILING_MIN_RATIO) {
+                    for (const auto& p : vals) {
+                        if (p.second != mx) continue;
+                        std::ostringstream m;
+                        m << field << "=" << mx << " is shared by " << at_max << " parts at the "
+                          << "TOP of its " << key << " cohort (n=" << vals.size() << ", median "
+                          << raw_med << ", " << (mx / raw_med)
+                          << "x) — a clamp or placeholder, not a measurement";
+                        out.push_back({p.first, "GEN_COHORT_CEILING", recs[p.first].ref, m.str(),
+                                       mx, mx / raw_med});
+                    }
+                }
+            }
 
             std::vector<double> sorted = xs;
             double med = median_sorted(sorted);
