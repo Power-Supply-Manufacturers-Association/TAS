@@ -31,6 +31,48 @@
    },
    "evidence": "D4 unit scaling (39.0 -> 0.039) CONFIRMED by 22 sane DRA73 siblings monotonic in DCR vs L: 3R3=0.026 @3.18uH, 6R8=0.048 @6.6uH, L-interpolation gives 0.037",
    "note": "no vendor source reachable \u2014 Eaton CDN refuses curl, browser context and distributor mirrors; corpus-internal evidence only"
+  },
+  {
+   "reference": "5800-5R6-RC",
+   "changed": {
+    "dcResistance": {
+     "was": 5.0,
+     "now": 0.023,
+     "why": "corpus dcResistance held the I-sat column (5.0 A); sheet DCR is 0.023 ohm"
+    },
+    "saturationCurrentPeak": {
+     "now": 5.0
+    }
+   },
+   "datasheet": "https://www.bourns.com/docs/Product-Datasheets/5800_series.pdf"
+  },
+  {
+   "reference": "5800-6R8-RC",
+   "changed": {
+    "dcResistance": {
+     "was": 4.4,
+     "now": 0.026,
+     "why": "corpus dcResistance held the I-sat column (4.4 A); sheet DCR is 0.026 ohm"
+    },
+    "saturationCurrentPeak": {
+     "now": 4.4
+    }
+   },
+   "datasheet": "https://www.bourns.com/docs/Product-Datasheets/5800_series.pdf"
+  },
+  {
+   "reference": "PM7232S-R10M-RC",
+   "changed": {
+    "dcResistance": {
+     "was": 0.042,
+     "now": 0.0017,
+     "why": "sheet DCR is 1.7 mOhm max; corpus L 0.10 uH and I rms 32.5 A both already match"
+    },
+    "saturationCurrentPeak": {
+     "now": 42.0
+    }
+   },
+   "datasheet": "https://www.bourns.com/docs/Product-Datasheets/pm_high_current_series.pdf"
   }
  ]
 }
