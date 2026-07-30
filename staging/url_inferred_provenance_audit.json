@@ -1,0 +1,56 @@
+{
+ "ticket": "ABT #351 root cause (unverified URL provenance)",
+ "marker": " [inferred from the record's own URL \u2014 this record was not verified against that source]",
+ "files": [
+  {
+   "file": "mosfets.ndjson",
+   "rows": 9963,
+   "relabelled": 5116
+  },
+  {
+   "file": "diodes.ndjson",
+   "rows": 18078,
+   "relabelled": 1527
+  },
+  {
+   "file": "igbts.ndjson",
+   "rows": 2278,
+   "relabelled": 445
+  },
+  {
+   "file": "bjts.ndjson",
+   "rows": 3668,
+   "relabelled": 0
+  },
+  {
+   "file": "capacitors.ndjson",
+   "rows": 274131,
+   "relabelled": 119830
+  },
+  {
+   "file": "magnetics.ndjson",
+   "rows": 83699,
+   "relabelled": 0
+  },
+  {
+   "file": "resistors.ndjson",
+   "rows": 149267,
+   "relabelled": 140686
+  },
+  {
+   "file": "varistors.ndjson",
+   "rows": 3198,
+   "relabelled": 1921
+  },
+  {
+   "file": "connectors.ndjson",
+   "rows": 156018,
+   "relabelled": 2408
+  },
+  {
+   "file": "controllers.ndjson",
+   "rows": 2133,
+   "relabelled": 214
+  }
+ ]
+}
