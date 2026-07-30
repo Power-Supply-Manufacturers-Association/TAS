@@ -1,0 +1,6762 @@
+{
+ "ticket": "ABT #386 (Abracon cylinders)",
+ "date": "2026-07-31",
+ "datasheets": [
+  {
+   "datasheet": "https://abracon.com/Magnetics/axial/AIAP-02.pdf",
+   "rows": 49,
+   "status": "cached",
+   "variants": [
+    "14.0 x phi6.8 mm"
+   ],
+   "confirmed": 49,
+   "unconfirmed": 0
+  },
+  {
+   "datasheet": "https://abracon.com/Magnetics/new/AIAP-01.pdf",
+   "rows": 51,
+   "status": "cached",
+   "variants": [
+    "9.14 x phi3.9 mm",
+    "10.7 x phi4.6 mm"
+   ],
+   "confirmed": 0,
+   "unconfirmed": 51
+  },
+  {
+   "datasheet": "https://abracon.com/Magnetics/new/AIAP-03.pdf",
+   "rows": 46,
+   "status": "cached",
+   "variants": [
+    "22.9 x phi11.4 mm"
+   ],
+   "confirmed": 46,
+   "unconfirmed": 0
+  },
+  {
+   "datasheet": "https://abracon.com/Magnetics/radial/AIRD02.pdf",
+   "rows": 41,
+   "status": "cached",
+   "variants": [
+    "21.0 x phi21.0 mm"
+   ],
+   "confirmed": 41,
+   "unconfirmed": 0
+  },
+  {
+   "datasheet": "https://abracon.com/Magnetics/radial/AIRD03.pdf",
+   "rows": 46,
+   "status": "cached",
+   "variants": [
+    "21.0 x phi28.0 mm"
+   ],
+   "confirmed": 46,
+   "unconfirmed": 0
+  },
+  {
+   "datasheet": "https://abracon.com/Magnetics/radial/AIRD06.pdf",
+   "rows": 41,
+   "status": "cached",
+   "variants": [
+    "21.0 x phi21.0 mm"
+   ],
+   "confirmed": 41,
+   "unconfirmed": 0
+  },
+  {
+   "datasheet": "https://abracon.com/Magnetics/radial/AISR-01.pdf",
+   "rows": 27,
+   "status": "cached",
+   "variants": [
+    "10.5 x phi10.5 mm"
+   ],
+   "confirmed": 27,
+   "unconfirmed": 0
+  },
+  {
+   "datasheet": "https://abracon.com/Magnetics/radial/AIUR-02H.pdf",
+   "rows": 33,
+   "status": "no '<len> x phi<dia>mm' string in the text layer"
+  },
+  {
+   "datasheet": "https://abracon.com/Magnetics/radial/AIUR-03.pdf",
+   "rows": 51,
+   "status": "cached",
+   "variants": [
+    "12.0 x phi9.0 mm"
+   ],
+   "confirmed": 51,
+   "unconfirmed": 0
+  },
+  {
+   "datasheet": "https://abracon.com/Magnetics/radial/AIUR-04.pdf",
+   "rows": 33,
+   "status": "cached",
+   "variants": [
+    "11.2 x phi8.5 mm"
+   ],
+   "confirmed": 33,
+   "unconfirmed": 0
+  },
+  {
+   "datasheet": "https://abracon.com/Magnetics/radial/AIUR-05.pdf",
+   "rows": 19,
+   "status": "cached",
+   "variants": [
+    "9.0 x phi8.5 mm"
+   ],
+   "confirmed": 19,
+   "unconfirmed": 0
+  },
+  {
+   "datasheet": "https://abracon.com/Magnetics/radial/AIUR-06.pdf",
+   "rows": 66,
+   "status": "cached",
+   "variants": [
+    "18.0 x phi13.0 mm"
+   ],
+   "confirmed": 66,
+   "unconfirmed": 0
+  },
+  {
+   "datasheet": "https://abracon.com/Magnetics/radial/AIUR-07.pdf",
+   "rows": 25,
+   "status": "cached",
+   "variants": [
+    "4.6 x phi6.0 mm"
+   ],
+   "confirmed": 25,
+   "unconfirmed": 0
+  },
+  {
+   "datasheet": "https://abracon.com/Magnetics/radial/AIUR-08.pdf",
+   "rows": 25,
+   "status": "cached",
+   "variants": [
+    "11.0 x phi11.0 mm"
+   ],
+   "confirmed": 25,
+   "unconfirmed": 0
+  },
+  {
+   "datasheet": "https://abracon.com/Magnetics/radial/AIUR-09.pdf",
+   "rows": 27,
+   "status": "cached",
+   "variants": [
+    "6.0 x phi10.0 mm"
+   ],
+   "confirmed": 27,
+   "unconfirmed": 0
+  },
+  {
+   "datasheet": "https://abracon.com/Magnetics/radial/AIUR-10.pdf",
+   "rows": 32,
+   "status": "cached",
+   "variants": [
+    "7.5 x phi8.0 mm"
+   ],
+   "confirmed": 32,
+   "unconfirmed": 0
+  },
+  {
+   "datasheet": "https://abracon.com/Magnetics/radial/AIUR-15.pdf",
+   "rows": 21,
+   "status": "cached",
+   "variants": [
+    "20.0 x phi18.0 mm"
+   ],
+   "confirmed": 21,
+   "unconfirmed": 0
+  }
+ ],
+ "repaired": [
+  {
+   "reference": "AIAP-02-100K",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-101-101K",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-101-151K",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-101-220K",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-101-221K",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-101K",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-102K",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-103K",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-120K",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-121K",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-122K",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-123K",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-150K",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-151K",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-152K",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-153K",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-180K",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-181K",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-182K",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-183K",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-220K",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-221K",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-222K",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-270K",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-271K",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-272K",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-330K",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-331K",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-332K",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-390K",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-391K",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-392K",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-3R9M",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-470K",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-471K",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-472K",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-4R7M",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-560K",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-561K",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-562K",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-5R6M",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-680K",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-681K",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-682K",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-6R8M",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-820K",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-821K",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-822K",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-02-8R2K",
+   "wasMm": {
+    "length": 6.4,
+    "width": 0.0,
+    "height": 14.0
+   },
+   "nowMm": {
+    "diameter": 6.8,
+    "height": 14.0
+   }
+  },
+  {
+   "reference": "AIAP-03-100K",
+   "wasMm": {
+    "length": 11.4,
+    "width": 0.0,
+    "height": 22.9
+   },
+   "nowMm": {
+    "diameter": 11.4,
+    "height": 22.9
+   }
+  },
+  {
+   "reference": "AIAP-03-101K",
+   "wasMm": {
+    "length": 11.4,
+    "width": 0.0,
+    "height": 22.9
+   },
+   "nowMm": {
+    "diameter": 11.4,
+    "height": 22.9
+   }
+  },
+  {
+   "reference": "AIAP-03-102K",
+   "wasMm": {
+    "length": 11.4,
+    "width": 0.0,
+    "height": 22.9
+   },
+   "nowMm": {
+    "diameter": 11.4,
+    "height": 22.9
+   }
+  },
+  {
+   "reference": "AIAP-03-103K",
+   "wasMm": {
+    "length": 11.4,
+    "width": 0.0,
+    "height": 22.9
+   },
+   "nowMm": {
+    "diameter": 11.4,
+    "height": 22.9
+   }
+  },
+  {
+   "reference": "AIAP-03-120K",
+   "wasMm": {
+    "length": 11.4,
+    "width": 0.0,
+    "height": 22.9
+   },
+   "nowMm": {
+    "diameter": 11.4,
+    "height": 22.9
+   }
+  },
+  {
+   "reference": "AIAP-03-121K",
+   "wasMm": {
+    "length": 11.4,
+    "width": 0.0,
+    "height": 22.9
+   },
+   "nowMm": {
+    "diameter": 11.4,
+    "height": 22.9
+   }
+  },
+  {
+   "reference": "AIAP-03-122K",
+   "wasMm": {
+    "length": 11.4,
+    "width": 0.0,
+    "height": 22.9
+   },
+   "nowMm": {
+    "diameter": 11.4,
+    "height": 22.9
+   }
+  },
+  {
+   "reference": "AIAP-03-123K",
+   "wasMm": {
+    "length": 11.4,
+    "width": 0.0,
+    "height": 22.9
+   },
+   "nowMm": {
+    "diameter": 11.4,
+    "height": 22.9
+   }
+  },
+  {
+   "reference": "AIAP-03-150K",
+   "wasMm": {
+    "length": 11.4,
+    "width": 0.0,
+    "height": 22.9
+   },
+   "nowMm": {
+    "diameter": 11.4,
+    "height": 22.9
+   }
+  },
+  {
+   "reference": "AIAP-03-151K",
+   "wasMm": {
+    "length": 11.4,
+    "width": 0.0,
+    "height": 22.9
+   },
+   "nowMm": {
+    "diameter": 11.4,
+    "height": 22.9
+   }
+  },
+  {
+   "reference": "AIAP-03-152K",
+   "wasMm": {
+    "length": 11.4,
+    "width": 0.0,
+    "height": 22.9
+   },
+   "nowMm": {
+    "diameter": 11.4,
+    "height": 22.9
+   }
+  },
+  {
+   "reference": "AIAP-03-153K",
+   "wasMm": {
+    "length": 11.4,
+    "width": 0.0,
+    "height": 22.9
+   },
+   "nowMm": {
+    "diameter": 11.4,
+    "height": 22.9
+   }
+  },
+  {
+   "reference": "AIAP-03-180K",
+   "wasMm": {
+    "length": 11.4,
+    "width": 0.0,
+    "height": 22.9
+   },
+   "nowMm": {
+    "diameter": 11.4,
+    "height": 22.9
+   }
+  },
+  {
+   "reference": "AIAP-03-181K",
+   "wasMm": {
+    "length": 11.4,
+    "width": 0.0,
+    "height": 22.9
+   },
+   "nowMm": {
+    "diameter": 11.4,
+    "height": 22.9
+   }
+  },
+  {
+   "reference": "AIAP-03-182K",
+   "wasMm": {
+    "length": 11.4,
+    "width": 0.0,
+    "height": 22.9
+   },
+   "nowMm": {
+    "diameter": 11.4,
+    "height": 22.9
+   }
+  },
+  {
+   "reference": "AIAP-03-220K",
+   "wasMm": {
+    "length": 11.4,
+    "width": 0.0,
+    "height": 22.9
+   },
+   "nowMm": {
+    "diameter": 11.4,
+    "height": 22.9
+   }
+  },
+  {
+   "reference": "AIAP-03-221K",
+   "wasMm": {
+    "length": 11.4,
+    "width": 0.0,
+    "height": 22.9
+   },
+   "nowMm": {
+    "diameter": 11.4,
+    "height": 22.9
+   }
+  },
+  {
+   "reference": "AIAP-03-222K",
+   "wasMm": {
+    "length": 11.4,
+    "width": 0.0,
+    "height": 22.9
+   },
+   "nowMm": {
+    "diameter": 11.4,
+    "height": 22.9
+   }
+  },
+  {
+   "reference": "AIAP-03-270K",
+   "wasMm": {
+    "length": 11.4,
+    "width": 0.0,
+    "height": 22.9
+   },
+   "nowMm": {
+    "diameter": 11.4,
+    "height": 22.9
+   }
+  },
+  {
+   "reference": "AIAP-03-271K",
+   "wasMm": {
+    "length": 11.4,
+    "width": 0.0,
+    "height": 22.9
+   },
+   "nowMm": {
+    "diameter": 11.4,
+    "height": 22.9
+   }
+  },
+  {
+   "reference": "AIAP-03-272",
+   "wasMm": {
+    "length": 11.4,
+    "width": 0.0,
+    "height": 22.9
+   },
+   "nowMm": {
+    "diameter": 11.4,
+    "height": 22.9
+   }
+  },
+  {
+   "reference": "AIAP-03-272K",
+   "wasMm": {
+    "length": 11.4,
+    "width": 0.0,
+    "height": 22.9
+   },
+   "nowMm": {
+    "diameter": 11.4,
+    "height": 22.9
+   }
+  },
+  {
+   "reference": "AIAP-03-330K",
+   "wasMm": {
+    "length": 11.4,
+    "width": 0.0,
+    "height": 22.9
+   },
+   "nowMm": {
+    "diameter": 11.4,
+    "height": 22.9
+   }
+  },
+  {
+   "reference": "AIAP-03-331K",
+   "wasMm": {
+    "length": 11.4,
+    "width": 0.0,
+    "height": 22.9
+   },
+   "nowMm": {
+    "diameter": 11.4,
+    "height": 22.9
+   }
+  },
+  {
+   "reference": "AIAP-03-332K",
+   "wasMm": {
+    "length": 11.4,
+    "width": 0.0,
+    "height": 22.9
+   },
+   "nowMm": {
+    "diameter": 11.4,
+    "height": 22.9
+   }
+  },
+  {
+   "reference": "AIAP-03-390K",
+   "wasMm": {
+    "length": 11.4,
+    "width": 0.0,
+    "height": 22.9
+   },
+   "nowMm": {
+    "diameter": 11.4,
+    "height": 22.9
+   }
+  },
+  {
+   "reference": "AIAP-03-391K",
+   "wasMm": {
+    "length": 11.4,
+    "width": 0.0,
+    "height": 22.9
+   },
+   "nowMm": {
+    "diameter": 11.4,
+    "height": 22.9
+   }
+  },
+  {
+   "reference": "AIAP-03-392K",
+   "wasMm": {
+    "length": 11.4,
+    "width": 0.0,
+    "height": 22.9
+   },
+   "nowMm": {
+    "diameter": 11.4,
+    "height": 22.9
+   }
+  },
+  {
+   "reference": "AIAP-03-3R9M",
+   "wasMm": {
+    "length": 11.4,
+    "width": 0.0,
+    "height": 22.9
+   },
+   "nowMm": {
+    "diameter": 11.4,
+    "height": 22.9
+   }
+  },
+  {
+   "reference": "AIAP-03-470K",
+   "wasMm": {
+    "length": 11.4,
+    "width": 0.0,
+    "height": 22.9
+   },
+   "nowMm": {
+    "diameter": 11.4,
+    "height": 22.9
+   }
+  },
+  {
+   "reference": "AIAP-03-471K",
+   "wasMm": {
+    "length": 11.4,
+    "width": 0.0,
+    "height": 22.9
+   },
+   "nowMm": {
+    "diameter": 11.4,
+    "height": 22.9
+   }
+  },
+  {
+   "reference": "AIAP-03-472K",
+   "wasMm": {
+    "length": 11.4,
+    "width": 0.0,
+    "height": 22.9
+   },
+   "nowMm": {
+    "diameter": 11.4,
+    "height": 22.9
+   }
+  },
+  {
+   "reference": "AIAP-03-4R7K",
+   "wasMm": {
+    "length": 11.4,
+    "width": 0.0,
+    "height": 22.9
+   },
+   "nowMm": {
+    "diameter": 11.4,
+    "height": 22.9
+   }
+  },
+  {
+   "reference": "AIAP-03-4R7M",
+   "wasMm": {
+    "length": 11.4,
+    "width": 0.0,
+    "height": 22.9
+   },
+   "nowMm": {
+    "diameter": 11.4,
+    "height": 22.9
+   }
+  },
+  {
+   "reference": "AIAP-03-560K",
+   "wasMm": {
+    "length": 11.4,
+    "width": 0.0,
+    "height": 22.9
+   },
+   "nowMm": {
+    "diameter": 11.4,
+    "height": 22.9
+   }
+  },
+  {
+   "reference": "AIAP-03-561K",
+   "wasMm": {
+    "length": 11.4,
+    "width": 0.0,
+    "height": 22.9
+   },
+   "nowMm": {
+    "diameter": 11.4,
+    "height": 22.9
+   }
+  },
+  {
+   "reference": "AIAP-03-562K",
+   "wasMm": {
+    "length": 11.4,
+    "width": 0.0,
+    "height": 22.9
+   },
+   "nowMm": {
+    "diameter": 11.4,
+    "height": 22.9
+   }
+  },
+  {
+   "reference": "AIAP-03-5R6K",
+   "wasMm": {
+    "length": 11.4,
+    "width": 0.0,
+    "height": 22.9
+   },
+   "nowMm": {
+    "diameter": 11.4,
+    "height": 22.9
+   }
+  },
+  {
+   "reference": "AIAP-03-680K",
+   "wasMm": {
+    "length": 11.4,
+    "width": 0.0,
+    "height": 22.9
+   },
+   "nowMm": {
+    "diameter": 11.4,
+    "height": 22.9
+   }
+  },
+  {
+   "reference": "AIAP-03-681K",
+   "wasMm": {
+    "length": 11.4,
+    "width": 0.0,
+    "height": 22.9
+   },
+   "nowMm": {
+    "diameter": 11.4,
+    "height": 22.9
+   }
+  },
+  {
+   "reference": "AIAP-03-682K",
+   "wasMm": {
+    "length": 11.4,
+    "width": 0.0,
+    "height": 22.9
+   },
+   "nowMm": {
+    "diameter": 11.4,
+    "height": 22.9
+   }
+  },
+  {
+   "reference": "AIAP-03-6R8M",
+   "wasMm": {
+    "length": 11.4,
+    "width": 0.0,
+    "height": 22.9
+   },
+   "nowMm": {
+    "diameter": 11.4,
+    "height": 22.9
+   }
+  },
+  {
+   "reference": "AIAP-03-820K",
+   "wasMm": {
+    "length": 11.4,
+    "width": 0.0,
+    "height": 22.9
+   },
+   "nowMm": {
+    "diameter": 11.4,
+    "height": 22.9
+   }
+  },
+  {
+   "reference": "AIAP-03-821K",
+   "wasMm": {
+    "length": 11.4,
+    "width": 0.0,
+    "height": 22.9
+   },
+   "nowMm": {
+    "diameter": 11.4,
+    "height": 22.9
+   }
+  },
+  {
+   "reference": "AIAP-03-822K",
+   "wasMm": {
+    "length": 11.4,
+    "width": 0.0,
+    "height": 22.9
+   },
+   "nowMm": {
+    "diameter": 11.4,
+    "height": 22.9
+   }
+  },
+  {
+   "reference": "AIAP-03-8R2K",
+   "wasMm": {
+    "length": 11.4,
+    "width": 0.0,
+    "height": 22.9
+   },
+   "nowMm": {
+    "diameter": 11.4,
+    "height": 22.9
+   }
+  },
+  {
+   "reference": "AIRD-02-100K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-02-101K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-02-102K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-02-120K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-02-121K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-02-122K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-02-150K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-02-151K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-02-152K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-02-180K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-02-181K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-02-182K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-02-1R0N",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-02-1R2N",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-02-1R5N",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-02-1R8N",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-02-220K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-02-221K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-02-222K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-02-270K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-02-271K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-02-2R2N",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-02-2R7N",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-02-330K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-02-331K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-02-390K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-02-391K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-02-3R3M",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-02-3R9M",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-02-470K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-02-471K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-02-4R7M",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-02-560K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-02-561K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-02-5R6M",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-02-680K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-02-681K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-02-6R8M",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-02-820K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-02-821K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-02-8R2M",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-03-100K",
+   "wasMm": {
+    "length": 28.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 28.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-03-101K",
+   "wasMm": {
+    "length": 28.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 28.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-03-102K",
+   "wasMm": {
+    "length": 28.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 28.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-03-120K",
+   "wasMm": {
+    "length": 28.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 28.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-03-121K",
+   "wasMm": {
+    "length": 28.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 28.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-03-122K",
+   "wasMm": {
+    "length": 28.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 28.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-03-150K",
+   "wasMm": {
+    "length": 28.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 28.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-03-151K",
+   "wasMm": {
+    "length": 28.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 28.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-03-152K",
+   "wasMm": {
+    "length": 28.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 28.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-03-180K",
+   "wasMm": {
+    "length": 28.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 28.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-03-181K",
+   "wasMm": {
+    "length": 28.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 28.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-03-182K",
+   "wasMm": {
+    "length": 28.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 28.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-03-193K",
+   "wasMm": {
+    "length": 28.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 28.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-03-1R0M",
+   "wasMm": {
+    "length": 28.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 28.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-03-1R2M",
+   "wasMm": {
+    "length": 28.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 28.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-03-1R5M",
+   "wasMm": {
+    "length": 28.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 28.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-03-1R8M",
+   "wasMm": {
+    "length": 28.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 28.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-03-220K",
+   "wasMm": {
+    "length": 28.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 28.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-03-221K",
+   "wasMm": {
+    "length": 28.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 28.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-03-222K",
+   "wasMm": {
+    "length": 28.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 28.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-03-270K",
+   "wasMm": {
+    "length": 28.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 28.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-03-271K",
+   "wasMm": {
+    "length": 28.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 28.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-03-272K",
+   "wasMm": {
+    "length": 28.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 28.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-03-2R2M",
+   "wasMm": {
+    "length": 28.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 28.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-03-2R7M",
+   "wasMm": {
+    "length": 28.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 28.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-03-330K",
+   "wasMm": {
+    "length": 28.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 28.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-03-331K",
+   "wasMm": {
+    "length": 28.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 28.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-03-332K",
+   "wasMm": {
+    "length": 28.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 28.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-03-390K",
+   "wasMm": {
+    "length": 28.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 28.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-03-391K",
+   "wasMm": {
+    "length": 28.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 28.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-03-392K",
+   "wasMm": {
+    "length": 28.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 28.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-03-3R3M",
+   "wasMm": {
+    "length": 28.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 28.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-03-3R9M",
+   "wasMm": {
+    "length": 28.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 28.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-03-470K",
+   "wasMm": {
+    "length": 28.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 28.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-03-471K",
+   "wasMm": {
+    "length": 28.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 28.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-03-472K",
+   "wasMm": {
+    "length": 28.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 28.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-03-4R7M",
+   "wasMm": {
+    "length": 28.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 28.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-03-560K",
+   "wasMm": {
+    "length": 28.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 28.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-03-561K",
+   "wasMm": {
+    "length": 28.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 28.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-03-5R6M",
+   "wasMm": {
+    "length": 28.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 28.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-03-680K",
+   "wasMm": {
+    "length": 28.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 28.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-03-681K",
+   "wasMm": {
+    "length": 28.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 28.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-03-6R8M",
+   "wasMm": {
+    "length": 28.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 28.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-03-820K",
+   "wasMm": {
+    "length": 28.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 28.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-03-821K",
+   "wasMm": {
+    "length": 28.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 28.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-03-8R2M",
+   "wasMm": {
+    "length": 28.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 28.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-06-100K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-06-101K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-06-102K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-06-120K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-06-121K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-06-122K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-06-150K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-06-151K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-06-152K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-06-180K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-06-181K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-06-182K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-06-1R0N",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-06-1R2N",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-06-1R5N",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-06-1R8N",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-06-220K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-06-221K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-06-222K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-06-270K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-06-271K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-06-2R2N",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-06-2R7N",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-06-330K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-06-331K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-06-390K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-06-391K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-06-3R3M",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-06-3R9M",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-06-470K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-06-471K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-06-4R7M",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-06-560K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-06-561K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-06-5R6M",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-06-680K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-06-681K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-06-6R8M",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-06-820K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-06-821K",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AIRD-06-8R2M",
+   "wasMm": {
+    "length": 21.0,
+    "width": 0.0,
+    "height": 21.0
+   },
+   "nowMm": {
+    "diameter": 21.0,
+    "height": 21.0
+   }
+  },
+  {
+   "reference": "AISR-01-102J",
+   "wasMm": {
+    "length": 10.5,
+    "width": 0.0,
+    "height": 10.5
+   },
+   "nowMm": {
+    "diameter": 10.5,
+    "height": 10.5
+   }
+  },
+  {
+   "reference": "AISR-01-103J",
+   "wasMm": {
+    "length": 10.5,
+    "width": 0.0,
+    "height": 10.5
+   },
+   "nowMm": {
+    "diameter": 10.5,
+    "height": 10.5
+   }
+  },
+  {
+   "reference": "AISR-01-104J",
+   "wasMm": {
+    "length": 10.5,
+    "width": 0.0,
+    "height": 10.5
+   },
+   "nowMm": {
+    "diameter": 10.5,
+    "height": 10.5
+   }
+  },
+  {
+   "reference": "AISR-01-122J",
+   "wasMm": {
+    "length": 10.5,
+    "width": 0.0,
+    "height": 10.5
+   },
+   "nowMm": {
+    "diameter": 10.5,
+    "height": 10.5
+   }
+  },
+  {
+   "reference": "AISR-01-123J",
+   "wasMm": {
+    "length": 10.5,
+    "width": 0.0,
+    "height": 10.5
+   },
+   "nowMm": {
+    "diameter": 10.5,
+    "height": 10.5
+   }
+  },
+  {
+   "reference": "AISR-01-124J",
+   "wasMm": {
+    "length": 10.5,
+    "width": 0.0,
+    "height": 10.5
+   },
+   "nowMm": {
+    "diameter": 10.5,
+    "height": 10.5
+   }
+  },
+  {
+   "reference": "AISR-01-152J",
+   "wasMm": {
+    "length": 10.5,
+    "width": 0.0,
+    "height": 10.5
+   },
+   "nowMm": {
+    "diameter": 10.5,
+    "height": 10.5
+   }
+  },
+  {
+   "reference": "AISR-01-153J",
+   "wasMm": {
+    "length": 10.5,
+    "width": 0.0,
+    "height": 10.5
+   },
+   "nowMm": {
+    "diameter": 10.5,
+    "height": 10.5
+   }
+  },
+  {
+   "reference": "AISR-01-182J",
+   "wasMm": {
+    "length": 10.5,
+    "width": 0.0,
+    "height": 10.5
+   },
+   "nowMm": {
+    "diameter": 10.5,
+    "height": 10.5
+   }
+  },
+  {
+   "reference": "AISR-01-183J",
+   "wasMm": {
+    "length": 10.5,
+    "width": 0.0,
+    "height": 10.5
+   },
+   "nowMm": {
+    "diameter": 10.5,
+    "height": 10.5
+   }
+  },
+  {
+   "reference": "AISR-01-222J",
+   "wasMm": {
+    "length": 10.5,
+    "width": 0.0,
+    "height": 10.5
+   },
+   "nowMm": {
+    "diameter": 10.5,
+    "height": 10.5
+   }
+  },
+  {
+   "reference": "AISR-01-223J",
+   "wasMm": {
+    "length": 10.5,
+    "width": 0.0,
+    "height": 10.5
+   },
+   "nowMm": {
+    "diameter": 10.5,
+    "height": 10.5
+   }
+  },
+  {
+   "reference": "AISR-01-272J",
+   "wasMm": {
+    "length": 10.5,
+    "width": 0.0,
+    "height": 10.5
+   },
+   "nowMm": {
+    "diameter": 10.5,
+    "height": 10.5
+   }
+  },
+  {
+   "reference": "AISR-01-273J",
+   "wasMm": {
+    "length": 10.5,
+    "width": 0.0,
+    "height": 10.5
+   },
+   "nowMm": {
+    "diameter": 10.5,
+    "height": 10.5
+   }
+  },
+  {
+   "reference": "AISR-01-332J",
+   "wasMm": {
+    "length": 10.5,
+    "width": 0.0,
+    "height": 10.5
+   },
+   "nowMm": {
+    "diameter": 10.5,
+    "height": 10.5
+   }
+  },
+  {
+   "reference": "AISR-01-333J",
+   "wasMm": {
+    "length": 10.5,
+    "width": 0.0,
+    "height": 10.5
+   },
+   "nowMm": {
+    "diameter": 10.5,
+    "height": 10.5
+   }
+  },
+  {
+   "reference": "AISR-01-363J",
+   "wasMm": {
+    "length": 10.5,
+    "width": 0.0,
+    "height": 10.5
+   },
+   "nowMm": {
+    "diameter": 10.5,
+    "height": 10.5
+   }
+  },
+  {
+   "reference": "AISR-01-392J",
+   "wasMm": {
+    "length": 10.5,
+    "width": 0.0,
+    "height": 10.5
+   },
+   "nowMm": {
+    "diameter": 10.5,
+    "height": 10.5
+   }
+  },
+  {
+   "reference": "AISR-01-393J",
+   "wasMm": {
+    "length": 10.5,
+    "width": 0.0,
+    "height": 10.5
+   },
+   "nowMm": {
+    "diameter": 10.5,
+    "height": 10.5
+   }
+  },
+  {
+   "reference": "AISR-01-472J",
+   "wasMm": {
+    "length": 10.5,
+    "width": 0.0,
+    "height": 10.5
+   },
+   "nowMm": {
+    "diameter": 10.5,
+    "height": 10.5
+   }
+  },
+  {
+   "reference": "AISR-01-473J",
+   "wasMm": {
+    "length": 10.5,
+    "width": 0.0,
+    "height": 10.5
+   },
+   "nowMm": {
+    "diameter": 10.5,
+    "height": 10.5
+   }
+  },
+  {
+   "reference": "AISR-01-562J",
+   "wasMm": {
+    "length": 10.5,
+    "width": 0.0,
+    "height": 10.5
+   },
+   "nowMm": {
+    "diameter": 10.5,
+    "height": 10.5
+   }
+  },
+  {
+   "reference": "AISR-01-563J",
+   "wasMm": {
+    "length": 10.5,
+    "width": 0.0,
+    "height": 10.5
+   },
+   "nowMm": {
+    "diameter": 10.5,
+    "height": 10.5
+   }
+  },
+  {
+   "reference": "AISR-01-682J",
+   "wasMm": {
+    "length": 10.5,
+    "width": 0.0,
+    "height": 10.5
+   },
+   "nowMm": {
+    "diameter": 10.5,
+    "height": 10.5
+   }
+  },
+  {
+   "reference": "AISR-01-683J",
+   "wasMm": {
+    "length": 10.5,
+    "width": 0.0,
+    "height": 10.5
+   },
+   "nowMm": {
+    "diameter": 10.5,
+    "height": 10.5
+   }
+  },
+  {
+   "reference": "AISR-01-822J",
+   "wasMm": {
+    "length": 10.5,
+    "width": 0.0,
+    "height": 10.5
+   },
+   "nowMm": {
+    "diameter": 10.5,
+    "height": 10.5
+   }
+  },
+  {
+   "reference": "AISR-01-823J",
+   "wasMm": {
+    "length": 10.5,
+    "width": 0.0,
+    "height": 10.5
+   },
+   "nowMm": {
+    "diameter": 10.5,
+    "height": 10.5
+   }
+  },
+  {
+   "reference": "AIUR-03-100J",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-100K",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-101-2R2K",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-101J",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-101K",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-102-4R7K",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-102J",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-102K",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-120J",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-120K",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-121J",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-150J",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-151J",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-151K",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-180J",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-180K",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-181J",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-1R0M",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-1R5M",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-220J",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-220K",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-221J",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-221K",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-270J",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-2R2K",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-2R2M",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-330J",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-330K",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-331J",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-331K",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-390J",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-390K",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-391J",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-391K",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-3R3K",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-3R3M",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-470J",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-470K",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-471J",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-471K",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-4R7M",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-560J",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-560K",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-561J",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-680J",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-681J",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-681K",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-6R8M",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-820J",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-821J",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-03-821K",
+   "wasMm": {
+    "length": 9.0,
+    "width": 0.0,
+    "height": 12.0
+   },
+   "nowMm": {
+    "diameter": 9.0,
+    "height": 12.0
+   }
+  },
+  {
+   "reference": "AIUR-04-101J",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 11.2
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 11.2
+   }
+  },
+  {
+   "reference": "AIUR-04-102J",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 11.2
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 11.2
+   }
+  },
+  {
+   "reference": "AIUR-04-103J",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 11.2
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 11.2
+   }
+  },
+  {
+   "reference": "AIUR-04-121J",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 11.2
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 11.2
+   }
+  },
+  {
+   "reference": "AIUR-04-122J",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 11.2
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 11.2
+   }
+  },
+  {
+   "reference": "AIUR-04-123J",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 11.2
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 11.2
+   }
+  },
+  {
+   "reference": "AIUR-04-151J",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 11.2
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 11.2
+   }
+  },
+  {
+   "reference": "AIUR-04-152J",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 11.2
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 11.2
+   }
+  },
+  {
+   "reference": "AIUR-04-153J",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 11.2
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 11.2
+   }
+  },
+  {
+   "reference": "AIUR-04-181J",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 11.2
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 11.2
+   }
+  },
+  {
+   "reference": "AIUR-04-182J",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 11.2
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 11.2
+   }
+  },
+  {
+   "reference": "AIUR-04-183G",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 11.2
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 11.2
+   }
+  },
+  {
+   "reference": "AIUR-04-183J",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 11.2
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 11.2
+   }
+  },
+  {
+   "reference": "AIUR-04-221J",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 11.2
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 11.2
+   }
+  },
+  {
+   "reference": "AIUR-04-221K",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 11.2
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 11.2
+   }
+  },
+  {
+   "reference": "AIUR-04-222J",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 11.2
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 11.2
+   }
+  },
+  {
+   "reference": "AIUR-04-223J",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 11.2
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 11.2
+   }
+  },
+  {
+   "reference": "AIUR-04-271J",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 11.2
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 11.2
+   }
+  },
+  {
+   "reference": "AIUR-04-272J",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 11.2
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 11.2
+   }
+  },
+  {
+   "reference": "AIUR-04-273J",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 11.2
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 11.2
+   }
+  },
+  {
+   "reference": "AIUR-04-331J",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 11.2
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 11.2
+   }
+  },
+  {
+   "reference": "AIUR-04-332J",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 11.2
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 11.2
+   }
+  },
+  {
+   "reference": "AIUR-04-391J",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 11.2
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 11.2
+   }
+  },
+  {
+   "reference": "AIUR-04-392J",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 11.2
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 11.2
+   }
+  },
+  {
+   "reference": "AIUR-04-471J",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 11.2
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 11.2
+   }
+  },
+  {
+   "reference": "AIUR-04-472J",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 11.2
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 11.2
+   }
+  },
+  {
+   "reference": "AIUR-04-561J",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 11.2
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 11.2
+   }
+  },
+  {
+   "reference": "AIUR-04-561K",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 11.2
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 11.2
+   }
+  },
+  {
+   "reference": "AIUR-04-562J",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 11.2
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 11.2
+   }
+  },
+  {
+   "reference": "AIUR-04-681J",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 11.2
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 11.2
+   }
+  },
+  {
+   "reference": "AIUR-04-682J",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 11.2
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 11.2
+   }
+  },
+  {
+   "reference": "AIUR-04-821J",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 11.2
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 11.2
+   }
+  },
+  {
+   "reference": "AIUR-04-822J",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 11.2
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 11.2
+   }
+  },
+  {
+   "reference": "AIUR-05-100K",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 9.0
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 9.0
+   }
+  },
+  {
+   "reference": "AIUR-05-101K",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 9.0
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 9.0
+   }
+  },
+  {
+   "reference": "AIUR-05-102K",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 9.0
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 9.0
+   }
+  },
+  {
+   "reference": "AIUR-05-150K",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 9.0
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 9.0
+   }
+  },
+  {
+   "reference": "AIUR-05-151K",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 9.0
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 9.0
+   }
+  },
+  {
+   "reference": "AIUR-05-152K",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 9.0
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 9.0
+   }
+  },
+  {
+   "reference": "AIUR-05-220K",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 9.0
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 9.0
+   }
+  },
+  {
+   "reference": "AIUR-05-221K",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 9.0
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 9.0
+   }
+  },
+  {
+   "reference": "AIUR-05-2R2M",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 9.0
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 9.0
+   }
+  },
+  {
+   "reference": "AIUR-05-330K",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 9.0
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 9.0
+   }
+  },
+  {
+   "reference": "AIUR-05-331K",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 9.0
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 9.0
+   }
+  },
+  {
+   "reference": "AIUR-05-3R3M",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 9.0
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 9.0
+   }
+  },
+  {
+   "reference": "AIUR-05-470K",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 9.0
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 9.0
+   }
+  },
+  {
+   "reference": "AIUR-05-471K",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 9.0
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 9.0
+   }
+  },
+  {
+   "reference": "AIUR-05-4R7M",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 9.0
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 9.0
+   }
+  },
+  {
+   "reference": "AIUR-05-680K",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 9.0
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 9.0
+   }
+  },
+  {
+   "reference": "AIUR-05-681K",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 9.0
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 9.0
+   }
+  },
+  {
+   "reference": "AIUR-05-6R8K",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 9.0
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 9.0
+   }
+  },
+  {
+   "reference": "AIUR-05-6R8M",
+   "wasMm": {
+    "length": 8.5,
+    "width": 0.0,
+    "height": 9.0
+   },
+   "nowMm": {
+    "diameter": 8.5,
+    "height": 9.0
+   }
+  },
+  {
+   "reference": "AIUR-06-100K",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-101-472K",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-101K",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-102-472K",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-102J",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-102K",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-103J",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-103K",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-120K",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-121K",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-122J",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-122K",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-123J",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-123K",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-150K",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-151K",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-152J",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-152K",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-153J",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-153K",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-180K",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-181K",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-182J",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-182K",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-220K",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-221K",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-222J",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-222K",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-270K",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-271K",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-272J",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-272K",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-330K",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-331K",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-332J",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-332K",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-390K",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-391J",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-391K",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-392J",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-392K",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-3R9K",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-470K",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-471J",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-471K",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-472J",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-472K",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-4R7K",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-560K",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-561J",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-561K",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-562J",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-562K",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-5R6K",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-680K",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-681J",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-681K",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-682J",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-682K",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-6R8K",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-820K",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-821J",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-821K",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-822J",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-822K",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-06-8R2K",
+   "wasMm": {
+    "length": 13.0,
+    "width": 0.0,
+    "height": 18.0
+   },
+   "nowMm": {
+    "diameter": 13.0,
+    "height": 18.0
+   }
+  },
+  {
+   "reference": "AIUR-07-100K",
+   "wasMm": {
+    "length": 6.0,
+    "width": 0.0,
+    "height": 4.6
+   },
+   "nowMm": {
+    "diameter": 6.0,
+    "height": 4.6
+   }
+  },
+  {
+   "reference": "AIUR-07-101K",
+   "wasMm": {
+    "length": 6.0,
+    "width": 0.0,
+    "height": 4.6
+   },
+   "nowMm": {
+    "diameter": 6.0,
+    "height": 4.6
+   }
+  },
+  {
+   "reference": "AIUR-07-102K",
+   "wasMm": {
+    "length": 6.0,
+    "width": 0.0,
+    "height": 4.6
+   },
+   "nowMm": {
+    "diameter": 6.0,
+    "height": 4.6
+   }
+  },
+  {
+   "reference": "AIUR-07-120K",
+   "wasMm": {
+    "length": 6.0,
+    "width": 0.0,
+    "height": 4.6
+   },
+   "nowMm": {
+    "diameter": 6.0,
+    "height": 4.6
+   }
+  },
+  {
+   "reference": "AIUR-07-121K",
+   "wasMm": {
+    "length": 6.0,
+    "width": 0.0,
+    "height": 4.6
+   },
+   "nowMm": {
+    "diameter": 6.0,
+    "height": 4.6
+   }
+  },
+  {
+   "reference": "AIUR-07-150K",
+   "wasMm": {
+    "length": 6.0,
+    "width": 0.0,
+    "height": 4.6
+   },
+   "nowMm": {
+    "diameter": 6.0,
+    "height": 4.6
+   }
+  },
+  {
+   "reference": "AIUR-07-151K",
+   "wasMm": {
+    "length": 6.0,
+    "width": 0.0,
+    "height": 4.6
+   },
+   "nowMm": {
+    "diameter": 6.0,
+    "height": 4.6
+   }
+  },
+  {
+   "reference": "AIUR-07-180K",
+   "wasMm": {
+    "length": 6.0,
+    "width": 0.0,
+    "height": 4.6
+   },
+   "nowMm": {
+    "diameter": 6.0,
+    "height": 4.6
+   }
+  },
+  {
+   "reference": "AIUR-07-181K",
+   "wasMm": {
+    "length": 6.0,
+    "width": 0.0,
+    "height": 4.6
+   },
+   "nowMm": {
+    "diameter": 6.0,
+    "height": 4.6
+   }
+  },
+  {
+   "reference": "AIUR-07-220K",
+   "wasMm": {
+    "length": 6.0,
+    "width": 0.0,
+    "height": 4.6
+   },
+   "nowMm": {
+    "diameter": 6.0,
+    "height": 4.6
+   }
+  },
+  {
+   "reference": "AIUR-07-221K",
+   "wasMm": {
+    "length": 6.0,
+    "width": 0.0,
+    "height": 4.6
+   },
+   "nowMm": {
+    "diameter": 6.0,
+    "height": 4.6
+   }
+  },
+  {
+   "reference": "AIUR-07-270K",
+   "wasMm": {
+    "length": 6.0,
+    "width": 0.0,
+    "height": 4.6
+   },
+   "nowMm": {
+    "diameter": 6.0,
+    "height": 4.6
+   }
+  },
+  {
+   "reference": "AIUR-07-271K",
+   "wasMm": {
+    "length": 6.0,
+    "width": 0.0,
+    "height": 4.6
+   },
+   "nowMm": {
+    "diameter": 6.0,
+    "height": 4.6
+   }
+  },
+  {
+   "reference": "AIUR-07-330K",
+   "wasMm": {
+    "length": 6.0,
+    "width": 0.0,
+    "height": 4.6
+   },
+   "nowMm": {
+    "diameter": 6.0,
+    "height": 4.6
+   }
+  },
+  {
+   "reference": "AIUR-07-331K",
+   "wasMm": {
+    "length": 6.0,
+    "width": 0.0,
+    "height": 4.6
+   },
+   "nowMm": {
+    "diameter": 6.0,
+    "height": 4.6
+   }
+  },
+  {
+   "reference": "AIUR-07-390K",
+   "wasMm": {
+    "length": 6.0,
+    "width": 0.0,
+    "height": 4.6
+   },
+   "nowMm": {
+    "diameter": 6.0,
+    "height": 4.6
+   }
+  },
+  {
+   "reference": "AIUR-07-391K",
+   "wasMm": {
+    "length": 6.0,
+    "width": 0.0,
+    "height": 4.6
+   },
+   "nowMm": {
+    "diameter": 6.0,
+    "height": 4.6
+   }
+  },
+  {
+   "reference": "AIUR-07-470K",
+   "wasMm": {
+    "length": 6.0,
+    "width": 0.0,
+    "height": 4.6
+   },
+   "nowMm": {
+    "diameter": 6.0,
+    "height": 4.6
+   }
+  },
+  {
+   "reference": "AIUR-07-471K",
+   "wasMm": {
+    "length": 6.0,
+    "width": 0.0,
+    "height": 4.6
+   },
+   "nowMm": {
+    "diameter": 6.0,
+    "height": 4.6
+   }
+  },
+  {
+   "reference": "AIUR-07-560K",
+   "wasMm": {
+    "length": 6.0,
+    "width": 0.0,
+    "height": 4.6
+   },
+   "nowMm": {
+    "diameter": 6.0,
+    "height": 4.6
+   }
+  },
+  {
+   "reference": "AIUR-07-561K",
+   "wasMm": {
+    "length": 6.0,
+    "width": 0.0,
+    "height": 4.6
+   },
+   "nowMm": {
+    "diameter": 6.0,
+    "height": 4.6
+   }
+  },
+  {
+   "reference": "AIUR-07-680K",
+   "wasMm": {
+    "length": 6.0,
+    "width": 0.0,
+    "height": 4.6
+   },
+   "nowMm": {
+    "diameter": 6.0,
+    "height": 4.6
+   }
+  },
+  {
+   "reference": "AIUR-07-681K",
+   "wasMm": {
+    "length": 6.0,
+    "width": 0.0,
+    "height": 4.6
+   },
+   "nowMm": {
+    "diameter": 6.0,
+    "height": 4.6
+   }
+  },
+  {
+   "reference": "AIUR-07-820K",
+   "wasMm": {
+    "length": 6.0,
+    "width": 0.0,
+    "height": 4.6
+   },
+   "nowMm": {
+    "diameter": 6.0,
+    "height": 4.6
+   }
+  },
+  {
+   "reference": "AIUR-07-821K",
+   "wasMm": {
+    "length": 6.0,
+    "width": 0.0,
+    "height": 4.6
+   },
+   "nowMm": {
+    "diameter": 6.0,
+    "height": 4.6
+   }
+  },
+  {
+   "reference": "AIUR-08-100K",
+   "wasMm": {
+    "length": 11.0,
+    "width": 0.0,
+    "height": 11.0
+   },
+   "nowMm": {
+    "diameter": 11.0,
+    "height": 11.0
+   }
+  },
+  {
+   "reference": "AIUR-08-101K",
+   "wasMm": {
+    "length": 11.0,
+    "width": 0.0,
+    "height": 11.0
+   },
+   "nowMm": {
+    "diameter": 11.0,
+    "height": 11.0
+   }
+  },
+  {
+   "reference": "AIUR-08-102K",
+   "wasMm": {
+    "length": 11.0,
+    "width": 0.0,
+    "height": 11.0
+   },
+   "nowMm": {
+    "diameter": 11.0,
+    "height": 11.0
+   }
+  },
+  {
+   "reference": "AIUR-08-120K",
+   "wasMm": {
+    "length": 11.0,
+    "width": 0.0,
+    "height": 11.0
+   },
+   "nowMm": {
+    "diameter": 11.0,
+    "height": 11.0
+   }
+  },
+  {
+   "reference": "AIUR-08-121K",
+   "wasMm": {
+    "length": 11.0,
+    "width": 0.0,
+    "height": 11.0
+   },
+   "nowMm": {
+    "diameter": 11.0,
+    "height": 11.0
+   }
+  },
+  {
+   "reference": "AIUR-08-150K",
+   "wasMm": {
+    "length": 11.0,
+    "width": 0.0,
+    "height": 11.0
+   },
+   "nowMm": {
+    "diameter": 11.0,
+    "height": 11.0
+   }
+  },
+  {
+   "reference": "AIUR-08-151K",
+   "wasMm": {
+    "length": 11.0,
+    "width": 0.0,
+    "height": 11.0
+   },
+   "nowMm": {
+    "diameter": 11.0,
+    "height": 11.0
+   }
+  },
+  {
+   "reference": "AIUR-08-180K",
+   "wasMm": {
+    "length": 11.0,
+    "width": 0.0,
+    "height": 11.0
+   },
+   "nowMm": {
+    "diameter": 11.0,
+    "height": 11.0
+   }
+  },
+  {
+   "reference": "AIUR-08-181K",
+   "wasMm": {
+    "length": 11.0,
+    "width": 0.0,
+    "height": 11.0
+   },
+   "nowMm": {
+    "diameter": 11.0,
+    "height": 11.0
+   }
+  },
+  {
+   "reference": "AIUR-08-220K",
+   "wasMm": {
+    "length": 11.0,
+    "width": 0.0,
+    "height": 11.0
+   },
+   "nowMm": {
+    "diameter": 11.0,
+    "height": 11.0
+   }
+  },
+  {
+   "reference": "AIUR-08-221K",
+   "wasMm": {
+    "length": 11.0,
+    "width": 0.0,
+    "height": 11.0
+   },
+   "nowMm": {
+    "diameter": 11.0,
+    "height": 11.0
+   }
+  },
+  {
+   "reference": "AIUR-08-270K",
+   "wasMm": {
+    "length": 11.0,
+    "width": 0.0,
+    "height": 11.0
+   },
+   "nowMm": {
+    "diameter": 11.0,
+    "height": 11.0
+   }
+  },
+  {
+   "reference": "AIUR-08-271K",
+   "wasMm": {
+    "length": 11.0,
+    "width": 0.0,
+    "height": 11.0
+   },
+   "nowMm": {
+    "diameter": 11.0,
+    "height": 11.0
+   }
+  },
+  {
+   "reference": "AIUR-08-330K",
+   "wasMm": {
+    "length": 11.0,
+    "width": 0.0,
+    "height": 11.0
+   },
+   "nowMm": {
+    "diameter": 11.0,
+    "height": 11.0
+   }
+  },
+  {
+   "reference": "AIUR-08-331K",
+   "wasMm": {
+    "length": 11.0,
+    "width": 0.0,
+    "height": 11.0
+   },
+   "nowMm": {
+    "diameter": 11.0,
+    "height": 11.0
+   }
+  },
+  {
+   "reference": "AIUR-08-390K",
+   "wasMm": {
+    "length": 11.0,
+    "width": 0.0,
+    "height": 11.0
+   },
+   "nowMm": {
+    "diameter": 11.0,
+    "height": 11.0
+   }
+  },
+  {
+   "reference": "AIUR-08-391K",
+   "wasMm": {
+    "length": 11.0,
+    "width": 0.0,
+    "height": 11.0
+   },
+   "nowMm": {
+    "diameter": 11.0,
+    "height": 11.0
+   }
+  },
+  {
+   "reference": "AIUR-08-470K",
+   "wasMm": {
+    "length": 11.0,
+    "width": 0.0,
+    "height": 11.0
+   },
+   "nowMm": {
+    "diameter": 11.0,
+    "height": 11.0
+   }
+  },
+  {
+   "reference": "AIUR-08-471K",
+   "wasMm": {
+    "length": 11.0,
+    "width": 0.0,
+    "height": 11.0
+   },
+   "nowMm": {
+    "diameter": 11.0,
+    "height": 11.0
+   }
+  },
+  {
+   "reference": "AIUR-08-560K",
+   "wasMm": {
+    "length": 11.0,
+    "width": 0.0,
+    "height": 11.0
+   },
+   "nowMm": {
+    "diameter": 11.0,
+    "height": 11.0
+   }
+  },
+  {
+   "reference": "AIUR-08-561K",
+   "wasMm": {
+    "length": 11.0,
+    "width": 0.0,
+    "height": 11.0
+   },
+   "nowMm": {
+    "diameter": 11.0,
+    "height": 11.0
+   }
+  },
+  {
+   "reference": "AIUR-08-680K",
+   "wasMm": {
+    "length": 11.0,
+    "width": 0.0,
+    "height": 11.0
+   },
+   "nowMm": {
+    "diameter": 11.0,
+    "height": 11.0
+   }
+  },
+  {
+   "reference": "AIUR-08-681K",
+   "wasMm": {
+    "length": 11.0,
+    "width": 0.0,
+    "height": 11.0
+   },
+   "nowMm": {
+    "diameter": 11.0,
+    "height": 11.0
+   }
+  },
+  {
+   "reference": "AIUR-08-820K",
+   "wasMm": {
+    "length": 11.0,
+    "width": 0.0,
+    "height": 11.0
+   },
+   "nowMm": {
+    "diameter": 11.0,
+    "height": 11.0
+   }
+  },
+  {
+   "reference": "AIUR-08-821K",
+   "wasMm": {
+    "length": 11.0,
+    "width": 0.0,
+    "height": 11.0
+   },
+   "nowMm": {
+    "diameter": 11.0,
+    "height": 11.0
+   }
+  },
+  {
+   "reference": "AIUR-09-100M",
+   "wasMm": {
+    "length": 10.0,
+    "width": 0.0,
+    "height": 6.0
+   },
+   "nowMm": {
+    "diameter": 10.0,
+    "height": 6.0
+   }
+  },
+  {
+   "reference": "AIUR-09-101K",
+   "wasMm": {
+    "length": 10.0,
+    "width": 0.0,
+    "height": 6.0
+   },
+   "nowMm": {
+    "diameter": 10.0,
+    "height": 6.0
+   }
+  },
+  {
+   "reference": "AIUR-09-102K",
+   "wasMm": {
+    "length": 10.0,
+    "width": 0.0,
+    "height": 6.0
+   },
+   "nowMm": {
+    "diameter": 10.0,
+    "height": 6.0
+   }
+  },
+  {
+   "reference": "AIUR-09-120M",
+   "wasMm": {
+    "length": 10.0,
+    "width": 0.0,
+    "height": 6.0
+   },
+   "nowMm": {
+    "diameter": 10.0,
+    "height": 6.0
+   }
+  },
+  {
+   "reference": "AIUR-09-121K",
+   "wasMm": {
+    "length": 10.0,
+    "width": 0.0,
+    "height": 6.0
+   },
+   "nowMm": {
+    "diameter": 10.0,
+    "height": 6.0
+   }
+  },
+  {
+   "reference": "AIUR-09-150M",
+   "wasMm": {
+    "length": 10.0,
+    "width": 0.0,
+    "height": 6.0
+   },
+   "nowMm": {
+    "diameter": 10.0,
+    "height": 6.0
+   }
+  },
+  {
+   "reference": "AIUR-09-151K",
+   "wasMm": {
+    "length": 10.0,
+    "width": 0.0,
+    "height": 6.0
+   },
+   "nowMm": {
+    "diameter": 10.0,
+    "height": 6.0
+   }
+  },
+  {
+   "reference": "AIUR-09-180K",
+   "wasMm": {
+    "length": 10.0,
+    "width": 0.0,
+    "height": 6.0
+   },
+   "nowMm": {
+    "diameter": 10.0,
+    "height": 6.0
+   }
+  },
+  {
+   "reference": "AIUR-09-180M",
+   "wasMm": {
+    "length": 10.0,
+    "width": 0.0,
+    "height": 6.0
+   },
+   "nowMm": {
+    "diameter": 10.0,
+    "height": 6.0
+   }
+  },
+  {
+   "reference": "AIUR-09-181K",
+   "wasMm": {
+    "length": 10.0,
+    "width": 0.0,
+    "height": 6.0
+   },
+   "nowMm": {
+    "diameter": 10.0,
+    "height": 6.0
+   }
+  },
+  {
+   "reference": "AIUR-09-220M",
+   "wasMm": {
+    "length": 10.0,
+    "width": 0.0,
+    "height": 6.0
+   },
+   "nowMm": {
+    "diameter": 10.0,
+    "height": 6.0
+   }
+  },
+  {
+   "reference": "AIUR-09-221K",
+   "wasMm": {
+    "length": 10.0,
+    "width": 0.0,
+    "height": 6.0
+   },
+   "nowMm": {
+    "diameter": 10.0,
+    "height": 6.0
+   }
+  },
+  {
+   "reference": "AIUR-09-270M",
+   "wasMm": {
+    "length": 10.0,
+    "width": 0.0,
+    "height": 6.0
+   },
+   "nowMm": {
+    "diameter": 10.0,
+    "height": 6.0
+   }
+  },
+  {
+   "reference": "AIUR-09-271K",
+   "wasMm": {
+    "length": 10.0,
+    "width": 0.0,
+    "height": 6.0
+   },
+   "nowMm": {
+    "diameter": 10.0,
+    "height": 6.0
+   }
+  },
+  {
+   "reference": "AIUR-09-330M",
+   "wasMm": {
+    "length": 10.0,
+    "width": 0.0,
+    "height": 6.0
+   },
+   "nowMm": {
+    "diameter": 10.0,
+    "height": 6.0
+   }
+  },
+  {
+   "reference": "AIUR-09-331K",
+   "wasMm": {
+    "length": 10.0,
+    "width": 0.0,
+    "height": 6.0
+   },
+   "nowMm": {
+    "diameter": 10.0,
+    "height": 6.0
+   }
+  },
+  {
+   "reference": "AIUR-09-390K",
+   "wasMm": {
+    "length": 10.0,
+    "width": 0.0,
+    "height": 6.0
+   },
+   "nowMm": {
+    "diameter": 10.0,
+    "height": 6.0
+   }
+  },
+  {
+   "reference": "AIUR-09-390M",
+   "wasMm": {
+    "length": 10.0,
+    "width": 0.0,
+    "height": 6.0
+   },
+   "nowMm": {
+    "diameter": 10.0,
+    "height": 6.0
+   }
+  },
+  {
+   "reference": "AIUR-09-391K",
+   "wasMm": {
+    "length": 10.0,
+    "width": 0.0,
+    "height": 6.0
+   },
+   "nowMm": {
+    "diameter": 10.0,
+    "height": 6.0
+   }
+  },
+  {
+   "reference": "AIUR-09-470M",
+   "wasMm": {
+    "length": 10.0,
+    "width": 0.0,
+    "height": 6.0
+   },
+   "nowMm": {
+    "diameter": 10.0,
+    "height": 6.0
+   }
+  },
+  {
+   "reference": "AIUR-09-471K",
+   "wasMm": {
+    "length": 10.0,
+    "width": 0.0,
+    "height": 6.0
+   },
+   "nowMm": {
+    "diameter": 10.0,
+    "height": 6.0
+   }
+  },
+  {
+   "reference": "AIUR-09-560M",
+   "wasMm": {
+    "length": 10.0,
+    "width": 0.0,
+    "height": 6.0
+   },
+   "nowMm": {
+    "diameter": 10.0,
+    "height": 6.0
+   }
+  },
+  {
+   "reference": "AIUR-09-561K",
+   "wasMm": {
+    "length": 10.0,
+    "width": 0.0,
+    "height": 6.0
+   },
+   "nowMm": {
+    "diameter": 10.0,
+    "height": 6.0
+   }
+  },
+  {
+   "reference": "AIUR-09-680M",
+   "wasMm": {
+    "length": 10.0,
+    "width": 0.0,
+    "height": 6.0
+   },
+   "nowMm": {
+    "diameter": 10.0,
+    "height": 6.0
+   }
+  },
+  {
+   "reference": "AIUR-09-681K",
+   "wasMm": {
+    "length": 10.0,
+    "width": 0.0,
+    "height": 6.0
+   },
+   "nowMm": {
+    "diameter": 10.0,
+    "height": 6.0
+   }
+  },
+  {
+   "reference": "AIUR-09-820M",
+   "wasMm": {
+    "length": 10.0,
+    "width": 0.0,
+    "height": 6.0
+   },
+   "nowMm": {
+    "diameter": 10.0,
+    "height": 6.0
+   }
+  },
+  {
+   "reference": "AIUR-09-821K",
+   "wasMm": {
+    "length": 10.0,
+    "width": 0.0,
+    "height": 6.0
+   },
+   "nowMm": {
+    "diameter": 10.0,
+    "height": 6.0
+   }
+  },
+  {
+   "reference": "AIUR-10-100K",
+   "wasMm": {
+    "length": 8.0,
+    "width": 0.0,
+    "height": 7.5
+   },
+   "nowMm": {
+    "diameter": 8.0,
+    "height": 7.5
+   }
+  },
+  {
+   "reference": "AIUR-10-101K",
+   "wasMm": {
+    "length": 8.0,
+    "width": 0.0,
+    "height": 7.5
+   },
+   "nowMm": {
+    "diameter": 8.0,
+    "height": 7.5
+   }
+  },
+  {
+   "reference": "AIUR-10-102K",
+   "wasMm": {
+    "length": 8.0,
+    "width": 0.0,
+    "height": 7.5
+   },
+   "nowMm": {
+    "diameter": 8.0,
+    "height": 7.5
+   }
+  },
+  {
+   "reference": "AIUR-10-120K",
+   "wasMm": {
+    "length": 8.0,
+    "width": 0.0,
+    "height": 7.5
+   },
+   "nowMm": {
+    "diameter": 8.0,
+    "height": 7.5
+   }
+  },
+  {
+   "reference": "AIUR-10-121K",
+   "wasMm": {
+    "length": 8.0,
+    "width": 0.0,
+    "height": 7.5
+   },
+   "nowMm": {
+    "diameter": 8.0,
+    "height": 7.5
+   }
+  },
+  {
+   "reference": "AIUR-10-122K",
+   "wasMm": {
+    "length": 8.0,
+    "width": 0.0,
+    "height": 7.5
+   },
+   "nowMm": {
+    "diameter": 8.0,
+    "height": 7.5
+   }
+  },
+  {
+   "reference": "AIUR-10-150K",
+   "wasMm": {
+    "length": 8.0,
+    "width": 0.0,
+    "height": 7.5
+   },
+   "nowMm": {
+    "diameter": 8.0,
+    "height": 7.5
+   }
+  },
+  {
+   "reference": "AIUR-10-151K",
+   "wasMm": {
+    "length": 8.0,
+    "width": 0.0,
+    "height": 7.5
+   },
+   "nowMm": {
+    "diameter": 8.0,
+    "height": 7.5
+   }
+  },
+  {
+   "reference": "AIUR-10-152K",
+   "wasMm": {
+    "length": 8.0,
+    "width": 0.0,
+    "height": 7.5
+   },
+   "nowMm": {
+    "diameter": 8.0,
+    "height": 7.5
+   }
+  },
+  {
+   "reference": "AIUR-10-180K",
+   "wasMm": {
+    "length": 8.0,
+    "width": 0.0,
+    "height": 7.5
+   },
+   "nowMm": {
+    "diameter": 8.0,
+    "height": 7.5
+   }
+  },
+  {
+   "reference": "AIUR-10-181K",
+   "wasMm": {
+    "length": 8.0,
+    "width": 0.0,
+    "height": 7.5
+   },
+   "nowMm": {
+    "diameter": 8.0,
+    "height": 7.5
+   }
+  },
+  {
+   "reference": "AIUR-10-182K",
+   "wasMm": {
+    "length": 8.0,
+    "width": 0.0,
+    "height": 7.5
+   },
+   "nowMm": {
+    "diameter": 8.0,
+    "height": 7.5
+   }
+  },
+  {
+   "reference": "AIUR-10-220K",
+   "wasMm": {
+    "length": 8.0,
+    "width": 0.0,
+    "height": 7.5
+   },
+   "nowMm": {
+    "diameter": 8.0,
+    "height": 7.5
+   }
+  },
+  {
+   "reference": "AIUR-10-221K",
+   "wasMm": {
+    "length": 8.0,
+    "width": 0.0,
+    "height": 7.5
+   },
+   "nowMm": {
+    "diameter": 8.0,
+    "height": 7.5
+   }
+  },
+  {
+   "reference": "AIUR-10-222K",
+   "wasMm": {
+    "length": 8.0,
+    "width": 0.0,
+    "height": 7.5
+   },
+   "nowMm": {
+    "diameter": 8.0,
+    "height": 7.5
+   }
+  },
+  {
+   "reference": "AIUR-10-270K",
+   "wasMm": {
+    "length": 8.0,
+    "width": 0.0,
+    "height": 7.5
+   },
+   "nowMm": {
+    "diameter": 8.0,
+    "height": 7.5
+   }
+  },
+  {
+   "reference": "AIUR-10-271K",
+   "wasMm": {
+    "length": 8.0,
+    "width": 0.0,
+    "height": 7.5
+   },
+   "nowMm": {
+    "diameter": 8.0,
+    "height": 7.5
+   }
+  },
+  {
+   "reference": "AIUR-10-272K",
+   "wasMm": {
+    "length": 8.0,
+    "width": 0.0,
+    "height": 7.5
+   },
+   "nowMm": {
+    "diameter": 8.0,
+    "height": 7.5
+   }
+  },
+  {
+   "reference": "AIUR-10-330K",
+   "wasMm": {
+    "length": 8.0,
+    "width": 0.0,
+    "height": 7.5
+   },
+   "nowMm": {
+    "diameter": 8.0,
+    "height": 7.5
+   }
+  },
+  {
+   "reference": "AIUR-10-331K",
+   "wasMm": {
+    "length": 8.0,
+    "width": 0.0,
+    "height": 7.5
+   },
+   "nowMm": {
+    "diameter": 8.0,
+    "height": 7.5
+   }
+  },
+  {
+   "reference": "AIUR-10-332K",
+   "wasMm": {
+    "length": 8.0,
+    "width": 0.0,
+    "height": 7.5
+   },
+   "nowMm": {
+    "diameter": 8.0,
+    "height": 7.5
+   }
+  },
+  {
+   "reference": "AIUR-10-390K",
+   "wasMm": {
+    "length": 8.0,
+    "width": 0.0,
+    "height": 7.5
+   },
+   "nowMm": {
+    "diameter": 8.0,
+    "height": 7.5
+   }
+  },
+  {
+   "reference": "AIUR-10-391K",
+   "wasMm": {
+    "length": 8.0,
+    "width": 0.0,
+    "height": 7.5
+   },
+   "nowMm": {
+    "diameter": 8.0,
+    "height": 7.5
+   }
+  },
+  {
+   "reference": "AIUR-10-392K",
+   "wasMm": {
+    "length": 8.0,
+    "width": 0.0,
+    "height": 7.5
+   },
+   "nowMm": {
+    "diameter": 8.0,
+    "height": 7.5
+   }
+  },
+  {
+   "reference": "AIUR-10-470K",
+   "wasMm": {
+    "length": 8.0,
+    "width": 0.0,
+    "height": 7.5
+   },
+   "nowMm": {
+    "diameter": 8.0,
+    "height": 7.5
+   }
+  },
+  {
+   "reference": "AIUR-10-471K",
+   "wasMm": {
+    "length": 8.0,
+    "width": 0.0,
+    "height": 7.5
+   },
+   "nowMm": {
+    "diameter": 8.0,
+    "height": 7.5
+   }
+  },
+  {
+   "reference": "AIUR-10-560K",
+   "wasMm": {
+    "length": 8.0,
+    "width": 0.0,
+    "height": 7.5
+   },
+   "nowMm": {
+    "diameter": 8.0,
+    "height": 7.5
+   }
+  },
+  {
+   "reference": "AIUR-10-561K",
+   "wasMm": {
+    "length": 8.0,
+    "width": 0.0,
+    "height": 7.5
+   },
+   "nowMm": {
+    "diameter": 8.0,
+    "height": 7.5
+   }
+  },
+  {
+   "reference": "AIUR-10-680K",
+   "wasMm": {
+    "length": 8.0,
+    "width": 0.0,
+    "height": 7.5
+   },
+   "nowMm": {
+    "diameter": 8.0,
+    "height": 7.5
+   }
+  },
+  {
+   "reference": "AIUR-10-681K",
+   "wasMm": {
+    "length": 8.0,
+    "width": 0.0,
+    "height": 7.5
+   },
+   "nowMm": {
+    "diameter": 8.0,
+    "height": 7.5
+   }
+  },
+  {
+   "reference": "AIUR-10-820K",
+   "wasMm": {
+    "length": 8.0,
+    "width": 0.0,
+    "height": 7.5
+   },
+   "nowMm": {
+    "diameter": 8.0,
+    "height": 7.5
+   }
+  },
+  {
+   "reference": "AIUR-10-821K",
+   "wasMm": {
+    "length": 8.0,
+    "width": 0.0,
+    "height": 7.5
+   },
+   "nowMm": {
+    "diameter": 8.0,
+    "height": 7.5
+   }
+  },
+  {
+   "reference": "AIUR-15-101K",
+   "wasMm": {
+    "length": 18.0,
+    "width": 0.0,
+    "height": 20.0
+   },
+   "nowMm": {
+    "diameter": 18.0,
+    "height": 20.0
+   }
+  },
+  {
+   "reference": "AIUR-15-102K",
+   "wasMm": {
+    "length": 18.0,
+    "width": 0.0,
+    "height": 20.0
+   },
+   "nowMm": {
+    "diameter": 18.0,
+    "height": 20.0
+   }
+  },
+  {
+   "reference": "AIUR-15-121K",
+   "wasMm": {
+    "length": 18.0,
+    "width": 0.0,
+    "height": 20.0
+   },
+   "nowMm": {
+    "diameter": 18.0,
+    "height": 20.0
+   }
+  },
+  {
+   "reference": "AIUR-15-151K",
+   "wasMm": {
+    "length": 18.0,
+    "width": 0.0,
+    "height": 20.0
+   },
+   "nowMm": {
+    "diameter": 18.0,
+    "height": 20.0
+   }
+  },
+  {
+   "reference": "AIUR-15-181K",
+   "wasMm": {
+    "length": 18.0,
+    "width": 0.0,
+    "height": 20.0
+   },
+   "nowMm": {
+    "diameter": 18.0,
+    "height": 20.0
+   }
+  },
+  {
+   "reference": "AIUR-15-220M",
+   "wasMm": {
+    "length": 18.0,
+    "width": 0.0,
+    "height": 20.0
+   },
+   "nowMm": {
+    "diameter": 18.0,
+    "height": 20.0
+   }
+  },
+  {
+   "reference": "AIUR-15-221K",
+   "wasMm": {
+    "length": 18.0,
+    "width": 0.0,
+    "height": 20.0
+   },
+   "nowMm": {
+    "diameter": 18.0,
+    "height": 20.0
+   }
+  },
+  {
+   "reference": "AIUR-15-270M",
+   "wasMm": {
+    "length": 18.0,
+    "width": 0.0,
+    "height": 20.0
+   },
+   "nowMm": {
+    "diameter": 18.0,
+    "height": 20.0
+   }
+  },
+  {
+   "reference": "AIUR-15-271K",
+   "wasMm": {
+    "length": 18.0,
+    "width": 0.0,
+    "height": 20.0
+   },
+   "nowMm": {
+    "diameter": 18.0,
+    "height": 20.0
+   }
+  },
+  {
+   "reference": "AIUR-15-330K",
+   "wasMm": {
+    "length": 18.0,
+    "width": 0.0,
+    "height": 20.0
+   },
+   "nowMm": {
+    "diameter": 18.0,
+    "height": 20.0
+   }
+  },
+  {
+   "reference": "AIUR-15-331K",
+   "wasMm": {
+    "length": 18.0,
+    "width": 0.0,
+    "height": 20.0
+   },
+   "nowMm": {
+    "diameter": 18.0,
+    "height": 20.0
+   }
+  },
+  {
+   "reference": "AIUR-15-390K",
+   "wasMm": {
+    "length": 18.0,
+    "width": 0.0,
+    "height": 20.0
+   },
+   "nowMm": {
+    "diameter": 18.0,
+    "height": 20.0
+   }
+  },
+  {
+   "reference": "AIUR-15-391K",
+   "wasMm": {
+    "length": 18.0,
+    "width": 0.0,
+    "height": 20.0
+   },
+   "nowMm": {
+    "diameter": 18.0,
+    "height": 20.0
+   }
+  },
+  {
+   "reference": "AIUR-15-470K",
+   "wasMm": {
+    "length": 18.0,
+    "width": 0.0,
+    "height": 20.0
+   },
+   "nowMm": {
+    "diameter": 18.0,
+    "height": 20.0
+   }
+  },
+  {
+   "reference": "AIUR-15-471K",
+   "wasMm": {
+    "length": 18.0,
+    "width": 0.0,
+    "height": 20.0
+   },
+   "nowMm": {
+    "diameter": 18.0,
+    "height": 20.0
+   }
+  },
+  {
+   "reference": "AIUR-15-560K",
+   "wasMm": {
+    "length": 18.0,
+    "width": 0.0,
+    "height": 20.0
+   },
+   "nowMm": {
+    "diameter": 18.0,
+    "height": 20.0
+   }
+  },
+  {
+   "reference": "AIUR-15-561K",
+   "wasMm": {
+    "length": 18.0,
+    "width": 0.0,
+    "height": 20.0
+   },
+   "nowMm": {
+    "diameter": 18.0,
+    "height": 20.0
+   }
+  },
+  {
+   "reference": "AIUR-15-680K",
+   "wasMm": {
+    "length": 18.0,
+    "width": 0.0,
+    "height": 20.0
+   },
+   "nowMm": {
+    "diameter": 18.0,
+    "height": 20.0
+   }
+  },
+  {
+   "reference": "AIUR-15-681K",
+   "wasMm": {
+    "length": 18.0,
+    "width": 0.0,
+    "height": 20.0
+   },
+   "nowMm": {
+    "diameter": 18.0,
+    "height": 20.0
+   }
+  },
+  {
+   "reference": "AIUR-15-820K",
+   "wasMm": {
+    "length": 18.0,
+    "width": 0.0,
+    "height": 20.0
+   },
+   "nowMm": {
+    "diameter": 18.0,
+    "height": 20.0
+   }
+  },
+  {
+   "reference": "AIUR-15-821K",
+   "wasMm": {
+    "length": 18.0,
+    "width": 0.0,
+    "height": 20.0
+   },
+   "nowMm": {
+    "diameter": 18.0,
+    "height": 20.0
+   }
+  }
+ ]
+}
