@@ -1,0 +1,175 @@
+{
+ "ticket": "ABT #351 (W\u00fcrth via REDEXPERT)",
+ "vendorConfirmedOk": [
+  {
+   "reference": "744837006400",
+   "dcrOhm": 0.0032,
+   "ratedA": 40.0,
+   "note": "matches WE REDEXPERT exactly \u2014 not a defect; the flat 5 W threshold flagged normal big-part physics"
+  },
+  {
+   "reference": "744838040400",
+   "dcrOhm": 0.0032,
+   "ratedA": 40.0,
+   "note": "matches WE REDEXPERT exactly \u2014 not a defect; the flat 5 W threshold flagged normal big-part physics"
+  },
+  {
+   "reference": "744839010400",
+   "dcrOhm": 0.0032,
+   "ratedA": 40.0,
+   "note": "matches WE REDEXPERT exactly \u2014 not a defect; the flat 5 W threshold flagged normal big-part physics"
+  },
+  {
+   "reference": "7443763540220",
+   "dcrOhm": 0.0032,
+   "ratedA": 40.6,
+   "note": "matches WE REDEXPERT exactly \u2014 not a defect; the flat 5 W threshold flagged normal big-part physics"
+  },
+  {
+   "reference": "7443763540330",
+   "dcrOhm": 0.00638,
+   "ratedA": 32.0,
+   "note": "matches WE REDEXPERT exactly \u2014 not a defect; the flat 5 W threshold flagged normal big-part physics"
+  },
+  {
+   "reference": "7443763540470",
+   "dcrOhm": 0.00638,
+   "ratedA": 32.0,
+   "note": "matches WE REDEXPERT exactly \u2014 not a defect; the flat 5 W threshold flagged normal big-part physics"
+  },
+  {
+   "reference": "7843763540220",
+   "dcrOhm": 0.0032,
+   "ratedA": 40.6,
+   "note": "matches WE REDEXPERT exactly \u2014 not a defect; the flat 5 W threshold flagged normal big-part physics"
+  },
+  {
+   "reference": "7843763540330",
+   "dcrOhm": 0.00638,
+   "ratedA": 32.0,
+   "note": "matches WE REDEXPERT exactly \u2014 not a defect; the flat 5 W threshold flagged normal big-part physics"
+  },
+  {
+   "reference": "7843763540470",
+   "dcrOhm": 0.00638,
+   "ratedA": 32.0,
+   "note": "matches WE REDEXPERT exactly \u2014 not a defect; the flat 5 W threshold flagged normal big-part physics"
+  },
+  {
+   "reference": "7427920",
+   "dcrOhm": 0.15,
+   "ratedA": 9.6,
+   "note": "matches WE REDEXPERT exactly \u2014 not a defect; the flat 5 W threshold flagged normal big-part physics"
+  },
+  {
+   "reference": "7427925",
+   "dcrOhm": 0.3,
+   "ratedA": 6.8,
+   "note": "matches WE REDEXPERT exactly \u2014 not a defect; the flat 5 W threshold flagged normal big-part physics"
+  },
+  {
+   "reference": "760308101310",
+   "dcrOhm": 0.11,
+   "ratedA": 7.5,
+   "note": "matches WE REDEXPERT exactly \u2014 not a defect; the flat 5 W threshold flagged normal big-part physics"
+  },
+  {
+   "reference": "760308101311",
+   "dcrOhm": 0.014,
+   "ratedA": 21.0,
+   "note": "matches WE REDEXPERT exactly \u2014 not a defect; the flat 5 W threshold flagged normal big-part physics"
+  },
+  {
+   "reference": "760308103113",
+   "dcrOhm": 0.065,
+   "ratedA": 9.0,
+   "note": "matches WE REDEXPERT exactly \u2014 not a defect; the flat 5 W threshold flagged normal big-part physics"
+  },
+  {
+   "reference": "760308103145",
+   "dcrOhm": 0.083,
+   "ratedA": 8.5,
+   "note": "matches WE REDEXPERT exactly \u2014 not a defect; the flat 5 W threshold flagged normal big-part physics"
+  },
+  {
+   "reference": "760308106",
+   "dcrOhm": 0.065,
+   "ratedA": 9.0,
+   "note": "matches WE REDEXPERT exactly \u2014 not a defect; the flat 5 W threshold flagged normal big-part physics"
+  }
+ ],
+ "repaired": [
+  {
+   "reference": "7427921",
+   "changed": {
+    "ratedCurrents": {
+     "was": 8.1,
+     "now": 0.5
+    }
+   }
+  },
+  {
+   "reference": "760308101312",
+   "changed": {
+    "dcResistance": {
+     "was": 0.03,
+     "now": 0.09
+    },
+    "ratedCurrents": {
+     "was": 13.0,
+     "now": 6
+    }
+   }
+  }
+ ],
+ "transformerModuleNoRdc": [
+  {
+   "reference": "750811291",
+   "note": "L/Isat vendor-matched; Rdc/Ir not published in that module; corpus subtype=inductor is the #279/#282 mistag (F1)"
+  },
+  {
+   "reference": "750310167",
+   "note": "L/Isat vendor-matched; Rdc/Ir not published in that module; corpus subtype=inductor is the #279/#282 mistag (F1)"
+  },
+  {
+   "reference": "750312547",
+   "note": "L/Isat vendor-matched; Rdc/Ir not published in that module; corpus subtype=inductor is the #279/#282 mistag (F1)"
+  },
+  {
+   "reference": "750311780",
+   "note": "L/Isat vendor-matched; Rdc/Ir not published in that module; corpus subtype=inductor is the #279/#282 mistag (F1)"
+  },
+  {
+   "reference": "7508113417",
+   "note": "L/Isat vendor-matched; Rdc/Ir not published in that module; corpus subtype=inductor is the #279/#282 mistag (F1)"
+  },
+  {
+   "reference": "750311911",
+   "note": "L/Isat vendor-matched; Rdc/Ir not published in that module; corpus subtype=inductor is the #279/#282 mistag (F1)"
+  },
+  {
+   "reference": "750315340",
+   "note": "L/Isat vendor-matched; Rdc/Ir not published in that module; corpus subtype=inductor is the #279/#282 mistag (F1)"
+  },
+  {
+   "reference": "750316585",
+   "note": "L/Isat vendor-matched; Rdc/Ir not published in that module; corpus subtype=inductor is the #279/#282 mistag (F1)"
+  },
+  {
+   "reference": "7508116318",
+   "note": "L/Isat vendor-matched; Rdc/Ir not published in that module; corpus subtype=inductor is the #279/#282 mistag (F1)"
+  },
+  {
+   "reference": "750811648",
+   "note": "L/Isat vendor-matched; Rdc/Ir not published in that module; corpus subtype=inductor is the #279/#282 mistag (F1)"
+  },
+  {
+   "reference": "750310925",
+   "note": "L/Isat vendor-matched; Rdc/Ir not published in that module; corpus subtype=inductor is the #279/#282 mistag (F1)"
+  },
+  {
+   "reference": "750310926",
+   "note": "L/Isat vendor-matched; Rdc/Ir not published in that module; corpus subtype=inductor is the #279/#282 mistag (F1)"
+  }
+ ]
+}
