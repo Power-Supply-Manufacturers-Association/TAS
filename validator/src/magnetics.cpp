@@ -210,6 +210,82 @@ void check_point(const json& pt, int idx, const json& dims, const std::string& m
     }
 }
 
+// MAG_DISS_DENSITY: DCR x Irated^2 over the package's box surface area. One
+// symptom, many causes — the ABT #351 campaign found five distinct corruption
+// classes behind an absurd DCR*I^2 (identifier-in-field, impedance-as-DCR,
+// mA-as-A, field-copied, series stubs) totalling ~1,000 rows that every
+// existing window passed, because none of them relates the DCR, the rated
+// current and the SIZE to each other. The same campaign also proved three
+// FALSE-POSITIVE classes the product is meaningless for, excluded here:
+//   F1 current-sense parts — rated current is the PRIMARY current, the DCR a
+//      winding resistance; their product is not a dissipation.
+//   F2 Isat-quoted molded parts — a very low DCR with a very high current is a
+//      saturation rating, not a thermal claim.
+//   F3 chip beads — vendor datasheets pair IR (dT=40K) with a NON-simultaneous
+//      small-signal RDC max (WE 7427920: 9600 mA next to 0.15 ohm), so I^2*R is
+//      not what the part dissipates at rating.
+// Unlike the older MAG_* checks this reads BOTH DCR shapes (singular
+// dcResistance and plural dcResistances[0]) — the plural is the common-mode-
+// choke form, which is exactly where the worst offenders lived.
+void check_dissipation_density(const json& pt, int idx, const json& dims,
+                               const std::string& desc_lower, const Ctx& ctx,
+                               std::vector<Finding>& out) {
+    const std::string tag = "[op " + std::to_string(idx) + "] ";
+
+    std::string subtype;
+    if (pt.contains("subtype") && pt["subtype"].is_string())
+        subtype = pt["subtype"].get<std::string>();
+
+    // F1 / F3 — the product is not a physical quantity for these part classes.
+    if (subtype == "transformer" || subtype == "chipBead") return;
+    if (desc_lower.find("current sense") != std::string::npos ||
+        desc_lower.find("current-sense") != std::string::npos ||
+        desc_lower.find("current transformer") != std::string::npos ||
+        desc_lower.find("bead") != std::string::npos)
+        return;
+
+    auto dcr = scalar_at(pt, {"dcResistance"});
+    if (!dcr && pt.contains("dcResistances") && pt["dcResistances"].is_array() &&
+        !pt["dcResistances"].empty())
+        dcr = scalar(&pt["dcResistances"][0], "dcResistances[0]");
+    if (!dcr || *dcr <= 0) return;
+
+    std::optional<double> rated;
+    if (pt.contains("ratedCurrents") && pt["ratedCurrents"].is_array() &&
+        !pt["ratedCurrents"].empty()) {
+        const json& rc = pt["ratedCurrents"][0];
+        if (rc.is_number()) rated = scalar(&rc, "ratedCurrents[0]");
+        else { rated = scalar_at(rc, {"rms"}); if (!rated) rated = scalar_at(rc, {"current"}); }
+    }
+    if (!rated || *rated <= 0) return;
+
+    // F2 — a milliohm-class part quoting tens of amps is quoting saturation.
+    if (*dcr <= 0.01 && *rated >= 50.0) return;
+
+    double watts = (*dcr) * (*rated) * (*rated);
+    if (watts <= thr::MAG_DISS_POWER_FLOOR_W) return;   // pad conduction dominates
+
+    auto l = scalar_at(dims, {"length"});
+    auto w = scalar_at(dims, {"width"});
+    if (!l || !w || *l <= 0 || *w <= 0) return;
+    auto h = scalar_at(dims, {"height"});
+    double hh = (h && *h > 0) ? *h : std::min(*l, *w);
+    double area_cm2 = 2.0 * ((*l) * (*w) + (*l) * hh + (*w) * hh) * 1e4;
+    if (area_cm2 <= 0) return;
+    double density = watts / area_cm2;
+
+    if (density > thr::MAG_DISS_DENSITY_IMP)
+        emit(out, ctx, "MAG_DISS_DENSITY", Severity::Impossible, density,
+             thr::MAG_DISS_DENSITY_IMP,
+             tag + fmt("DCR*Irated^2 per package surface impossibly high [W/cm^2]",
+                       density, thr::MAG_DISS_DENSITY_IMP));
+    else if (density > thr::MAG_DISS_DENSITY_SUS)
+        emit(out, ctx, "MAG_DISS_DENSITY", Severity::Suspicious, density,
+             thr::MAG_DISS_DENSITY_SUS,
+             tag + fmt("DCR*Irated^2 per package surface suspiciously high [W/cm^2]",
+                       density, thr::MAG_DISS_DENSITY_SUS));
+}
+
 // MAG_SUBTYPE_MISMATCH: the description names a specific magnetic variant but no
 // electrical entry declares that subtype. GEN_FAMILY_MISMATCH one level down:
 // physics bounds cannot see taxonomy — a common-mode choke's numbers are legal
@@ -272,9 +348,17 @@ void check_magnetics(const json& datasheet, const Ctx& ctx, std::vector<Finding>
     const json dims = (mech && mech->is_object()) ? *mech : json::object();
     std::string material = norm_tech(at(datasheet, "part", "material"));
 
+    std::string desc_lower;
+    if (const json* d = at(datasheet, "part", "description"); d != nullptr && d->is_string())
+        for (char c : d->get<std::string>())
+            desc_lower += static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
+
     int idx = 0;
     for (const auto& pt : *elec) {
-        if (pt.is_object()) check_point(pt, idx, dims, material, ctx, out, skipped);
+        if (pt.is_object()) {
+            check_point(pt, idx, dims, material, ctx, out, skipped);
+            check_dissipation_density(pt, idx, dims, desc_lower, ctx, out);
+        }
         ++idx;
     }
 }

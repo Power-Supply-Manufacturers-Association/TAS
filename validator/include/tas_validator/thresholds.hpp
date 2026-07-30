@@ -64,6 +64,22 @@ inline constexpr double CAP_ENERGY_DENSITY_SUS_CERAMIC = 5e6;  // 5 J/cm^3 (abov
 // reaches 100 H (most power magnetics are uH-mH).
 inline constexpr double MAG_L_MAGNITUDE_IMP = 100.0;     // > 100 H impossible
 inline constexpr double MAG_L_MAGNITUDE_SUS = 1.0;       // > 1 H suspicious
+
+// DCR x Irated^2 / box-surface-area [W/cm^2] — dissipation the part claims to
+// survive at its own thermal rating, per unit of cooling surface. Calibrated on
+// the ABT #351 campaign: the largest legitimate parts (41 mm three-phase CMCs at
+// their 40 C-rise rating, 100+ A busbar chokes) reach ~0.7 W/cm^2, while every
+// vendor-confirmed defect sat at 4.5 W/cm^2 or (far) above. The absolute floor
+// exists because the surface model diverges for tiny parts: below a few watts,
+// pad conduction dominates and an 0402 at its vendor-rated current is fine
+// despite a "high" areal number. Exclusions live in the check, not here: the
+// product DCR*I^2 is not a physical quantity at all for current-sense parts
+// (primary current x winding R), Isat-quoted molded parts, or chip beads (whose
+// datasheets pair IR at dT=40K with a non-simultaneous small-signal RDC max —
+// WE 7427920 prints 9600 mA next to 0.15 ohm on one page).
+inline constexpr double MAG_DISS_POWER_FLOOR_W = 5.0;
+inline constexpr double MAG_DISS_DENSITY_SUS = 2.5;      // W/cm^2
+inline constexpr double MAG_DISS_DENSITY_IMP = 25.0;     // W/cm^2
 // Capacitance magnitude [F] — dimension-free sanity that catches uF/F unit
 // errors (e.g. a 100 F MLCC/electrolytic). Only supercapacitors exceed ~1 F;
 // the largest commercial EDLC is ~3400 F.

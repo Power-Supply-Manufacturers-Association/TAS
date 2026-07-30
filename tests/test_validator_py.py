@@ -91,3 +91,79 @@ def test_dict_and_json_string_agree():
     v2 = tas_validator.validate_json(json.dumps(rec))
     assert v1.valid == v2.valid
     assert len(v1.findings) == len(v2.findings)
+
+
+def _magnetic(electrical, mech=None, description=""):
+    ds = {"electrical": [electrical]}
+    if mech:
+        ds["mechanical"] = mech
+    if description:
+        ds["part"] = {"description": description}
+    return {"magnetic": {"manufacturerInfo": {
+        "name": "Fixture", "reference": "FIX-1", "status": "production",
+        "datasheetInfo": ds}}}
+
+
+def _codes(rec):
+    return {(f.code, f.severity) for f in tas_validator.validate(rec).findings}
+
+
+def test_diss_density_flags_the_abt351_defect_class():
+    """The real pre-repair VLBUC12060110R20LF4 numbers: 59 ohm stored as the DCR
+    of a 70 A busbar choke in a 12x6x6 mm package — every older window passed it;
+    this is the row class MAG_DISS_DENSITY exists for."""
+    rec = _magnetic({"subtype": "inductor", "inductance": {"nominal": 1e-07},
+                     "dcResistances": [{"maximum": 59.0}], "ratedCurrents": [70.0]},
+                    mech={"length": {"nominal": 0.012}, "width": {"nominal": 0.006},
+                          "height": {"nominal": 0.006}})
+    assert ("MAG_DISS_DENSITY", "IMPOSSIBLE") in _codes(rec)
+
+
+def test_diss_density_reads_the_plural_dcr_shape():
+    """dcResistances[0] (the common-mode-choke form) must be read — the worst
+    offenders of ABT #351 stored their corruption in the plural field."""
+    rec = _magnetic({"subtype": "commonModeChoke", "inductance": {"nominal": 1e-05},
+                     "dcResistances": [{"maximum": 160.0}], "ratedCurrents": [75.0]},
+                    mech={"length": {"nominal": 0.014}, "width": {"nominal": 0.014},
+                          "height": {"nominal": 0.010}})
+    assert ("MAG_DISS_DENSITY", "IMPOSSIBLE") in _codes(rec)
+
+
+def test_diss_density_passes_a_large_legitimate_part():
+    """A 41 mm three-phase CMC at its 40 C-rise rating (the WE 744837006400
+    numbers, REDEXPERT-exact): 5.1 W over a big package is normal physics."""
+    rec = _magnetic({"subtype": "commonModeChoke", "inductance": {"nominal": 6e-04},
+                     "dcResistances": [{"maximum": 0.0032}], "ratedCurrents": [40.0]},
+                    mech={"length": {"nominal": 0.041}, "width": {"nominal": 0.041},
+                          "height": {"nominal": 0.030}})
+    assert not any(c == "MAG_DISS_DENSITY" for c, _ in _codes(rec))
+
+
+def test_diss_density_floor_spares_small_parts_at_vendor_ratings():
+    """An 0402 RF inductor at its vendor-rated 1770 mA dissipates ~0.13 W — under
+    the absolute floor, where pad conduction dominates and the areal model is
+    invalid (the Murata pass-1 gate mistake, encoded so it stays fixed)."""
+    rec = _magnetic({"subtype": "inductor", "inductance": {"nominal": 5.6e-09},
+                     "dcResistance": {"maximum": 0.04}, "ratedCurrents": [1.77]},
+                    mech={"length": {"nominal": 0.001}, "width": {"nominal": 0.0006},
+                          "height": {"nominal": 0.0005}})
+    assert not any(c == "MAG_DISS_DENSITY" for c, _ in _codes(rec))
+
+
+def test_diss_density_excludes_the_false_positive_classes():
+    """F1 current-sense (primary current x winding R is not a dissipation),
+    F2 Isat-quoted molded parts, F3 chip beads (WE 7427920's own datasheet pairs
+    9600 mA with 0.15 ohm — non-simultaneous ratings)."""
+    ct = _magnetic({"subtype": "inductor", "dcResistance": {"maximum": 1.7},
+                    "ratedCurrents": [170.0]},
+                   mech={"length": {"nominal": 0.010}, "width": {"nominal": 0.010}},
+                   description="Current Sense Transformer 1:100")
+    isat = _magnetic({"subtype": "inductor", "dcResistance": {"maximum": 0.004},
+                      "ratedCurrents": [128.0]},
+                     mech={"length": {"nominal": 0.011}, "width": {"nominal": 0.010}})
+    bead = _magnetic({"subtype": "chipBead", "dcResistance": {"maximum": 0.15},
+                      "ratedCurrents": [9.6]},
+                     mech={"length": {"nominal": 0.002}, "width": {"nominal": 0.00125},
+                           "height": {"nominal": 0.0009}})
+    for rec in (ct, isat, bead):
+        assert not any(c == "MAG_DISS_DENSITY" for c, _ in _codes(rec))
