@@ -1,0 +1,697 @@
+{
+ "ticket": "ABT #351 (TDK grids)",
+ "repaired": [
+  {
+   "reference": "LTF5022T-1R2N3R4-D",
+   "changed": {
+    "dcResistance": {
+     "was": 0.45,
+     "now": 0.031
+    },
+    "ratedCurrents": {
+     "was": 3.4,
+     "now": 3.87
+    }
+   },
+   "grid": "https://product.tdk.com/en/search/inductor/inductor/smd/list"
+  },
+  {
+   "reference": "NLCV25T-R10M-EFR",
+   "changed": {
+    "dcResistance": {
+     "was": 1.8,
+     "now": 0.048
+    }
+   },
+   "grid": "https://product.tdk.com/en/search/inductor/inductor/smd/list"
+  },
+  {
+   "reference": "NLCV25T-R15M-EFR",
+   "changed": {
+    "dcResistance": {
+     "was": 1.69,
+     "now": 0.0528
+    }
+   },
+   "grid": "https://product.tdk.com/en/search/inductor/inductor/smd/list"
+  },
+  {
+   "reference": "VLS6045EX-1R0N",
+   "changed": {
+    "dcResistance": {
+     "was": 3.6,
+     "now": 0.016
+    },
+    "ratedCurrents": {
+     "was": 6.0,
+     "now": 12.0
+    }
+   },
+   "grid": "https://product.tdk.com/en/search/inductor/inductor/smd/list"
+  },
+  {
+   "reference": "VLS6045EX-3R3N",
+   "changed": {
+    "dcResistance": {
+     "was": 2.5,
+     "now": 0.03
+    },
+    "ratedCurrents": {
+     "was": 4.95,
+     "now": 6.5
+    }
+   },
+   "grid": "https://product.tdk.com/en/search/inductor/inductor/smd/list"
+  },
+  {
+   "reference": "VLS5045EX-6R8M-CA",
+   "changed": {
+    "dcResistance": {
+     "was": 1.9,
+     "now": 0.0598
+    },
+    "ratedCurrents": {
+     "was": 2.9,
+     "now": 3.6
+    }
+   },
+   "grid": "https://product.tdk.com/en/search/inductor/inductor/smd/list"
+  },
+  {
+   "reference": "VLS5045EX-100M-CA",
+   "changed": {
+    "dcResistance": {
+     "was": 5.0,
+     "now": 0.0793
+    },
+    "ratedCurrents": {
+     "was": 2.5,
+     "now": 3.1
+    }
+   },
+   "grid": "https://product.tdk.com/en/search/inductor/inductor/smd/list"
+  },
+  {
+   "reference": "VLS5045EX-150M-CA",
+   "changed": {
+    "dcResistance": {
+     "was": 4.7,
+     "now": 0.143
+    },
+    "ratedCurrents": {
+     "was": 1.9,
+     "now": 2.2
+    }
+   },
+   "grid": "https://product.tdk.com/en/search/inductor/inductor/smd/list"
+  },
+  {
+   "reference": "VLBU1007090T-R10L",
+   "changed": {
+    "dcResistance": {
+     "was": 0.12,
+     "now": 0.000198
+    },
+    "ratedCurrents": {
+     "was": 70.0,
+     "now": 136.0
+    }
+   },
+   "grid": "https://product.tdk.com/en/search/inductor/inductor/smd/list"
+  },
+  {
+   "reference": "VLBU1007090T-R12L",
+   "changed": {
+    "dcResistance": {
+     "was": 0.15,
+     "now": 0.000198
+    },
+    "ratedCurrents": {
+     "was": 70.0,
+     "now": 110.0
+    }
+   },
+   "grid": "https://product.tdk.com/en/search/inductor/inductor/smd/list"
+  },
+  {
+   "reference": "VLBU1007090T-R15L",
+   "changed": {
+    "dcResistance": {
+     "was": 0.18,
+     "now": 0.000198
+    },
+    "ratedCurrents": {
+     "was": 70.0,
+     "now": 90.0
+    }
+   },
+   "grid": "https://product.tdk.com/en/search/inductor/inductor/smd/list"
+  },
+  {
+   "reference": "VLBU1007090T-R18L",
+   "changed": {
+    "dcResistance": {
+     "was": 0.2,
+     "now": 0.000198
+    },
+    "ratedCurrents": {
+     "was": 70.0,
+     "now": 73.0
+    }
+   },
+   "grid": "https://product.tdk.com/en/search/inductor/inductor/smd/list"
+  },
+  {
+   "reference": "VLBU1007090T-R22L",
+   "changed": {
+    "dcResistance": {
+     "was": 0.25,
+     "now": 0.000198
+    }
+   },
+   "grid": "https://product.tdk.com/en/search/inductor/inductor/smd/list"
+  },
+  {
+   "reference": "VLBU1007090T-R33L",
+   "changed": {
+    "dcResistance": {
+     "was": 0.4,
+     "now": 0.000198
+    }
+   },
+   "grid": "https://product.tdk.com/en/search/inductor/inductor/smd/list"
+  },
+  {
+   "reference": "VLBU1007090T-R40L",
+   "changed": {
+    "dcResistance": {
+     "was": 1.0,
+     "now": 0.000198
+    }
+   },
+   "grid": "https://product.tdk.com/en/search/inductor/inductor/smd/list"
+  },
+  {
+   "reference": "SLF10145T-150M2R2-H",
+   "changed": {
+    "dcResistance": {
+     "was": 2.1,
+     "now": 0.05664
+    },
+    "ratedCurrents": {
+     "was": 2.2,
+     "now": 2.4
+    }
+   },
+   "grid": "https://product.tdk.com/en/search/inductor/inductor/smd/list"
+  },
+  {
+   "reference": "SLF7045T-3R3M2R2-H",
+   "changed": {
+    "dcResistance": {
+     "was": 2.1,
+     "now": 0.0336
+    },
+    "ratedCurrents": {
+     "was": 2.2,
+     "now": 2.3
+    }
+   },
+   "grid": "https://product.tdk.com/en/search/inductor/inductor/smd/list"
+  },
+  {
+   "reference": "MLP2016SR47MT0S1",
+   "changed": {
+    "dcResistance": {
+     "was": 2.0,
+     "now": 0.065
+    }
+   },
+   "grid": "https://product.tdk.com/en/search/inductor/inductor/smd/list"
+  },
+  {
+   "reference": "VLP6045LT-1R0N",
+   "changed": {
+    "dcResistance": {
+     "was": 2.5,
+     "now": 0.017
+    },
+    "ratedCurrents": {
+     "was": 6.5,
+     "now": 8.6
+    }
+   },
+   "grid": "https://product.tdk.com/en/search/inductor/inductor/smd/list"
+  },
+  {
+   "reference": "VLP6045LT-330M",
+   "changed": {
+    "dcResistance": {
+     "was": 4.4,
+     "now": 0.202
+    },
+    "ratedCurrents": {
+     "was": 1.5,
+     "now": 1.6
+    }
+   },
+   "grid": "https://product.tdk.com/en/search/inductor/inductor/smd/list"
+  },
+  {
+   "reference": "VLP6045LT-4R7M",
+   "changed": {
+    "dcResistance": {
+     "was": 2.5,
+     "now": 0.038
+    },
+    "ratedCurrents": {
+     "was": 4.1,
+     "now": 4.4
+    }
+   },
+   "grid": "https://product.tdk.com/en/search/inductor/inductor/smd/list"
+  },
+  {
+   "reference": "VLB10090HT-R10M-GT",
+   "changed": {
+    "dcResistance": {
+     "was": 0.33,
+     "now": 0.00036
+    },
+    "ratedCurrents": {
+     "was": 60.0,
+     "now": 125.0
+    }
+   },
+   "grid": "https://product.tdk.com/en/search/inductor/inductor/smd/list"
+  },
+  {
+   "reference": "VLBU10060120T-R07M-1",
+   "changed": {
+    "dcResistance": {
+     "was": 0.09,
+     "now": 0.000132
+    },
+    "ratedCurrents": {
+     "was": 83.0,
+     "now": 160.0
+    }
+   },
+   "grid": "https://product.tdk.com/en/search/inductor/inductor/smd/list"
+  },
+  {
+   "reference": "VLBU10060120T-R09L-1",
+   "changed": {
+    "dcResistance": {
+     "was": 0.1,
+     "now": 0.000132
+    },
+    "ratedCurrents": {
+     "was": 83.0,
+     "now": 140.0
+    }
+   },
+   "grid": "https://product.tdk.com/en/search/inductor/inductor/smd/list"
+  },
+  {
+   "reference": "VLBUC12060110R10LF4",
+   "changed": {
+    "dcResistance": {
+     "was": 0.1,
+     "now": 0.000138
+    },
+    "ratedCurrents": {
+     "was": 70.0,
+     "now": 130.0
+    }
+   },
+   "grid": "https://product.tdk.com/en/search/inductor/inductor/smd/list"
+  },
+  {
+   "reference": "VLBUC12060110R11LF4",
+   "changed": {
+    "dcResistance": {
+     "was": 0.1,
+     "now": 0.000138
+    },
+    "ratedCurrents": {
+     "was": 70.0,
+     "now": 105.0
+    }
+   },
+   "grid": "https://product.tdk.com/en/search/inductor/inductor/smd/list"
+  },
+  {
+   "reference": "VLBUC12060110R12LF4",
+   "changed": {
+    "dcResistance": {
+     "was": 0.1,
+     "now": 0.000138
+    },
+    "ratedCurrents": {
+     "was": 70.0,
+     "now": 100.0
+    }
+   },
+   "grid": "https://product.tdk.com/en/search/inductor/inductor/smd/list"
+  },
+  {
+   "reference": "VLBUC12060110R15LF4",
+   "changed": {
+    "dcResistance": {
+     "was": 0.1,
+     "now": 0.000138
+    },
+    "ratedCurrents": {
+     "was": 70.0,
+     "now": 81.0
+    }
+   },
+   "grid": "https://product.tdk.com/en/search/inductor/inductor/smd/list"
+  },
+  {
+   "reference": "VLBUC12060110R17LF4",
+   "changed": {
+    "dcResistance": {
+     "was": 0.1,
+     "now": 0.000138
+    }
+   },
+   "grid": "https://product.tdk.com/en/search/inductor/inductor/smd/list"
+  },
+  {
+   "reference": "VLBUC12060110R20LF4",
+   "changed": {
+    "dcResistance": {
+     "was": 59.0,
+     "now": 0.000138
+    }
+   },
+   "grid": "https://product.tdk.com/en/search/inductor/inductor/smd/list"
+  },
+  {
+   "reference": "VLBUC12060120R07MF3",
+   "changed": {
+    "dcResistance": {
+     "was": 0.1,
+     "now": 0.000138
+    },
+    "ratedCurrents": {
+     "was": 70.0,
+     "now": 155.0
+    }
+   },
+   "grid": "https://product.tdk.com/en/search/inductor/inductor/smd/list"
+  },
+  {
+   "reference": "VLBUC12060120R08MF3",
+   "changed": {
+    "dcResistance": {
+     "was": 0.1,
+     "now": 0.000138
+    },
+    "ratedCurrents": {
+     "was": 70.0,
+     "now": 148.0
+    }
+   },
+   "grid": "https://product.tdk.com/en/search/inductor/inductor/smd/list"
+  },
+  {
+   "reference": "VLBUC12060120R08MF4",
+   "changed": {
+    "dcResistance": {
+     "was": 0.1,
+     "now": 0.000138
+    },
+    "ratedCurrents": {
+     "was": 70.0,
+     "now": 168.0
+    }
+   },
+   "grid": "https://product.tdk.com/en/search/inductor/inductor/smd/list"
+  },
+  {
+   "reference": "VLBUC12060120R09LF3",
+   "changed": {
+    "dcResistance": {
+     "was": 0.1,
+     "now": 0.000138
+    },
+    "ratedCurrents": {
+     "was": 70.0,
+     "now": 138.0
+    }
+   },
+   "grid": "https://product.tdk.com/en/search/inductor/inductor/smd/list"
+  },
+  {
+   "reference": "VLBUC12060120R10LF3",
+   "changed": {
+    "dcResistance": {
+     "was": 0.1,
+     "now": 0.000138
+    },
+    "ratedCurrents": {
+     "was": 70.0,
+     "now": 125.0
+    }
+   },
+   "grid": "https://product.tdk.com/en/search/inductor/inductor/smd/list"
+  },
+  {
+   "reference": "VLBUC12060120R10LF4",
+   "changed": {
+    "dcResistance": {
+     "was": 0.1,
+     "now": 0.000138
+    },
+    "ratedCurrents": {
+     "was": 70.0,
+     "now": 132.0
+    }
+   },
+   "grid": "https://product.tdk.com/en/search/inductor/inductor/smd/list"
+  },
+  {
+   "reference": "VLBUC12060120R12LF3",
+   "changed": {
+    "dcResistance": {
+     "was": 0.1,
+     "now": 0.000138
+    },
+    "ratedCurrents": {
+     "was": 70.0,
+     "now": 106.0
+    }
+   },
+   "grid": "https://product.tdk.com/en/search/inductor/inductor/smd/list"
+  },
+  {
+   "reference": "VLBUC12060120R12LF4",
+   "changed": {
+    "dcResistance": {
+     "was": 0.1,
+     "now": 0.000138
+    },
+    "ratedCurrents": {
+     "was": 70.0,
+     "now": 107.0
+    }
+   },
+   "grid": "https://product.tdk.com/en/search/inductor/inductor/smd/list"
+  },
+  {
+   "reference": "VLBUC12060120R15LF3",
+   "changed": {
+    "dcResistance": {
+     "was": 0.1,
+     "now": 0.000138
+    },
+    "ratedCurrents": {
+     "was": 70.0,
+     "now": 82.0
+    }
+   },
+   "grid": "https://product.tdk.com/en/search/inductor/inductor/smd/list"
+  },
+  {
+   "reference": "VLBUC12060120R15LF4",
+   "changed": {
+    "dcResistance": {
+     "was": 0.1,
+     "now": 0.000138
+    },
+    "ratedCurrents": {
+     "was": 70.0,
+     "now": 89.0
+    }
+   },
+   "grid": "https://product.tdk.com/en/search/inductor/inductor/smd/list"
+  },
+  {
+   "reference": "B82477G2103M000",
+   "changed": {
+    "dcResistance": {
+     "was": 3.5,
+     "now": 0.025
+    }
+   },
+   "grid": "https://product.tdk.com/en/search/inductor/inductor/smd/list"
+  },
+  {
+   "reference": "B82479A1103M000",
+   "changed": {
+    "dcResistance": {
+     "was": 4.0,
+     "now": 0.032
+    },
+    "ratedCurrents": {
+     "was": 4.3,
+     "now": 10.0
+    }
+   },
+   "grid": "https://product.tdk.com/en/search/inductor/inductor/smd/list"
+  },
+  {
+   "reference": "VLS6045EX-1R5N",
+   "changed": {
+    "dcResistance": {
+     "was": 3.4,
+     "now": 0.022
+    },
+    "ratedCurrents": {
+     "was": 5.3,
+     "now": 8.2
+    }
+   },
+   "grid": "https://product.tdk.com/en/search/inductor/inductor/smd/list"
+  }
+ ],
+ "skipped": [
+  {
+   "reference": "ACM12V-351-2PL-TL00",
+   "why": "part not captured from any TDK grid"
+  },
+  {
+   "reference": "ACM12V-701-2PL-TL05",
+   "why": "part not captured from any TDK grid"
+  },
+  {
+   "reference": "SPM5015T-R47M",
+   "why": "grid agrees with corpus \u2014 row remains unexplained"
+  },
+  {
+   "reference": "SPM4012T-4R7M-CA",
+   "why": "part not captured from any TDK grid"
+  },
+  {
+   "reference": "SPM4015T-R47M-CA",
+   "why": "part not captured from any TDK grid"
+  },
+  {
+   "reference": "SPM3015T-1R0M-CA",
+   "why": "part not captured from any TDK grid"
+  },
+  {
+   "reference": "MLJ1005HXG48NJTD0B",
+   "why": "still density-impossible with the vendor's values"
+  },
+  {
+   "reference": "TFM141208BLE-R47MTCA",
+   "why": "still density-impossible with the vendor's values"
+  },
+  {
+   "reference": "TFM160808BLD-R24MTCA",
+   "why": "still density-impossible with the vendor's values"
+  },
+  {
+   "reference": "TFM160810ALTA33NNTAA",
+   "why": "still density-impossible with the vendor's values"
+  },
+  {
+   "reference": "TFM201208BLD-R11MTCA",
+   "why": "still density-impossible with the vendor's values"
+  },
+  {
+   "reference": "TFM201208BLD-R33MTCA",
+   "why": "still density-impossible with the vendor's values"
+  },
+  {
+   "reference": "TFM252012BLEAR15MTCA",
+   "why": "still density-impossible with the vendor's values"
+  },
+  {
+   "reference": "VLBUC1206011085NMF4",
+   "why": "L anchor failed (grid 8e-08 vs corpus 8.500000000000001e-08)"
+  },
+  {
+   "reference": "SPM4020T-4R7M-CA",
+   "why": "part not captured from any TDK grid"
+  },
+  {
+   "reference": "SPM4020T-2R2M-CA",
+   "why": "part not captured from any TDK grid"
+  },
+  {
+   "reference": "SPM5030VT-R10M-D",
+   "why": "grid agrees with corpus \u2014 row remains unexplained"
+  },
+  {
+   "reference": "SPM5030VC-1R5M-D",
+   "why": "grid agrees with corpus \u2014 row remains unexplained"
+  },
+  {
+   "reference": "SPM5030VC-3R3M-D",
+   "why": "grid agrees with corpus \u2014 row remains unexplained"
+  },
+  {
+   "reference": "SPM5030VC-4R7M-D",
+   "why": "grid agrees with corpus \u2014 row remains unexplained"
+  },
+  {
+   "reference": "SPM5030VC-R10M-D",
+   "why": "grid agrees with corpus \u2014 row remains unexplained"
+  },
+  {
+   "reference": "SPM5030VC-R22M-D",
+   "why": "grid agrees with corpus \u2014 row remains unexplained"
+  },
+  {
+   "reference": "CLT42-90N",
+   "why": "part not captured from any TDK grid"
+  },
+  {
+   "reference": "CLT42-R17",
+   "why": "part not captured from any TDK grid"
+  },
+  {
+   "reference": "B82559A4322A033",
+   "why": "part not captured from any TDK grid"
+  },
+  {
+   "reference": "B82559A4352A033",
+   "why": "part not captured from any TDK grid"
+  },
+  {
+   "reference": "B82559A5472A033",
+   "why": "part not captured from any TDK grid"
+  },
+  {
+   "reference": "B82559A5602A033",
+   "why": "part not captured from any TDK grid"
+  },
+  {
+   "reference": "B82559A5682A033",
+   "why": "part not captured from any TDK grid"
+  },
+  {
+   "reference": "B82559A5103A033",
+   "why": "part not captured from any TDK grid"
+  },
+  {
+   "reference": "BCM605040-57N",
+   "why": "part not captured from any TDK grid"
+  }
+ ]
+}
