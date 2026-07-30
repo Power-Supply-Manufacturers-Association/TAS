@@ -216,10 +216,18 @@ def main(argv):
                     mech = di.get("mechanical") or {}
                     dims = [nominal(mech.get(k)) for k in ("length", "width", "height")]
                     dims = [x for x in dims if x and x > 0]
-                    if dcr and rated and not density_ok(dcr, rated, dims):
+                    # The density gate exists to catch OUR misparses, not to overrule
+                    # the manufacturer. When BOTH fields are vendor-sourced — the DCR
+                    # and the rated current each either replaced from PIM or already
+                    # matching PIM within 2% — the pair is ground truth and passes.
+                    # (An 0402 RF inductor at its vendor-rated 1770 mA dissipates
+                    # ~0.13 W, which is normal: tiny parts sink through their pads,
+                    # and the surface-area model diverges as size goes to zero.)
+                    both_vendor = v_dcr is not None and v_rated is not None
+                    if dcr and rated and not both_vendor and not density_ok(dcr, rated, dims):
                         audit["vendorDisagreesButStillImpossible"].append(
                             {"reference": ref, "changed": changed,
-                             "note": "even the vendor values stay density-impossible — not applied"})
+                             "note": "partial vendor data only, and still density-impossible — not applied"})
                         out.write(raw_line)
                         continue
                     prov = di.get("provenance") or []
