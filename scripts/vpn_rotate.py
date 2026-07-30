@@ -33,7 +33,15 @@ class Rotator:
         self.confs = sorted(Path(conf_dir).glob("*.conf"))
         if not self.confs:
             raise FileNotFoundError(f"no WireGuard configs in {conf_dir}")
+        # Start from whatever tunnel is already up, so the first rotate() moves to the
+        # NEXT server. A fresh process (every cron tick makes one) would otherwise
+        # rotate straight back onto the IP that was just blocked.
         self.idx = -1
+        stems = [c.stem for c in self.confs]
+        for iface in self.up_interfaces():
+            if iface in stems:
+                self.idx = stems.index(iface)
+                break
 
     # ---- state ----
     @staticmethod
@@ -59,9 +67,28 @@ class Rotator:
 
     # ---- actions ----
     def clear(self):
-        """Tear down every tunnel we may have brought up (back to the bare link)."""
+        """Tear down every tunnel we may have brought up (back to the bare link).
+
+        Down by CONFIG PATH, not by interface name: `wg-quick down p0` looks for
+        /etc/wireguard/p0.conf, which does not exist for these (they live in
+        ~/proton/clean), so it fails -- and silently ignoring that failure left the old
+        tunnel up and made the next `up` die with "p0 already exists". Failures are
+        reported now instead of swallowed.
+        """
+        by_stem = {c.stem: c for c in self.confs}
+        problems = []
         for iface in self.up_interfaces():
-            self._sudo("/usr/bin/wg-quick", "down", iface, timeout=90)
+            conf = by_stem.get(iface)
+            if conf is None:
+                problems.append(f"{iface}: no matching config, left up")
+                continue
+            r = self._sudo("/usr/bin/wg-quick", "down", str(conf), timeout=90)
+            if r.returncode != 0:
+                problems.append(f"{iface}: {(r.stderr or r.stdout).strip()[:120]}")
+        still = [i for i in self.up_interfaces() if i in by_stem]
+        if still:
+            raise RuntimeError(f"could not tear down {still}: {'; '.join(problems)}")
+        return problems
 
     def rotate(self, skip=0):
         """Bring up the next config. Returns (name, egress_ip)."""

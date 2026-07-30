@@ -60,6 +60,7 @@ PIDMAP2 = STAGE / "pid_map_v2.json"      # {pn: [category, pid]}, all categories
 MAPSTATE = STAGE / "map_state.json"
 OUT = STAGE / "bias.jsonl"
 DONE = STAGE / "bias_done.json"
+NODATA = STAGE / "nodata.json"
 LOG = STAGE / "bias_harvest.log"
 STOP = STAGE / "STOP"
 
@@ -78,6 +79,10 @@ GRAPH_KIND = "1007"                 # DC bias. See the module docstring.
 #                                   DC-bias curve at TDK; they are not harvestable here
 #   capacitor/ceramic/uhv            69 parts  no graph kinds at all
 CATEGORIES = ["capacitor/ceramic/mlcc", "capacitor/ceramic/lead-mlcc"]
+PAGE_SIZE = 100                     # the list caps here: _l=200/500 still serve 100.
+UA = ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) "
+      "Chrome/126.0.0.0 Safari/537.36")
+CLASS2 = {"ceramic-class-2", "ceramic-class-3"}
 
 
 def list_url(cat, page, size=None):
@@ -89,10 +94,6 @@ def list_url(cat, page, size=None):
 
 def graph_path(cat):
     return f"/pdc_api/en/search/{cat}/info/graph"
-PAGE_SIZE = 100                     # the list caps here: _l=200/500 still serve 100.
-UA = ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) "
-      "Chrome/126.0.0.0 Safari/537.36")
-CLASS2 = {"ceramic-class-2", "ceramic-class-3"}
 
 # Read the pid out of each row's checkbox and the part number out of the row's OWN
 # LINK -- /…/mlcc/info?part_no=<PN> -- never out of the cell text. The Part No. cell
@@ -170,19 +171,27 @@ def single_flight(path):
 class Session:
     """A warmed browser page plus the 403 recovery ladder.
 
-    product.tdk.com serves the graph API happily for a few hundred calls from one IP
-    and then 403s EVERYTHING. Recovery is tried cheapest-first, because rotating the
-    egress IP on the first 403 would mask a genuine bug in the request:
-      1. fresh browser context  -- new connections, no cookies (often enough)
-      2. wait, then fresh context -- for a plain rate window
-      3. rotate the ProtonVPN egress IP -- for an IP-reputation block
-    When every config has been tried without recovery the run stops cleanly; the
-    campaign is fully checkpointed, so cron picks it up later from where it stopped.
+    product.tdk.com serves the graph API for a few thousand calls and then 403s
+    EVERYTHING for a while. Recovery, cheapest first:
+      1. fresh browser context   -- new connections, no cookies; clears most walls
+      2. wait 120 s, fresh context -- rides out a short rate window
+      3. give up and exit cleanly -- the 5-minute cron tick IS the long backoff, and
+         it costs TDK nothing while we wait
+    Everything fetched is checkpointed per batch, so stopping loses no work.
+
+    *** VPN ROTATION DOES NOT WORK ON THIS HOST -- measured, not assumed. *** All seven
+    ProtonVPN exits (185.93.3.198, 91.90.123.179, 217.138.216.151, 205.147.28.59,
+    37.120.219.244, ...) 403 IMMEDIATELY, including the plain list page, while the home
+    IP recovered on its own ~20 minutes later and served both the page and the API. So
+    Akamai blocks the datacenter ranges outright here; rotating just burns IPs and time.
+    Kept behind --rotate for the campaigns where it does work (Phoenix, TE), off by
+    default. Waiting beats rotating for TDK.
     """
 
-    def __init__(self, br, probe):
+    def __init__(self, br, probe, rotate=False):
         self.br = br
         self.probe = probe                 # (category, pid) used to test recovery
+        self.allow_rotate = rotate
         self.rot = None
         self.rotations = 0
         self.ctx = None
@@ -199,9 +208,17 @@ class Session:
         self.page = self.ctx.new_page()
         # a real page load first: the graph fetch is same-origin and needs the page's
         # Akamai cookies. A cold context POSTing straight at the API gets 403.
-        self.page.goto(list_url(CATEGORIES[0], 1, size=20),
-                       wait_until="domcontentloaded", timeout=90_000)
+        r = self.page.goto(list_url(CATEGORIES[0], 1, size=20),
+                           wait_until="domcontentloaded", timeout=90_000)
         self.page.wait_for_timeout(2500)
+        # Report the warm-up status: when the plain LIST PAGE is 403ed, the block is on
+        # the whole host for this IP, not on the API, and no amount of retrying the API
+        # will help. Distinguishing the two is the difference between waiting and
+        # chasing a phantom request bug.
+        self.warmup_status = r.status if r else None
+        if self.warmup_status and self.warmup_status != 200:
+            log(f"  warm-up list page returned HTTP {self.warmup_status} "
+                f"-- this IP is blocked for the whole host, not just the API")
 
     def graph(self, cat, pids, pace_ms):
         return self.page.evaluate(GRAPH_JS, [graph_path(cat), GRAPH_KIND, pids, pace_ms])
@@ -234,6 +251,12 @@ class Session:
         except Exception as e:
             log(f"  fresh context failed: {str(e)[:120]}")
 
+        if not self.allow_rotate:
+            log("  step 3: still blocked -- exiting cleanly; the 5-minute cron tick is "
+                "the backoff (VPN rotation is measured useless on this host, see the "
+                "class docstring; pass --rotate to try it anyway)")
+            return False
+
         if self.rot is None:
             try:
                 from vpn_rotate import Rotator
@@ -245,7 +268,13 @@ class Session:
             log("  every egress IP tried without recovery -- stopping")
             return False
         self.rotations += 1
-        name, ip = self.rot.rotate()
+        try:
+            name, ip = self.rot.rotate()
+        except Exception as e:
+            # a broken rotation must be VISIBLE, but it should not take the run's
+            # progress with it: everything fetched so far is already checkpointed
+            log(f"  rotation FAILED: {str(e)[:200]} -- stopping")
+            return False
         log(f"  step 3: rotated egress to {name} ({ip})")
         try:
             self._fresh_context()
@@ -384,7 +413,11 @@ def tdk_class2_parts():
 def cmd_fetch(a):
     from playwright.sync_api import sync_playwright
     STAGE.mkdir(parents=True, exist_ok=True)
-    lock = single_flight(STAGE / ".lock")
+    # NOT staging/tdk/.lock: the cron wrapper already flocks THAT file before exec'ing
+    # this script, so locking it here would make every cron run lock itself out
+    # ("another fetch holds the lock" on every 5-minute tick). A separate file gives the
+    # same single-flight guarantee for ad-hoc runs without fighting the wrapper.
+    lock = single_flight(STAGE / ".lock_fetch")
     if lock is None:
         log("another fetch holds the lock -- exiting")
         return 0
@@ -400,9 +433,16 @@ def cmd_fetch(a):
     # part number (21,992 records over 11,932 distinct numbers), and the write pass
     # patches every row that matches. Fetching per record would double the traffic for
     # nothing.
+    # Parts TDK lists but publishes NO characteristic graph for. Verified, not assumed:
+    # an FK-series part returns HTTP 200 with EVERY kind empty (1001/1005/1007/1008/
+    # 1009/1010), while an FA-series part in the same category returns all six. So TDK
+    # simply has no measured graphs for the FK leaded series. They are kept out of the
+    # worklist WITH the reason rather than marked done -- they are not answered, they
+    # are unavailable, and the count is logged on every run.
+    nodata = json.loads(NODATA.read_text()) if NODATA.exists() else {}
     work, unmapped, seen = [], set(), set()
     for pn, nom in tdk_class2_parts():
-        if pn in done or pn in seen:
+        if pn in done or pn in seen or pn in nodata:
             continue
         entry = pid_map.get(pn)
         if not entry:
@@ -420,7 +460,8 @@ def cmd_fetch(a):
     for w in work:
         bycat[w[3]] = bycat.get(w[3], 0) + 1
     log(f"FETCH start: {len(work)} TDK class-2/3 part numbers to pull "
-        f"({len(done)} done, {len(unmapped)} not in the pid map) {bycat}")
+        f"({len(done)} done, {len(unmapped)} not in the pid map, "
+        f"{len(nodata)} listed but with no graph published) {bycat}")
     if not work:
         return 0
 
@@ -428,7 +469,7 @@ def cmd_fetch(a):
     errs = {}
     with sync_playwright() as pw:
         br = pw.chromium.launch(channel="chromium")
-        sess = Session(br, (work[0][3], work[0][1]))
+        sess = Session(br, (work[0][3], work[0][1]), rotate=a.rotate)
         try:
             i = 0
             while i < len(work):
@@ -459,6 +500,12 @@ def cmd_fetch(a):
                         if err or not series:
                             fail += 1
                             errs[err or "empty"] = errs.get(err or "empty", 0) + 1
+                            # 200 with no series is TDK's definitive "no graph for this
+                            # part" -- record it so cron stops re-asking. 403 and
+                            # transport errors stay retryable.
+                            if err in ("no series", "empty") or err is None:
+                                nodata[pn] = err or "empty"
+                                NODATA.write_text(json.dumps(nodata, indent=0, sort_keys=True))
                             continue
                         pts = []
                         for row in series["data"]:
@@ -473,6 +520,7 @@ def cmd_fetch(a):
                             continue
                         ok += 1
                         fh.write(json.dumps({"partNumber": pn, "pid": pid,
+                                             "category": cat,
                                              "label": series.get("label"),
                                              "nominal": nom, "points": pts},
                                             ensure_ascii=False) + "\n")
@@ -517,12 +565,17 @@ def cmd_write(a):
     from blade_gate import BladeGate
     gate = BladeGate("capacitor")   # physics gate: schema alone cannot catch a units error
 
+    # (points, category) per part number. The category decides which API path goes in
+    # the provenance entry -- records staged before categories existed are resolved
+    # from the pid map rather than defaulted, so no provenance URL is ever guessed.
+    pid_map = load_pid_map()
     curves = {}
     if OUT.exists():
         for line in OUT.read_text(encoding="utf-8").splitlines():
             if line.strip():
                 r = json.loads(line)
-                curves[r["partNumber"]] = r["points"]
+                cat = r.get("category") or (pid_map.get(r["partNumber"]) or (None,))[0]
+                curves[r["partNumber"]] = (r["points"], cat)
     log(f"WRITE: {len(curves)} harvested curves available")
     if not curves:
         return 0
@@ -551,7 +604,13 @@ def cmd_write(a):
             if e.get("capacitanceBiasPoints"):
                 out_lines.append(s)
                 continue
-            pts = curves[pn]
+            pts, cat = curves[pn]
+            if not cat:
+                # no category => no honest provenance URL. Skip and report rather than
+                # writing a curve whose source cannot be named.
+                bad.append(f"{pn}: no category known (not in the pid map)")
+                out_lines.append(s)
+                continue
 
             # SANITY GATE, same one that caught the Murata 1e6 error: the curve's
             # 0 V value must agree with the part's own nominal. A disagreement means
@@ -571,7 +630,7 @@ def cmd_write(a):
             ds.setdefault("provenance", []).append({
                 "source": "manufacturerParametric",
                 "sourceName": "TDK Product Center characteristic graph (graph_kind 1007, DC bias)",
-                "sourceUrl": "https://product.tdk.com" + GRAPH_PATH,
+                "sourceUrl": "https://product.tdk.com" + graph_path(cat),
                 "retrievedDate": time.strftime("%Y-%m-%d"),
             })
             errs = sorted(v.iter_errors(c), key=lambda x: x.path)
@@ -626,6 +685,10 @@ def main():
                         "(jittered up to 2x). Firing a batch back-to-back is what "
                         "tripped Akamai's rate limit.")
     f.add_argument("--batch", type=int, default=20)
+    f.add_argument("--rotate", action="store_true",
+                   help="try ProtonVPN egress rotation when blocked. OFF by default: all "
+                        "seven exits 403 immediately on product.tdk.com (measured), while "
+                        "the home IP recovers on its own. Useful on hosts where it works.")
     w = sub.add_parser("write")
     w.add_argument("--apply", action="store_true")
     a = ap.parse_args()
