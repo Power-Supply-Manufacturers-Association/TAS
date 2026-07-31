@@ -1,0 +1,9 @@
+{
+ "ticket": "ABT #391 (W\u00fcrth re-citation)",
+ "date": "2026-07-31",
+ "repaired": {
+  "capacitors": 2818,
+  "magnetics": 10
+ },
+ "notInRedexpert": 227
+}
