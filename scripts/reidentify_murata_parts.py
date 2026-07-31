@@ -21,6 +21,17 @@ ALL of these hold:
      is an equality test with room for unit conversion, not a tolerance band).
   2. Rated voltage matches exactly.
   3. Case size matches exactly.
+  3a. DIELECTRIC matches. The corpus stores dielectricCode (X5R, X7R, C0G) and Murata
+     publishes tempChara. Without this, edit distance 1 happily turned
+     GRM21BR61A475KE51L into GRM21BR71A475KE51L — R6 to R7, X5R to X7R, a different
+     component with the same capacitance and voltage.
+  3b. TOLERANCE matches. The tolerance letter sits at a fixed position in a Murata
+     code, and the corpus's stored capacitance min/max encodes the same thing. Both
+     are compared. This is real data, not a default: across 6,000 Murata rows the
+     letter and the stored band agree — K with +10% (3,640 rows), J with +5%,
+     M with +20%, G with +2%, F with +1%. Only 62 rows disagree, and those
+     disagreements are themselves evidence, since a row whose part number says K
+     while its own bounds say +/-20% is a row whose K is wrong.
   4. The real part number is within EDIT DISTANCE 1 of the corrupted one — a single
      character. This was 3 in a first draft and that was far too loose: over an
      18-character code, three edits can change the case size, the dielectric and the
@@ -48,6 +59,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import sys
 from collections import defaultdict
 from pathlib import Path
@@ -117,6 +129,24 @@ def load_catalog(path):
     return parts
 
 
+TOL_PCT = {"B": 0.1, "C": 0.25, "D": 0.5, "F": 1, "G": 2, "J": 5, "K": 10,
+           "M": 20, "Z": 80}
+TOL_RE = re.compile(r"^GRM.{2,3}[A-Z0-9]{2}[0-9A-Z]{2}[0-9]{3}([A-Z])")
+
+
+def tolerance_letter(mpn):
+    m = TOL_RE.match(mpn)
+    return m.group(1) if m else None
+
+
+def stored_tolerance_pct(cap):
+    """The +tolerance the row's own capacitance bounds imply, or None."""
+    nom, mx = cap.get("nominal"), cap.get("maximum")
+    if not nom or not mx:
+        return None
+    return round((mx / nom - 1) * 100)
+
+
 def corpus_rows(unresolved):
     """The unresolved capacitor rows, with the parameters they claim."""
     out = {}
@@ -135,10 +165,13 @@ def corpus_rows(unresolved):
         if not ref or str(ref) not in unresolved:
             continue
         el = di.get("electrical") or {}
+        cap = el.get("capacitance") or {}
         out[str(ref)] = {
-            "cap": (el.get("capacitance") or {}).get("nominal"),
+            "cap": cap.get("nominal"),
             "volt": el.get("ratedVoltage"),
             "case": part.get("case"),
+            "dielectric": part.get("dielectricCode"),
+            "tolPct": stored_tolerance_pct(cap),
         }
     return out
 
@@ -176,6 +209,19 @@ def main(argv):
                 if want["case"]:
                     if not p["size"] or str(p["size"]) != str(want["case"]):
                         continue
+                # Dielectric and tolerance are MANDATORY on both sides. A row that
+                # cannot supply them cannot be re-identified — skipping the filter
+                # when the field is absent is what let GRM31CR61A226KE15L match an
+                # X7R part while carrying no dielectric of its own.
+                if not want["dielectric"] or not p["tempChara"]:
+                    continue
+                if str(p["tempChara"]).upper() != str(want["dielectric"]).upper():
+                    continue
+                if want["tolPct"] is None:
+                    continue
+                letter = tolerance_letter(p["partNum"])
+                if letter is None or TOL_PCT.get(letter) != want["tolPct"]:
+                    continue
                 d = edit_distance(ref, p["partNum"], cap=2)
                 if d <= 1:
                     cands.append((d, p["partNum"], p))
@@ -184,7 +230,8 @@ def main(argv):
         if len(best) == 1:
             d, pn, p = best[0]
             identified[ref] = {"newPartNumber": pn, "editDistance": d,
-                               "matchedOn": ["capacitance", "ratedVoltage", "case"],
+                               "matchedOn": ["capacitance", "ratedVoltage", "case",
+                                             "dielectric", "tolerance"],
                                "vendorStatus": p.get("status"),
                                "vendorAlternative": p.get("alternative")}
         elif len(best) > 1:
