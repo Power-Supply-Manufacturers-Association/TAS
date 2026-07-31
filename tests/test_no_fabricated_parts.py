@@ -113,3 +113,44 @@ def test_live_magnetics_catalogue_is_clean():
     if not path.exists() or path.stat().st_size < 10_000:
         pytest.skip("magnetics.ndjson not materialised (git-lfs pointer)")
     assert guard.check_file(path, guard.load_quarantined_fabricated(REPO / "data")) == []
+
+
+# ── backfill_provenance.py must stay retired (ABT #391) ─────────────────────────
+
+def _load(name):
+    spec = importlib.util.spec_from_file_location(name, REPO / "scripts" / f"{name}.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def test_backfill_provenance_refuses_to_run():
+    """It invented provenance for 318,391 records; it must never run again.
+
+    That script inferred a source from a record's own datasheetUrl host and stamped a
+    concrete retrievedDate, without ever fetching anything. It is the step that made
+    five separate batches of fabricated parts indistinguishable from sourced ones
+    (ABT #247, #256, #351, #391). There is no correct version of it: writing
+    provenance for records whose origin nobody recorded is inventing evidence.
+
+    If this test fails, someone has re-enabled it. Do not "fix" the test.
+    """
+    mod = _load("backfill_provenance")
+    with pytest.raises(SystemExit) as exc:
+        mod.main()
+    assert exc.value.code != 0
+
+
+def test_the_retired_maps_survive_for_fingerprinting():
+    """Retired, but not deleted — its tables identify its own output.
+
+    relabel_url_inferred_provenance.py matches the exact (sourceName, retrievedDate)
+    pairs this script invented, to find records still carrying its stamps. Deleting
+    the maps would blind that check, so the module must still import cleanly even
+    though it will not execute.
+    """
+    mod = _load("backfill_provenance")
+    assert len(mod.DOMAIN_MAP) > 20
+    assert len(mod.MANUF_MAP) > 20
+    relabel = _load("relabel_url_inferred_provenance")
+    assert len(relabel.BACKFILL_STAMPS) > 10

@@ -1,24 +1,58 @@
 #!/usr/bin/env python3
+"""RETIRED 2026-07-31 — THIS SCRIPT MANUFACTURED PROVENANCE. It will not run.
+
+It back-filled `provenance[]` onto records that lacked it, inferring the source
+from the record's own datasheetUrl host and stamping a concrete `source`,
+`sourceName` and `retrievedDate`. It contained no HTTP call of any kind: it never
+fetched a single URL it vouched for.
+
+That is not traceability, it is the appearance of it. A record only had to CARRY a
+plausible vendor URL string to be credited with having been scraped from that vendor
+on a specific date, and 318,391 records across every catalogue ended up asserting a
+retrieval nobody had performed.
+
+WHAT IT COST. It is the step that made five separate batches of fabricated parts
+indistinguishable from sourced ones:
+
+  ABT #247   177 invented magnetics, found in production by a user
+  ABT #256   17,183 phase2-5 generator records
+  ABT #351   195 invented Coilcraft parts, whose stamp was the ONLY thing that made
+             them look sourced
+  ABT #391   3,782 invented Murata parts — stamped "Murata parametric (SimSurfing
+             export)", byte-identical to the stamp on genuinely sourced Murata rows,
+             which is exactly why they survived four previous fabrication audits
+
+The hole was found once before, in #247, and closed on only half of it: 21c7ae3
+relabelled the 8,008 manufacturer-name stamps and left the URL path classified as
+"self-evidencing", still asserting dates.
+
+WHY IT IS RETIRED RATHER THAN FIXED. There is no correct version of this script. Any
+tool that writes provenance for records whose origin nobody recorded is inventing
+evidence — the inference may be a good guess, but a good guess is precisely what
+provenance must not be. Provenance records an act that occurred, and anything
+derivable from the record itself proves nothing.
+
+WHAT TO DO INSTEAD. Provenance is written by whatever actually fetched the data, at
+the moment it fetched it. Where it is missing, the part is RE-SOURCED, not
+re-labelled; where it cannot be re-sourced, the gap is left visible. To check
+existing claims, use scripts/verify_provenance_urls.py, which fetches every cited URL
+and records what is really there, and verify_provenance_content.py, which checks the
+document actually names the part.
+
+Kept in-tree as the forensic record of how five fabrication batches passed for real.
+The maps below are preserved because relabel_url_inferred_provenance.py imports them
+to IDENTIFY this script's output — they are a fingerprint now, not a tool.
 """
-Backfill the `provenance` list on TAS catalog records that lack it.
+import sys as _sys
 
-Goal: traceability — for every record, record WHERE the data came from, as a
-list (`provenance[]`), with each entry {source, sourceName, sourceUrl,
-retrievedDate}. Multi-source records get one entry per source.
-
-Evidence used, in priority order (NO guessing — if none apply, the record is
-left untouched and reported as unmapped):
-  1. The record's own manufacturerInfo.datasheetUrl host  -> self-evidencing
-     (the URL literally points at the source domain).
-  2. DOMAIN_MAP refines the *method* (parametric API / .mdb / scrape / datasheet)
-     from what we know about how that vendor's catalog was imported.
-  3. MANUF_MAP is the fallback for records with no usable datasheetUrl.
-Synthetic / placeholder records (example.com URLs, generator-built) are stamped
-source="manual" so they are NOT misattributed to a real manufacturer.
-
-provenance lives at: <component>[/<subtype>]/manufacturerInfo/datasheetInfo/provenance
-Run with --dry-run first; it writes nothing and prints coverage + the unmapped tail.
-"""
+_RETIRED = (
+    "backfill_provenance.py is RETIRED and will not run.\n"
+    "It invented provenance for 318,391 records and is how five batches of\n"
+    "fabricated parts came to look sourced (ABT #247, #256, #351, #391).\n"
+    "Provenance is written by whatever fetched the data, at the time it fetched it.\n"
+    "To check existing claims: scripts/verify_provenance_urls.py\n"
+    "To re-source a vendor:    scripts/resource_<vendor>_citations.py\n"
+)
 import json, sys, argparse
 from urllib.parse import urlparse
 from collections import Counter
@@ -267,6 +301,12 @@ def main():
     print(f"unmapped report -> {rep}")
     if args.dry_run:
         print("\nDRY RUN — nothing written to data.")
+
+
+def main():  # noqa: F811 — deliberately shadows the original, which is kept above
+    """Refuse. See the module docstring; the original main() is retained as record."""
+    _sys.stderr.write(_RETIRED)
+    raise SystemExit(2)
 
 
 if __name__ == "__main__":
