@@ -27,12 +27,22 @@ bugs in it, each found only by checking:
     <td([^>]*)> stopped inside the attribute. That is the one column CONAS needs.
 Hence the HTML is cached and parsed with a real parser.
 
-MEASURED 2026-07-31: 525 product lines, 524 render their table in full; 4,741 live
-connector articles (design-kit-only entries excluded), of which TAS held 3,036 and was
-missing 1,705. Residual: the category tree declares ~6,900 non-design-kit articles, so
-roughly 2,100 sit in product lines that are never linked from a category sidebar — those
-categories render only their first 100 rows and only advertise the product lines among
-them. Reaching those needs the filtered parametric POST, not this crawl.
+MEASURED 2026-07-31, after crawling to closure: 661 connector product lines, 659 of which
+render their table in full, giving 6,427 distinct live order codes. The declared totals of
+those product lines sum to 6,875 against the category tree's 9,083 minus its 2,199
+design-kit articles = 6,884 — a 9-part gap, so this is the whole catalogue and not a
+fraction of it.
+
+Getting there needed the CLOSURE crawl, not just the category sidebars: a category
+advertises only the product lines present among its first 100 rendered rows, which alone
+reached 4,741 articles. Product-line pages link their siblings, so iterating
+fetch-then-re-read closes the set — 525 -> 661 lines over 9 rounds, no parametric POST
+required.
+
+Two pages under-render against their own declared count (D-SUB-FILTER-PLASTIC-HOOD 5 of
+90, WTB_WR_BHD_BOX_HEADER_2_54MM_MALE_PCB 111 of 131). That is WE's markup, verified by
+counting <tr data-order-code> in the raw HTML — not a parser artifact — and those parts
+are reachable through sibling product lines.
 
 This script only MEASURES and stages the raw table. It writes nothing to data/.
 
@@ -56,6 +66,7 @@ TAS = Path(__file__).resolve().parent.parent
 STAGE = TAS / "staging" / "we_conn"
 PLAN = STAGE / "plan.json"
 HTMLDIR = STAGE / "html"
+DEAD = STAGE / "dead_links.json"
 ROWS = STAGE / "rows.jsonl"
 LIVE = TAS / "data" / "connectors.ndjson"
 
@@ -65,7 +76,10 @@ UA = ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) "
       "Chrome/151.0.0.0 Safari/537.36")
 
 CAT_LINK = re.compile(r'"(/en/components/products/em/connectors[a-zA-Z0-9_/-]*)"')
-PL_LINK = re.compile(r'/en/components/products/([A-Z][A-Za-z0-9_]{3,})(?:["#/])')
+# Product-line names may contain HYPHENS (WR-FPC_ZIF_1_00_MM). An earlier [A-Za-z0-9_]
+# class made every hyphenated line invisible — the whole FPC family read as "40 parts"
+# against a category declaring 602.
+PL_LINK = re.compile(r'/en/components/products/([A-Z][A-Za-z0-9_-]{3,})(?:["#/])')
 TOTAL = re.compile(r'data-total-article-count="(\d+)"')
 # Order codes are NOT always numeric — cable assemblies use an alpha suffix
 # (63901015621CAB). An earlier \d+ here silently dropped whole product lines while
@@ -74,6 +88,12 @@ ROW = re.compile(r'<tr[^>]*data-order-code="([^"]+)"[^>]*>(.*?)</tr>', re.S)
 CELL = re.compile(r"<td([^>]*)>(.*?)</td>", re.S)
 COL = re.compile(r'data-column="([^"]*)"')
 TAG = re.compile(r"<[^>]+>")
+# Allowing hyphens in product-line names (needed for WR-FPC_ZIF_1_00_MM) also lets the
+# closure walk cross-links into capacitors (WCAP-CSRF), LEDs (WL-SMCW) and racks, which
+# inflated the count to 12,731 "connectors". A connector product-line page always links
+# back into /em/connectors; a capacitor page links it zero times. That is the membership
+# test — the crawl expands only from connector pages and parses only connector pages.
+IS_CONN = re.compile(r"/en/components/products/em/connectors")
 
 
 def get(url, tries=3):
@@ -117,6 +137,10 @@ class TableParser(HTMLParser):
         if tag == "tr" and a.get("data-order-code"):
             self._code = a["data-order-code"]
             self._cells = {}
+        elif a.get("data-title") and self._code is not None:
+            # The add-to-cart form inside each row carries the marketing product name
+            # ("WR-SMP Cable Connectors") — the only human description in the table.
+            self._cells.setdefault("_title", a["data-title"])
         elif tag == "td" and self._code is not None:
             self._col = text(a.get("data-column") or "")
             self._buf = []
@@ -212,10 +236,73 @@ def cmd_pull(a):
     return cmd_parse(a)
 
 
+def cmd_crawl(a):
+    """Fetch product-line pages to CLOSURE.
+
+    A category page advertises only the product lines present among its first 100
+    rendered rows, so the sidebar crawl alone reaches ~4,741 of the ~6,900 articles the
+    category tree declares. But every product-line page links its siblings, so iterating
+    'fetch what is linked, then re-read what was fetched' closes the set without needing
+    the filtered parametric POST at all.
+    """
+    HTMLDIR.mkdir(parents=True, exist_ok=True)
+    plan = json.loads(PLAN.read_text())
+    known = set(plan["productLines"])
+    # Seed from what the ALREADY cached pages link, otherwise a resumed crawl sees
+    # cached == known, exits on round 1, and reports closure it never reached.
+    for p in HTMLDIR.glob("*.html.gz"):
+        with gzip.open(p, "rt", encoding="utf-8", errors="replace") as fh:
+            h = fh.read()
+        if IS_CONN.search(h):
+            known |= set(PL_LINK.findall(h))
+    # Some linked names 404 (stale links in WE's own markup). They never become cached,
+    # so without this they stay in `todo` and the loop spins on them forever — which is
+    # exactly what the first run did, retrying one dead URL 35 times.
+    dead = set(json.loads(DEAD.read_text())) if DEAD.exists() else set()
+    rnd = 0
+    while True:
+        rnd += 1
+        cached = {p.name[:-8] for p in HTMLDIR.glob("*.html.gz")}
+        todo = sorted(known - cached - dead)
+        if not todo:
+            break
+        print(f"round {rnd}: fetching {len(todo)} new product lines "
+              f"({len(cached)} cached, {len(known)} known)")
+
+        def pull(pl):
+            h = get(f"{BASE}/en/components/products/{pl}")
+            if h:
+                with gzip.open(HTMLDIR / f"{pl}.html.gz", "wt", encoding="utf-8") as fh:
+                    fh.write(h)
+            return pl, h
+
+        newly = set()
+        with ThreadPoolExecutor(max_workers=4) as ex:
+            for pl, h in ex.map(pull, todo):
+                if not h:
+                    dead.add(pl)
+                elif IS_CONN.search(h):
+                    newly |= set(PL_LINK.findall(h))
+        DEAD.write_text(json.dumps(sorted(dead), indent=0))
+        before = len(known)
+        known |= newly
+        print(f"  -> {len(known) - before} newly discovered product lines, "
+              f"{len(dead)} dead links")
+        if a.max_rounds and rnd >= a.max_rounds:
+            print("  (round limit reached)")
+            break
+
+    plan["productLines"] = {p: plan["productLines"].get(p, ["<discovered>"])
+                            for p in sorted(known)}
+    PLAN.write_text(json.dumps(plan, indent=1))
+    print(f"closure: {len(known)} product lines")
+    return cmd_parse(a)
+
+
 def cmd_parse(a):
     """Re-parse the cached HTML into rows.jsonl. Cheap and repeatable."""
     plan = json.loads(PLAN.read_text())
-    n = 0
+    n = foreign = 0
     with ROWS.open("w", encoding="utf-8") as out:
         for pl in sorted(plan["productLines"]):
             f = HTMLDIR / f"{pl}.html.gz"
@@ -223,6 +310,9 @@ def cmd_parse(a):
                 continue
             with gzip.open(f, "rt", encoding="utf-8") as fh:
                 h = fh.read()
+            if not IS_CONN.search(h):
+                foreign += 1
+                continue
             t = TOTAL.search(h)
             rows = parse_table(h)
             total = int(t.group(1)) if t else 0
@@ -232,7 +322,8 @@ def cmd_parse(a):
             n += 1
             if total != len(rows):
                 print(f"  {pl}: rendered {len(rows)} of {total}")
-    print(f"parsed {n} product lines -> {ROWS}")
+    print(f"parsed {n} connector product lines ({foreign} non-connector pages "
+          f"skipped) -> {ROWS}")
     return 0
 
 
@@ -298,11 +389,14 @@ def main():
     sub.add_parser("plan")
     p = sub.add_parser("pull")
     p.add_argument("--limit", type=int)
+    c = sub.add_parser("crawl")
+    c.add_argument("--max-rounds", type=int, default=0)
+    c.add_argument("--limit", type=int)
     q = sub.add_parser("parse")
     q.add_argument("--limit", type=int)
     sub.add_parser("diff")
     a = ap.parse_args()
-    return {"plan": cmd_plan, "pull": cmd_pull,
+    return {"plan": cmd_plan, "pull": cmd_pull, "crawl": cmd_crawl,
             "parse": cmd_parse, "diff": cmd_diff}[a.cmd](a)
 
 
