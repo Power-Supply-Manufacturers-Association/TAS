@@ -73,6 +73,7 @@ def main():
 
     sys.path.insert(0, str(Path(__file__).parent))
     from blade_gate import BladeGate
+    from resolve_dim import resolve_or_none
     from merge_staged_connectors import build_validator
     gate = BladeGate("connector")
     v = build_validator()
@@ -134,7 +135,7 @@ def main():
                        if spec.get("contactResistanceIsMax", True)
                        else {"nominal": spec["contactResistance"]})
                 cur = el.get("contactResistance")
-                cur_v = cur.get("maximum", cur.get("nominal")) if isinstance(cur, dict) else cur
+                cur_v = resolve_or_none(cur)
                 if cur is None:
                     el["contactResistance"] = new
                     added["electrical.contactResistance"] = \

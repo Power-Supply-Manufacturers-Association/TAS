@@ -55,6 +55,7 @@ def main():
 
     sys.path.insert(0, str(Path(__file__).parent))
     from blade_gate import BladeGate
+    from resolve_dim import resolve_or_none
     from merge_staged_connectors import build_validator
     gate = BladeGate("connector")
     v = build_validator()
@@ -84,7 +85,7 @@ def main():
             changes = []
 
             cr = el.get("contactResistance")
-            cur = cr.get("maximum", cr.get("nominal")) if isinstance(cr, dict) else cr
+            cur = resolve_or_none(cr)
             if isinstance(cur, (int, float)) and cur >= CR_IMPOSSIBLE:
                 new = cur * CR_FACTOR
                 key = "maximum" if (isinstance(cr, dict) and "maximum" in cr) else "nominal"

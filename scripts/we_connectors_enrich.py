@@ -58,6 +58,7 @@ def main():
 
     sys.path.insert(0, str(Path(__file__).parent))
     from blade_gate import BladeGate
+    from resolve_dim import resolve_or_none
     from merge_staged_connectors import build_validator
     gate = BladeGate("connector")
     v = build_validator()
@@ -111,7 +112,7 @@ def main():
                 el = ds.setdefault("electrical", {})
                 if "contactResistance" in el:
                     cur = el["contactResistance"]
-                    cur_v = cur.get("maximum", cur.get("nominal")) if isinstance(cur, dict) else cur
+                    cur_v = resolve_or_none(cur)
                     if cur_v is not None and differs(cur_v, spec["contactResistance"]):
                         conflicts.append({"reference": ref, "field": "electrical.contactResistance",
                                           "stored": cur_v, "datasheet": spec["contactResistance"]})
