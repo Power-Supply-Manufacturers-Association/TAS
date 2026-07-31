@@ -1,0 +1,10 @@
+{
+ "ticket": "ABT #391 (TDK, offline)",
+ "date": "2026-07-31",
+ "database": "C:\\ProgramData\\TDK\\TDKMeister\\tdkData\\TstDB.tmdb",
+ "recited": {
+  "capacitors": 18009,
+  "magnetics": 9107
+ },
+ "notInMeister": 3206
+}
