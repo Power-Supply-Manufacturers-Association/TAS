@@ -23,11 +23,12 @@ from collections import defaultdict
 
 REPO = Path(__file__).resolve().parents[1]
 DATA = REPO / 'data'
-DATE = '2026-06-20'
 DEFAULT_FILES = ['magnetics', 'capacitors', 'resistors', 'varistors',
-                 'diodes', 'mosfets', 'igbts']
+                 'diodes', 'mosfets', 'igbts', 'bjts', 'controllers',
+                 'analog_ics', 'thermistors']
 
 sys.path.insert(0, str(REPO / 'validator' / 'build'))
+DATE = '2026-07-31'
 try:
     import tas_validator
 except ImportError as e:
@@ -37,9 +38,16 @@ except ImportError as e:
 def manufacturer_info(rec):
     """Find manufacturerInfo through the 1-level (capacitor/magnetic/...) or
     2-level (semiconductor/{mosfet,diode,igbt}) discriminator wrap."""
-    if not isinstance(rec, dict) or len(rec) != 1:
+    if not isinstance(rec, dict):
         return {}
-    body = next(iter(rec.values()))
+    # Annotation keys sit ALONGSIDE the discriminator (_triage, _validatorQuarantine).
+    # A strict len(rec) == 1 test treats an annotated record as unreadable and passes
+    # it through unkeyed, which is how two annotated Vishay mosfets stayed duplicated
+    # while the file reported "no duplicates".
+    body_keys = [k for k in rec if not k.startswith('_')]
+    if len(body_keys) != 1:
+        return {}
+    body = rec[body_keys[0]]
     if not isinstance(body, dict):
         return {}
     if isinstance(body.get('manufacturerInfo'), dict):
@@ -48,6 +56,27 @@ def manufacturer_info(rec):
         if isinstance(v, dict) and isinstance(v.get('manufacturerInfo'), dict):
             return v['manufacturerInfo']
     return {}
+
+
+def part_number(mi):
+    """The part number, from EITHER field the catalogues use.
+
+    manufacturerInfo.reference is the usual home, but a large share of records carry
+    it ONLY as datasheetInfo.part.partNumber. Keying on `reference` alone made this
+    script see 69 duplicates corpus-wide when there were 16,741: every TDK capacitor
+    duplicate — 16,671 of them, two imports of the same parts, one via the catalogue
+    PDF and one via product.tdk.com — was invisible, because those rows have no
+    `reference` at all and were passed through as unkeyed.
+
+    Same blind spot that let 17,183 fabricated records past a reference-keyed guard in
+    ABT #256. Any code that identifies a part must read both fields.
+    """
+    r = mi.get('reference')
+    if r:
+        return str(r)
+    part = (mi.get('datasheetInfo') or {}).get('part') or {}
+    pn = part.get('partNumber')
+    return str(pn) if pn else None
 
 
 def leaves(d, n=0):
@@ -81,7 +110,7 @@ def dedupe_file(name):
             continue
         rec = json.loads(raw)
         mi = manufacturer_info(rec)
-        key = (mi.get('name'), mi.get('reference'))
+        key = (mi.get('name'), part_number(mi))
         idx = len(lines)
         if key[0] and key[1]:
             groups[key].append(idx)
