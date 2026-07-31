@@ -55,6 +55,10 @@ HOUSING = {
     "nylon 6t": "ppa-pa6t-gf",
     "abs": "abs",
     "pom": "pom-acetal",
+    # PA9T = Kuraray GENESTAR; WE writes it three ways for the same polymer.
+    "pa9t": "pa9t",
+    "pa 9t": "pa9t",
+    "nylon 9t": "pa9t",
     # NOT mapped on purpose: "abs metallized" is a metallised (conductive-plated) ABS
     # housing, whose surface is no longer the dielectric ABS is characterised as.
 }
