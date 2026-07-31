@@ -44,6 +44,7 @@ import sys
 import threading
 import time
 from collections import Counter, defaultdict
+from itertools import zip_longest
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from urllib.parse import urlparse
@@ -163,10 +164,21 @@ def main(argv):
     todo = [u for u in urls if u not in done]
     if limit:
         todo = todo[:limit]
+
+    # INTERLEAVE BY HOST. The queue arrives grouped by vendor, so working it in order
+    # means every worker is waiting on the SAME host's rate limit while seventeen other
+    # hosts sit idle — the first run managed 80 URLs/min against a theoretical 340.
+    # Round-robining across hosts is both faster and gentler: no vendor sees a
+    # sustained burst, and the per-host spacing below is still enforced.
+    buckets = defaultdict(list)
+    for u in todo:
+        buckets[host_of(u)].append(u)
+    todo = [u for group in zip_longest(*buckets.values()) for u in group if u]
+
     print(f"{len(urls)} URLs in scope, {len(done)} already verified, {len(todo)} to fetch")
 
     hosts = Counter(host_of(u) for u in todo)
-    workers = max(2, min(12, MAX_PER_HOST * max(1, len(hosts))))
+    workers = max(2, min(32, MAX_PER_HOST * max(1, len(hosts))))
     print(f"{len(hosts)} hosts, {workers} workers, {MAX_PER_HOST}/host, {HOST_DELAY}s apart\n")
 
     counts = Counter()
