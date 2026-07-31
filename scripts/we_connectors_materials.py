@@ -49,6 +49,14 @@ HOUSING = {
     "pvc": "pvc-rigid",
     "pc": "pc-polycarbonate",
     "pps": "pps-gf40",
+    # Semi-aromatic polyamide (PPA). WE writes it three ways for the same material.
+    "pa6t": "ppa-pa6t-gf",
+    "pa 6t": "ppa-pa6t-gf",
+    "nylon 6t": "ppa-pa6t-gf",
+    "abs": "abs",
+    "pom": "pom-acetal",
+    # NOT mapped on purpose: "abs metallized" is a metallised (conductive-plated) ABS
+    # housing, whose surface is no longer the dielectric ABS is characterised as.
 }
 CONTACT = {
     "phosphor bronze": "cusnp-phosphorBronze",
@@ -150,9 +158,7 @@ def main():
                 out.write(s + "\n")
                 continue
             ds = mi.setdefault("datasheetInfo", {})
-            if ds.get("material"):
-                out.write(s + "\n")
-                continue
+            existing = ds.get("material") or {}
 
             house = (spec.get("insulatorMaterial") or "").strip().lower()
             cont = (spec.get("contactMaterial") or "").strip().lower()
@@ -170,11 +176,20 @@ def main():
             # CONAS no longer requires the two refs together (ABT #405), so a part with
             # a known housing and an unspecified contact alloy keeps its housing instead
             # of losing both.
-            mat = {k: v for k, v in (("contactBaseMaterialRef", c_ref),
-                                     ("housingMaterialRef", h_ref)) if v}
+            # MERGE into any existing material rather than skipping the record: a part
+            # that earlier got only a contact ref (housing unmapped at the time) must
+            # still gain its housing once the registry defines that polymer.
+            mat = dict(existing)
+            for key, val in (("contactBaseMaterialRef", c_ref),
+                             ("housingMaterialRef", h_ref)):
+                if val and key not in mat:
+                    mat[key] = val
             plating = parse_plating(spec.get("contactPlating"))
-            if plating:
+            if plating and "contactPlating" not in mat:
                 mat["contactPlating"] = plating
+            if mat == existing:
+                out.write(s + "\n")
+                continue
             ds["material"] = mat
             ds.setdefault("provenance", []).append({
                 "source": "manufacturerDatasheet",
