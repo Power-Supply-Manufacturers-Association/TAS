@@ -30,12 +30,18 @@ A DEAD or SOFT404 URL does not by itself condemn the part: a vendor can move a
 datasheet. It means the CITATION is worthless and the record must be re-sourced or
 quarantined, which is a judgement for the ticket, not for this script.
 
-POLITENESS IS PART OF THE DESIGN. 86,000 URLs across ~18 vendor hosts is a real
-load on someone else's servers. Requests are HEAD-only (no body transfer), capped at
-MAX_PER_HOST concurrent per host with a delay between them, and the run is
-RESUMABLE — every result is appended to OUT.jsonl immediately, so an interrupted run
-re-reads what it already has and never re-fetches a URL. Rerunning is cheap;
-hammering is not.
+POLITENESS IS PART OF THE DESIGN, AND THE FIRST RUN GOT IT WRONG. 86,000 URLs across
+~18 vendor hosts is a real load on someone else's servers. Requests are HEAD-only (no
+body transfer), capped at MAX_PER_HOST concurrent per host with a delay between them,
+and the run is RESUMABLE, so an interrupted run never re-fetches a URL.
+
+That was not enough. The first run sent TDK 30,495 requests — 16,928 to tdk.com and
+13,555 to product.tdk.com — and TDK now returns 403 for their own front page. Spacing
+requests does not make thirty thousand of them reasonable, and a host that starts
+refusing is asking us to stop; every further response is BLOCKED, which is not
+evidence about any part anyway. There is now a circuit breaker: a host that refuses
+25 times in a row, or that has absorbed 6,000 requests, is suspended for the rest of
+the run and its remaining URLs are recorded BLOCKED without being sent.
 """
 from __future__ import annotations
 
@@ -134,6 +140,48 @@ def fetch(url):
 
 BLOCK_STATUS = {401, 403, 429, 503}
 
+# CIRCUIT BREAKER. The first run of this script sent TDK 30,495 requests — 16,928 to
+# tdk.com and 13,555 to product.tdk.com — and TDK now 403s their own front page to us.
+# Polite pacing was not enough: at 2 concurrent and 0.35 s apart, thirty thousand
+# requests is still thirty thousand requests, and a host that has started refusing is
+# telling us to stop. Continuing to send is both rude and pointless, since every
+# further response is BLOCKED and BLOCKED is not evidence about any part.
+#
+# So a host that refuses CONSECUTIVE_BLOCKS times in a row is suspended for the rest
+# of the run and its remaining URLs are recorded as BLOCKED without being sent. The
+# per-host ceiling is a second belt: no single vendor should absorb an unbounded
+# number of requests from one sweep, however well spaced.
+CONSECUTIVE_BLOCKS = 25
+MAX_PER_HOST_TOTAL = 6000
+
+_host_block_streak = Counter()
+_host_sent = Counter()
+_suspended = set()
+_suspend_lock = threading.Lock()
+
+
+def host_is_suspended(h):
+    with _suspend_lock:
+        return h in _suspended
+
+
+def note_result(h, verdict):
+    """Track refusals per host and suspend one that is clearly saying stop."""
+    with _suspend_lock:
+        _host_sent[h] += 1
+        if verdict == "BLOCKED":
+            _host_block_streak[h] += 1
+            if _host_block_streak[h] >= CONSECUTIVE_BLOCKS and h not in _suspended:
+                _suspended.add(h)
+                print(f"  !! {h}: {CONSECUTIVE_BLOCKS} consecutive refusals — suspending "
+                      f"for this run after {_host_sent[h]} requests")
+        else:
+            _host_block_streak[h] = 0
+        if _host_sent[h] >= MAX_PER_HOST_TOTAL and h not in _suspended:
+            _suspended.add(h)
+            print(f"  !! {h}: reached the {MAX_PER_HOST_TOTAL}-request ceiling — "
+                  f"suspending for this run")
+
 
 def classify(res):
     s = res.get("status")
@@ -185,9 +233,22 @@ def main(argv):
     out = out_path.open("a", encoding="utf-8")
 
     def run(url):
+        h = host_of(url)
+        if host_is_suspended(h):
+            # Not sent. Recorded as BLOCKED because that is exactly what it is:
+            # unknown, and NOT evidence against the parts citing it.
+            rec = {"url": url, "host": h, "verdict": "BLOCKED", "refs": len(queue[url]),
+                   "status": None, "notSent": True,
+                   "blockedReason": f"{h} suspended for this run after refusing repeatedly"}
+            with _write_lock:
+                out.write(json.dumps(rec) + "\n")
+                out.flush()
+                counts["BLOCKED"] += 1
+            return rec
         res = fetch(url)
-        rec = {"url": url, "host": host_of(url), "verdict": classify(res),
+        rec = {"url": url, "host": h, "verdict": classify(res),
                "refs": len(queue[url]), **res}
+        note_result(h, rec["verdict"])
         with _write_lock:
             out.write(json.dumps(rec) + "\n")
             out.flush()
