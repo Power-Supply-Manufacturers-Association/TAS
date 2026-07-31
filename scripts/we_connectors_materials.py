@@ -59,6 +59,9 @@ HOUSING = {
     "pa9t": "pa9t",
     "pa 9t": "pa9t",
     "nylon 9t": "pa9t",
+    "pa4t": "pa4t",
+    "pa46": "pa46",
+    "nylon 46": "pa46",
     # NOT mapped on purpose: "abs metallized" is a metallised (conductive-plated) ABS
     # housing, whose surface is no longer the dielectric ABS is characterised as.
 }
