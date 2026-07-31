@@ -68,9 +68,19 @@ def probe_part(part):
             time.sleep(wait)
         _last[0] = time.monotonic()
     url = DETAIL + part
-    for attempt in range(3):
+    err = None
+    for attempt in range(4):
         try:
             r = requests.get(url, headers={"User-Agent": UA}, timeout=45)
+            # A 5xx is the SERVER failing, not an answer about the part. requests
+            # returns it normally rather than raising, so without this it sails
+            # through as "not found" — which condemned 936 real parts on the first
+            # run. MSAST021SCG0R3CWNA01 was recorded unresolved on a 500 and
+            # resolves perfectly on retry. Never let a server fault become evidence.
+            if r.status_code >= 500:
+                err = f"HTTP {r.status_code}"
+                time.sleep(2.0 * (attempt + 1))
+                continue
             body = r.text
             return {"status": r.status_code, "bytes": len(body),
                     "mentionsPart": part.upper() in body.upper(),
@@ -79,7 +89,26 @@ def probe_part(part):
         except Exception as e:                                    # noqa: BLE001
             err = f"{type(e).__name__}"
             time.sleep(1.0 * (attempt + 1))
-    return {"error": err}
+    # Exhausted retries on a server fault: INCONCLUSIVE, not a verdict.
+    return {"error": err, "inconclusive": True}
+
+
+def ref_of(mi):
+    """The part number, from EITHER field the catalogue uses.
+
+    manufacturerInfo.reference is the usual home, but a large share of records
+    (all the Taiyo Yuden capacitors, for one) carry it ONLY as
+    datasheetInfo.part.partNumber. Keying on `reference` alone silently matches
+    nothing for those — the same blind spot that let 17,183 fabricated records
+    past a reference-keyed guard in ABT #256, and the reason this apply pass first
+    reported "0 rows re-cited" for 7,912 real parts.
+    """
+    r = mi.get("reference")
+    if r:
+        return str(r)
+    part = (mi.get("datasheetInfo") or {}).get("part") or {}
+    p = part.get("partNumber")
+    return str(p) if p else None
 
 
 def cmd_probe(argv):
@@ -150,7 +179,7 @@ def cmd_apply(argv):
                         for k in keys:
                             o = o[k]
                         mi = o["manufacturerInfo"]
-                        ref = str(mi.get("reference"))
+                        ref = ref_of(mi)
                     except Exception:
                         ref = None
                     if ref in byref:

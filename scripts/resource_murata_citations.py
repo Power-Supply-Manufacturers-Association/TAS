@@ -65,6 +65,11 @@ UA = ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) "
 XCAT = "https://pimapi.murata.com/public/api/pim/v1/products/search/cross-categories"
 DETAIL = "https://pim.murata.com/en-global/pim/details/?partNum="
 
+
+def api_url(part):
+    """The exact GET that confirmed this part — re-runnable, and it returns JSON."""
+    return f"{XCAT}?{urllib.parse.urlencode({'partNum': part, 'languageRegion': 'en-global'})}"
+
 DELAY = 0.25          # one host, so pace it deliberately
 _lock = threading.Lock()
 _last = [0.0]
@@ -91,6 +96,24 @@ def resolve(part):
             err = f"{type(e).__name__}: {e}"[:120]
             time.sleep(1.0 * (attempt + 1))
     return {"error": err}
+
+
+def ref_of(mi):
+    """The part number, from EITHER field the catalogue uses.
+
+    manufacturerInfo.reference is the usual home, but a large share of records
+    (all the Taiyo Yuden capacitors, for one) carry it ONLY as
+    datasheetInfo.part.partNumber. Keying on `reference` alone silently matches
+    nothing for those — the same blind spot that let 17,183 fabricated records
+    past a reference-keyed guard in ABT #256, and the reason this apply pass first
+    reported "0 rows re-cited" for 7,912 real parts.
+    """
+    r = mi.get("reference")
+    if r:
+        return str(r)
+    part = (mi.get("datasheetInfo") or {}).get("part") or {}
+    p = part.get("partNumber")
+    return str(p) if p else None
 
 
 def cmd_probe(argv):
@@ -163,19 +186,27 @@ def cmd_apply(argv):
                         for k in keys:
                             o = o[k]
                         mi = o["manufacturerInfo"]
-                        ref = str(mi.get("reference"))
+                        ref = ref_of(mi)
                     except Exception:
                         ref = None
                     if ref in byref:
                         di = mi["datasheetInfo"]
                         new = byref[ref]["newUrl"]
                         mi["datasheetUrl"] = new
+                        # sourceUrl must be the thing that was ACTUALLY RETRIEVED and
+                        # that anyone can re-retrieve to check the claim. The human
+                        # detail page is client-side rendered — fetching it returns the
+                        # same 5,965-byte shell that phase-1 verification flags as a
+                        # soft-404, so citing it would fail the very test this campaign
+                        # exists to enforce. The API call is the evidence; the detail
+                        # page is where a human goes, and that belongs in datasheetUrl.
                         di["provenance"] = [{
                             "source": "manufacturerParametric",
                             "sourceName": "Murata PIM cross-categories API — this exact part "
-                                          "number confirmed to exist in Murata's catalogue "
-                                          "(electrical values not re-read)",
-                            "sourceUrl": new,
+                                          "number confirmed to exist in Murata's catalogue; "
+                                          "human-readable page at " + new +
+                                          " (electrical values not re-read)",
+                            "sourceUrl": api_url(ref),
                             "retrievedDate": TODAY}]
                         out.write(json.dumps(rec, separators=(",", ":")).encode() + b"\n")
                         wrote = True
