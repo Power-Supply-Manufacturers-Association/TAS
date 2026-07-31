@@ -274,6 +274,13 @@ def cmd_fetch(a):
     nodata = json.loads(NODATA.read_text()) if NODATA.exists() else {}
     known = semco_name_map()
     work = [t for t in samsung_parts() if t[0] not in done and t[0] not in nodata]
+    # Part numbers containing a lowercase character are mangled in OUR catalogue
+    # (CL05B100K0jFNNE) and SEMCO rejects every one — 1,122 of the 1,592 pending are of
+    # that shape, and each costs a dropped socket plus a session rebuild. The DC-bias
+    # campaign learned this the hard way: in catalogue order it scored 2 hits in 1,152
+    # parts, and 19 of the first 25 once the clean numbers went first. They are still
+    # attempted, just LAST.
+    work.sort(key=lambda t: bool(re.search(r"[a-z]", t[0])))
     if a.limit:
         work = work[:a.limit]
     log(f"FETCH start: {len(work)} Samsung part numbers "
