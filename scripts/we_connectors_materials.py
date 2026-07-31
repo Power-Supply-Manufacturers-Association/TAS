@@ -11,10 +11,10 @@ resemblance: 'Copper Alloy' (1,746 parts) is NOT brass and NOT beryllium copper,
 maps to nothing and those parts keep no material rather than a plausible-looking wrong one.
 Same for PA9T/PA6T/PA4T, which the registry does not define yet.
 
-CONAS makes `material` all-or-nothing (contactBaseMaterialRef AND housingMaterialRef are
-both required), so a part with a known housing but an unspecified contact alloy still
-cannot carry one. That is the schema's rule, not something to work around here — it is
-reported instead.
+CONAS used to make `material` all-or-nothing (both refs required together), which meant a
+part with a known housing but an unspecified contact alloy stored NEITHER. That rule was
+dropped with approval (ABT #405), so a housing-only material object is now legal and those
+parts keep what the manufacturer does publish.
 
 Plating detail is parsed from strings like 'Gold, min. 0.127 µm over Nickel' and
 '100 (µ") Tin over 50 (µ") Nickel' into matingArea/underplating refs + thicknesses in m.
@@ -161,13 +161,17 @@ def main():
                 unmapped_house[house] = unmapped_house.get(house, 0) + 1
             if cont and not c_ref:
                 unmapped_contact[cont] = unmapped_contact.get(cont, 0) + 1
-            if not (h_ref and c_ref):
-                if h_ref and not c_ref:
-                    blocked_by_contact += 1
+            if not (h_ref or c_ref):
                 out.write(s + "\n")
                 continue
+            if h_ref and not c_ref:
+                blocked_by_contact += 1      # now stored housing-only, not discarded
 
-            mat = {"contactBaseMaterialRef": c_ref, "housingMaterialRef": h_ref}
+            # CONAS no longer requires the two refs together (ABT #405), so a part with
+            # a known housing and an unspecified contact alloy keeps its housing instead
+            # of losing both.
+            mat = {k: v for k, v in (("contactBaseMaterialRef", c_ref),
+                                     ("housingMaterialRef", h_ref)) if v}
             plating = parse_plating(spec.get("contactPlating"))
             if plating:
                 mat["contactPlating"] = plating
@@ -194,7 +198,7 @@ def main():
 
     print(f"\nrecords given a material : {mat_set}   (of which plating detail: {plat_set})")
     print(f"left untouched           : {reverted} (would not validate)")
-    print(f"housing known but contact alloy unmapped -> blocked by CONAS all-or-nothing: "
+    print(f"stored HOUSING-ONLY (contact alloy unspecified by the vendor): "
           f"{blocked_by_contact}")
     print("unmapped housing materials:")
     for k, n in sorted(unmapped_house.items(), key=lambda kv: -kv[1])[:8]:
