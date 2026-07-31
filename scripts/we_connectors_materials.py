@@ -71,7 +71,10 @@ CONTACT = {
     "brass": "cuznSn-brass",
     "copper": "cu-etp-copper",
 }
-PLATING = {"gold": "au-gold", "tin": "sn-tin", "nickel": "ni-nickel"}
+# Shared plating vocabulary — vendor_connector_materials.py maps Sullins and WAGO with
+# the same table, so the three vendors cannot drift apart. Silver was added for WAGO.
+PLATING = {"gold": "au-gold", "tin": "sn-tin", "nickel": "ni-nickel",
+           "silver": "ag-silver"}
 
 
 def parse_plating(raw):
