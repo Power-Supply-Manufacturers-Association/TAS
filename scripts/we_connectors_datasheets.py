@@ -282,14 +282,16 @@ def cmd_fetch(a):
 
 
 def cmd_parse(a):
+    # Walk every CACHED datasheet, not just the live catalogue's codes: TAS also holds
+    # EOL Würth parts that the live product-line tables no longer list, and WE still
+    # serves their datasheets. Those records need checking against source too.
     all_codes = codes()
     n = 0
     fields = {}
     with SPECS.open("w", encoding="utf-8") as out:
-        for code, pl in sorted(all_codes.items()):
-            f = DS / f"{code}.txt.gz"
-            if not f.exists():
-                continue
+        for f in sorted(DS.glob("*.txt.gz")):
+            code = f.name[:-7]
+            pl = all_codes.get(code, "(not in live catalogue)")
             with gzip.open(f, "rt", encoding="utf-8", errors="replace") as fh:
                 spec = extract(fh.read())
             if not spec:
