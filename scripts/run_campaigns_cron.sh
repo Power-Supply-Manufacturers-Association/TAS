@@ -66,6 +66,14 @@ case "${1:-}" in
       python3 scripts/kemet_bias_harvest.py fetch --delay 0.2 \
       >> "$TAS/staging/kemet/cron_stdout.log" 2>&1
     ;;
+  tdk-esr)
+    # ABT #390 TDK measured ESR curves (graph_kind 1005). Same headless chromium +
+    # 403 recovery ladder as the bias campaign; separate lock so both can be scheduled.
+    [ -f "$TAS/staging/tdk/STOP" ] && exit 0
+    exec flock -n "$TAS/staging/tdk/.lock_esr_cron" \
+      python3 scripts/tdk_esr_harvest.py fetch --delay 0.5 --pace 0.2 --batch 20 \
+      >> "$TAS/staging/tdk/esr_cron.log" 2>&1
+    ;;
   tdk)
     # ABT #304 TDK MLCC DC-bias curves. Headless: playwright channel="chromium"
     # (full Chrome-for-Testing under --headless=new) passes Akamai where curl 403s,
