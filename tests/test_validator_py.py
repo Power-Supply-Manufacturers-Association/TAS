@@ -259,3 +259,66 @@ def test_a_sound_choke_stays_clean_in_the_plural_shape():
                           "height": {"nominal": 0.030}})
     for code in ("MAG_DCR_GEOM", "MAG_DCR_PER_H", "MAG_ISAT_POWER"):
         assert not any(c == code for c, _ in _codes(rec)), _codes(rec)
+
+
+# ── ABT #432: a DCR/L ratio needs both to describe the SAME winding ──────────────
+#
+# The three ratio checks (MAG_DCR_GEOM, MAG_DCR_PER_H, MAG_ISAT_POWER) divide a
+# winding's resistance by an inductance. That is a physical quantity only when both
+# belong to the same winding. On a transformer they need not: Wuerth's WE-CST
+# 7492540500 is a 1:500 current sense transformer whose 0.135 H is the 500-turn
+# SECONDARY and whose 0.28 mohm is the single-turn PRIMARY through the core, so the
+# ratio came out a quarter of a million times off with the data entirely correct.
+# Nine parts were flagged that way.
+#
+# The pair of tests below guards both directions at once, which is the only useful
+# shape: it must stop firing on the transformer AND keep firing on the common-mode
+# choke. Exempting all multi-winding parts would have been the easy fix and would
+# have re-hidden the 2,895 chokes that ABT #387 spent its existence un-hiding.
+
+
+def test_ratio_checks_skip_a_transformer_and_say_so():
+    """The real WE-CST 7492540500 numbers: 1:500, 135 mH secondary, 0.28 mohm primary.
+
+    Two assertions, and the second matters as much as the first. The ratio checks
+    must not fire — and the skip must be RECORDED, because a check that quietly
+    examines nothing is indistinguishable from one that found nothing wrong. That
+    confusion is exactly what ABT #387 was raised for.
+    """
+    rec = _magnetic({"subtype": "transformer", "inductance": {"nominal": 0.135},
+                     "dcResistances": [{"nominal": 0.00028, "maximum": 0.00028}],
+                     "ratedCurrents": [40.0]},
+                    mech={"length": {"nominal": 0.0202}, "width": {"nominal": 0.01448},
+                          "height": {"nominal": 0.0105}})
+    v = tas_validator.validate(rec)
+    fired = {f.code for f in v.findings}
+    assert not (fired & {"MAG_DCR_GEOM", "MAG_DCR_PER_H", "MAG_ISAT_POWER"}), \
+        f"ratio check fired across windings: {[(f.code, f.message) for f in v.findings]}"
+    assert any("not associated with the inductance" in s for s in v.skipped), \
+        f"the skip must be recorded, not silent; skipped={list(v.skipped)}"
+
+
+def test_ratio_checks_still_examine_common_mode_chokes():
+    """A choke's windings are identical, so its DCR and inductance DO pair.
+
+    The real Bourns SRF7038A-102Y corruption from ABT #431: the datasheet's 1020 ohm
+    IMPEDANCE stored as a DC resistance against a 10 uH inductance. If narrowing the
+    transformer case ever swallows this, the 2,895 chokes go dark again.
+    """
+    rec = _magnetic({"subtype": "commonModeChoke", "inductance": {"nominal": 1e-05},
+                     "dcResistances": [{"maximum": 1020.0}]},
+                    mech={"length": {"nominal": 0.0070}, "width": {"nominal": 0.0038},
+                          "height": {"nominal": 0.0030}})
+    fired = {c for c, _ in _codes(rec)}
+    assert "MAG_DCR_PER_H" in fired, f"choke must still be examined; fired={fired}"
+
+
+def test_a_plain_inductor_is_unaffected_by_the_pairing_rule():
+    """One winding, so the pairing is trivially satisfied and nothing changes."""
+    rec = _magnetic({"subtype": "inductor", "inductance": {"nominal": 1e-07},
+                     "dcResistance": {"maximum": 59.0}},
+                    mech={"length": {"nominal": 0.012}, "width": {"nominal": 0.006},
+                          "height": {"nominal": 0.006}})
+    fired = {c for c, _ in _codes(rec)}
+    assert fired & {"MAG_DCR_GEOM", "MAG_DCR_PER_H"}, \
+        f"a single-winding part must still be checked; fired={fired}"

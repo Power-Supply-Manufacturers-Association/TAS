@@ -33,6 +33,30 @@ std::optional<double> read_dcr(const json& pt) {
     return std::nullopt;
 }
 
+// Do this operating point's winding resistance and its inductance describe the SAME
+// winding? That is the precondition for every DCR-over-L ratio below, and it is not
+// always met.
+//
+// A plain inductor has one winding, and a common-mode choke's windings are identical
+// by construction, so pairing the winding resistance with the part's inductance is
+// exact. A TRANSFORMER's windings differ by its turns ratio, and the record carries one
+// part-level inductance with nothing to say which winding it belongs to. Wuerth's
+// WE-CST 7492540500 is a 1:500 current sense transformer: the 0.135 H is the 500-turn
+// secondary and the 0.28 mohm is the single-turn primary through the core. Dividing one
+// by the other put DCR*size^2/L a quarter of a million times off with the data entirely
+// correct, and did it to nine parts (ABT #432).
+//
+// This is not a new exemption invented to quieten those nine. check_dissipation_density
+// below already declines for `transformer` on precisely these grounds - "rated current
+// is the PRIMARY current, the DCR a winding resistance; their product is not a
+// dissipation" - so the newer check has always known what the three older ones assumed.
+// This brings them to the same standard, the way ABT #387 brought them to its DCR reader.
+bool dcr_pairs_with_inductance(const json& pt) {
+    if (pt.contains("subtype") && pt["subtype"].is_string())
+        return pt["subtype"].get<std::string>() != "transformer";
+    return true;
+}
+
 void check_point(const json& pt, int idx, const json& dims, const std::string& material,
                  const Ctx& ctx, std::vector<Finding>& out, std::vector<std::string>& skipped) {
     const std::string tag = "[op " + std::to_string(idx) + "] ";
@@ -81,6 +105,16 @@ void check_point(const json& pt, int idx, const json& dims, const std::string& m
     }
 
     auto DCR = read_dcr(pt);
+    // When the resistance cannot be tied to the inductance, the three ratio checks below
+    // are SKIPPED and say so. Recording the skip is the whole point: a check that quietly
+    // examines nothing looks exactly like a check that found nothing wrong, which is the
+    // failure mode ABT #387 was raised for.
+    if (DCR && !dcr_pairs_with_inductance(pt)) {
+        skipped.push_back(tag +
+                          "MAG_DCR_GEOM/MAG_DCR_PER_H/MAG_ISAT_POWER: winding resistance is "
+                          "not associated with the inductance on a multi-winding part");
+        DCR.reset();
+    }
     auto Isat = scalar_at(pt, {"saturationCurrentPeak"});
     auto srf = scalar_at(pt, {"selfResonantFrequency"});
 
