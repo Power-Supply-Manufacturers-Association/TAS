@@ -41,11 +41,15 @@ sys.path.insert(0, str(TAS / "scripts"))
 
 # The same table tests/test_data.py validates against. A touched file that is not here is
 # an ERROR, never a silent skip.
+# The 4th element is the wrap BladeGate rebuilds before calling tas_validator, so for the
+# nested SAS families it must be the FULL path ("semiconductor", "mosfet") — a bare "mosfet"
+# hands the validator {"mosfet": ...}, which has no known discriminator, and every record in
+# the file comes back BLOCKED (ABT #482: mosfets.ndjson read 9936/9936 FAILED for this).
 FAMILIES = {
-    "mosfets.ndjson": (["semiconductor", "mosfet"], "SAS", "mosfet.json", "mosfet"),
-    "diodes.ndjson": (["semiconductor", "diode"], "SAS", "diode.json", "diode"),
-    "igbts.ndjson": (["semiconductor", "igbt"], "SAS", "igbt.json", "igbt"),
-    "bjts.ndjson": (["semiconductor", "bjt"], "SAS", "bjt.json", "bjt"),
+    "mosfets.ndjson": (["semiconductor", "mosfet"], "SAS", "mosfet.json", ("semiconductor", "mosfet")),
+    "diodes.ndjson": (["semiconductor", "diode"], "SAS", "diode.json", ("semiconductor", "diode")),
+    "igbts.ndjson": (["semiconductor", "igbt"], "SAS", "igbt.json", ("semiconductor", "igbt")),
+    "bjts.ndjson": (["semiconductor", "bjt"], "SAS", "bjt.json", ("semiconductor", "bjt")),
     "capacitors.ndjson": (["capacitor"], "CAS", "capacitor.json", "capacitor"),
     "resistors.ndjson": (["resistor"], "RAS", "resistor.json", "resistor"),
     "varistors.ndjson": (["varistor"], "RAS", "varistor.json", "varistor"),
@@ -55,7 +59,7 @@ FAMILIES = {
     "connectors.ndjson": (["connector"], "CONAS", "connector.json", "connector"),
     "timing_devices.ndjson": (["timeBase"], "TDAS", "tdas.json", "timeBase"),
     "thermistors.ndjson": (["thermistor"], "RAS", "thermistor.json", "thermistor"),
-    "modules.ndjson": (["semiconductor", "module"], "SAS", "module.json", "module"),
+    "modules.ndjson": (["semiconductor", "module"], "SAS", "module.json", ("semiconductor", "module")),
 }
 
 
