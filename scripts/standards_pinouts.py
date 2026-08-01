@@ -116,6 +116,25 @@ IEC60320_2 = {
     "contacts": [("L", "L", PWR), ("N", "N", PWR)],
 }
 
+TRS_25 = {
+    "cite": "2.5 mm TRS phone connector: sleeve = common/ground (tip/ring = channels)",
+    "contacts": [("T", "TIP", S), ("R", "RING", S), ("S", "SLEEVE", G)],
+}
+
+# 6P6C modular jack (RJ12/RJ25). RJ11 uses the inner pairs of the same body;
+# assert only the ground-free signal map — telephone pinouts carry no fixed
+# ground, so every contact is signal. Positions gate (==6) keeps 6P4C/6P2C out.
+MODULAR_6P6C = {
+    "cite": "6P6C modular jack (RJ12/RJ25), TIA-968 contact numbering 1..6",
+    "contacts": [(str(i), f"P{i}", S) for i in range(1, 7)],
+}
+
+# 1000BASE-T1 / 100BASE-T1 single balanced pair + shell (IEEE 802.3bp/cg).
+SPE = {
+    "cite": "Single Pair Ethernet, IEEE 802.3 single balanced pair + shield",
+    "contacts": [("1", "P+", P), ("2", "P-", N), ("SHELL", "shield", SH)],
+}
+
 
 def match(family, interface_standard, positions, coding, description_lc):
     """Return (table, gate_name) or None. NEVER guesses: exact positions gate,
@@ -141,7 +160,14 @@ def match(family, interface_standard, positions, coding, description_lc):
         return None
     if "FAKRA" in ifs and positions in (None, 1):
         return COAX, "fakra-coax"
-    if ("TYPEC" in ifs or "TYPE-C" in ifs or ifs in ("USB-C", "USBC")) and positions == 24:
+    # USB-C by geometry: a 24-contact data connector IS the USB-C receptacle,
+    # whatever protocol name the string carries (USB 3.2 / USB4 / Thunderbolt all
+    # ride the same 24-pin body). The positions==24 gate is the discriminator;
+    # USB-C is the only standardized 24-contact data interface.
+    if positions == 24 and (
+        "TYPEC" in ifs or "TYPE-C" in ifs or ifs in ("USB-C", "USBC")
+        or ifs.startswith("USB3") or ifs.startswith("USBUSB3") or ifs.startswith("USB4")
+    ):
         return USB_C, "usb-c"
     if ifs in ("RJ45", "ETHERNET") and positions == 8:
         return RJ45, "rj45"
@@ -155,4 +181,11 @@ def match(family, interface_standard, positions, coding, description_lc):
         return USB2_A, "usb2"
     if ifs == "3.5MMAUDIOJACK" and positions == 3:
         return TRS_35, "trs-3.5"
+    if ifs == "2.5MMAUDIOJACK" and positions == 3:
+        return TRS_25, "trs-2.5"
+    # 6P6C telephone body (RJ12/RJ25). "Modular Jack 6/6" / "RJ12" / "RJ25".
+    if ("MODULARJACK6/6" in ifs or "RJ12" in ifs or "RJ25" in ifs) and positions == 6:
+        return MODULAR_6P6C, "modular-6p6c"
+    if "SINGLEPAIRETHERNET" in ifs and positions in (2, 3):
+        return SPE, "spe"
     return None
