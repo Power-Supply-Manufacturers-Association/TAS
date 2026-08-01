@@ -1,0 +1,10 @@
+{
+ "stats": {
+  "total": 253830,
+  "we_not_in_module20": 1668,
+  "materially_wrong": 1230,
+  "patched": 1923,
+  "no_published_esr": 54
+ },
+ "rejected": []
+}
