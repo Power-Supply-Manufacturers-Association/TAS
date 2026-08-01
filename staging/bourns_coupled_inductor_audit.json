@@ -1,0 +1,364 @@
+{
+ "ticket": "ABT #447",
+ "date": "2026-08-01",
+ "rewritten": [
+  {
+   "reference": "SRF0703A-151M",
+   "series": {
+    "inductance": 0.0006082,
+    "dcResistance": 3.63
+   },
+   "wasInductance": 0.00015,
+   "wasDcResistance": null,
+   "parallel": {
+    "inductance": 0.00015,
+    "dcResistance": 0.986
+   }
+  },
+  {
+   "reference": "SRF1280-220M",
+   "series": {
+    "inductance": 9.172e-05,
+    "dcResistance": 0.192
+   },
+   "wasInductance": 2.2e-05,
+   "wasDcResistance": null,
+   "parallel": {
+    "inductance": 2.2e-05,
+    "dcResistance": 0.0503
+   }
+  },
+  {
+   "reference": "SRF1280A-6R8Y",
+   "series": {
+    "inductance": 2.955e-05,
+    "dcResistance": 0.0656
+   },
+   "wasInductance": 6.799999999999999e-06,
+   "wasDcResistance": null,
+   "parallel": {
+    "inductance": 6.799999999999999e-06,
+    "dcResistance": 0.0183
+   }
+  },
+  {
+   "reference": "SRF1260A-4R7Y",
+   "series": {
+    "inductance": 1.88e-05,
+    "dcResistance": 0.0479
+   },
+   "wasInductance": 4.7e-06,
+   "wasDcResistance": null,
+   "parallel": {
+    "inductance": 4.7e-06,
+    "dcResistance": 0.0137
+   }
+  },
+  {
+   "reference": "SRF1280A-470M",
+   "series": {
+    "inductance": 0.00018819999999999997,
+    "dcResistance": 0.353
+   },
+   "wasInductance": 4.7e-05,
+   "wasDcResistance": null,
+   "parallel": {
+    "inductance": 4.7e-05,
+    "dcResistance": 0.0898
+   }
+  },
+  {
+   "reference": "SRF1260A-331M",
+   "series": {
+    "inductance": 0.00132,
+    "dcResistance": 2.29
+   },
+   "wasInductance": 0.00033,
+   "wasDcResistance": null,
+   "parallel": {
+    "inductance": 0.00033,
+    "dcResistance": 0.574
+   }
+  },
+  {
+   "reference": "SRF0703A-8R2M",
+   "series": {
+    "inductance": 3.41e-05,
+    "dcResistance": 0.306
+   },
+   "wasInductance": 8.2e-06,
+   "wasDcResistance": null,
+   "parallel": {
+    "inductance": 8.2e-06,
+    "dcResistance": 0.0772
+   }
+  },
+  {
+   "reference": "SRF1280A-331M",
+   "series": {
+    "inductance": 0.001294,
+    "dcResistance": 2.172
+   },
+   "wasInductance": 0.00033,
+   "wasDcResistance": null,
+   "parallel": {
+    "inductance": 0.00033,
+    "dcResistance": 0.54
+   }
+  },
+  {
+   "reference": "SRF1280A-4R7Y",
+   "series": {
+    "inductance": 1.9359999999999998e-05,
+    "dcResistance": 0.05
+   },
+   "wasInductance": 4.7e-06,
+   "wasDcResistance": null,
+   "parallel": {
+    "inductance": 4.7e-06,
+    "dcResistance": 0.0135
+   }
+  },
+  {
+   "reference": "SRF1280A-100M",
+   "series": {
+    "inductance": 4.188e-05,
+    "dcResistance": 0.0921
+   },
+   "wasInductance": 9.999999999999999e-06,
+   "wasDcResistance": null,
+   "parallel": {
+    "inductance": 9.999999999999999e-06,
+    "dcResistance": 0.0241
+   }
+  },
+  {
+   "reference": "SRF1280-820M",
+   "series": {
+    "inductance": 0.000319,
+    "dcResistance": 0.578
+   },
+   "wasInductance": 8.2e-05,
+   "wasDcResistance": null,
+   "parallel": {
+    "inductance": 8.2e-05,
+    "dcResistance": 0.153
+   }
+  },
+  {
+   "reference": "SRF1260A-1R0Y",
+   "series": {
+    "inductance": 4e-06,
+    "dcResistance": 0.026
+   },
+   "wasInductance": 1e-06,
+   "wasDcResistance": null,
+   "parallel": {
+    "inductance": 1e-06,
+    "dcResistance": 0.0062
+   }
+  },
+  {
+   "reference": "SRF1280-R47Y",
+   "series": {
+    "inductance": 1.676e-06,
+    "dcResistance": 0.0216
+   },
+   "wasInductance": 4.6999999999999995e-07,
+   "wasDcResistance": null,
+   "parallel": {
+    "inductance": 4.6999999999999995e-07,
+    "dcResistance": 0.0055
+   }
+  },
+  {
+   "reference": "SRF1280-471M",
+   "series": {
+    "inductance": 0.0018679999999999999,
+    "dcResistance": 3.3
+   },
+   "wasInductance": 0.00047,
+   "wasDcResistance": null,
+   "parallel": {
+    "inductance": 0.00047,
+    "dcResistance": 0.865
+   }
+  },
+  {
+   "reference": "SRF1280A-681M",
+   "series": {
+    "inductance": 0.0027069999999999998,
+    "dcResistance": 4.888
+   },
+   "wasInductance": 0.0006799999999999999,
+   "wasDcResistance": null,
+   "parallel": {
+    "inductance": 0.0006799999999999999,
+    "dcResistance": 1.296
+   }
+  },
+  {
+   "reference": "SRF1260A-221M",
+   "series": {
+    "inductance": 0.0008799999999999999,
+    "dcResistance": 1.416
+   },
+   "wasInductance": 0.00021999999999999998,
+   "wasDcResistance": null,
+   "parallel": {
+    "inductance": 0.00021999999999999998,
+    "dcResistance": 0.354
+   }
+  },
+  {
+   "reference": "SRF1260A-2R2Y",
+   "series": {
+    "inductance": 8.8e-06,
+    "dcResistance": 0.0333
+   },
+   "wasInductance": 2.2e-06,
+   "wasDcResistance": null,
+   "parallel": {
+    "inductance": 2.2e-06,
+    "dcResistance": 0.0085
+   }
+  },
+  {
+   "reference": "SRF1260A-680M",
+   "series": {
+    "inductance": 0.000272,
+    "dcResistance": 0.444
+   },
+   "wasInductance": 6.8e-05,
+   "wasDcResistance": null,
+   "parallel": {
+    "inductance": 6.8e-05,
+    "dcResistance": 0.117
+   }
+  },
+  {
+   "reference": "SRF1280A-3R3Y",
+   "series": {
+    "inductance": 1.132e-05,
+    "dcResistance": 0.04
+   },
+   "wasInductance": 3.2999999999999997e-06,
+   "wasDcResistance": null,
+   "parallel": {
+    "inductance": 3.2999999999999997e-06,
+    "dcResistance": 0.011
+   }
+  },
+  {
+   "reference": "SRF1280-1R0Y",
+   "series": {
+    "inductance": 3.284e-06,
+    "dcResistance": 0.026
+   },
+   "wasInductance": 1e-06,
+   "wasDcResistance": null,
+   "parallel": {
+    "inductance": 1e-06,
+    "dcResistance": 0.0067
+   }
+  },
+  {
+   "reference": "SRF1280A-150M",
+   "series": {
+    "inductance": 5.6359999999999996e-05,
+    "dcResistance": 0.129
+   },
+   "wasInductance": 1.4999999999999999e-05,
+   "wasDcResistance": null,
+   "parallel": {
+    "inductance": 1.4999999999999999e-05,
+    "dcResistance": 0.0333
+   }
+  },
+  {
+   "reference": "SRF1260A-150M",
+   "series": {
+    "inductance": 5.9999999999999995e-05,
+    "dcResistance": 0.125
+   },
+   "wasInductance": 1.4999999999999999e-05,
+   "wasDcResistance": null,
+   "parallel": {
+    "inductance": 1.4999999999999999e-05,
+    "dcResistance": 0.0329
+   }
+  },
+  {
+   "reference": "SRF1260A-6R8Y",
+   "series": {
+    "inductance": 2.7199999999999997e-05,
+    "dcResistance": 0.0672
+   },
+   "wasInductance": 6.799999999999999e-06,
+   "wasDcResistance": null,
+   "parallel": {
+    "inductance": 6.799999999999999e-06,
+    "dcResistance": 0.0186
+   }
+  },
+  {
+   "reference": "SRF1280-1R5Y",
+   "series": {
+    "inductance": 5.4279999999999995e-06,
+    "dcResistance": 0.0306
+   },
+   "wasInductance": 1.5e-06,
+   "wasDcResistance": null,
+   "parallel": {
+    "inductance": 1.5e-06,
+    "dcResistance": 0.0076
+   }
+  },
+  {
+   "reference": "SRF1260A-8R2Y",
+   "series": {
+    "inductance": 3.28e-05,
+    "dcResistance": 0.0737
+   },
+   "wasInductance": 8.2e-06,
+   "wasDcResistance": null,
+   "parallel": {
+    "inductance": 8.2e-06,
+    "dcResistance": 0.0194
+   }
+  },
+  {
+   "reference": "SRF1280A-102M",
+   "series": {
+    "inductance": 0.00402,
+    "dcResistance": 7.202
+   },
+   "wasInductance": 0.001,
+   "wasDcResistance": null,
+   "parallel": {
+    "inductance": 0.001,
+    "dcResistance": 1.992
+   }
+  },
+  {
+   "reference": "SRF1280A-R47Y",
+   "series": {
+    "inductance": 1.676e-06,
+    "dcResistance": 0.0216
+   },
+   "wasInductance": 4.6999999999999995e-07,
+   "wasDcResistance": null,
+   "parallel": {
+    "inductance": 4.6999999999999995e-07,
+    "dcResistance": 0.0055
+   }
+  }
+ ],
+ "bySeries": {
+  "SRF0703A": 2,
+  "SRF1280": 6,
+  "SRF1280A": 10,
+  "SRF1260A": 9
+ },
+ "notInTable": []
+}
