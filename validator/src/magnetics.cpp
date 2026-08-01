@@ -60,6 +60,41 @@ bool dcr_pairs_with_inductance(const json& pt) {
 void check_point(const json& pt, int idx, const json& dims, const std::string& material,
                  const Ctx& ctx, std::vector<Finding>& out, std::vector<std::string>& skipped) {
     const std::string tag = "[op " + std::to_string(idx) + "] ";
+    std::string subtype;
+    if (pt.contains("subtype") && pt["subtype"].is_string())
+        subtype = pt["subtype"].get<std::string>();
+    // NOTE ON PLACEMENT: this check is deliberately ABOVE the inductance early-return
+    // below. It compares two counts and needs no inductance at all, and when it sat under
+    // that return it silently skipped 287 of the 485 affected entries - 59 % - because a
+    // transformer that records no magnetizing inductance never reached it. That is the
+    // ABT #387 failure exactly: a check that examines nothing and reports success. It was
+    // caught by measuring the corpus and finding 198 where 485 were expected.
+    // CHECK 3b: a transformer that declares secondaries must record a resistance for each
+    // winding. dcResistances is documented in MAS as "DC resistance per winding" and
+    // turnsRatios as "one entry per secondary", so 1 + turnsRatios.size() windings are
+    // claimed by the record itself and a shorter list is missing data — the SECONDARIES'
+    // copper, since the array is positional.
+    //
+    // This fires only when the list is non-empty and short. An ABSENT list is a visible
+    // "no DC resistance here"; a SHORT one looks populated and is not, so a loss
+    // calculation silently sees a fraction of the copper and gets no warning. 485 rows are
+    // in that state (ABT #458), and nothing in the corpus could tell you without comparing
+    // the two fields — which is the same shape as ABT #387, where the check that should
+    // have noticed was reading the wrong field and reported success.
+    if (subtype == "transformer" && pt.contains("turnsRatios") && pt["turnsRatios"].is_array() &&
+        !pt["turnsRatios"].empty() && pt.contains("dcResistances") &&
+        pt["dcResistances"].is_array() && !pt["dcResistances"].empty()) {
+        const double windings = 1.0 + static_cast<double>(pt["turnsRatios"].size());
+        const double have = static_cast<double>(pt["dcResistances"].size());
+        if (have < windings)
+            emit(out, ctx, "MAG_WINDING_DATA_INCOMPLETE", Severity::Suspicious, have, windings,
+                 tag + fmt("transformer declares " + std::to_string(pt["turnsRatios"].size()) +
+                               " secondary winding(s) but records fewer DC resistances than "
+                               "windings [count]",
+                           have, windings));
+    }
+
+
     auto L = scalar_at(pt, {"inductance"});
     if (!L) {
         skipped.push_back("MAG_*");

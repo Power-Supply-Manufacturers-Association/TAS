@@ -322,3 +322,51 @@ def test_a_plain_inductor_is_unaffected_by_the_pairing_rule():
     fired = {c for c, _ in _codes(rec)}
     assert fired & {"MAG_DCR_GEOM", "MAG_DCR_PER_H"}, \
         f"a single-winding part must still be checked; fired={fired}"
+
+
+# ── ABT #458: a transformer's short winding-resistance list ──────────────────────
+#
+# MAS documents dcResistances as "DC resistance per winding" (positional) and
+# turnsRatios as "one entry per secondary", so a record that declares secondaries and
+# records fewer resistances than windings is missing its secondaries' copper. An
+# ABSENT list says "no data" plainly; a SHORT one looks populated and is not, so a
+# loss calculation sees a fraction of the copper with no warning.
+
+
+def test_short_winding_resistance_list_is_flagged():
+    """A 1:1-declared transformer with two windings and one resistance is incomplete."""
+    rec = _magnetic({"subtype": "transformer", "inductance": {"nominal": 1e-03},
+                     "turnsRatios": [1.0], "dcResistances": [{"maximum": 0.5}]})
+    assert ("MAG_WINDING_DATA_INCOMPLETE", "SUSPICIOUS") in _codes(rec)
+
+
+def test_complete_winding_resistance_list_is_not_flagged():
+    """Two windings, two resistances — nothing missing."""
+    rec = _magnetic({"subtype": "transformer", "inductance": {"nominal": 1e-03},
+                     "turnsRatios": [1.0],
+                     "dcResistances": [{"maximum": 0.5}, {"maximum": 0.9}]})
+    assert not any(c == "MAG_WINDING_DATA_INCOMPLETE" for c, _ in _codes(rec))
+
+
+def test_short_list_is_flagged_even_with_no_inductance():
+    """The check must run ABOVE check_point's inductance early-return.
+
+    This is the regression that matters. The check compares two counts and needs no
+    inductance, but it was first written below the `if (!L) return;` guard — where it
+    silently skipped 287 of the 485 affected entries, 59 %, because a transformer that
+    records no magnetizing inductance never reached it. That is the ABT #387 failure
+    reproduced inside the fix for its own follow-up: a check that examines nothing and
+    reports success. Caught by measuring the corpus and finding 198 where 485 were
+    expected, not by reading the code.
+    """
+    rec = _magnetic({"subtype": "transformer", "turnsRatios": [1.0, 2.0],
+                     "dcResistances": [{"maximum": 0.5}]})
+    assert ("MAG_WINDING_DATA_INCOMPLETE", "SUSPICIOUS") in _codes(rec), \
+        "a transformer with no inductance must still have its winding count checked"
+
+
+def test_absent_resistance_list_is_not_flagged_as_incomplete():
+    """No resistances at all is missing data, not a misleadingly short list."""
+    rec = _magnetic({"subtype": "transformer", "inductance": {"nominal": 1e-03},
+                     "turnsRatios": [1.0]})
+    assert not any(c == "MAG_WINDING_DATA_INCOMPLETE" for c, _ in _codes(rec))
