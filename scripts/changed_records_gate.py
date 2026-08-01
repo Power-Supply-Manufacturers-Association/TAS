@@ -62,6 +62,21 @@ FAMILIES = {
     "modules.ndjson": (["semiconductor", "module"], "SAS", "module.json", ("semiconductor", "module")),
 }
 
+# circuits.ndjson is not a part catalogue and cannot use FAMILIES: a record is a whole CIAS
+# brick, not a PEAS-wrapped component, so there is no discriminator to unwrap and Blade Runner
+# has nothing to validate at the record level. It gets its own three-part gate in gate_circuits().
+CIRCUITS = "circuits.ndjson"
+
+# Top-level discriminators tas_validator has a handler for (verified against the binding, not
+# assumed). The PEAS-native atoms (behavioral, transmissionLine) are model primitives, not
+# orderable parts — Blade Runner throws "no known component discriminator" on them BY DESIGN.
+# Their physics gate is the CIAS lowering instead (see gate_circuits). Enumerating the set
+# explicitly means an unexpected validator error on a KNOWN family still blocks, instead of
+# being swallowed by a bare try/except.
+BLADE_DISCRIMINATORS = {"magnetic", "capacitor", "resistor", "varistor", "connector",
+                        "thermistor", "semiconductor", "analog", "controller", "timeBase"}
+PEAS_NATIVE_ATOMS = {"behavioral", "transmissionLine"}
+
 
 def build_registry():
     from referencing import Registry, Resource
@@ -150,6 +165,121 @@ def gate_file(fname, reg, max_report):
     return bad
 
 
+def gate_circuits(reg, max_report):
+    """Gate data/circuits.ndjson — CIAS bricks, not PEAS-wrapped parts.
+
+    Three checks, because no one of them subsumes the others:
+      1. JSON Schema (CIAS.json) — the brick's SHAPE is legal.
+      2. PyCIAS.validate_cias_structure_json — graph-level integrity JSON Schema cannot
+         express: unique names, every pin/port endpoint resolves, one discriminator per
+         component.
+      3. Physics. For inline components carrying a catalogue discriminator that is Blade
+         Runner's job. For the PEAS-native atoms it is the CIAS LOWERING: to_subckt_json
+         throws on a non-square/asymmetric inductance matrix, a non-positive self
+         inductance, or |k_ij| > 1 — the coupled-inductor equivalent of a units error, and
+         invisible to JSON Schema (every one of those is valid JSON).
+
+    A brick that cannot be lowered to a netlist is not a brick, so a converter throw FAILS
+    the record; it is never caught and counted as a pass.
+    """
+    from jsonschema import Draft202012Validator
+    from blade_gate import BladeGate
+
+    for d in ("build-py", "build"):
+        sys.path.insert(0, str(PSMA / "CIAS" / d))
+    try:
+        import PyCIAS
+    except ImportError as e:                  # a gate that cannot run is not a gate
+        raise RuntimeError(
+            f"PyCIAS unavailable ({e}). The circuits gate needs the CIAS lowering — it is "
+            "the only check that sees an unphysical inductance matrix or an unemittable "
+            "brick. Build it with:\n"
+            "      cmake -S ../CIAS -B ../CIAS/build-py -DCIAS_BUILD_PYBIND=ON \\\n"
+            "            -DFETCHCONTENT_SOURCE_DIR_JSON=../AAS/build/_deps/json-src\n"
+            "      cmake --build ../CIAS/build-py --target PyCIAS -j8") from e
+
+    schema = json.loads((PSMA / "CIAS" / "schemas" / "CIAS.json").read_text())
+    validator = Draft202012Validator(schema, registry=reg)
+    conv = PyCIAS.CiasCircuitConverter(PyCIAS.CircuitSimulator.Ngspice)
+    gate = BladeGate((), required=True)   # components are already PEAS-wrapped — no re-wrap
+
+    path = TAS / "data" / CIRCUITS
+    bad = checked = reported = lowered = byref = parts = 0
+    t0 = time.time()
+    with path.open(encoding="utf-8") as fh:
+        for lineno, raw in enumerate(fh, 1):
+            if not raw.strip():
+                continue
+            checked += 1
+            try:
+                brick = json.loads(raw)
+            except json.JSONDecodeError as e:
+                bad += 1
+                if reported < max_report:
+                    print(f"    line {lineno} NOT JSON: {e}"); reported += 1
+                continue
+            name = brick.get("name", f"line {lineno}")
+
+            errs = sorted(validator.iter_errors(brick), key=lambda e: e.path)
+            if errs:
+                bad += 1
+                if reported < max_report:
+                    print(f"    SCHEMA {name}: {errs[0].message[:170]}"); reported += 1
+                continue
+
+            problems = PyCIAS.validate_cias_structure_json(brick)
+            if problems:
+                bad += 1
+                if reported < max_report:
+                    print(f"    STRUCT {name}: {problems[0][:170]}"); reported += 1
+                continue
+
+            # The converter takes INLINE PEAS documents only. A component whose `data` is a
+            # URI into a catalogue file is legal CIAS but cannot be lowered without resolving
+            # it, so those bricks are counted and reported — never silently passed.
+            if any(isinstance(c.get("data"), str) for c in brick.get("components", [])):
+                byref += 1
+            else:
+                try:
+                    conv.to_subckt_json(brick)
+                    lowered += 1
+                except Exception as e:  # noqa: BLE001 — unlowerable inline brick = failed record
+                    bad += 1
+                    if reported < max_report:
+                        print(f"    LOWER  {name}: {str(e)[:170]}"); reported += 1
+                    continue
+
+            failed_part = False
+            for comp in brick.get("components", []):
+                data = comp.get("data")
+                if not isinstance(data, dict):
+                    continue                      # a URI reference into a catalogue file —
+                                                  # gated where that file is gated
+                disc = set(data) & BLADE_DISCRIMINATORS
+                if not disc:
+                    continue                      # PEAS_NATIVE_ATOMS: covered by the lowering
+                parts += 1
+                ok, why = gate.check(data)
+                if not ok:
+                    failed_part = True
+                    if reported < max_report:
+                        print(f"    BLADE  {name}/{comp.get('name')}: {why}"); reported += 1
+                    break
+            if failed_part:
+                bad += 1
+
+            if checked % 5000 == 0:
+                print(f"    …{checked} checked ({time.time() - t0:.0f}s)", flush=True)
+    print(f"  {CIRCUITS}: {checked} bricks, {lowered} lowered to a netlist, "
+          f"{byref} skipped (components are catalogue URIs, not inline PEAS), "
+          f"{parts} inline parts blade-checked, {bad} FAILED ({time.time() - t0:.0f}s)")
+    try:
+        print(f"    {gate.summary()}")
+    except Exception:  # noqa: BLE001
+        pass
+    return bad
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--base", default="HEAD")
@@ -163,8 +293,9 @@ def main():
         print("changed-records gate: no data/*.ndjson touched — nothing to check")
         return 0
 
-    unmapped = [f for f in files if f not in FAMILIES]
+    unmapped = [f for f in files if f not in FAMILIES and f != CIRCUITS]
     gateable = [f for f in files if f in FAMILIES]
+    circuits = CIRCUITS in files
     for f in unmapped:
         if ".quarantine_" in f or f.endswith((".bak", ".backup.ndjson")):
             print(f"  {f}: quarantine/backup file, not gated")
@@ -179,7 +310,7 @@ def main():
         print(f"changed-records gate CANNOT RUN: {e}", file=sys.stderr)
         return 2
 
-    print(f"changed-records gate: {len(gateable)} catalogue file(s) touched — "
+    print(f"changed-records gate: {len(gateable) + circuits} catalogue file(s) touched — "
           f"validating in full (schema + Blade Runner)")
     bad = 0
     for f in gateable:
@@ -187,6 +318,12 @@ def main():
             bad += gate_file(f, reg, a.max_report)
         except Exception as e:  # noqa: BLE001
             print(f"  {f}: gate CANNOT RUN: {e}", file=sys.stderr)
+            return 2
+    if circuits:
+        try:
+            bad += gate_circuits(reg, a.max_report)
+        except Exception as e:  # noqa: BLE001
+            print(f"  {CIRCUITS}: gate CANNOT RUN: {e}", file=sys.stderr)
             return 2
     print(f"changed-records gate: {'FAILED' if bad else 'clean'} ({bad} bad records)")
     return 1 if bad else 0
