@@ -1,0 +1,2038 @@
+{
+ "ticket": "ABT #391",
+ "date": "2026-08-01",
+ "byVerdict": {
+  "FOUND": 46246,
+  "FAMILY_ONLY": 189588,
+  "ABSENT": 401
+ },
+ "byCatalogue": {
+  "capacitors": 67334,
+  "resistors": 140672,
+  "varistors": 1627,
+  "magnetics": 20391,
+  "connectors": 1461,
+  "controllers": 76,
+  "mosfets": 3919,
+  "diodes": 498,
+  "igbts": 257
+ },
+ "leftAlone": {
+  "capacitors": 3787,
+  "resistors": 1,
+  "varistors": 294,
+  "magnetics": 4997,
+  "connectors": 947,
+  "controllers": 138,
+  "mosfets": 1149,
+  "diodes": 1009,
+  "igbts": 184
+ },
+ "disproven": [
+  {
+   "catalogue": "capacitors",
+   "reference": "05HV10B103KN",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1106_HV_RAD_IND_HT200C"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "05HV11B223KCM",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1106_HV_RAD_IND_HT200C"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "05HV13B473KN",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1106_HV_RAD_IND_HT200C"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "05HV14B104KN",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1106_HV_RAD_IND_HT200C"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "05HV15B224KN",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1106_HV_RAD_IND_HT200C"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "05HV23B474KC",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1107_HV_RAD_IND"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "05HV25B224MC",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1107_HV_RAD_IND"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "MAL204271688E3",
+   "url": "https://www.vishay.com/docs/28329/041042043ash.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "MAL204271109E3",
+   "url": "https://www.vishay.com/docs/28329/041042043ash.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "MAL204271159E3",
+   "url": "https://www.vishay.com/docs/28329/041042043ash.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "MAL204272159E3",
+   "url": "https://www.vishay.com/docs/28329/041042043ash.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "MAL204271229E3",
+   "url": "https://www.vishay.com/docs/28329/041042043ash.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "MAL204371339E3",
+   "url": "https://www.vishay.com/docs/28329/041042043ash.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "MAL204282109E3",
+   "url": "https://www.vishay.com/docs/28329/041042043ash.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "MAL204282159E3",
+   "url": "https://www.vishay.com/docs/28329/041042043ash.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "MAL204281229E3",
+   "url": "https://www.vishay.com/docs/28329/041042043ash.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "MAL204281109E3",
+   "url": "https://www.vishay.com/docs/28329/041042043ash.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "MAL214290017E3",
+   "url": "https://www.vishay.com/docs/28402/142rhs.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "MAL219390114E3",
+   "url": "https://www.vishay.com/docs/28458/193pursi.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "MAL219390115E3",
+   "url": "https://www.vishay.com/docs/28458/193pursi.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "MAL219390131E3",
+   "url": "https://www.vishay.com/docs/28458/193pursi.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "MAL219390133E3",
+   "url": "https://www.vishay.com/docs/28458/193pursi.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "MAL219390111E3",
+   "url": "https://www.vishay.com/docs/28458/193pursi.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "MAL219390112E3",
+   "url": "https://www.vishay.com/docs/28458/193pursi.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "MAL219390113E3",
+   "url": "https://www.vishay.com/docs/28458/193pursi.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "F125PP223J100V",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_F3083_SMC"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "F125PP473J050V",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_F3083_SMC"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "F125PP222J100V",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_F3083_SMC"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "F125PP222J050V",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_F3083_SMC"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "F125PP103J100V",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_F3083_SMC"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "F125PP333J050V",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_F3083_SMC"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "F125PP223J050V",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_F3083_SMC"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "F125PP472J050V",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_F3083_SMC"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "F125PP103J050V",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_F3083_SMC"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "F125PP332J050V",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_F3083_SMC"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "F125PP102J050V",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_F3083_SMC"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "F125PP102J100V",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_F3083_SMC"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "F125PP152J050V",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_F3083_SMC"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "F125PP682J050V",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_F3083_SMC"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "05HV11B103KN",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1106_HV_RAD_IND_HT200C"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "05HV10N102JN",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1106_HV_RAD_IND_HT200C"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "30HV11N471KN",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1106_HV_RAD_IND_HT200C"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "30HV11N101KN",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1106_HV_RAD_IND_HT200C"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "20HV11B102MN",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1106_HV_RAD_IND_HT200C"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "05HV10N471KN",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1106_HV_RAD_IND_HT200C"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "05HV10N102KN",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1106_HV_RAD_IND_HT200C"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "30HV12N102KN",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1106_HV_RAD_IND_HT200C"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "30HV12N102JN",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1106_HV_RAD_IND_HT200C"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "30HV14B103KC",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1106_HV_RAD_IND_HT200C"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "30HV12N102KC",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1106_HV_RAD_IND_HT200C"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "30HV15B103KN",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1106_HV_RAD_IND_HT200C"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "10HV16B394KN",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1106_HV_RAD_IND_HT200C"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "10HV20B103KC",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1107_HV_RAD_IND"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "05HV20B472KC",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1107_HV_RAD_IND"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "10HV20B472KCM",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1107_HV_RAD_IND"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "30HV23B103KC",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1107_HV_RAD_IND"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "20HV30B102KCM",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1107_HV_RAD_IND"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "30HV30B182KC",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1107_HV_RAD_IND"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "30HV23B182MCM",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1107_HV_RAD_IND"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "40HV30B181KCM",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1107_HV_RAD_IND"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "50HV24B472KCM",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1107_HV_RAD_IND"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "50HV24B102KC",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1107_HV_RAD_IND"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "20HV24B333MCM",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1107_HV_RAD_IND"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "20HV34B274KC",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1107_HV_RAD_IND"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "50HV26B153KCM",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1107_HV_RAD_IND"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "30HV26B563KCM",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1107_HV_RAD_IND"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "10HV36B225KCM",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1107_HV_RAD_IND"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "10HV20B472KN",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1107_HV_RAD_IND"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "05HV23B274KN",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1107_HV_RAD_IND"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "10HV22B153MNM",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1107_HV_RAD_IND"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "10HV24B104MNM",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1107_HV_RAD_IND"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "50HV26N102KNM",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1107_HV_RAD_IND"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "10HV34B105KN",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1107_HV_RAD_IND"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "50HV24B562MN",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1107_HV_RAD_IND"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "10HV36B225KN",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1107_HV_RAD_IND"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "30HV14B103PN",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1106_HV_RAD_IND_HT200C"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "05HV22B224KCM",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1107_HV_RAD_IND"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "20HV11B102PN",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1106_HV_RAD_IND_HT200C"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "20HV13B103PN",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1106_HV_RAD_IND_HT200C"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "05HV21B104KCM",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1107_HV_RAD_IND"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "10HV64R473KC",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1110_HV_RAD_MIL_49467"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "10HS26B105KC",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1114_HS_RAD_SPACE"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "1825B104K501EM",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1111_HV_SMD_MIL_49467"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "1515B103K102E",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1111_HV_SMD_MIL_49467"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "1515B472K501EM",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1111_HV_SMD_MIL_49467"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "1515B102K102P",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1111_HV_SMD_MIL_49467"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K229C5ENL",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K470F1ENL",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K101F1ENL",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K471J1ENL",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K472J3EML",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K102F1EML",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C1812K102K2EML",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K471J5ETL",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K102J1ETL",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K220F3ETL",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K102F1ETL",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K332F5EVG",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C2220K104J1ETG",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C1210K153J1EVL",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C1210K473J3EVL",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C1210K393J3EVL",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K180K5GVL",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K390K5GVL",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K220K5GVL",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K222J5GVL",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K152F3GTL",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K102F1GTL",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K332J5GTL",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K181K1GTL",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K102K4GTL",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C1210K332J2GTH",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C2220K223J2GTH",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C2220K103J2GTH",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C1210K202J2GTH",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K681J1ENL7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K330J5ENL7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K151J1ENL7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K101J1ENL7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K101J1EML7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K102J1EML7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C1812K104J3EML7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C2220K104J1EML7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C1812K102K2EML7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K681F1ETL7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K391F1ETL7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K331F1ETL7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K471F1ETL7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K181F1ETL7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K332F5ETL7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K102F1ETL7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K221F1ETL7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C1210K473J3EVL7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C1210K183J1EVL7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C1210K393J3EVL7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K471F1GVL7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K151F1GVL7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K332F5GVL7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K391F5GTL7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K103K5RNL",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1096_MIL-PRF-32535_X7R"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K473K5RML",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1096_MIL-PRF-32535_X7R"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K333K5RNL",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1096_MIL-PRF-32535_X7R"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C2220K335K3RML",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1096_MIL-PRF-32535_X7R"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C1210K335K8RML",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1096_MIL-PRF-32535_X7R"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K472K5RVL",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1096_MIL-PRF-32535_X7R"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K682M5RTL",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1096_MIL-PRF-32535_X7R"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K103K8RVL",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1096_MIL-PRF-32535_X7R"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K393K5RNL7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1096_MIL-PRF-32535_X7R"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C1812K684K3RNL7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1096_MIL-PRF-32535_X7R"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K102K3RML7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1096_MIL-PRF-32535_X7R"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K103K5RML7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1096_MIL-PRF-32535_X7R"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K224K8RML7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1096_MIL-PRF-32535_X7R"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C2220K475K4RML7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1096_MIL-PRF-32535_X7R"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C2220K335K3RML7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1096_MIL-PRF-32535_X7R"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C2220K106K9RML7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1096_MIL-PRF-32535_X7R"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K224K8RVL7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1096_MIL-PRF-32535_X7R"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K103J5RTL7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1096_MIL-PRF-32535_X7R"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K472J3RNG",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1096_MIL-PRF-32535_X7R"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K104K3RML",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1096_MIL-PRF-32535_X7R"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K154K4RVL",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1096_MIL-PRF-32535_X7R"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C2220K475J4RML",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1096_MIL-PRF-32535_X7R"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K104K4RTL",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1096_MIL-PRF-32535_X7R"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K104K4RML",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1096_MIL-PRF-32535_X7R"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K104J3RML",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1096_MIL-PRF-32535_X7R"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K104K3RVL7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1096_MIL-PRF-32535_X7R"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K104K3RVL",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1096_MIL-PRF-32535_X7R"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C0603K104J3RVL7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1096_MIL-PRF-32535_X7R"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "L1GN70D903KA05",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1102_KPS-MCL_200C_STACKS"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "L1GN70G473KA10",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1102_KPS-MCL_200C_STACKS"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "L1GN702125KA10",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1102_KPS-MCL_200C_STACKS"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "R75MF215050H0J",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_F3121_R75H"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "CHA06C104K5RXL7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1128_HRA_X7R"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "CHA06X104K5RXL7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1128_HRA_X7R"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "CHA08C225K9RXL7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1128_HRA_X7R"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "CHA06C474K9RXL7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1128_HRA_X7R"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "CHA06X474K9RXL7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1128_HRA_X7R"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "CHA08C105K4RXL7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1128_HRA_X7R"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "CHA08X105K4RXL7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1128_HRA_X7R"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "CHA08X225K9RXL7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1128_HRA_X7R"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "CHA12X106K9RXL7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1128_HRA_X7R"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "CHA13C106K8RXL7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1128_HRA_X7R"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "CHA12C106K9RXL7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1128_HRA_X7R"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "CHA13C475K3RXL7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1128_HRA_X7R"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "CHA13X475K3RXL7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1128_HRA_X7R"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "CHA13X106K8RXL7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1128_HRA_X7R"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "CHA21X106K3RXL7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1128_HRA_X7R"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "CHA21X226K8RXL7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1128_HRA_X7R"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "CHA21C226K8RXL7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1128_HRA_X7R"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "CHA21C106K3RXL7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1128_HRA_X7R"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "C1812K105K1RVL7189",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1096_MIL-PRF-32535_X7R"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "EEUFRE222LPY",
+   "url": "https://industrial.panasonic.com/cdbs/www-data/pdf/RDF0000/ABA0000C1259.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "25PZK330M8X9",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-hybrid/PKV.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "25PZK560M10X9",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-hybrid/PKV.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "25PZK680M10X11",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-hybrid/PKV.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "25PZK1000M10X15",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-hybrid/PKV.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "25PZK1500M10X20",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-hybrid/PKV.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "35PZK220M8X9",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-hybrid/PKV.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "35PZK390M10X9",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-hybrid/PKV.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "35PZK470M10X11",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-hybrid/PKV.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "35PZK680M10X15",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-hybrid/PKV.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "35PZK1000M10X20",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-hybrid/PKV.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "50PZK100M8X9",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-hybrid/PKV.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "50PZK180M10X9",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-hybrid/PKV.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "50PZK220M10X11",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-hybrid/PKV.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "50PZK270M10X15",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-hybrid/PKV.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "50PZK330M10X20",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-hybrid/PKV.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "63PZK56M8X9",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-hybrid/PKV.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "63PZK100M10X9",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-hybrid/PKV.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "63PZK120M10X11",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-hybrid/PKV.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "63PZK180M10X15",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-hybrid/PKV.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "63PZK220M10X20",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-hybrid/PKV.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "200KXW82MEFC10X30",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "200KXW100MEFC10X35",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "200KXW120MEFC10X40",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "200KXW150MEFC12.5X30",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "200KXW180MEFC12.5X35",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "200KXW220MEFC12.5X40",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "200KXW220MEFC14.5X30",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "200KXW270MEFC14.5X35",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "200KXW270MEFC16X30",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "200KXW330MEFC16X35",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "200KXW330MEFC18X30",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "200KXW390MEFC16X40",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "200KXW390MEFC18X35",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "200KXW470MEFC18X40",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "200KXW560MEFC18X45",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "400KXW27MEFC10X30",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "400KXW33MEFC10X35",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "400KXW39MEFC10X40",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "400KXW47MEFC12.5X30",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "400KXW56MEFC12.5X35",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "400KXW68MEFC12.5X40",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "400KXW68MEFC14.5X30",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "400KXW82MEFC14.5X35",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "400KXW100MEFC14.5X40",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "400KXW100MEFC16X30",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "400KXW120MEFC16X35",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "400KXW120MEFC18X30",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "400KXW150MEFC16X40",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "400KXW150MEFC18X35",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "400KXW180MEFC18X40",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "400KXW220MEFC18X45",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "420KXW22MEFC10X30",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "420KXW27MEFC10X35",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "420KXW33MEFC10X40",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "420KXW39MEFC12.5X30",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "420KXW47MEFC12.5X35",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "420KXW56MEFC12.5X40",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "420KXW56MEFC14.5X30",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "420KXW68MEFC14.5X35",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "420KXW68MEFC16X30",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "420KXW82MEFC14.5X40",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "420KXW82MEFC16X35",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "420KXW100MEFC16X40",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "420KXW100MEFC18X30",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "420KXW120MEFC18X35",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "420KXW150MEFC18X40",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "450KXW18MEFC10X30",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "450KXW22MEFC10X35",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "450KXW27MEFC10X40",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "450KXW33MEFC12.5X30",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "450KXW39MEFC12.5X35",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "450KXW47MEFC12.5X40",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "450KXW47MEFC14.5X30",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "450KXW56MEFC14.5X35",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "450KXW56MEFC16X30",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "450KXW68MEFC14.5X40",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "450KXW68MEFC16X35",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "450KXW82MEFC16X40",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "450KXW82MEFC18X30",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "450KXW100MEFC18X35",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "450KXW120MEFC18X40",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "450KXW150MEFC18X45",
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf"
+  },
+  {
+   "catalogue": "resistors",
+   "reference": "WSR2-9 Jumper",
+   "url": "https://www.vishay.com/docs/31059/wsrhighpower.pdf"
+  },
+  {
+   "catalogue": "resistors",
+   "reference": "CR212-JZ-206ELF",
+   "url": "https://bourns.com/docs/product-datasheets/crxxxxx.pdf"
+  },
+  {
+   "catalogue": "varistors",
+   "reference": "561KN20-P12.5",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/20M_1"
+  },
+  {
+   "catalogue": "varistors",
+   "reference": "751KN20-P12.5",
+   "url": "https://yageogroup.com/content/datasheet/asset/file/20M_1"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "7443081015",
+   "url": "https://www.we-online.com/katalog/en/datasheet/7443081015"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "74406032033",
+   "url": "https://www.we-online.com/components/products/datasheet/74406032033.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "74406042470",
+   "url": "https://www.we-online.com/components/products/datasheet/74406042470.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "26S470C",
+   "url": "https://www.bourns.com/docs/Product-Datasheets/SRR1240.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "26S101C",
+   "url": "https://www.bourns.com/docs/Product-Datasheets/SRR1240.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IHTH0750JZEB220M5A",
+   "url": "https://abracon.com/Magnetics/radial/AIRD01.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IHLP4040DZER2R2MA1",
+   "url": "https://industrial.panasonic.com/cdbs/www-data/pdf/AGL0000/AGL0000C63.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IHLP4040DZER3R3MA1",
+   "url": "https://industrial.panasonic.com/cdbs/www-data/pdf/AGL0000/AGL0000C63.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "CDRH3D28NP-3R3NC",
+   "url": "https://www.bourns.com/docs/Product-Datasheets/SRR4028.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IHLP2525BDER100MA1",
+   "url": "https://industrial.panasonic.com/cdbs/www-data/pdf/AGL0000/AGL0000C63.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "NR4018T220M",
+   "url": "https://abracon.com/Magnetics/power/ASPI-4020S.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "49100SC",
+   "url": "https://www.bourns.com/docs/Product-Datasheets/SRR1280.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "34103C",
+   "url": "https://www.bourns.com/docs/Product-Datasheets/SRR4018.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "CR105NP-270MC",
+   "url": "https://www.bourns.com/docs/Product-Datasheets/SDR1006.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IMC1008ER270J",
+   "url": "https://www.bourns.com/docs/Product-Datasheets/CW252016.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IMC1008ER1R2J",
+   "url": "https://www.bourns.com/docs/Product-Datasheets/CW252016.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IMC1008ER1R0J",
+   "url": "https://www.we-online.com/components/products/datasheet/744762310A.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IMC1008ERR15J",
+   "url": "https://www.we-online.com/components/products/datasheet/744762215A.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IMC1008ER3N3S",
+   "url": "https://www.we-online.com/components/products/datasheet/744762033A.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IMC1008ERR56J",
+   "url": "https://www.bourns.com/docs/Product-Datasheets/CW252016.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IMC1008ERR22J",
+   "url": "https://www.we-online.com/components/products/datasheet/744762222A.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IMC1008ER39NJ",
+   "url": "https://www.we-online.com/components/products/datasheet/744762139A.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IMC1008ERR18J",
+   "url": "https://www.we-online.com/components/products/datasheet/744762218A.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IMC1008ER4R7J",
+   "url": "https://www.bourns.com/docs/Product-Datasheets/CW252016.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IMC1008ER10NJ",
+   "url": "https://www.we-online.com/components/products/datasheet/744762110A.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IMC1008ER12NJ",
+   "url": "https://www.we-online.com/components/products/datasheet/744762112A.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IMC1008ER3R3J",
+   "url": "https://www.bourns.com/docs/Product-Datasheets/CW252016.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IMC1008ER1R8J",
+   "url": "https://www.bourns.com/docs/Product-Datasheets/CW252016.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IMC1008ER3R9J",
+   "url": "https://www.bourns.com/docs/Product-Datasheets/CW252016.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IMC1008ER2R7J",
+   "url": "https://www.bourns.com/docs/Product-Datasheets/CW252016.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IMC1008ER2R2J",
+   "url": "https://www.bourns.com/docs/Product-Datasheets/CW252016.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IMC1008ERR47J",
+   "url": "https://www.bourns.com/docs/Product-Datasheets/CW252016.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IMC1008ERR39J",
+   "url": "https://www.bourns.com/docs/Product-Datasheets/CW252016.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IMC1008ER33NJ",
+   "url": "https://www.we-online.com/components/products/datasheet/744762133A.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IMC1008ER22NJ",
+   "url": "https://www.we-online.com/components/products/datasheet/744762122A.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IMC1008ER150J",
+   "url": "https://www.we-online.com/components/products/datasheet/744762415A.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IMC1008ERR27J",
+   "url": "https://www.bourns.com/docs/Product-Datasheets/CW252016.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IMC1008ER18NJ",
+   "url": "https://www.we-online.com/components/products/datasheet/744762118A.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IMC1008ERR12J",
+   "url": "https://www.bourns.com/docs/Product-Datasheets/CW252016.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IMC1008ER27NJ",
+   "url": "https://www.we-online.com/components/products/datasheet/744762127A.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IMC1008ER8R2J",
+   "url": "https://www.we-online.com/components/products/datasheet/744762382A.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IMC1008ER6N8J",
+   "url": "https://www.we-online.com/components/products/datasheet/744762068A.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IMC1008ER82NJ",
+   "url": "https://www.we-online.com/components/products/datasheet/744762182A.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IMC1008ER47NJ",
+   "url": "https://www.we-online.com/components/products/datasheet/744762147A.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "ILC0402ER3N3S",
+   "url": "https://www.we-online.com/catalog/datasheet/744784033A.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "ILC0402ER3N9S",
+   "url": "https://www.we-online.com/catalog/datasheet/744784039A.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "LPWI160808HR47T",
+   "url": "https://www.bourns.com/docs/product-datasheets/cvh160808h.pdf?sfvrsn=b21e29f6_3"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IMC0603ER22NG01",
+   "url": "https://www.bourns.com/docs/Product-Datasheets/cw160808.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IMC0603ER82NJ01",
+   "url": "https://www.bourns.com/docs/Product-Datasheets/cw160808.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IMC0805ERR47J01",
+   "url": "https://www.we-online.com/components/products/datasheet/744760247A.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IMC0805ER8R2J01",
+   "url": "https://www.we-online.com/components/products/datasheet/744760382A.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IMC0603ER33NJ01",
+   "url": "https://www.bourns.com/docs/Product-Datasheets/cw160808.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IMC0805ER2R2J01",
+   "url": "https://www.we-online.com/components/products/datasheet/744760322A.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IMC0603ER56NJ01",
+   "url": "https://www.bourns.com/docs/Product-Datasheets/cw160808.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IMC0805ER2N7S01",
+   "url": "https://www.bourns.com/docs/Product-Datasheets/CE201210.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IMC0603ER15NG01",
+   "url": "https://www.bourns.com/docs/Product-Datasheets/cw160808.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IMC0603ER15NJ01",
+   "url": "https://www.bourns.com/docs/Product-Datasheets/cw160808.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IMC1008ER8N2J",
+   "url": "https://www.we-online.com/components/products/datasheet/744762082A.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IMC0603ER22NJ01",
+   "url": "https://www.bourns.com/docs/Product-Datasheets/cw160808.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IMC0603ER47NJ01",
+   "url": "https://www.bourns.com/docs/Product-Datasheets/cw160808.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IMC0805ER2R7J01",
+   "url": "https://www.we-online.com/components/products/datasheet/744760327A.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IMC0805ER2N2S01",
+   "url": "https://www.bourns.com/docs/Product-Datasheets/CE201210.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IMC1008ERR68J",
+   "url": "https://www.bourns.com/docs/Product-Datasheets/CW252016.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IHLP4040DZER1R5MA1",
+   "url": "https://industrial.panasonic.com/cdbs/www-data/pdf/AGL0000/AGL0000C63.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IHLP4040DZER4R7M1A",
+   "url": "https://industrial.panasonic.com/cdbs/www-data/pdf/AGL0000/AGL0000C63.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IHLP4040DZERR56M1A",
+   "url": "https://www.bourns.com/docs/Product-Datasheets/SRP1038A.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "CDRH74NP-121MC-B",
+   "url": "https://abracon.com/Magnetics/new/ASPI-0704S.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "CDRH64BNP-101MC-B",
+   "url": "https://www.bourns.com/docs/Product-Datasheets/SRR0604.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "CDRH5D18NP-101NC",
+   "url": "https://www.bourns.com/docs/Product-Datasheets/SRR5018.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "CDRR75NP-680MC",
+   "url": "https://www.tdk-electronics.tdk.com/inf/30/db/ind_2008/b82472p6.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "IHLP4040DZRZ2R2ML1",
+   "url": "https://industrial.panasonic.com/cdbs/www-data/pdf/AGL0000/AGL0000C63.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "CDRH8D43RT125NP-331MC",
+   "url": "https://abracon.com/Magnetics/power/ASPI-8040S.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "DD1217AS-H-1R5N=P3",
+   "url": "https://search.murata.co.jp/Ceramy/image/img/P02/J(E)TE243B-0035_DEM8045C.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "DD1217AS-H-2R2N=P3",
+   "url": "https://search.murata.co.jp/Ceramy/image/img/P02/J(E)TE243B-0035_DEM8045C.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "RLH0912-100KL",
+   "url": "https://www.bourns.com/docs/Product-Datasheets/rlb.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "RLH0912-102KL",
+   "url": "https://www.bourns.com/docs/Product-Datasheets/rlb.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "RLH0912-150KL",
+   "url": "https://www.bourns.com/docs/Product-Datasheets/rlb.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "PBY160808T-601Y-N",
+   "url": "https://www.yageogroup.com/content/datasheet/asset/file/DATASHEET_BBPY00160808_SERIES"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "PBY321611T-601Y",
+   "url": "https://www.yageogroup.com/content/datasheet/asset/file/DATASHEET_BBPY00160808_SERIES"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "SRP2512A-1R0M",
+   "url": "https://www.bourns.com/docs/Product-Datasheets/srp2512a.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "SRP2512A-1R5M",
+   "url": "https://www.bourns.com/docs/Product-Datasheets/srp2512a.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "SRP2512A-2R2M",
+   "url": "https://www.bourns.com/docs/Product-Datasheets/srp2512a.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "SRP2512A-R47M",
+   "url": "https://www.bourns.com/docs/Product-Datasheets/srp2512a.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "SRP2512A-R68M",
+   "url": "https://www.bourns.com/docs/Product-Datasheets/srp2512a.pdf"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "AMELH6030S-R22MT",
+   "url": "https://abracon.com/datasheets/AMELH6020S.pdf"
+  },
+  {
+   "catalogue": "connectors",
+   "reference": "732510180",
+   "url": "https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/salesdrawingpdf/732/73251/732510180_sd.pdf"
+  },
+  {
+   "catalogue": "connectors",
+   "reference": "732510410",
+   "url": "https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/salesdrawingpdf/732/73251/732510410_sd.pdf"
+  },
+  {
+   "catalogue": "connectors",
+   "reference": "734036500",
+   "url": "https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/salesdrawingpdf/734/73403/734036500_sd.pdf"
+  },
+  {
+   "catalogue": "connectors",
+   "reference": "734036501",
+   "url": "https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/salesdrawingpdf/734/73403/734036501_sd.pdf"
+  },
+  {
+   "catalogue": "connectors",
+   "reference": "734036502",
+   "url": "https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/salesdrawingpdf/734/73403/734036502_sd.pdf"
+  },
+  {
+   "catalogue": "connectors",
+   "reference": "734036503",
+   "url": "https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/salesdrawingpdf/734/73403/734036503_sd.pdf"
+  },
+  {
+   "catalogue": "connectors",
+   "reference": "734036507",
+   "url": "https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/salesdrawingpdf/734/73403/734036507_sd.pdf"
+  },
+  {
+   "catalogue": "connectors",
+   "reference": "734040230",
+   "url": "https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/salesdrawingpdf/734/73404/734040230_sd.pdf"
+  },
+  {
+   "catalogue": "connectors",
+   "reference": "734036510",
+   "url": "https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/salesdrawingpdf/734/73403/734036510_sd.pdf"
+  },
+  {
+   "catalogue": "connectors",
+   "reference": "734036512",
+   "url": "https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/salesdrawingpdf/734/73403/734036512_sd.pdf"
+  },
+  {
+   "catalogue": "connectors",
+   "reference": "734140700",
+   "url": "https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/salesdrawingpdf/734/73414/734140700_sd.pdf"
+  },
+  {
+   "catalogue": "connectors",
+   "reference": "734154491",
+   "url": "https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/salesdrawingpdf/734/73415/734154491_sd.pdf"
+  },
+  {
+   "catalogue": "connectors",
+   "reference": "734154492",
+   "url": "https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/salesdrawingpdf/734/73415/734154492_sd.pdf"
+  },
+  {
+   "catalogue": "connectors",
+   "reference": "732250121",
+   "url": "https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/salesdrawingpdf/732/73225/732250121_sd.pdf"
+  },
+  {
+   "catalogue": "connectors",
+   "reference": "732512320",
+   "url": "https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/salesdrawingpdf/732/73251/732512320_sd.pdf"
+  },
+  {
+   "catalogue": "connectors",
+   "reference": "732512331",
+   "url": "https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/salesdrawingpdf/732/73251/732512331_sd.pdf"
+  },
+  {
+   "catalogue": "connectors",
+   "reference": "731000067",
+   "url": "https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/salesdrawingpdf/731/73100/731000067_sd.pdf"
+  },
+  {
+   "catalogue": "connectors",
+   "reference": "734154490",
+   "url": "https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/salesdrawingpdf/734/73415/734154490_sd.pdf"
+  },
+  {
+   "catalogue": "connectors",
+   "reference": "732512330",
+   "url": "https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/salesdrawingpdf/732/73251/732512330_sd.pdf"
+  },
+  {
+   "catalogue": "connectors",
+   "reference": "734123152",
+   "url": "https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/salesdrawingpdf/734/73412/734123152_sd.pdf"
+  },
+  {
+   "catalogue": "connectors",
+   "reference": "734150968",
+   "url": "https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/salesdrawingpdf/734/73415/734150968_sd.pdf"
+  },
+  {
+   "catalogue": "connectors",
+   "reference": "734154224",
+   "url": "https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/salesdrawingpdf/734/73415/734154224_sd.pdf"
+  },
+  {
+   "catalogue": "connectors",
+   "reference": "732520160",
+   "url": "https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/salesdrawingpdf/732/73252/732520160_sd.pdf"
+  },
+  {
+   "catalogue": "connectors",
+   "reference": "733865160",
+   "url": "https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/salesdrawingpdf/733/73386/733865160_sd.pdf"
+  },
+  {
+   "catalogue": "connectors",
+   "reference": "734036506",
+   "url": "https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/salesdrawingpdf/734/73403/734036506_sd.pdf"
+  },
+  {
+   "catalogue": "connectors",
+   "reference": "734036508",
+   "url": "https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/salesdrawingpdf/734/73403/734036508_sd.pdf"
+  },
+  {
+   "catalogue": "connectors",
+   "reference": "732512350",
+   "url": "https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/salesdrawingpdf/732/73251/732512350_sd.pdf"
+  },
+  {
+   "catalogue": "connectors",
+   "reference": "734036504",
+   "url": "https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/salesdrawingpdf/734/73403/734036504_sd.pdf"
+  },
+  {
+   "catalogue": "connectors",
+   "reference": "734036505",
+   "url": "https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/salesdrawingpdf/734/73403/734036505_sd.pdf"
+  },
+  {
+   "catalogue": "connectors",
+   "reference": "734042450",
+   "url": "https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/salesdrawingpdf/734/73404/734042450_sd.pdf"
+  },
+  {
+   "catalogue": "connectors",
+   "reference": "734140170",
+   "url": "https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/salesdrawingpdf/734/73414/734140170_sd.pdf"
+  },
+  {
+   "catalogue": "connectors",
+   "reference": "731714230",
+   "url": "https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/salesdrawingpdf/731/73171/731714230_sd.pdf"
+  },
+  {
+   "catalogue": "connectors",
+   "reference": "732250122",
+   "url": "https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/salesdrawingpdf/732/73225/732250122_sd.pdf"
+  },
+  {
+   "catalogue": "connectors",
+   "reference": "734150969",
+   "url": "https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/salesdrawingpdf/734/73415/734150969_sd.pdf"
+  },
+  {
+   "catalogue": "mosfets",
+   "reference": "IPP60R280C6",
+   "url": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-ipp60r280c6-ds-en.pdf"
+  },
+  {
+   "catalogue": "mosfets",
+   "reference": "STL40NM60N",
+   "url": "https://www.st.com/content/ccc/resource/technical/document/datasheet/ec/ab/77/1f/40/ab/40/91/DM00048286.pdf/files/DM00048286.pdf/jcr:content/translations/en.DM00048286.pdf"
+  },
+  {
+   "catalogue": "mosfets",
+   "reference": "IPI60R199CP",
+   "url": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-ipi60r199cp-ds-en.pdf"
+  },
+  {
+   "catalogue": "igbts",
+   "reference": "A2C35S12M3-F",
+   "url": "https://www.st.com/content/ccc/resource/sales_and_marketing/promotional_material/brochure/ed/a4/6f/10/e8/da/42/0d/brfactory_web.pdf/files/brfactory_web.pdf/jcr:content/translations/en.brfactory_web.pdf"
+  },
+  {
+   "catalogue": "igbts",
+   "reference": "A2C35S12M3",
+   "url": "https://www.st.com/content/ccc/resource/sales_and_marketing/promotional_material/brochure/ed/a4/6f/10/e8/da/42/0d/brfactory_web.pdf/files/brfactory_web.pdf/jcr:content/translations/en.brfactory_web.pdf"
+  }
+ ]
+}

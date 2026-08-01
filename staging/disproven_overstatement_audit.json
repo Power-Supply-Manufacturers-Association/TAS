@@ -1,0 +1,521 @@
+{
+ "ticket": "ABT #391 correction",
+ "date": "2026-08-01",
+ "corrected": [
+  {
+   "catalogue": "capacitors",
+   "reference": "05HV10B103KN",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "05HV11B223KCM",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "05HV13B473KN",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "05HV14B104KN",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "05HV15B224KN",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "05HV23B474KC",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "05HV25B224MC",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "MAL204271688E3",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "MAL204271109E3",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "MAL204271159E3",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "MAL204272159E3",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "MAL204271229E3",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "MAL204371339E3",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "MAL204282109E3",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "MAL204282159E3",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "MAL204281229E3",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "MAL204281109E3",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "F125PP223J100V",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "F125PP473J050V",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "F125PP222J100V",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "F125PP222J050V",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "F125PP103J100V",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "F125PP333J050V",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "F125PP223J050V",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "F125PP472J050V",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "F125PP103J050V",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "F125PP332J050V",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "F125PP102J050V",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "F125PP102J100V",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "F125PP152J050V",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "F125PP682J050V",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "05HV11B103KN",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "05HV10N102JN",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "30HV11N471KN",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "30HV11N101KN",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "20HV11B102MN",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "05HV10N471KN",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "05HV10N102KN",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "30HV12N102KN",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "30HV12N102JN",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "30HV14B103KC",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "30HV12N102KC",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "30HV15B103KN",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "10HV16B394KN",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "10HV20B103KC",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "05HV20B472KC",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "10HV20B472KCM",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "30HV23B103KC",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "20HV30B102KCM",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "30HV30B182KC",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "30HV23B182MCM",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "40HV30B181KCM",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "50HV24B472KCM",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "50HV24B102KC",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "20HV24B333MCM",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "20HV34B274KC",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "50HV26B153KCM",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "30HV26B563KCM",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "10HV36B225KCM",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "10HV20B472KN",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "05HV23B274KN",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "10HV22B153MNM",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "10HV24B104MNM",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "50HV26N102KNM",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "10HV34B105KN",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "50HV24B562MN",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "10HV36B225KN",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "30HV14B103PN",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "05HV22B224KCM",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "20HV11B102PN",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "20HV13B103PN",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "05HV21B104KCM",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "10HV64R473KC",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "10HS26B105KC",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "1825B104K501EM",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "1515B103K102E",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "1515B472K501EM",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "1515B102K102P",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "L1GN70D903KA05",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "L1GN70G473KA10",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "L1GN702125KA10",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "R75MF215050H0J",
+   "subclass": "family-attested-by-document"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "CHA06C104K5RXL7189",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "CHA06X104K5RXL7189",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "CHA08C225K9RXL7189",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "CHA06C474K9RXL7189",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "CHA06X474K9RXL7189",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "CHA08C105K4RXL7189",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "CHA08X105K4RXL7189",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "CHA08X225K9RXL7189",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "CHA12X106K9RXL7189",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "CHA13C106K8RXL7189",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "CHA12C106K9RXL7189",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "CHA13C475K3RXL7189",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "CHA13X475K3RXL7189",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "CHA13X106K8RXL7189",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "CHA21X106K3RXL7189",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "CHA21X226K8RXL7189",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "CHA21C226K8RXL7189",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "CHA21C106K3RXL7189",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "capacitors",
+   "reference": "EEUFRE222LPY",
+   "subclass": "decoder-only"
+  },
+  {
+   "catalogue": "connectors",
+   "reference": "734040230",
+   "subclass": "split-ordering-code"
+  }
+ ],
+ "bySubclass": {
+  "decoder-only": 100,
+  "family-attested-by-document": 1,
+  "split-ordering-code": 1
+ }
+}
