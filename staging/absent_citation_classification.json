@@ -1,0 +1,434 @@
+{
+ "total": 23038,
+ "byClass": {
+  "DOC_NOT_THE_DOCUMENT": 150,
+  "WRONG_PART_CITATION": 3121,
+  "MATCHER_GAP": 19550,
+  "TRUE_ABSENCE": 217
+ },
+ "bySubclass": {
+  "MATCHER_GAP/family-attested-by-document": 11133,
+  "MATCHER_GAP/split-ordering-code": 6181,
+  "WRONG_PART_CITATION/sibling-series-same-vendor": 3038,
+  "MATCHER_GAP/footnote-wildcard-ordering-code": 873,
+  "MATCHER_GAP/series-name-too-short-for-url-rule": 850,
+  "MATCHER_GAP/fullwidth-text": 278,
+  "TRUE_ABSENCE/not-named-at-any-level": 127,
+  "MATCHER_GAP/infix-variant-letter": 121,
+  "DOC_NOT_THE_DOCUMENT/html-shell-served": 100,
+  "MATCHER_GAP/decoder-only": 100,
+  "TRUE_ABSENCE/different-ordering-system": 82,
+  "WRONG_PART_CITATION/different-manufacturer": 75,
+  "DOC_NOT_THE_DOCUMENT/garbled-text-layer": 48,
+  "MATCHER_GAP/product-line-prefix-not-in-table": 14,
+  "WRONG_PART_CITATION/document-is-a-different-part": 8,
+  "TRUE_ABSENCE/series-doc-omits-code": 8,
+  "DOC_NOT_THE_DOCUMENT/near-empty-text": 2
+ },
+ "byHost": {
+  "industrial.panasonic.com": {
+   "MATCHER_GAP": 10673,
+   "WRONG_PART_CITATION": 6
+  },
+  "vishay.com": {
+   "WRONG_PART_CITATION": 3015,
+   "MATCHER_GAP": 6194,
+   "TRUE_ABSENCE": 9
+  },
+  "yageogroup.com": {
+   "MATCHER_GAP": 1418,
+   "TRUE_ABSENCE": 82,
+   "WRONG_PART_CITATION": 12
+  },
+  "rubycon.co.jp": {
+   "MATCHER_GAP": 1128,
+   "TRUE_ABSENCE": 82
+  },
+  "bourns.com": {
+   "MATCHER_GAP": 135,
+   "WRONG_PART_CITATION": 41,
+   "TRUE_ABSENCE": 4
+  },
+  "infineon.com": {
+   "DOC_NOT_THE_DOCUMENT": 53,
+   "WRONG_PART_CITATION": 4,
+   "TRUE_ABSENCE": 3,
+   "MATCHER_GAP": 1
+  },
+  "na.industrial.panasonic.com": {
+   "DOC_NOT_THE_DOCUMENT": 44
+  },
+  "molex.com": {
+   "TRUE_ABSENCE": 33,
+   "MATCHER_GAP": 1,
+   "DOC_NOT_THE_DOCUMENT": 2
+  },
+  "murata.com": {
+   "DOC_NOT_THE_DOCUMENT": 34
+  },
+  "we-online.com": {
+   "TRUE_ABSENCE": 1,
+   "WRONG_PART_CITATION": 26
+  },
+  "onsemi.com": {
+   "DOC_NOT_THE_DOCUMENT": 16,
+   "WRONG_PART_CITATION": 4
+  },
+  "abracon.com": {
+   "WRONG_PART_CITATION": 5
+  },
+  "st.com": {
+   "TRUE_ABSENCE": 3
+  },
+  "aosmd.com": {
+   "WRONG_PART_CITATION": 2
+  },
+  "search.murata.co.jp": {
+   "WRONG_PART_CITATION": 2
+  },
+  "rocelec.widen.net": {
+   "DOC_NOT_THE_DOCUMENT": 1
+  },
+  "panjit.com.tw": {
+   "WRONG_PART_CITATION": 1
+  },
+  "tdk-electronics.tdk.com": {
+   "WRONG_PART_CITATION": 1
+  },
+  "assets.nexperia.com": {
+   "WRONG_PART_CITATION": 1
+  },
+  "ti.com": {
+   "WRONG_PART_CITATION": 1
+  }
+ },
+ "topClusters": [
+  {
+   "n": 6774,
+   "url": "https://industrial.panasonic.com/cdbs/www-data/pdf/RDA0000/AOA0000C304.pdf",
+   "klass": "MATCHER_GAP",
+   "subclass": "family-attested-by-document"
+  },
+  {
+   "n": 1733,
+   "url": "https://industrial.panasonic.com/cdbs/www-data/pdf/RDN0000/AOA0000C313.pdf",
+   "klass": "MATCHER_GAP",
+   "subclass": "family-attested-by-document"
+  },
+  {
+   "n": 1280,
+   "url": "https://industrial.panasonic.com/cdbs/www-data/pdf/RDA0000/AOA0000C301.pdf",
+   "klass": "MATCHER_GAP",
+   "subclass": "family-attested-by-document"
+  },
+  {
+   "n": 787,
+   "url": "https://industrial.panasonic.com/cdbs/www-data/pdf/AOC0000/AOC0000C20.pdf",
+   "klass": "MATCHER_GAP",
+   "subclass": "family-attested-by-document"
+  },
+  {
+   "n": 533,
+   "url": "https://www.vishay.com/docs/28341/159pulsi.pdf",
+   "klass": "WRONG_PART_CITATION",
+   "subclass": "sibling-series-same-vendor"
+  },
+  {
+   "n": 532,
+   "url": "https://www.vishay.com/docs/28395/150crz.pdf",
+   "klass": "WRONG_PART_CITATION",
+   "subclass": "sibling-series-same-vendor"
+  },
+  {
+   "n": 433,
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_T2043_T35X",
+   "klass": "MATCHER_GAP",
+   "subclass": "footnote-wildcard-ordering-code"
+  },
+  {
+   "n": 398,
+   "url": "https://www.vishay.com/docs/28581/269plt-si.pdf",
+   "klass": "MATCHER_GAP",
+   "subclass": "split-ordering-code"
+  },
+  {
+   "n": 380,
+   "url": "https://www.vishay.com/docs/28410/256pmg-si.pdf",
+   "klass": "WRONG_PART_CITATION",
+   "subclass": "sibling-series-same-vendor"
+  },
+  {
+   "n": 364,
+   "url": "https://yageogroup.com/content/datasheet/asset/file/F3101_MIL-PRF-39014",
+   "klass": "MATCHER_GAP",
+   "subclass": "footnote-wildcard-ordering-code"
+  },
+  {
+   "n": 344,
+   "url": "https://www.vishay.com/docs/28402/142rhs.pdf",
+   "klass": "MATCHER_GAP",
+   "subclass": "split-ordering-code"
+  },
+  {
+   "n": 311,
+   "url": "https://www.vishay.com/docs/28382/094pmesi.pdf",
+   "klass": "WRONG_PART_CITATION",
+   "subclass": "sibling-series-same-vendor"
+  },
+  {
+   "n": 278,
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/ZLJ.pdf",
+   "klass": "MATCHER_GAP",
+   "subclass": "fullwidth-text"
+  },
+  {
+   "n": 275,
+   "url": "https://www.vishay.com/docs/28345/050-052ped-pw.pdf",
+   "klass": "WRONG_PART_CITATION",
+   "subclass": "sibling-series-same-vendor"
+  },
+  {
+   "n": 262,
+   "url": "https://www.vishay.com/docs/28321/136rvi.pdf",
+   "klass": "MATCHER_GAP",
+   "subclass": "split-ordering-code"
+  },
+  {
+   "n": 226,
+   "url": "https://www.vishay.com/docs/28415/180cps.pdf",
+   "klass": "WRONG_PART_CITATION",
+   "subclass": "sibling-series-same-vendor"
+  },
+  {
+   "n": 209,
+   "url": "https://www.vishay.com/docs/28325/021asm.pdf",
+   "klass": "MATCHER_GAP",
+   "subclass": "split-ordering-code"
+  },
+  {
+   "n": 209,
+   "url": "https://www.vishay.com/docs/28371/101102phrst.pdf",
+   "klass": "MATCHER_GAP",
+   "subclass": "split-ordering-code"
+  },
+  {
+   "n": 203,
+   "url": "https://www.vishay.com/docs/28467/202pmlst.pdf",
+   "klass": "MATCHER_GAP",
+   "subclass": "split-ordering-code"
+  },
+  {
+   "n": 187,
+   "url": "https://www.vishay.com/docs/28456/501pgm-st.pdf",
+   "klass": "WRONG_PART_CITATION",
+   "subclass": "sibling-series-same-vendor"
+  },
+  {
+   "n": 182,
+   "url": "https://www.vishay.com/docs/28401/146rti.pdf",
+   "klass": "MATCHER_GAP",
+   "subclass": "split-ordering-code"
+  },
+  {
+   "n": 168,
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/PK.pdf",
+   "klass": "MATCHER_GAP",
+   "subclass": "series-name-too-short-for-url-rule"
+  },
+  {
+   "n": 164,
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/PX.pdf",
+   "klass": "MATCHER_GAP",
+   "subclass": "series-name-too-short-for-url-rule"
+  },
+  {
+   "n": 164,
+   "url": "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/ZL.pdf",
+   "klass": "MATCHER_GAP",
+   "subclass": "series-name-too-short-for-url-rule"
+  },
+  {
+   "n": 164,
+   "url": "https://www.vishay.com/docs/28499/172rlx.pdf",
+   "klass": "MATCHER_GAP",
+   "subclass": "split-ordering-code"
+  },
+  {
+   "n": 150,
+   "url": "https://www.vishay.com/docs/28403/146cti.pdf",
+   "klass": "WRONG_PART_CITATION",
+   "subclass": "sibling-series-same-vendor"
+  },
+  {
+   "n": 150,
+   "url": "https://www.vishay.com/docs/28462/170rvz.pdf",
+   "klass": "MATCHER_GAP",
+   "subclass": "split-ordering-code"
+  },
+  {
+   "n": 145,
+   "url": "https://www.vishay.com/docs/28465/190rtl.pdf",
+   "klass": "MATCHER_GAP",
+   "subclass": "split-ordering-code"
+  },
+  {
+   "n": 143,
+   "url": "https://www.vishay.com/docs/28323/150rmi.pdf",
+   "klass": "MATCHER_GAP",
+   "subclass": "split-ordering-code"
+  },
+  {
+   "n": 132,
+   "url": "https://www.vishay.com/docs/28335/119ahtdin.pdf",
+   "klass": "MATCHER_GAP",
+   "subclass": "split-ordering-code"
+  },
+  {
+   "n": 132,
+   "url": "https://www.vishay.com/docs/28334/118aht.pdf",
+   "klass": "MATCHER_GAP",
+   "subclass": "split-ordering-code"
+  },
+  {
+   "n": 132,
+   "url": "https://www.vishay.com/docs/28332/138aml.pdf",
+   "klass": "MATCHER_GAP",
+   "subclass": "split-ordering-code"
+  },
+  {
+   "n": 129,
+   "url": "https://www.vishay.com/docs/28341/159pulsi.pdf",
+   "klass": "MATCHER_GAP",
+   "subclass": "split-ordering-code"
+  },
+  {
+   "n": 128,
+   "url": "https://www.vishay.com/docs/28340/056057psmsi.pdf",
+   "klass": "MATCHER_GAP",
+   "subclass": "split-ordering-code"
+  },
+  {
+   "n": 119,
+   "url": "https://www.vishay.com/docs/28456/501pgm-st.pdf",
+   "klass": "MATCHER_GAP",
+   "subclass": "split-ordering-code"
+  },
+  {
+   "n": 117,
+   "url": "https://www.vishay.com/docs/28342/058059pll-si.pdf",
+   "klass": "MATCHER_GAP",
+   "subclass": "split-ordering-code"
+  },
+  {
+   "n": 114,
+   "url": "https://www.vishay.com/docs/28395/150crz.pdf",
+   "klass": "MATCHER_GAP",
+   "subclass": "split-ordering-code"
+  },
+  {
+   "n": 114,
+   "url": "https://www.vishay.com/docs/28458/193pursi.pdf",
+   "klass": "MATCHER_GAP",
+   "subclass": "split-ordering-code"
+  },
+  {
+   "n": 107,
+   "url": "https://www.vishay.com/docs/28422/246rti-v.pdf",
+   "klass": "MATCHER_GAP",
+   "subclass": "split-ordering-code"
+  },
+  {
+   "n": 104,
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_T2043_T35X",
+   "klass": "MATCHER_GAP",
+   "subclass": "family-attested-by-document"
+  },
+  {
+   "n": 104,
+   "url": "https://www.vishay.com/docs/28327/030031as.pdf",
+   "klass": "MATCHER_GAP",
+   "subclass": "split-ordering-code"
+  },
+  {
+   "n": 104,
+   "url": "https://www.vishay.com/docs/28318/048rml.pdf",
+   "klass": "MATCHER_GAP",
+   "subclass": "split-ordering-code"
+  },
+  {
+   "n": 104,
+   "url": "https://www.vishay.com/docs/28464/125als.pdf",
+   "klass": "MATCHER_GAP",
+   "subclass": "split-ordering-code"
+  },
+  {
+   "n": 103,
+   "url": "https://www.vishay.com/docs/28338/157pumsi.pdf",
+   "klass": "MATCHER_GAP",
+   "subclass": "split-ordering-code"
+  },
+  {
+   "n": 100,
+   "url": "https://yageogroup.com/content/datasheet/asset/file/KEM_C1040_AXIMAX_C0G",
+   "klass": "MATCHER_GAP",
+   "subclass": "family-attested-by-document"
+  }
+ ],
+ "byCatalogue": {
+  "capacitors": {
+   "DOC_NOT_THE_DOCUMENT": 44,
+   "MATCHER_GAP": 8737,
+   "TRUE_ABSENCE": 172,
+   "WRONG_PART_CITATION": 2969
+  },
+  "resistors": {
+   "MATCHER_GAP": 10651,
+   "TRUE_ABSENCE": 2,
+   "WRONG_PART_CITATION": 9
+  },
+  "magnetics": {
+   "WRONG_PART_CITATION": 83,
+   "DOC_NOT_THE_DOCUMENT": 34,
+   "TRUE_ABSENCE": 4,
+   "MATCHER_GAP": 144
+  },
+  "mosfets": {
+   "DOC_NOT_THE_DOCUMENT": 63,
+   "WRONG_PART_CITATION": 47,
+   "TRUE_ABSENCE": 4,
+   "MATCHER_GAP": 1
+  },
+  "connectors": {
+   "TRUE_ABSENCE": 33,
+   "MATCHER_GAP": 1,
+   "DOC_NOT_THE_DOCUMENT": 2
+  },
+  "diodes": {
+   "MATCHER_GAP": 16,
+   "DOC_NOT_THE_DOCUMENT": 5,
+   "WRONG_PART_CITATION": 9
+  },
+  "igbts": {
+   "WRONG_PART_CITATION": 2,
+   "DOC_NOT_THE_DOCUMENT": 1,
+   "TRUE_ABSENCE": 2
+  },
+  "varistors": {
+   "WRONG_PART_CITATION": 2
+  },
+  "controllers": {
+   "DOC_NOT_THE_DOCUMENT": 1
+  }
+ },
+ "handVerified": [
+  "https://www.bourns.com/docs/Product-Datasheets/srp2512a.pdf",
+  "https://www.we-online.com/components/products/datasheet/74406032033.pdf",
+  "https://www.we-online.com/components/products/datasheet/74406042470.pdf",
+  "https://yageogroup.com/content/datasheet/asset/file/KEM_C1095_MIL-PRF-32535",
+  "https://yageogroup.com/content/datasheet/asset/file/KEM_C1096_MIL-PRF-32535_X7R",
+  "https://yageogroup.com/content/datasheet/asset/file/KEM_C1106_HV_RAD_IND_HT200C",
+  "https://yageogroup.com/content/datasheet/asset/file/KEM_C1107_HV_RAD_IND",
+  "https://yageogroup.com/content/datasheet/asset/file/KEM_C1128_HRA_X7R",
+  "https://yageogroup.com/content/datasheet/asset/file/KEM_F3121_R75H"
+ ]
+}

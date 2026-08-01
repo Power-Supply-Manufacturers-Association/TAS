@@ -64,11 +64,12 @@ CASES = [
      "RADIAL LEAD ALUMINUM ELECTROLYTIC CAPACITORS  MS5 SERIES  4V 22uF",
      "FAMILY_ONLY"),
 
-    # Genuinely absent, confirmed by hand: the cited KEMET high-voltage document contains
-    # no order code of any kind, and "HV" is stoplisted so the filename cannot rubber-stamp.
-    ("true absence", "05HV10B103KN",
-     "https://yageogroup.com/content/datasheet/asset/file/KEM_C1106_HV_RAD_IND_HT200C",
-     "High Voltage Radial Ceramic Capacitors  0.01 uF  C1106  performance curves",
+    # Genuinely absent, confirmed by hand: Rubycon's KXW.pdf is an "Obsolete Products"
+    # dimensions sheet of 5,048 characters in which the string "KXW" does not occur even
+    # once, so nothing ties it to the part beyond the filename.
+    ("true absence", "16KXW470MEFC5X11",
+     "https://www.rubycon.co.jp/wp-content/uploads/catalog-aluminum/KXW.pdf",
+     "生産中止品  Obsolete Products  DIMENSIONS (mm)  case sizes and lead pitch",
      "ABSENT"),
 
     # The ABT #385 defect this pass exists to catch: a SUMIDA part citing a BOURNS
@@ -125,3 +126,60 @@ def test_generic_catalogue_words_cannot_rubber_stamp():
     assert series_from_url(
         "https://yageogroup.com/content/datasheet/asset/file/KEM_C1106_HV_RAD_IND_HT200C",
         "05HV10B103KN") == []
+
+
+# ── Known false negatives, recorded rather than asserted as correct ──────────────
+#
+# These pin CURRENT behaviour so a change is visible, but the verdict they pin is
+# WRONG and is tracked. They exist because the alternative — quietly leaving the
+# defect undocumented — is how the earlier matcher bugs survived as long as they did.
+#
+# A note on how one of them got here. An earlier version of this file pinned
+# 05HV10B103KN against KEM_C1106 as a "true absence, confirmed by hand: the document
+# contains no order code of any kind". That sentence was literally true and the
+# conclusion drawn from it was wrong. The document opens with an Ordering Information
+# table that decodes the code field by field —
+#
+#     05 = 500 V | Series HV | Style/Size 10..16 | B = X7R | 103 = cap code
+#                | K = +-10 % | N = Nickel
+#
+# — which is unambiguously this part's own datasheet naming every one of its fields.
+# It simply never prints them concatenated. "I could not find the string" is not
+# "the part is not in the document", and pinning the first as if it were the second
+# put a false claim into the test suite that guards this exact class of error.
+
+
+def test_known_false_negative_document_decodes_but_never_concatenates():
+    """KEMET-style ordering tables name every field of the code but never join them.
+
+    ~100 corpus rows cite a document of this shape. Matching them needs a decoder rule
+    (assemble the code from the table's own field columns), not another string form,
+    so the gap is recorded here rather than papered over. When such a rule lands, this
+    test flips to FOUND or FAMILY_ONLY and should be moved into CASES.
+    """
+    # Verbatim from the cited document, whitespace collapsed. Note the example code in the
+    # header row is a DIFFERENT part (10 HV 12 N 472 K N M) — the table teaches the fields,
+    # it does not list this order code, so no string form of the part can ever match. An
+    # earlier draft of this fixture invented a header reading "05 HV 10 B 103 K N", which
+    # normalises straight into the part number and made the test pass for the wrong reason.
+    text = ("Ordering Information 10 HV 12 N 472 K N M Capacitance Capacitance Lead Wire "
+            "Voltage Series Style/Size Dielectric Test Level Packaging "
+            "05 = 500 V HV 10 B, W = X7R type Two significant J = +-5% N = Nickel")
+    got = check(text, ["05HV10B103KN"],
+                "https://yageogroup.com/content/datasheet/asset/file/"
+                "KEM_C1106_HV_RAD_IND_HT200C")["05HV10B103KN"]
+    assert got["verdict"] == "ABSENT", "if this now passes, the decoder gap is closed"
+
+
+def test_known_false_negative_split_ordering_code():
+    """Vishay prints the mask stem in the column header and only the tail in each row.
+
+    013rlc.pdf contains "MAL2013" and "65101E3" as separate tokens and never the joined
+    MAL201365101E3, so the part is present in its own datasheet in split form. 6,181
+    corpus rows are in this shape — the single largest wrong verdict in the pass.
+    """
+    text = ("ORDERING CODE  MAL2013.......   "
+            "16  100  8.2 x 11  150  3.2  0.13  1.0   55101E3  5.0   65101E3  5.0   35101E3  5.0")
+    got = check(text, ["MAL201365101E3"],
+                "https://www.vishay.com/docs/28313/013rlc.pdf")["MAL201365101E3"]
+    assert got["verdict"] == "ABSENT", "if this now passes, the split-code gap is closed"
