@@ -1,0 +1,399 @@
+{
+ "ticket": "ABT #387 follow-on",
+ "date": "2026-08-01",
+ "database": "/mnt/c/ProgramData/TDK/TDKMeister/tdkData/TstDB.tmdb",
+ "inductanceFixed": [],
+ "dcrFixed": [
+  {
+   "reference": "SPM6530T-R25M",
+   "wasNominal": null,
+   "wasMaximum": 0.004,
+   "nowMaximum": 0.00231
+  },
+  {
+   "reference": "SPM6530T-1R0M",
+   "wasNominal": null,
+   "wasMaximum": 0.013,
+   "nowMaximum": 0.00781
+  },
+  {
+   "reference": "SPM6530T-1R5M",
+   "wasNominal": null,
+   "wasMaximum": 0.019,
+   "nowMaximum": 0.0107
+  },
+  {
+   "reference": "SPM6530T-150M",
+   "wasNominal": null,
+   "wasMaximum": 0.195,
+   "nowMaximum": 0.1199
+  },
+  {
+   "reference": "SLF10145T-470M",
+   "wasNominal": null,
+   "wasMaximum": 0.125,
+   "nowMaximum": 0.12
+  },
+  {
+   "reference": "SLF10145T-680M",
+   "wasNominal": null,
+   "wasMaximum": 0.18,
+   "nowMaximum": 0.168
+  },
+  {
+   "reference": "SLF10145T-101M",
+   "wasNominal": null,
+   "wasMaximum": 0.265,
+   "nowMaximum": 0.24
+  },
+  {
+   "reference": "SLF10145T-331M",
+   "wasNominal": null,
+   "wasMaximum": 0.84,
+   "nowMaximum": 0.816
+  },
+  {
+   "reference": "RLF12545T-7R8N5R4",
+   "wasNominal": null,
+   "wasMaximum": 6.1,
+   "nowMaximum": 0.01224
+  },
+  {
+   "reference": "ACM2012-201-2P",
+   "wasNominal": null,
+   "wasMaximum": 200.0,
+   "nowMaximum": 0.25
+  },
+  {
+   "reference": "ACM2012-361-2P",
+   "wasNominal": null,
+   "wasMaximum": 360.0,
+   "nowMaximum": 0.5
+  },
+  {
+   "reference": "NLC453232T-2R2K",
+   "wasNominal": null,
+   "wasMaximum": 0.2,
+   "nowMaximum": 0.18
+  },
+  {
+   "reference": "NLC453232T-3R3K",
+   "wasNominal": null,
+   "wasMaximum": 0.24,
+   "nowMaximum": 0.22
+  },
+  {
+   "reference": "NLC453232T-6R8K",
+   "wasNominal": null,
+   "wasMaximum": 0.4,
+   "nowMaximum": 0.35
+  },
+  {
+   "reference": "NLC453232T-100K",
+   "wasNominal": null,
+   "wasMaximum": 0.6,
+   "nowMaximum": 0.5
+  },
+  {
+   "reference": "NLC453232T-150K",
+   "wasNominal": null,
+   "wasMaximum": 0.8,
+   "nowMaximum": 0.7
+  },
+  {
+   "reference": "NLC453232T-220K",
+   "wasNominal": null,
+   "wasMaximum": 1.2,
+   "nowMaximum": 0.9
+  },
+  {
+   "reference": "NLC453232T-330K",
+   "wasNominal": null,
+   "wasMaximum": 1.6,
+   "nowMaximum": 1.4
+  },
+  {
+   "reference": "NLC453232T-680K",
+   "wasNominal": null,
+   "wasMaximum": 3.5,
+   "nowMaximum": 2.6
+  },
+  {
+   "reference": "NLC453232T-101K",
+   "wasNominal": null,
+   "wasMaximum": 4.5,
+   "nowMaximum": 4.0
+  },
+  {
+   "reference": "SLF6028T-6R8M1R5",
+   "wasNominal": null,
+   "wasMaximum": 0.0532,
+   "nowMaximum": 0.0425
+  },
+  {
+   "reference": "SLF6028T-100M1R3",
+   "wasNominal": null,
+   "wasMaximum": 0.0745,
+   "nowMaximum": 0.0638
+  },
+  {
+   "reference": "SLF6028T-150M1R0",
+   "wasNominal": null,
+   "wasMaximum": 0.104,
+   "nowMaximum": 0.0894
+  },
+  {
+   "reference": "SLF6028T-220MR77",
+   "wasNominal": null,
+   "wasMaximum": 0.148,
+   "nowMaximum": 0.1248
+  },
+  {
+   "reference": "SLF6028T-330MR69",
+   "wasNominal": null,
+   "wasMaximum": 0.21,
+   "nowMaximum": 0.1776
+  },
+  {
+   "reference": "SLF6028T-470MR59",
+   "wasNominal": null,
+   "wasMaximum": 0.29,
+   "nowMaximum": 0.252
+  },
+  {
+   "reference": "SLF6028T-680MR50",
+   "wasNominal": null,
+   "wasMaximum": 0.43,
+   "nowMaximum": 0.348
+  },
+  {
+   "reference": "SLF7045T-3R3M2R5",
+   "wasNominal": null,
+   "wasMaximum": 0.03,
+   "nowMaximum": 0.024
+  },
+  {
+   "reference": "SLF7045T-4R7M2R0",
+   "wasNominal": null,
+   "wasMaximum": 0.039,
+   "nowMaximum": 0.036
+  },
+  {
+   "reference": "SLF7045T-100M1R3",
+   "wasNominal": null,
+   "wasMaximum": 0.052,
+   "nowMaximum": 0.0432
+  },
+  {
+   "reference": "SLF7045T-220MR90",
+   "wasNominal": null,
+   "wasMaximum": 0.096,
+   "nowMaximum": 0.0732
+  },
+  {
+   "reference": "SLF7045T-330MR82",
+   "wasNominal": null,
+   "wasMaximum": 0.125,
+   "nowMaximum": 0.1152
+  },
+  {
+   "reference": "SLF7045T-470MR75",
+   "wasNominal": null,
+   "wasMaximum": 0.175,
+   "nowMaximum": 0.15
+  },
+  {
+   "reference": "SLF7045T-680MR60",
+   "wasNominal": null,
+   "wasMaximum": 0.25,
+   "nowMaximum": 0.21
+  },
+  {
+   "reference": "SLF7045T-101MR50",
+   "wasNominal": null,
+   "wasMaximum": 0.34,
+   "nowMaximum": 0.3
+  },
+  {
+   "reference": "SLF7045T-151MR40",
+   "wasNominal": null,
+   "wasMaximum": 0.52,
+   "nowMaximum": 0.408
+  },
+  {
+   "reference": "SLF7045T-221MR33",
+   "wasNominal": null,
+   "wasMaximum": 0.74,
+   "nowMaximum": 0.624
+  },
+  {
+   "reference": "SLF7045T-331MR25",
+   "wasNominal": null,
+   "wasMaximum": 1.05,
+   "nowMaximum": 0.888
+  },
+  {
+   "reference": "SLF7045T-471MR22",
+   "wasNominal": null,
+   "wasMaximum": 1.48,
+   "nowMaximum": 1.26
+  },
+  {
+   "reference": "SLF7045T-681MR20",
+   "wasNominal": null,
+   "wasMaximum": 2.28,
+   "nowMaximum": 1.776
+  },
+  {
+   "reference": "SLF10145T-330M1R6",
+   "wasNominal": null,
+   "wasMaximum": 0.1,
+   "nowMaximum": 0.0978
+  },
+  {
+   "reference": "SLF10145T-470M1R4",
+   "wasNominal": null,
+   "wasMaximum": 0.14,
+   "nowMaximum": 0.12
+  },
+  {
+   "reference": "SLF10145T-680M1R2",
+   "wasNominal": null,
+   "wasMaximum": 0.2,
+   "nowMaximum": 0.168
+  },
+  {
+   "reference": "SLF10145T-101M1R0",
+   "wasNominal": null,
+   "wasMaximum": 0.35,
+   "nowMaximum": 0.24
+  },
+  {
+   "reference": "SLF10145T-151MR79",
+   "wasNominal": null,
+   "wasMaximum": 0.47,
+   "nowMaximum": 0.42
+  },
+  {
+   "reference": "SLF10145T-221MR65",
+   "wasNominal": null,
+   "wasMaximum": 0.68,
+   "nowMaximum": 0.564
+  },
+  {
+   "reference": "SLF10145T-331MR54",
+   "wasNominal": null,
+   "wasMaximum": 1.03,
+   "nowMaximum": 0.816
+  },
+  {
+   "reference": "SLF10145T-471MR47",
+   "wasNominal": null,
+   "wasMaximum": 1.6,
+   "nowMaximum": 1.236
+  },
+  {
+   "reference": "SLF10145T-681MR38",
+   "wasNominal": null,
+   "wasMaximum": 2.8,
+   "nowMaximum": 1.92
+  },
+  {
+   "reference": "SLF10145T-102MR29",
+   "wasNominal": null,
+   "wasMaximum": 3.4,
+   "nowMaximum": 3.36
+  },
+  {
+   "reference": "MLF1005DR10KT",
+   "wasNominal": null,
+   "wasMaximum": 1.0,
+   "nowMaximum": 0.6
+  },
+  {
+   "reference": "MLF1005AR47KT",
+   "wasNominal": null,
+   "wasMaximum": 1.0,
+   "nowMaximum": 0.65
+  },
+  {
+   "reference": "MLF1005AR68K",
+   "wasNominal": null,
+   "wasMaximum": 1.0,
+   "nowMaximum": 0.8
+  },
+  {
+   "reference": "MLF1608A1R5M",
+   "wasNominal": null,
+   "wasMaximum": 1.0,
+   "nowMaximum": 0.7
+  },
+  {
+   "reference": "MLF1608A1R8M",
+   "wasNominal": null,
+   "wasMaximum": 1.0,
+   "nowMaximum": 0.85
+  },
+  {
+   "reference": "MLF1608DR10M",
+   "wasNominal": null,
+   "wasMaximum": 1.0,
+   "nowMaximum": 0.35
+  },
+  {
+   "reference": "MLF1608DR12M",
+   "wasNominal": null,
+   "wasMaximum": 1.0,
+   "nowMaximum": 0.4
+  },
+  {
+   "reference": "MLF1608DR15M",
+   "wasNominal": null,
+   "wasMaximum": 1.0,
+   "nowMaximum": 0.45
+  },
+  {
+   "reference": "MLF1608DR18M",
+   "wasNominal": null,
+   "wasMaximum": 1.0,
+   "nowMaximum": 0.5
+  },
+  {
+   "reference": "MLF2012A1R5M",
+   "wasNominal": null,
+   "wasMaximum": 1.0,
+   "nowMaximum": 0.4
+  },
+  {
+   "reference": "B82432A1102K000",
+   "wasNominal": null,
+   "wasMaximum": 0.56,
+   "nowMaximum": 0.28
+  },
+  {
+   "reference": "RLF12545T-1R9N100",
+   "wasNominal": null,
+   "wasMaximum": 3.6,
+   "nowMaximum": 0.00432
+  },
+  {
+   "reference": "RLF12545T-4R2N6R5",
+   "wasNominal": null,
+   "wasMaximum": 8.7,
+   "nowMaximum": 0.00888
+  },
+  {
+   "reference": "RLF12545T-5R6N6R1",
+   "wasNominal": null,
+   "wasMaximum": 6.5,
+   "nowMaximum": 0.0102
+  }
+ ],
+ "counts": {
+  "viaPackagingSibling": 136,
+  "rows": 64
+ },
+ "note": "This file records the FINAL pass only. The correction ran in two passes - an exact part-number match (39 inductance + 332 DC resistance rows) and then a packaging-sibling pass (64 further DC resistance rows) - and the second overwrote the first audit. The authoritative record of every corrected row is the provenance entry written into the row itself, naming TstDB.tmdb and the spec it came from; the totals below are recovered from those entries.",
+ "totalRowsWithInductanceCorrection": 39,
+ "totalRowsWithDcrCorrection": 396
+}

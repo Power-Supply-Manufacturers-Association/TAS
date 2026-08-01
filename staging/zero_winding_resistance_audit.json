@@ -1,0 +1,319 @@
+{
+ "ticket": "ABT #387 follow-on",
+ "date": "2026-08-01",
+ "note": "winding resistance stored as exactly 0 ohm was removed - a winding cannot have zero resistance, and no replacement value was invented (ABT #387 follow-on)",
+ "removed": [
+  {
+   "reference": "PE-0805CCMC261STS",
+   "manufacturer": "Pulse Electronics",
+   "fields": [
+    "dcResistances[].nominal"
+   ]
+  },
+  {
+   "reference": "PE-0805CCMC181STS",
+   "manufacturer": "Pulse Electronics",
+   "fields": [
+    "dcResistances[].nominal"
+   ]
+  },
+  {
+   "reference": "H6507NL",
+   "manufacturer": "Pulse Electronics",
+   "fields": [
+    "dcResistances[].nominal"
+   ]
+  },
+  {
+   "reference": "PE-1206CCMC222STS",
+   "manufacturer": "Pulse Electronics",
+   "fields": [
+    "dcResistances[].nominal"
+   ]
+  },
+  {
+   "reference": "H6503NL",
+   "manufacturer": "Pulse Electronics",
+   "fields": [
+    "dcResistances[].nominal"
+   ]
+  },
+  {
+   "reference": "H6503NLT",
+   "manufacturer": "Pulse Electronics",
+   "fields": [
+    "dcResistances[].nominal"
+   ]
+  },
+  {
+   "reference": "PE-1206CCMC601STS",
+   "manufacturer": "Pulse Electronics",
+   "fields": [
+    "dcResistances[].nominal"
+   ]
+  },
+  {
+   "reference": "PE-1206CCMC102STS",
+   "manufacturer": "Pulse Electronics",
+   "fields": [
+    "dcResistances[].nominal"
+   ]
+  },
+  {
+   "reference": "PE-0805CCMC121STS",
+   "manufacturer": "Pulse Electronics",
+   "fields": [
+    "dcResistances[].nominal"
+   ]
+  },
+  {
+   "reference": "PE-0805CCMC361STS",
+   "manufacturer": "Pulse Electronics",
+   "fields": [
+    "dcResistances[].nominal"
+   ]
+  },
+  {
+   "reference": "T8008NL",
+   "manufacturer": "Pulse Electronics",
+   "fields": [
+    "dcResistances[].nominal"
+   ]
+  },
+  {
+   "reference": "H6504NLT",
+   "manufacturer": "Pulse Electronics",
+   "fields": [
+    "dcResistances[].nominal"
+   ]
+  },
+  {
+   "reference": "PE-0805CCMC900STS",
+   "manufacturer": "Pulse Electronics",
+   "fields": [
+    "dcResistances[].nominal"
+   ]
+  },
+  {
+   "reference": "AE0100",
+   "manufacturer": "Pulse Electronics",
+   "fields": [
+    "dcResistances[].nominal"
+   ]
+  },
+  {
+   "reference": "AE1210",
+   "manufacturer": "Pulse Electronics",
+   "fields": [
+    "dcResistances[].nominal"
+   ]
+  },
+  {
+   "reference": "AE2002",
+   "manufacturer": "Pulse Electronics",
+   "fields": [
+    "dcResistances[].nominal"
+   ]
+  },
+  {
+   "reference": "AE3003",
+   "manufacturer": "Pulse Electronics",
+   "fields": [
+    "dcResistances[].nominal"
+   ]
+  },
+  {
+   "reference": "AE5002",
+   "manufacturer": "Pulse Electronics",
+   "fields": [
+    "dcResistances[].nominal"
+   ]
+  },
+  {
+   "reference": "B2013FNLT",
+   "manufacturer": "Pulse Electronics",
+   "fields": [
+    "dcResistances[].nominal"
+   ]
+  },
+  {
+   "reference": "PE-1206CCMC900STS",
+   "manufacturer": "Pulse Electronics",
+   "fields": [
+    "dcResistances[].nominal"
+   ]
+  },
+  {
+   "reference": "PE-1210CCMC102STS",
+   "manufacturer": "Pulse Electronics",
+   "fields": [
+    "dcResistances[].nominal"
+   ]
+  },
+  {
+   "reference": "PE-1210CCMC161STS",
+   "manufacturer": "Pulse Electronics",
+   "fields": [
+    "dcResistances[].nominal"
+   ]
+  },
+  {
+   "reference": "PE-1210CCMC271STS",
+   "manufacturer": "Pulse Electronics",
+   "fields": [
+    "dcResistances[].nominal"
+   ]
+  },
+  {
+   "reference": "PE-1210CCMC601STS",
+   "manufacturer": "Pulse Electronics",
+   "fields": [
+    "dcResistances[].nominal"
+   ]
+  },
+  {
+   "reference": "T8008FNL",
+   "manufacturer": "Pulse Electronics",
+   "fields": [
+    "dcResistances[].nominal"
+   ]
+  },
+  {
+   "reference": "TM8116NL",
+   "manufacturer": "Pulse Electronics",
+   "fields": [
+    "dcResistances[].nominal"
+   ]
+  },
+  {
+   "reference": "PL10313T",
+   "manufacturer": "iNRCORE",
+   "fields": [
+    "dcResistances[].maximum"
+   ]
+  },
+  {
+   "reference": "PL10313NLT",
+   "manufacturer": "iNRCORE",
+   "fields": [
+    "dcResistances[].maximum"
+   ]
+  },
+  {
+   "reference": "PL10309T",
+   "manufacturer": "iNRCORE",
+   "fields": [
+    "dcResistances[].maximum"
+   ]
+  },
+  {
+   "reference": "PL10309NLT",
+   "manufacturer": "iNRCORE",
+   "fields": [
+    "dcResistances[].maximum"
+   ]
+  },
+  {
+   "reference": "PL10308T",
+   "manufacturer": "iNRCORE",
+   "fields": [
+    "dcResistances[].maximum"
+   ]
+  },
+  {
+   "reference": "PL10308NLT",
+   "manufacturer": "iNRCORE",
+   "fields": [
+    "dcResistances[].maximum"
+   ]
+  },
+  {
+   "reference": "PL10313NL",
+   "manufacturer": "iNRCORE",
+   "fields": [
+    "dcResistances[].maximum"
+   ]
+  },
+  {
+   "reference": "PL10313",
+   "manufacturer": "iNRCORE",
+   "fields": [
+    "dcResistances[].maximum"
+   ]
+  },
+  {
+   "reference": "PL10309NL",
+   "manufacturer": "iNRCORE",
+   "fields": [
+    "dcResistances[].maximum"
+   ]
+  },
+  {
+   "reference": "PL10309",
+   "manufacturer": "iNRCORE",
+   "fields": [
+    "dcResistances[].maximum"
+   ]
+  },
+  {
+   "reference": "PL10308NL",
+   "manufacturer": "iNRCORE",
+   "fields": [
+    "dcResistances[].maximum"
+   ]
+  },
+  {
+   "reference": "PL10308",
+   "manufacturer": "iNRCORE",
+   "fields": [
+    "dcResistances[].maximum"
+   ]
+  },
+  {
+   "reference": "T-1485ACTNLT",
+   "manufacturer": "iNRCORE",
+   "fields": [
+    "dcResistances[].maximum"
+   ]
+  },
+  {
+   "reference": "T-1062ACTNLT",
+   "manufacturer": "iNRCORE",
+   "fields": [
+    "dcResistances[].maximum"
+   ]
+  },
+  {
+   "reference": "T-1485ACTNL",
+   "manufacturer": "iNRCORE",
+   "fields": [
+    "dcResistances[].maximum"
+   ]
+  },
+  {
+   "reference": "T-1062ACTNL",
+   "manufacturer": "iNRCORE",
+   "fields": [
+    "dcResistances[].maximum"
+   ]
+  },
+  {
+   "reference": "T-1485ACT",
+   "manufacturer": "iNRCORE",
+   "fields": [
+    "dcResistances[].maximum"
+   ]
+  },
+  {
+   "reference": "T-1062ACT",
+   "manufacturer": "iNRCORE",
+   "fields": [
+    "dcResistances[].maximum"
+   ]
+  }
+ ],
+ "byManufacturer": {
+  "Pulse Electronics": 26,
+  "iNRCORE": 18
+ }
+}

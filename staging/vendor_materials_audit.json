@@ -1,0 +1,40 @@
+{
+ "sullins": {
+  "stats": {
+   "total": 392346,
+   "vendor_records": 82518,
+   "patched": 82465,
+   "housing_set": 61630,
+   "contact_set": 82465,
+   "plating_set": 82465
+  },
+  "unmapped_housing": {
+   "nylon": 20888
+  },
+  "unmapped_contact": {},
+  "unmapped_plating": {},
+  "rejected": []
+ },
+ "wago": {
+  "stats": {
+   "total": 392346,
+   "vendor_records": 15841,
+   "patched": 15767,
+   "housing_set": 15469,
+   "contact_set": 6925,
+   "plating_set": 11698
+  },
+  "unmapped_housing": {
+   "glass fiber-reinforced polyamide (pa66 gf)": 254,
+   "polyphthalamide (ppa)": 36
+  },
+  "unmapped_contact": {
+   "copper alloy": 3523,
+   "copper or copper alloy; surface-treated": 942,
+   "copper alloy; surface-treated": 10,
+   "copper alloy, tin-plated": 1
+  },
+  "unmapped_plating": {},
+  "rejected": []
+ }
+}
