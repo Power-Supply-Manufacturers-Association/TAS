@@ -1,0 +1,63 @@
+{
+ "ticket": "ABT #431 (SRF2012A naming)",
+ "date": "2026-08-01",
+ "sourceUrl": "https://www.bourns.com/docs/product-datasheets/SRF2012A.pdf",
+ "repaired": [
+  {
+   "reference": "SRF2012A-201YA",
+   "printedAs": "SRF2012-201YA",
+   "was": {
+    "inductance": {
+     "nominal": 0.00019999999999999998,
+     "minimum": 0.00015999999999999999,
+     "maximum": 0.00023999999999999998
+    },
+    "dcResistance": null,
+    "dcResistances": [
+     {
+      "maximum": 0.1
+     }
+    ]
+   },
+   "impedanceOhm": 200.0,
+   "dcResistanceOhm": 0.4,
+   "ratedCurrentA": 0.3
+  },
+  {
+   "reference": "SRF2012A-900YA",
+   "printedAs": "SRF2012-900YA",
+   "was": {
+    "inductance": {
+     "nominal": 9e-05
+    },
+    "dcResistance": null,
+    "dcResistances": [
+     {
+      "maximum": 0.4
+     }
+    ]
+   },
+   "impedanceOhm": 90.0,
+   "dcResistanceOhm": 0.3,
+   "ratedCurrentA": 0.4
+  },
+  {
+   "reference": "SRF2012A-361YA",
+   "printedAs": "SRF2012-361YA",
+   "was": {
+    "inductance": {
+     "nominal": 1e-05
+    },
+    "dcResistance": null,
+    "dcResistances": [
+     {
+      "maximum": 360.0
+     }
+    ]
+   },
+   "impedanceOhm": 360.0,
+   "dcResistanceOhm": 0.5,
+   "ratedCurrentA": 0.3
+  }
+ ]
+}
