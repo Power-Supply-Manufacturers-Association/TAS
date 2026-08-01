@@ -1,0 +1,1530 @@
+{
+ "ticket": "ABT #428",
+ "date": "2026-08-01",
+ "note": "capacitance minimum/maximum rebuilt from the vendor-stated +80/-20 % EIA Z tolerance (ABT #428)",
+ "fixed": [
+  {
+   "reference": "CL21F104ZBCNNNC",
+   "evidence": "samsung",
+   "nominal": 1e-07,
+   "wasMinimum": 9.499999999999999e-08,
+   "wasMaximum": 1.05e-07,
+   "nowMinimum": 8e-08,
+   "nowMaximum": 1.8e-07
+  },
+  {
+   "reference": "CL10F104ZA8NNNC",
+   "evidence": "samsung",
+   "nominal": 1e-07,
+   "wasMinimum": 9.499999999999999e-08,
+   "wasMaximum": 1.05e-07,
+   "nowMinimum": 8e-08,
+   "nowMaximum": 1.8e-07
+  },
+  {
+   "reference": "CL10F104ZB8NNNC",
+   "evidence": "samsung",
+   "nominal": 1e-07,
+   "wasMinimum": 9.499999999999999e-08,
+   "wasMaximum": 1.05e-07,
+   "nowMinimum": 8e-08,
+   "nowMaximum": 1.8e-07
+  },
+  {
+   "reference": "CL05F224ZO5NNNC",
+   "evidence": "samsung",
+   "nominal": 2.1999999999999998e-07,
+   "wasMinimum": 2.0899999999999998e-07,
+   "wasMaximum": 2.31e-07,
+   "nowMinimum": 1.76e-07,
+   "nowMaximum": 3.96e-07
+  },
+  {
+   "reference": "CL21F104ZBANNNC",
+   "evidence": "samsung",
+   "nominal": 1e-07,
+   "wasMinimum": 9.499999999999999e-08,
+   "wasMaximum": 1.05e-07,
+   "nowMinimum": 8e-08,
+   "nowMaximum": 1.8e-07
+  },
+  {
+   "reference": "CL31F106ZOHNNNE",
+   "evidence": "samsung",
+   "nominal": 9.999999999999999e-06,
+   "wasMinimum": 9.499999999999999e-06,
+   "wasMaximum": 1.05e-05,
+   "nowMinimum": 8e-06,
+   "nowMaximum": 1.8e-05
+  },
+  {
+   "reference": "CL05F103ZB5NNNC",
+   "evidence": "samsung",
+   "nominal": 1e-08,
+   "wasMinimum": 9.499999999999999e-09,
+   "wasMaximum": 1.0500000000000001e-08,
+   "nowMinimum": 8e-09,
+   "nowMaximum": 1.8000000000000002e-08
+  },
+  {
+   "reference": "CL05F103ZO5NNNC",
+   "evidence": "samsung",
+   "nominal": 1e-08,
+   "wasMinimum": 9.499999999999999e-09,
+   "wasMaximum": 1.0500000000000001e-08,
+   "nowMinimum": 8e-09,
+   "nowMaximum": 1.8000000000000002e-08
+  },
+  {
+   "reference": "CL05F104ZA5NNNC",
+   "evidence": "samsung",
+   "nominal": 1e-07,
+   "wasMinimum": 9.499999999999999e-08,
+   "wasMaximum": 1.05e-07,
+   "nowMinimum": 8e-08,
+   "nowMaximum": 1.8e-07
+  },
+  {
+   "reference": "CL10F224ZO8NNNC",
+   "evidence": "samsung",
+   "nominal": 2.1999999999999998e-07,
+   "wasMinimum": 2.0899999999999998e-07,
+   "wasMaximum": 2.31e-07,
+   "nowMinimum": 1.76e-07,
+   "nowMaximum": 3.96e-07
+  },
+  {
+   "reference": "CL31F225ZAFNNNE",
+   "evidence": "samsung",
+   "nominal": 2.2e-06,
+   "wasMinimum": 2.09e-06,
+   "wasMaximum": 2.3100000000000003e-06,
+   "nowMinimum": 1.76e-06,
+   "nowMaximum": 3.96e-06
+  },
+  {
+   "reference": "CL10F225ZP8NNNC",
+   "evidence": "samsung",
+   "nominal": 2.2e-06,
+   "wasMinimum": 2.09e-06,
+   "wasMaximum": 2.3100000000000003e-06,
+   "nowMinimum": 1.76e-06,
+   "nowMaximum": 3.96e-06
+  },
+  {
+   "reference": "CL21F474ZACNNNC",
+   "evidence": "samsung",
+   "nominal": 4.6999999999999995e-07,
+   "wasMinimum": 4.4649999999999993e-07,
+   "wasMaximum": 4.934999999999999e-07,
+   "nowMinimum": 3.76e-07,
+   "nowMaximum": 8.459999999999999e-07
+  },
+  {
+   "reference": "CK45-E3DD471ZYNN",
+   "evidence": "tdk",
+   "nominal": 4.7e-10,
+   "wasMinimum": 4.465e-10,
+   "wasMaximum": 4.935000000000001e-10,
+   "nowMinimum": 3.7600000000000005e-10,
+   "nowMaximum": 8.460000000000001e-10
+  },
+  {
+   "reference": "CK45-E3DD471ZYVN",
+   "evidence": "tdk",
+   "nominal": 4.7e-10,
+   "wasMinimum": 4.465e-10,
+   "wasMaximum": 4.935000000000001e-10,
+   "nowMinimum": 3.7600000000000005e-10,
+   "nowMaximum": 8.460000000000001e-10
+  },
+  {
+   "reference": "CK45-E3FD471ZYGN",
+   "evidence": "tdk",
+   "nominal": 4.7e-10,
+   "wasMinimum": 4.465e-10,
+   "wasMaximum": 4.935000000000001e-10,
+   "nowMinimum": 3.7600000000000005e-10,
+   "nowMaximum": 8.460000000000001e-10
+  },
+  {
+   "reference": "CK45-E3FD471ZYNN",
+   "evidence": "tdk",
+   "nominal": 4.7e-10,
+   "wasMinimum": 4.465e-10,
+   "wasMaximum": 4.935000000000001e-10,
+   "nowMinimum": 3.7600000000000005e-10,
+   "nowMaximum": 8.460000000000001e-10
+  },
+  {
+   "reference": "CK45-E3FD471ZYVN",
+   "evidence": "tdk",
+   "nominal": 4.7e-10,
+   "wasMinimum": 4.465e-10,
+   "wasMaximum": 4.935000000000001e-10,
+   "nowMinimum": 3.7600000000000005e-10,
+   "nowMaximum": 8.460000000000001e-10
+  },
+  {
+   "reference": "A103Z15Y5VF5TAA",
+   "evidence": "vishay-A",
+   "nominal": 1e-08,
+   "wasMinimum": 8e-09,
+   "wasMaximum": 1.2e-08,
+   "nowMinimum": 8e-09,
+   "nowMaximum": 1.8000000000000002e-08
+  },
+  {
+   "reference": "A103Z15Y5VF5UAA",
+   "evidence": "vishay-A",
+   "nominal": 1e-08,
+   "wasMinimum": 8e-09,
+   "wasMaximum": 1.2e-08,
+   "nowMinimum": 8e-09,
+   "nowMaximum": 1.8000000000000002e-08
+  },
+  {
+   "reference": "A104Z15Y5VF5TAA",
+   "evidence": "vishay-A",
+   "nominal": 1e-07,
+   "wasMinimum": 8e-08,
+   "wasMaximum": 1.2e-07,
+   "nowMinimum": 8e-08,
+   "nowMaximum": 1.8e-07
+  },
+  {
+   "reference": "A104Z15Y5VF5UAA",
+   "evidence": "vishay-A",
+   "nominal": 1e-07,
+   "wasMinimum": 8e-08,
+   "wasMaximum": 1.2e-07,
+   "nowMinimum": 8e-08,
+   "nowMaximum": 1.8e-07
+  },
+  {
+   "reference": "A104Z15Y5VH5TAA",
+   "evidence": "vishay-A",
+   "nominal": 1e-07,
+   "wasMinimum": 8e-08,
+   "wasMaximum": 1.2e-07,
+   "nowMinimum": 8e-08,
+   "nowMaximum": 1.8e-07
+  },
+  {
+   "reference": "A105Z20Y5VF5TAA",
+   "evidence": "vishay-A",
+   "nominal": 1e-06,
+   "wasMinimum": 8e-07,
+   "wasMaximum": 1.2e-06,
+   "nowMinimum": 8e-07,
+   "nowMaximum": 1.8e-06
+  },
+  {
+   "reference": "A105Z20Y5VF5UAA",
+   "evidence": "vishay-A",
+   "nominal": 1e-06,
+   "wasMinimum": 8e-07,
+   "wasMaximum": 1.2e-06,
+   "nowMinimum": 8e-07,
+   "nowMaximum": 1.8e-06
+  },
+  {
+   "reference": "A153Z15Y5VF5TAA",
+   "evidence": "vishay-A",
+   "nominal": 1.5e-08,
+   "wasMinimum": 1.2e-08,
+   "wasMaximum": 1.8e-08,
+   "nowMinimum": 1.2e-08,
+   "nowMaximum": 2.6999999999999997e-08
+  },
+  {
+   "reference": "A153Z15Y5VF5UAA",
+   "evidence": "vishay-A",
+   "nominal": 1.5e-08,
+   "wasMinimum": 1.2e-08,
+   "wasMaximum": 1.8e-08,
+   "nowMinimum": 1.2e-08,
+   "nowMaximum": 2.6999999999999997e-08
+  },
+  {
+   "reference": "A154Z15Y5VF5TAA",
+   "evidence": "vishay-A",
+   "nominal": 1.5e-07,
+   "wasMinimum": 1.2e-07,
+   "wasMaximum": 1.8e-07,
+   "nowMinimum": 1.2e-07,
+   "nowMaximum": 2.7e-07
+  },
+  {
+   "reference": "A223Z15Y5VF5TAA",
+   "evidence": "vishay-A",
+   "nominal": 2.2e-08,
+   "wasMinimum": 1.76e-08,
+   "wasMaximum": 2.6399999999999998e-08,
+   "nowMinimum": 1.76e-08,
+   "nowMaximum": 3.96e-08
+  },
+  {
+   "reference": "A223Z15Y5VF5UAA",
+   "evidence": "vishay-A",
+   "nominal": 2.2e-08,
+   "wasMinimum": 1.76e-08,
+   "wasMaximum": 2.6399999999999998e-08,
+   "nowMinimum": 1.76e-08,
+   "nowMaximum": 3.96e-08
+  },
+  {
+   "reference": "A224Z15Y5VF5TAA",
+   "evidence": "vishay-A",
+   "nominal": 2.1999999999999998e-07,
+   "wasMinimum": 1.76e-07,
+   "wasMaximum": 2.64e-07,
+   "nowMinimum": 1.76e-07,
+   "nowMaximum": 3.96e-07
+  },
+  {
+   "reference": "A333Z15Y5VF5TAA",
+   "evidence": "vishay-A",
+   "nominal": 3.3e-08,
+   "wasMinimum": 2.6399999999999998e-08,
+   "wasMaximum": 3.96e-08,
+   "nowMinimum": 2.6399999999999998e-08,
+   "nowMaximum": 5.9399999999999996e-08
+  },
+  {
+   "reference": "A333Z15Y5VF5UAA",
+   "evidence": "vishay-A",
+   "nominal": 3.3e-08,
+   "wasMinimum": 2.6399999999999998e-08,
+   "wasMaximum": 3.96e-08,
+   "nowMinimum": 2.6399999999999998e-08,
+   "nowMaximum": 5.9399999999999996e-08
+  },
+  {
+   "reference": "A473Z15Y5VF5TAA",
+   "evidence": "vishay-A",
+   "nominal": 4.7e-08,
+   "wasMinimum": 3.76e-08,
+   "wasMaximum": 5.6399999999999995e-08,
+   "nowMinimum": 3.76e-08,
+   "nowMaximum": 8.46e-08
+  },
+  {
+   "reference": "A473Z15Y5VF5UAA",
+   "evidence": "vishay-A",
+   "nominal": 4.7e-08,
+   "wasMinimum": 3.76e-08,
+   "wasMaximum": 5.6399999999999995e-08,
+   "nowMinimum": 3.76e-08,
+   "nowMaximum": 8.46e-08
+  },
+  {
+   "reference": "A474Z20Y5VF5TAA",
+   "evidence": "vishay-A",
+   "nominal": 4.7e-07,
+   "wasMinimum": 3.7600000000000003e-07,
+   "wasMaximum": 5.64e-07,
+   "nowMinimum": 3.7600000000000003e-07,
+   "nowMaximum": 8.46e-07
+  },
+  {
+   "reference": "A474Z20Y5VF5UAA",
+   "evidence": "vishay-A",
+   "nominal": 4.7e-07,
+   "wasMinimum": 3.7600000000000003e-07,
+   "wasMaximum": 5.64e-07,
+   "nowMinimum": 3.7600000000000003e-07,
+   "nowMaximum": 8.46e-07
+  },
+  {
+   "reference": "A683Z15Y5VF5TAA",
+   "evidence": "vishay-A",
+   "nominal": 6.8e-08,
+   "wasMinimum": 5.4400000000000004e-08,
+   "wasMaximum": 8.16e-08,
+   "nowMinimum": 5.4400000000000004e-08,
+   "nowMaximum": 1.224e-07
+  },
+  {
+   "reference": "A683Z15Y5VF5UAA",
+   "evidence": "vishay-A",
+   "nominal": 6.8e-08,
+   "wasMinimum": 5.4400000000000004e-08,
+   "wasMaximum": 8.16e-08,
+   "nowMinimum": 5.4400000000000004e-08,
+   "nowMaximum": 1.224e-07
+  },
+  {
+   "reference": "A684Z20Y5VF5TAA",
+   "evidence": "vishay-A",
+   "nominal": 6.8e-07,
+   "wasMinimum": 5.44e-07,
+   "wasMaximum": 8.159999999999999e-07,
+   "nowMinimum": 5.44e-07,
+   "nowMaximum": 1.2239999999999998e-06
+  },
+  {
+   "reference": "A684Z20Y5VF5UAA",
+   "evidence": "vishay-A",
+   "nominal": 6.8e-07,
+   "wasMinimum": 5.44e-07,
+   "wasMaximum": 8.159999999999999e-07,
+   "nowMinimum": 5.44e-07,
+   "nowMaximum": 1.2239999999999998e-06
+  },
+  {
+   "reference": "K103Z10Y5VF53H5",
+   "evidence": "vishay-K",
+   "nominal": 1e-08,
+   "wasMinimum": 8e-09,
+   "wasMaximum": 1.2e-08,
+   "nowMinimum": 8e-09,
+   "nowMaximum": 1.8000000000000002e-08
+  },
+  {
+   "reference": "K103Z10Y5VF53L2",
+   "evidence": "vishay-K",
+   "nominal": 1e-08,
+   "wasMinimum": 8e-09,
+   "wasMaximum": 1.2e-08,
+   "nowMinimum": 8e-09,
+   "nowMaximum": 1.8000000000000002e-08
+  },
+  {
+   "reference": "K103Z10Y5VF5TH5",
+   "evidence": "vishay-K",
+   "nominal": 1e-08,
+   "wasMinimum": 8e-09,
+   "wasMaximum": 1.2e-08,
+   "nowMinimum": 8e-09,
+   "nowMaximum": 1.8000000000000002e-08
+  },
+  {
+   "reference": "K103Z10Y5VF5TL2",
+   "evidence": "vishay-K",
+   "nominal": 1e-08,
+   "wasMinimum": 8e-09,
+   "wasMaximum": 1.2e-08,
+   "nowMinimum": 8e-09,
+   "nowMaximum": 1.8000000000000002e-08
+  },
+  {
+   "reference": "K103Z10Y5VF5UH5",
+   "evidence": "vishay-K",
+   "nominal": 1e-08,
+   "wasMinimum": 8e-09,
+   "wasMaximum": 1.2e-08,
+   "nowMinimum": 8e-09,
+   "nowMaximum": 1.8000000000000002e-08
+  },
+  {
+   "reference": "K103Z10Y5VF5UL2",
+   "evidence": "vishay-K",
+   "nominal": 1e-08,
+   "wasMinimum": 8e-09,
+   "wasMaximum": 1.2e-08,
+   "nowMinimum": 8e-09,
+   "nowMaximum": 1.8000000000000002e-08
+  },
+  {
+   "reference": "K103Z15Y5VF53H5",
+   "evidence": "vishay-K",
+   "nominal": 1e-08,
+   "wasMinimum": 8e-09,
+   "wasMaximum": 1.2e-08,
+   "nowMinimum": 8e-09,
+   "nowMaximum": 1.8000000000000002e-08
+  },
+  {
+   "reference": "K103Z15Y5VF53L2",
+   "evidence": "vishay-K",
+   "nominal": 1e-08,
+   "wasMinimum": 8e-09,
+   "wasMaximum": 1.2e-08,
+   "nowMinimum": 8e-09,
+   "nowMaximum": 1.8000000000000002e-08
+  },
+  {
+   "reference": "K103Z15Y5VF5TH5",
+   "evidence": "vishay-K",
+   "nominal": 1e-08,
+   "wasMinimum": 8e-09,
+   "wasMaximum": 1.2e-08,
+   "nowMinimum": 8e-09,
+   "nowMaximum": 1.8000000000000002e-08
+  },
+  {
+   "reference": "K103Z15Y5VF5TL2",
+   "evidence": "vishay-K",
+   "nominal": 1e-08,
+   "wasMinimum": 8e-09,
+   "wasMaximum": 1.2e-08,
+   "nowMinimum": 8e-09,
+   "nowMaximum": 1.8000000000000002e-08
+  },
+  {
+   "reference": "K103Z15Y5VF5UH5",
+   "evidence": "vishay-K",
+   "nominal": 1e-08,
+   "wasMinimum": 8e-09,
+   "wasMaximum": 1.2e-08,
+   "nowMinimum": 8e-09,
+   "nowMaximum": 1.8000000000000002e-08
+  },
+  {
+   "reference": "K103Z15Y5VF5UL2",
+   "evidence": "vishay-K",
+   "nominal": 1e-08,
+   "wasMinimum": 8e-09,
+   "wasMaximum": 1.2e-08,
+   "nowMinimum": 8e-09,
+   "nowMaximum": 1.8000000000000002e-08
+  },
+  {
+   "reference": "K104Z10Y5VF53H5",
+   "evidence": "vishay-K",
+   "nominal": 1e-07,
+   "wasMinimum": 8e-08,
+   "wasMaximum": 1.2e-07,
+   "nowMinimum": 8e-08,
+   "nowMaximum": 1.8e-07
+  },
+  {
+   "reference": "K104Z10Y5VF53L2",
+   "evidence": "vishay-K",
+   "nominal": 1e-07,
+   "wasMinimum": 8e-08,
+   "wasMaximum": 1.2e-07,
+   "nowMinimum": 8e-08,
+   "nowMaximum": 1.8e-07
+  },
+  {
+   "reference": "K104Z10Y5VF5TH5",
+   "evidence": "vishay-K",
+   "nominal": 1e-07,
+   "wasMinimum": 8e-08,
+   "wasMaximum": 1.2e-07,
+   "nowMinimum": 8e-08,
+   "nowMaximum": 1.8e-07
+  },
+  {
+   "reference": "K104Z10Y5VF5TL2",
+   "evidence": "vishay-K",
+   "nominal": 1e-07,
+   "wasMinimum": 8e-08,
+   "wasMaximum": 1.2e-07,
+   "nowMinimum": 8e-08,
+   "nowMaximum": 1.8e-07
+  },
+  {
+   "reference": "K104Z10Y5VF5UH5",
+   "evidence": "vishay-K",
+   "nominal": 1e-07,
+   "wasMinimum": 8e-08,
+   "wasMaximum": 1.2e-07,
+   "nowMinimum": 8e-08,
+   "nowMaximum": 1.8e-07
+  },
+  {
+   "reference": "K104Z10Y5VF5UL2",
+   "evidence": "vishay-K",
+   "nominal": 1e-07,
+   "wasMinimum": 8e-08,
+   "wasMaximum": 1.2e-07,
+   "nowMinimum": 8e-08,
+   "nowMaximum": 1.8e-07
+  },
+  {
+   "reference": "K104Z15Y5VF53H5",
+   "evidence": "vishay-K",
+   "nominal": 1e-07,
+   "wasMinimum": 8e-08,
+   "wasMaximum": 1.2e-07,
+   "nowMinimum": 8e-08,
+   "nowMaximum": 1.8e-07
+  },
+  {
+   "reference": "K104Z15Y5VF53L2",
+   "evidence": "vishay-K",
+   "nominal": 1e-07,
+   "wasMinimum": 8e-08,
+   "wasMaximum": 1.2e-07,
+   "nowMinimum": 8e-08,
+   "nowMaximum": 1.8e-07
+  },
+  {
+   "reference": "K104Z15Y5VF5TH5",
+   "evidence": "vishay-K",
+   "nominal": 1e-07,
+   "wasMinimum": 8e-08,
+   "wasMaximum": 1.2e-07,
+   "nowMinimum": 8e-08,
+   "nowMaximum": 1.8e-07
+  },
+  {
+   "reference": "K104Z15Y5VF5TL2",
+   "evidence": "vishay-K",
+   "nominal": 1e-07,
+   "wasMinimum": 8e-08,
+   "wasMaximum": 1.2e-07,
+   "nowMinimum": 8e-08,
+   "nowMaximum": 1.8e-07
+  },
+  {
+   "reference": "K104Z15Y5VF5UH5",
+   "evidence": "vishay-K",
+   "nominal": 1e-07,
+   "wasMinimum": 8e-08,
+   "wasMaximum": 1.2e-07,
+   "nowMinimum": 8e-08,
+   "nowMaximum": 1.8e-07
+  },
+  {
+   "reference": "K104Z15Y5VF5UL2",
+   "evidence": "vishay-K",
+   "nominal": 1e-07,
+   "wasMinimum": 8e-08,
+   "wasMaximum": 1.2e-07,
+   "nowMinimum": 8e-08,
+   "nowMaximum": 1.8e-07
+  },
+  {
+   "reference": "K104Z20Y5VH53H5",
+   "evidence": "vishay-K",
+   "nominal": 1e-07,
+   "wasMinimum": 8e-08,
+   "wasMaximum": 1.2e-07,
+   "nowMinimum": 8e-08,
+   "nowMaximum": 1.8e-07
+  },
+  {
+   "reference": "K105Z20Y5VF53H5",
+   "evidence": "vishay-K",
+   "nominal": 1e-06,
+   "wasMinimum": 8e-07,
+   "wasMaximum": 1.2e-06,
+   "nowMinimum": 8e-07,
+   "nowMaximum": 1.8e-06
+  },
+  {
+   "reference": "K105Z20Y5VF53L2",
+   "evidence": "vishay-K",
+   "nominal": 1e-06,
+   "wasMinimum": 8e-07,
+   "wasMaximum": 1.2e-06,
+   "nowMinimum": 8e-07,
+   "nowMaximum": 1.8e-06
+  },
+  {
+   "reference": "K105Z20Y5VF5TH5",
+   "evidence": "vishay-K",
+   "nominal": 1e-06,
+   "wasMinimum": 8e-07,
+   "wasMaximum": 1.2e-06,
+   "nowMinimum": 8e-07,
+   "nowMaximum": 1.8e-06
+  },
+  {
+   "reference": "K105Z20Y5VF5TK5",
+   "evidence": "vishay-K",
+   "nominal": 1e-06,
+   "wasMinimum": 8e-07,
+   "wasMaximum": 1.2e-06,
+   "nowMinimum": 8e-07,
+   "nowMaximum": 1.8e-06
+  },
+  {
+   "reference": "K105Z20Y5VF5TL2",
+   "evidence": "vishay-K",
+   "nominal": 1e-06,
+   "wasMinimum": 8e-07,
+   "wasMaximum": 1.2e-06,
+   "nowMinimum": 8e-07,
+   "nowMaximum": 1.8e-06
+  },
+  {
+   "reference": "K105Z20Y5VF5UH5",
+   "evidence": "vishay-K",
+   "nominal": 1e-06,
+   "wasMinimum": 8e-07,
+   "wasMaximum": 1.2e-06,
+   "nowMinimum": 8e-07,
+   "nowMaximum": 1.8e-06
+  },
+  {
+   "reference": "K105Z20Y5VF5UL2",
+   "evidence": "vishay-K",
+   "nominal": 1e-06,
+   "wasMinimum": 8e-07,
+   "wasMaximum": 1.2e-06,
+   "nowMinimum": 8e-07,
+   "nowMaximum": 1.8e-06
+  },
+  {
+   "reference": "K153Z10Y5VF53H5",
+   "evidence": "vishay-K",
+   "nominal": 1.5e-08,
+   "wasMinimum": 1.2e-08,
+   "wasMaximum": 1.8e-08,
+   "nowMinimum": 1.2e-08,
+   "nowMaximum": 2.6999999999999997e-08
+  },
+  {
+   "reference": "K153Z10Y5VF53L2",
+   "evidence": "vishay-K",
+   "nominal": 1.5e-08,
+   "wasMinimum": 1.2e-08,
+   "wasMaximum": 1.8e-08,
+   "nowMinimum": 1.2e-08,
+   "nowMaximum": 2.6999999999999997e-08
+  },
+  {
+   "reference": "K153Z10Y5VF5TH5",
+   "evidence": "vishay-K",
+   "nominal": 1.5e-08,
+   "wasMinimum": 1.2e-08,
+   "wasMaximum": 1.8e-08,
+   "nowMinimum": 1.2e-08,
+   "nowMaximum": 2.6999999999999997e-08
+  },
+  {
+   "reference": "K153Z10Y5VF5TL2",
+   "evidence": "vishay-K",
+   "nominal": 1.5e-08,
+   "wasMinimum": 1.2e-08,
+   "wasMaximum": 1.8e-08,
+   "nowMinimum": 1.2e-08,
+   "nowMaximum": 2.6999999999999997e-08
+  },
+  {
+   "reference": "K153Z10Y5VF5UH5",
+   "evidence": "vishay-K",
+   "nominal": 1.5e-08,
+   "wasMinimum": 1.2e-08,
+   "wasMaximum": 1.8e-08,
+   "nowMinimum": 1.2e-08,
+   "nowMaximum": 2.6999999999999997e-08
+  },
+  {
+   "reference": "K153Z10Y5VF5UL2",
+   "evidence": "vishay-K",
+   "nominal": 1.5e-08,
+   "wasMinimum": 1.2e-08,
+   "wasMaximum": 1.8e-08,
+   "nowMinimum": 1.2e-08,
+   "nowMaximum": 2.6999999999999997e-08
+  },
+  {
+   "reference": "K153Z15Y5VF53H5",
+   "evidence": "vishay-K",
+   "nominal": 1.5e-08,
+   "wasMinimum": 1.2e-08,
+   "wasMaximum": 1.8e-08,
+   "nowMinimum": 1.2e-08,
+   "nowMaximum": 2.6999999999999997e-08
+  },
+  {
+   "reference": "K153Z15Y5VF53L2",
+   "evidence": "vishay-K",
+   "nominal": 1.5e-08,
+   "wasMinimum": 1.2e-08,
+   "wasMaximum": 1.8e-08,
+   "nowMinimum": 1.2e-08,
+   "nowMaximum": 2.6999999999999997e-08
+  },
+  {
+   "reference": "K153Z15Y5VF5TH5",
+   "evidence": "vishay-K",
+   "nominal": 1.5e-08,
+   "wasMinimum": 1.2e-08,
+   "wasMaximum": 1.8e-08,
+   "nowMinimum": 1.2e-08,
+   "nowMaximum": 2.6999999999999997e-08
+  },
+  {
+   "reference": "K153Z15Y5VF5TL2",
+   "evidence": "vishay-K",
+   "nominal": 1.5e-08,
+   "wasMinimum": 1.2e-08,
+   "wasMaximum": 1.8e-08,
+   "nowMinimum": 1.2e-08,
+   "nowMaximum": 2.6999999999999997e-08
+  },
+  {
+   "reference": "K153Z15Y5VF5UH5",
+   "evidence": "vishay-K",
+   "nominal": 1.5e-08,
+   "wasMinimum": 1.2e-08,
+   "wasMaximum": 1.8e-08,
+   "nowMinimum": 1.2e-08,
+   "nowMaximum": 2.6999999999999997e-08
+  },
+  {
+   "reference": "K153Z15Y5VF5UL2",
+   "evidence": "vishay-K",
+   "nominal": 1.5e-08,
+   "wasMinimum": 1.2e-08,
+   "wasMaximum": 1.8e-08,
+   "nowMinimum": 1.2e-08,
+   "nowMaximum": 2.6999999999999997e-08
+  },
+  {
+   "reference": "K154Z10Y5VF53H5",
+   "evidence": "vishay-K",
+   "nominal": 1.5e-07,
+   "wasMinimum": 1.2e-07,
+   "wasMaximum": 1.8e-07,
+   "nowMinimum": 1.2e-07,
+   "nowMaximum": 2.7e-07
+  },
+  {
+   "reference": "K154Z10Y5VF53L2",
+   "evidence": "vishay-K",
+   "nominal": 1.5e-07,
+   "wasMinimum": 1.2e-07,
+   "wasMaximum": 1.8e-07,
+   "nowMinimum": 1.2e-07,
+   "nowMaximum": 2.7e-07
+  },
+  {
+   "reference": "K154Z10Y5VF5TH5",
+   "evidence": "vishay-K",
+   "nominal": 1.5e-07,
+   "wasMinimum": 1.2e-07,
+   "wasMaximum": 1.8e-07,
+   "nowMinimum": 1.2e-07,
+   "nowMaximum": 2.7e-07
+  },
+  {
+   "reference": "K154Z10Y5VF5TL2",
+   "evidence": "vishay-K",
+   "nominal": 1.5e-07,
+   "wasMinimum": 1.2e-07,
+   "wasMaximum": 1.8e-07,
+   "nowMinimum": 1.2e-07,
+   "nowMaximum": 2.7e-07
+  },
+  {
+   "reference": "K154Z10Y5VF5UH5",
+   "evidence": "vishay-K",
+   "nominal": 1.5e-07,
+   "wasMinimum": 1.2e-07,
+   "wasMaximum": 1.8e-07,
+   "nowMinimum": 1.2e-07,
+   "nowMaximum": 2.7e-07
+  },
+  {
+   "reference": "K154Z10Y5VF5UL2",
+   "evidence": "vishay-K",
+   "nominal": 1.5e-07,
+   "wasMinimum": 1.2e-07,
+   "wasMaximum": 1.8e-07,
+   "nowMinimum": 1.2e-07,
+   "nowMaximum": 2.7e-07
+  },
+  {
+   "reference": "K154Z15Y5VF53H5",
+   "evidence": "vishay-K",
+   "nominal": 1.5e-07,
+   "wasMinimum": 1.2e-07,
+   "wasMaximum": 1.8e-07,
+   "nowMinimum": 1.2e-07,
+   "nowMaximum": 2.7e-07
+  },
+  {
+   "reference": "K154Z15Y5VF53L2",
+   "evidence": "vishay-K",
+   "nominal": 1.5e-07,
+   "wasMinimum": 1.2e-07,
+   "wasMaximum": 1.8e-07,
+   "nowMinimum": 1.2e-07,
+   "nowMaximum": 2.7e-07
+  },
+  {
+   "reference": "K154Z15Y5VF5TH5",
+   "evidence": "vishay-K",
+   "nominal": 1.5e-07,
+   "wasMinimum": 1.2e-07,
+   "wasMaximum": 1.8e-07,
+   "nowMinimum": 1.2e-07,
+   "nowMaximum": 2.7e-07
+  },
+  {
+   "reference": "K154Z15Y5VF5TL2",
+   "evidence": "vishay-K",
+   "nominal": 1.5e-07,
+   "wasMinimum": 1.2e-07,
+   "wasMaximum": 1.8e-07,
+   "nowMinimum": 1.2e-07,
+   "nowMaximum": 2.7e-07
+  },
+  {
+   "reference": "K154Z15Y5VF5UH5",
+   "evidence": "vishay-K",
+   "nominal": 1.5e-07,
+   "wasMinimum": 1.2e-07,
+   "wasMaximum": 1.8e-07,
+   "nowMinimum": 1.2e-07,
+   "nowMaximum": 2.7e-07
+  },
+  {
+   "reference": "K154Z15Y5VF5UL2",
+   "evidence": "vishay-K",
+   "nominal": 1.5e-07,
+   "wasMinimum": 1.2e-07,
+   "wasMaximum": 1.8e-07,
+   "nowMinimum": 1.2e-07,
+   "nowMaximum": 2.7e-07
+  },
+  {
+   "reference": "K223Z10Y5VF53H5",
+   "evidence": "vishay-K",
+   "nominal": 2.2e-08,
+   "wasMinimum": 1.76e-08,
+   "wasMaximum": 2.6399999999999998e-08,
+   "nowMinimum": 1.76e-08,
+   "nowMaximum": 3.96e-08
+  },
+  {
+   "reference": "K223Z10Y5VF53L2",
+   "evidence": "vishay-K",
+   "nominal": 2.2e-08,
+   "wasMinimum": 1.76e-08,
+   "wasMaximum": 2.6399999999999998e-08,
+   "nowMinimum": 1.76e-08,
+   "nowMaximum": 3.96e-08
+  },
+  {
+   "reference": "K223Z10Y5VF5TH5",
+   "evidence": "vishay-K",
+   "nominal": 2.2e-08,
+   "wasMinimum": 1.76e-08,
+   "wasMaximum": 2.6399999999999998e-08,
+   "nowMinimum": 1.76e-08,
+   "nowMaximum": 3.96e-08
+  },
+  {
+   "reference": "K223Z10Y5VF5TL2",
+   "evidence": "vishay-K",
+   "nominal": 2.2e-08,
+   "wasMinimum": 1.76e-08,
+   "wasMaximum": 2.6399999999999998e-08,
+   "nowMinimum": 1.76e-08,
+   "nowMaximum": 3.96e-08
+  },
+  {
+   "reference": "K223Z10Y5VF5UH5",
+   "evidence": "vishay-K",
+   "nominal": 2.2e-08,
+   "wasMinimum": 1.76e-08,
+   "wasMaximum": 2.6399999999999998e-08,
+   "nowMinimum": 1.76e-08,
+   "nowMaximum": 3.96e-08
+  },
+  {
+   "reference": "K223Z10Y5VF5UL2",
+   "evidence": "vishay-K",
+   "nominal": 2.2e-08,
+   "wasMinimum": 1.76e-08,
+   "wasMaximum": 2.6399999999999998e-08,
+   "nowMinimum": 1.76e-08,
+   "nowMaximum": 3.96e-08
+  },
+  {
+   "reference": "K223Z15Y5VF53H5",
+   "evidence": "vishay-K",
+   "nominal": 2.2e-08,
+   "wasMinimum": 1.76e-08,
+   "wasMaximum": 2.6399999999999998e-08,
+   "nowMinimum": 1.76e-08,
+   "nowMaximum": 3.96e-08
+  },
+  {
+   "reference": "K223Z15Y5VF53L2",
+   "evidence": "vishay-K",
+   "nominal": 2.2e-08,
+   "wasMinimum": 1.76e-08,
+   "wasMaximum": 2.6399999999999998e-08,
+   "nowMinimum": 1.76e-08,
+   "nowMaximum": 3.96e-08
+  },
+  {
+   "reference": "K223Z15Y5VF5TH5",
+   "evidence": "vishay-K",
+   "nominal": 2.2e-08,
+   "wasMinimum": 1.76e-08,
+   "wasMaximum": 2.6399999999999998e-08,
+   "nowMinimum": 1.76e-08,
+   "nowMaximum": 3.96e-08
+  },
+  {
+   "reference": "K223Z15Y5VF5TL2",
+   "evidence": "vishay-K",
+   "nominal": 2.2e-08,
+   "wasMinimum": 1.76e-08,
+   "wasMaximum": 2.6399999999999998e-08,
+   "nowMinimum": 1.76e-08,
+   "nowMaximum": 3.96e-08
+  },
+  {
+   "reference": "K223Z15Y5VF5UH5",
+   "evidence": "vishay-K",
+   "nominal": 2.2e-08,
+   "wasMinimum": 1.76e-08,
+   "wasMaximum": 2.6399999999999998e-08,
+   "nowMinimum": 1.76e-08,
+   "nowMaximum": 3.96e-08
+  },
+  {
+   "reference": "K223Z15Y5VF5UL2",
+   "evidence": "vishay-K",
+   "nominal": 2.2e-08,
+   "wasMinimum": 1.76e-08,
+   "wasMaximum": 2.6399999999999998e-08,
+   "nowMinimum": 1.76e-08,
+   "nowMaximum": 3.96e-08
+  },
+  {
+   "reference": "K223Z15Y5VH53L2",
+   "evidence": "vishay-K",
+   "nominal": 2.2e-08,
+   "wasMinimum": 1.76e-08,
+   "wasMaximum": 2.6399999999999998e-08,
+   "nowMinimum": 1.76e-08,
+   "nowMaximum": 3.96e-08
+  },
+  {
+   "reference": "K224Z15Y5VF53H5",
+   "evidence": "vishay-K",
+   "nominal": 2.1999999999999998e-07,
+   "wasMinimum": 1.76e-07,
+   "wasMaximum": 2.64e-07,
+   "nowMinimum": 1.76e-07,
+   "nowMaximum": 3.96e-07
+  },
+  {
+   "reference": "K224Z15Y5VF53L2",
+   "evidence": "vishay-K",
+   "nominal": 2.1999999999999998e-07,
+   "wasMinimum": 1.76e-07,
+   "wasMaximum": 2.64e-07,
+   "nowMinimum": 1.76e-07,
+   "nowMaximum": 3.96e-07
+  },
+  {
+   "reference": "K224Z15Y5VF5TH5",
+   "evidence": "vishay-K",
+   "nominal": 2.1999999999999998e-07,
+   "wasMinimum": 1.76e-07,
+   "wasMaximum": 2.64e-07,
+   "nowMinimum": 1.76e-07,
+   "nowMaximum": 3.96e-07
+  },
+  {
+   "reference": "K224Z15Y5VF5TL2",
+   "evidence": "vishay-K",
+   "nominal": 2.1999999999999998e-07,
+   "wasMinimum": 1.76e-07,
+   "wasMaximum": 2.64e-07,
+   "nowMinimum": 1.76e-07,
+   "nowMaximum": 3.96e-07
+  },
+  {
+   "reference": "K224Z15Y5VF5UH5",
+   "evidence": "vishay-K",
+   "nominal": 2.1999999999999998e-07,
+   "wasMinimum": 1.76e-07,
+   "wasMaximum": 2.64e-07,
+   "nowMinimum": 1.76e-07,
+   "nowMaximum": 3.96e-07
+  },
+  {
+   "reference": "K224Z15Y5VF5UL2",
+   "evidence": "vishay-K",
+   "nominal": 2.1999999999999998e-07,
+   "wasMinimum": 1.76e-07,
+   "wasMaximum": 2.64e-07,
+   "nowMinimum": 1.76e-07,
+   "nowMaximum": 3.96e-07
+  },
+  {
+   "reference": "K333Z10Y5VF53H5",
+   "evidence": "vishay-K",
+   "nominal": 3.3e-08,
+   "wasMinimum": 2.6399999999999998e-08,
+   "wasMaximum": 3.96e-08,
+   "nowMinimum": 2.6399999999999998e-08,
+   "nowMaximum": 5.9399999999999996e-08
+  },
+  {
+   "reference": "K333Z10Y5VF53L2",
+   "evidence": "vishay-K",
+   "nominal": 3.3e-08,
+   "wasMinimum": 2.6399999999999998e-08,
+   "wasMaximum": 3.96e-08,
+   "nowMinimum": 2.6399999999999998e-08,
+   "nowMaximum": 5.9399999999999996e-08
+  },
+  {
+   "reference": "K333Z10Y5VF5TH5",
+   "evidence": "vishay-K",
+   "nominal": 3.3e-08,
+   "wasMinimum": 2.6399999999999998e-08,
+   "wasMaximum": 3.96e-08,
+   "nowMinimum": 2.6399999999999998e-08,
+   "nowMaximum": 5.9399999999999996e-08
+  },
+  {
+   "reference": "K333Z10Y5VF5TL2",
+   "evidence": "vishay-K",
+   "nominal": 3.3e-08,
+   "wasMinimum": 2.6399999999999998e-08,
+   "wasMaximum": 3.96e-08,
+   "nowMinimum": 2.6399999999999998e-08,
+   "nowMaximum": 5.9399999999999996e-08
+  },
+  {
+   "reference": "K333Z10Y5VF5UH5",
+   "evidence": "vishay-K",
+   "nominal": 3.3e-08,
+   "wasMinimum": 2.6399999999999998e-08,
+   "wasMaximum": 3.96e-08,
+   "nowMinimum": 2.6399999999999998e-08,
+   "nowMaximum": 5.9399999999999996e-08
+  },
+  {
+   "reference": "K333Z10Y5VF5UL2",
+   "evidence": "vishay-K",
+   "nominal": 3.3e-08,
+   "wasMinimum": 2.6399999999999998e-08,
+   "wasMaximum": 3.96e-08,
+   "nowMinimum": 2.6399999999999998e-08,
+   "nowMaximum": 5.9399999999999996e-08
+  },
+  {
+   "reference": "K333Z15Y5VF53H5",
+   "evidence": "vishay-K",
+   "nominal": 3.3e-08,
+   "wasMinimum": 2.6399999999999998e-08,
+   "wasMaximum": 3.96e-08,
+   "nowMinimum": 2.6399999999999998e-08,
+   "nowMaximum": 5.9399999999999996e-08
+  },
+  {
+   "reference": "K333Z15Y5VF53L2",
+   "evidence": "vishay-K",
+   "nominal": 3.3e-08,
+   "wasMinimum": 2.6399999999999998e-08,
+   "wasMaximum": 3.96e-08,
+   "nowMinimum": 2.6399999999999998e-08,
+   "nowMaximum": 5.9399999999999996e-08
+  },
+  {
+   "reference": "K333Z15Y5VF5TH5",
+   "evidence": "vishay-K",
+   "nominal": 3.3e-08,
+   "wasMinimum": 2.6399999999999998e-08,
+   "wasMaximum": 3.96e-08,
+   "nowMinimum": 2.6399999999999998e-08,
+   "nowMaximum": 5.9399999999999996e-08
+  },
+  {
+   "reference": "K333Z15Y5VF5TL2",
+   "evidence": "vishay-K",
+   "nominal": 3.3e-08,
+   "wasMinimum": 2.6399999999999998e-08,
+   "wasMaximum": 3.96e-08,
+   "nowMinimum": 2.6399999999999998e-08,
+   "nowMaximum": 5.9399999999999996e-08
+  },
+  {
+   "reference": "K333Z15Y5VF5UH5",
+   "evidence": "vishay-K",
+   "nominal": 3.3e-08,
+   "wasMinimum": 2.6399999999999998e-08,
+   "wasMaximum": 3.96e-08,
+   "nowMinimum": 2.6399999999999998e-08,
+   "nowMaximum": 5.9399999999999996e-08
+  },
+  {
+   "reference": "K333Z15Y5VF5UL2",
+   "evidence": "vishay-K",
+   "nominal": 3.3e-08,
+   "wasMinimum": 2.6399999999999998e-08,
+   "wasMaximum": 3.96e-08,
+   "nowMinimum": 2.6399999999999998e-08,
+   "nowMaximum": 5.9399999999999996e-08
+  },
+  {
+   "reference": "K334Z15Y5VF53H5",
+   "evidence": "vishay-K",
+   "nominal": 3.3e-07,
+   "wasMinimum": 2.6400000000000003e-07,
+   "wasMaximum": 3.96e-07,
+   "nowMinimum": 2.6400000000000003e-07,
+   "nowMaximum": 5.94e-07
+  },
+  {
+   "reference": "K334Z20Y5VF5TH5",
+   "evidence": "vishay-K",
+   "nominal": 3.3e-07,
+   "wasMinimum": 2.6400000000000003e-07,
+   "wasMaximum": 3.96e-07,
+   "nowMinimum": 2.6400000000000003e-07,
+   "nowMaximum": 5.94e-07
+  },
+  {
+   "reference": "K473Z10Y5VF53H5",
+   "evidence": "vishay-K",
+   "nominal": 4.7e-08,
+   "wasMinimum": 3.76e-08,
+   "wasMaximum": 5.6399999999999995e-08,
+   "nowMinimum": 3.76e-08,
+   "nowMaximum": 8.46e-08
+  },
+  {
+   "reference": "K473Z10Y5VF53L2",
+   "evidence": "vishay-K",
+   "nominal": 4.7e-08,
+   "wasMinimum": 3.76e-08,
+   "wasMaximum": 5.6399999999999995e-08,
+   "nowMinimum": 3.76e-08,
+   "nowMaximum": 8.46e-08
+  },
+  {
+   "reference": "K473Z10Y5VF5TH5",
+   "evidence": "vishay-K",
+   "nominal": 4.7e-08,
+   "wasMinimum": 3.76e-08,
+   "wasMaximum": 5.6399999999999995e-08,
+   "nowMinimum": 3.76e-08,
+   "nowMaximum": 8.46e-08
+  },
+  {
+   "reference": "K473Z10Y5VF5TL2",
+   "evidence": "vishay-K",
+   "nominal": 4.7e-08,
+   "wasMinimum": 3.76e-08,
+   "wasMaximum": 5.6399999999999995e-08,
+   "nowMinimum": 3.76e-08,
+   "nowMaximum": 8.46e-08
+  },
+  {
+   "reference": "K473Z10Y5VF5UH5",
+   "evidence": "vishay-K",
+   "nominal": 4.7e-08,
+   "wasMinimum": 3.76e-08,
+   "wasMaximum": 5.6399999999999995e-08,
+   "nowMinimum": 3.76e-08,
+   "nowMaximum": 8.46e-08
+  },
+  {
+   "reference": "K473Z10Y5VF5UL2",
+   "evidence": "vishay-K",
+   "nominal": 4.7e-08,
+   "wasMinimum": 3.76e-08,
+   "wasMaximum": 5.6399999999999995e-08,
+   "nowMinimum": 3.76e-08,
+   "nowMaximum": 8.46e-08
+  },
+  {
+   "reference": "K473Z15Y5VF53H5",
+   "evidence": "vishay-K",
+   "nominal": 4.7e-08,
+   "wasMinimum": 3.76e-08,
+   "wasMaximum": 5.6399999999999995e-08,
+   "nowMinimum": 3.76e-08,
+   "nowMaximum": 8.46e-08
+  },
+  {
+   "reference": "K473Z15Y5VF53L2",
+   "evidence": "vishay-K",
+   "nominal": 4.7e-08,
+   "wasMinimum": 3.76e-08,
+   "wasMaximum": 5.6399999999999995e-08,
+   "nowMinimum": 3.76e-08,
+   "nowMaximum": 8.46e-08
+  },
+  {
+   "reference": "K473Z15Y5VF5TH5",
+   "evidence": "vishay-K",
+   "nominal": 4.7e-08,
+   "wasMinimum": 3.76e-08,
+   "wasMaximum": 5.6399999999999995e-08,
+   "nowMinimum": 3.76e-08,
+   "nowMaximum": 8.46e-08
+  },
+  {
+   "reference": "K473Z15Y5VF5TL2",
+   "evidence": "vishay-K",
+   "nominal": 4.7e-08,
+   "wasMinimum": 3.76e-08,
+   "wasMaximum": 5.6399999999999995e-08,
+   "nowMinimum": 3.76e-08,
+   "nowMaximum": 8.46e-08
+  },
+  {
+   "reference": "K473Z15Y5VF5UH5",
+   "evidence": "vishay-K",
+   "nominal": 4.7e-08,
+   "wasMinimum": 3.76e-08,
+   "wasMaximum": 5.6399999999999995e-08,
+   "nowMinimum": 3.76e-08,
+   "nowMaximum": 8.46e-08
+  },
+  {
+   "reference": "K473Z15Y5VF5UL2",
+   "evidence": "vishay-K",
+   "nominal": 4.7e-08,
+   "wasMinimum": 3.76e-08,
+   "wasMaximum": 5.6399999999999995e-08,
+   "nowMinimum": 3.76e-08,
+   "nowMaximum": 8.46e-08
+  },
+  {
+   "reference": "K474Z20Y5VF53H5",
+   "evidence": "vishay-K",
+   "nominal": 4.7e-07,
+   "wasMinimum": 3.7600000000000003e-07,
+   "wasMaximum": 5.64e-07,
+   "nowMinimum": 3.7600000000000003e-07,
+   "nowMaximum": 8.46e-07
+  },
+  {
+   "reference": "K474Z20Y5VF53L2",
+   "evidence": "vishay-K",
+   "nominal": 4.7e-07,
+   "wasMinimum": 3.7600000000000003e-07,
+   "wasMaximum": 5.64e-07,
+   "nowMinimum": 3.7600000000000003e-07,
+   "nowMaximum": 8.46e-07
+  },
+  {
+   "reference": "K474Z20Y5VF5TH5",
+   "evidence": "vishay-K",
+   "nominal": 4.7e-07,
+   "wasMinimum": 3.7600000000000003e-07,
+   "wasMaximum": 5.64e-07,
+   "nowMinimum": 3.7600000000000003e-07,
+   "nowMaximum": 8.46e-07
+  },
+  {
+   "reference": "K474Z20Y5VF5TL2",
+   "evidence": "vishay-K",
+   "nominal": 4.7e-07,
+   "wasMinimum": 3.7600000000000003e-07,
+   "wasMaximum": 5.64e-07,
+   "nowMinimum": 3.7600000000000003e-07,
+   "nowMaximum": 8.46e-07
+  },
+  {
+   "reference": "K474Z20Y5VF5UH5",
+   "evidence": "vishay-K",
+   "nominal": 4.7e-07,
+   "wasMinimum": 3.7600000000000003e-07,
+   "wasMaximum": 5.64e-07,
+   "nowMinimum": 3.7600000000000003e-07,
+   "nowMaximum": 8.46e-07
+  },
+  {
+   "reference": "K474Z20Y5VF5UL2",
+   "evidence": "vishay-K",
+   "nominal": 4.7e-07,
+   "wasMinimum": 3.7600000000000003e-07,
+   "wasMaximum": 5.64e-07,
+   "nowMinimum": 3.7600000000000003e-07,
+   "nowMaximum": 8.46e-07
+  },
+  {
+   "reference": "K683Z10Y5VF53H5",
+   "evidence": "vishay-K",
+   "nominal": 6.8e-08,
+   "wasMinimum": 5.4400000000000004e-08,
+   "wasMaximum": 8.16e-08,
+   "nowMinimum": 5.4400000000000004e-08,
+   "nowMaximum": 1.224e-07
+  },
+  {
+   "reference": "K683Z10Y5VF53L2",
+   "evidence": "vishay-K",
+   "nominal": 6.8e-08,
+   "wasMinimum": 5.4400000000000004e-08,
+   "wasMaximum": 8.16e-08,
+   "nowMinimum": 5.4400000000000004e-08,
+   "nowMaximum": 1.224e-07
+  },
+  {
+   "reference": "K683Z10Y5VF5TH5",
+   "evidence": "vishay-K",
+   "nominal": 6.8e-08,
+   "wasMinimum": 5.4400000000000004e-08,
+   "wasMaximum": 8.16e-08,
+   "nowMinimum": 5.4400000000000004e-08,
+   "nowMaximum": 1.224e-07
+  },
+  {
+   "reference": "K683Z10Y5VF5TL2",
+   "evidence": "vishay-K",
+   "nominal": 6.8e-08,
+   "wasMinimum": 5.4400000000000004e-08,
+   "wasMaximum": 8.16e-08,
+   "nowMinimum": 5.4400000000000004e-08,
+   "nowMaximum": 1.224e-07
+  },
+  {
+   "reference": "K683Z10Y5VF5UH5",
+   "evidence": "vishay-K",
+   "nominal": 6.8e-08,
+   "wasMinimum": 5.4400000000000004e-08,
+   "wasMaximum": 8.16e-08,
+   "nowMinimum": 5.4400000000000004e-08,
+   "nowMaximum": 1.224e-07
+  },
+  {
+   "reference": "K683Z10Y5VF5UL2",
+   "evidence": "vishay-K",
+   "nominal": 6.8e-08,
+   "wasMinimum": 5.4400000000000004e-08,
+   "wasMaximum": 8.16e-08,
+   "nowMinimum": 5.4400000000000004e-08,
+   "nowMaximum": 1.224e-07
+  },
+  {
+   "reference": "K683Z15Y5VF53H5",
+   "evidence": "vishay-K",
+   "nominal": 6.8e-08,
+   "wasMinimum": 5.4400000000000004e-08,
+   "wasMaximum": 8.16e-08,
+   "nowMinimum": 5.4400000000000004e-08,
+   "nowMaximum": 1.224e-07
+  },
+  {
+   "reference": "K683Z15Y5VF53L2",
+   "evidence": "vishay-K",
+   "nominal": 6.8e-08,
+   "wasMinimum": 5.4400000000000004e-08,
+   "wasMaximum": 8.16e-08,
+   "nowMinimum": 5.4400000000000004e-08,
+   "nowMaximum": 1.224e-07
+  },
+  {
+   "reference": "K683Z15Y5VF5TH5",
+   "evidence": "vishay-K",
+   "nominal": 6.8e-08,
+   "wasMinimum": 5.4400000000000004e-08,
+   "wasMaximum": 8.16e-08,
+   "nowMinimum": 5.4400000000000004e-08,
+   "nowMaximum": 1.224e-07
+  },
+  {
+   "reference": "K683Z15Y5VF5TL2",
+   "evidence": "vishay-K",
+   "nominal": 6.8e-08,
+   "wasMinimum": 5.4400000000000004e-08,
+   "wasMaximum": 8.16e-08,
+   "nowMinimum": 5.4400000000000004e-08,
+   "nowMaximum": 1.224e-07
+  },
+  {
+   "reference": "K683Z15Y5VF5UH5",
+   "evidence": "vishay-K",
+   "nominal": 6.8e-08,
+   "wasMinimum": 5.4400000000000004e-08,
+   "wasMaximum": 8.16e-08,
+   "nowMinimum": 5.4400000000000004e-08,
+   "nowMaximum": 1.224e-07
+  },
+  {
+   "reference": "K683Z15Y5VF5UL2",
+   "evidence": "vishay-K",
+   "nominal": 6.8e-08,
+   "wasMinimum": 5.4400000000000004e-08,
+   "wasMaximum": 8.16e-08,
+   "nowMinimum": 5.4400000000000004e-08,
+   "nowMaximum": 1.224e-07
+  },
+  {
+   "reference": "K684Z20Y5VF53H5",
+   "evidence": "vishay-K",
+   "nominal": 6.8e-07,
+   "wasMinimum": 5.44e-07,
+   "wasMaximum": 8.159999999999999e-07,
+   "nowMinimum": 5.44e-07,
+   "nowMaximum": 1.2239999999999998e-06
+  },
+  {
+   "reference": "K684Z20Y5VF53L2",
+   "evidence": "vishay-K",
+   "nominal": 6.8e-07,
+   "wasMinimum": 5.44e-07,
+   "wasMaximum": 8.159999999999999e-07,
+   "nowMinimum": 5.44e-07,
+   "nowMaximum": 1.2239999999999998e-06
+  },
+  {
+   "reference": "K684Z20Y5VF5TH5",
+   "evidence": "vishay-K",
+   "nominal": 6.8e-07,
+   "wasMinimum": 5.44e-07,
+   "wasMaximum": 8.159999999999999e-07,
+   "nowMinimum": 5.44e-07,
+   "nowMaximum": 1.2239999999999998e-06
+  },
+  {
+   "reference": "K684Z20Y5VF5TL2",
+   "evidence": "vishay-K",
+   "nominal": 6.8e-07,
+   "wasMinimum": 5.44e-07,
+   "wasMaximum": 8.159999999999999e-07,
+   "nowMinimum": 5.44e-07,
+   "nowMaximum": 1.2239999999999998e-06
+  },
+  {
+   "reference": "K684Z20Y5VF5UH5",
+   "evidence": "vishay-K",
+   "nominal": 6.8e-07,
+   "wasMinimum": 5.44e-07,
+   "wasMaximum": 8.159999999999999e-07,
+   "nowMinimum": 5.44e-07,
+   "nowMaximum": 1.2239999999999998e-06
+  },
+  {
+   "reference": "K684Z20Y5VF5UL2",
+   "evidence": "vishay-K",
+   "nominal": 6.8e-07,
+   "wasMinimum": 5.44e-07,
+   "wasMaximum": 8.159999999999999e-07,
+   "nowMinimum": 5.44e-07,
+   "nowMaximum": 1.2239999999999998e-06
+  }
+ ],
+ "withheld": [
+  {
+   "reference": "C06BL851Z-5ZN-X0T",
+   "reason": "Knowles specifies this as a guaranteed-minimum-value part ('Capacitance Guaranteed Minimum Value 850 pF') with no symmetric tolerance published, and the datasheet lists the X variant, not Z",
+   "nominal": 8.5e-10,
+   "leftMinimum": 8.075e-10,
+   "leftMaximum": 8.925e-10
+  },
+  {
+   "reference": "A334Z20Y5VF5TAA",
+   "reason": "'A334Z20' appears nowhere in Vishay 45164; its Z20 parts in an F5 body are A105/A474/A684 only, and 0.33 uF exists solely as A334Z15 (50 V)",
+   "nominal": 3.3e-07,
+   "leftMinimum": 2.6400000000000003e-07,
+   "leftMaximum": 3.96e-07
+  },
+  {
+   "reference": "A334Z20Y5VF5UAA",
+   "reason": "'A334Z20' appears nowhere in Vishay 45164; its Z20 parts in an F5 body are A105/A474/A684 only, and 0.33 uF exists solely as A334Z15 (50 V)",
+   "nominal": 3.3e-07,
+   "leftMinimum": 2.6400000000000003e-07,
+   "leftMaximum": 3.96e-07
+  }
+ ],
+ "byEvidence": {
+  "samsung": 13,
+  "tdk": 5,
+  "vishay-A": 23,
+  "vishay-K": 125
+ }
+}
