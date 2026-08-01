@@ -1,0 +1,704 @@
+{
+ "ticket": "ABT #431",
+ "date": "2026-08-01",
+ "documents": {
+  "SRF0502": {
+   "url": "https://www.bourns.com/docs/product-datasheets/SRF0502.pdf",
+   "sha256": "c4191c7841176782db96a12830ac9064bb5cecb79a2700e5cbb86b23850d2cfb",
+   "title": "Bourns SRF0502 Series - Line Filter datasheet",
+   "columnsRead": "'Electrical Specifications @ 25 C' table, columns 'Common Mode Impedance @ 100 MHz (kOhm)', 'Inductance @ 100 kHz / 0.1 V (uH)' and 'DCR Max. (mOhm)'"
+  },
+  "SRF0504": {
+   "url": "https://www.bourns.com/docs/product-datasheets/SRF0504.pdf",
+   "sha256": "d9c5cf5099ae63ba2c216ea9347a9d260cdc703035ee201e88408b305f3ca3af",
+   "title": "Bourns SRF0504 Series - Line Filter datasheet",
+   "columnsRead": "'SRF0504 Series - Line Filter' table, columns 'L (uH) (Ref.)', 'Impedance Z (Ohm) @ 100 MHz' and 'DCR (mOhm) max. (each winding)'"
+  },
+  "SRF0905": {
+   "url": "https://www.bourns.com/docs/product-datasheets/SRF0905.pdf",
+   "sha256": "4a9d164841d5aaeca300cad53d747ca71571f71098f575213cde430c2d520daa",
+   "title": "Bourns SRF0905 Series - Line Filter datasheet",
+   "columnsRead": "'Electrical Specifications @ 25 C' table, columns 'L (uH)' and 'DCR (Ohm) max. (each winding)'. This series states no single-frequency impedance - only a minimum over a frequency RANGE - so no impedance point is recorded from it"
+  },
+  "SRF2012A": {
+   "url": "https://www.bourns.com/docs/product-datasheets/SRF2012A.pdf",
+   "sha256": "dbc0532d00bbbe31affbad11814315a9642a1a4b804eac60990ca6c7a9d9c1b2",
+   "title": "Bourns SRF2012A Series - Common Mode Chip Inductors datasheet",
+   "columnsRead": "'Electrical Specifications' table, columns 'Impedance @ 100 MHz (Ohm)' and 'DCR Max. (Ohm)'. This series publishes NO inductance column"
+  },
+  "SRF2012A-801Y": {
+   "url": "https://www.bourns.com/docs/product-datasheets/SRF2012A-801Y.pdf",
+   "sha256": "ce1bd2fc78cb70ebea6f716b1ddb096446ac40c8f892be2ce380ac2bf93cf44d",
+   "title": "Bourns SRF2012A-801Y datasheet (SRF2012A Series - Common Mode Chip Inductors)",
+   "columnsRead": "'Electrical Specifications at 25 C' table, columns 'Impedance @ 100 MHz / 1 V (Ohm)' and 'DCR Max. (Ohm)'. This document publishes NO inductance"
+  },
+  "SRF3225AB": {
+   "url": "https://www.bourns.com/docs/product-datasheets/SRF3225AB.pdf",
+   "sha256": "c3416b0a29fef6a789dc9591b445995b3ad677a0e63f1103e42494115a8dcf30",
+   "title": "Bourns SRF3225AB - Common Mode Chip Inductor datasheet",
+   "columnsRead": "'Electrical Specifications @ 25 C' table, columns 'Inductance @ 100 kHz / 0.1 V L (uH)', 'DCR (Ohm) Max.' and 'Common Mode Impedance (Ohm) @ 10 MHz Typ.'"
+  },
+  "SRF3225TABG": {
+   "url": "https://www.bourns.com/docs/product-datasheets/SRF3225TABG.pdf",
+   "sha256": "7234768c11c5ce278c129a089be2270a46438ef0a52f76f5d211f50148df5405",
+   "title": "Bourns Model SRF3225TABG - Common Mode Chip Inductor datasheet",
+   "columnsRead": "'Electrical Specifications @ 25 C' table, columns 'Inductance @ 100 kHz / 0.1 V L (uH)', 'DCR (Ohm) Max.' and 'Common Mode Impedance (Ohm) @ 10 MHz Typ.'"
+  },
+  "SRF3225TAP": {
+   "url": "https://www.bourns.com/docs/product-datasheets/SRF3225TAP.pdf",
+   "sha256": "39da09cf29a4c44952f1465f6ae5d9034cf1c7aa2c48cf44f7ab60fbfee78ed8",
+   "title": "Bourns SRF3225TAP Series - Common Mode Chip Inductors datasheet",
+   "columnsRead": "'Electrical Specifications @ 25 C' table, columns 'Common Mode Impedance (Ohm) @ 100 MHz' and 'DCR (Ohm) Max.'. This series publishes NO inductance column"
+  },
+  "SRF3225TP": {
+   "url": "https://www.bourns.com/docs/product-datasheets/SRF3225TP.pdf",
+   "sha256": "eb0fea50228bacd3a5ac1608f4ab62a0732b2363ba13fb0aa752c15330bc1030",
+   "title": "Bourns SRF3225TP Series - Common Mode Chokes datasheet",
+   "columnsRead": "'Electrical Specifications @ 25 C' table, columns 'Inductance @ 100 KHz / 0.1 V L (uH)', 'Common Mode Impedance (Ohm) @ 100 MHz' and 'DCR (Ohm) Max.' - the DCR cell is merged vertically across both parts of the table"
+  },
+  "SRF4532": {
+   "url": "https://www.bourns.com/docs/product-datasheets/SRF4532.pdf",
+   "sha256": "ed6cae1fcf3fd84cede0bf1be3403f92cbc64ef3575b233523854bff23f09de9",
+   "title": "Bourns SRF4532 Series - Common Mode Chip Inductors datasheet",
+   "columnsRead": "'Electrical Specifications' table, columns 'Inductance (uH) @ 100 KHz Common Mode', 'Impedance (Ohm) @ 10 MHz Common Mode Typ.' and 'DCR Max. (Ohm)'"
+  },
+  "SRF4532TA": {
+   "url": "https://www.bourns.com/docs/product-datasheets/SRF4532TA.pdf",
+   "sha256": "244fb5e785448ffba183384e62ed8b3aba4ebffe719f86d9e786f4435ebdf8ac",
+   "title": "Bourns SRF4532TA Series - Common Mode Chip Inductor datasheet",
+   "columnsRead": "'Electrical Specifications @ 25 C' table, columns 'Impedance (Ohm) @ 100 MHz Typ.', 'Inductance @ 100 kHz / 0.1 V L (uH)' and 'DCR (Ohm) Max.'"
+  },
+  "SRF7038A": {
+   "url": "https://www.bourns.com/docs/product-datasheets/SRF7038A.pdf",
+   "sha256": "a9f3bda113947b7d84474f36a7af65af51c1e25744762384c628d83fc7caa240",
+   "title": "Bourns SRF7038A Series - Common Mode Chokes datasheet",
+   "columnsRead": "'Electrical Specifications at 25 C' table, columns 'Z (Ohm) @ 100 MHz Typ.', 'L (uH) @ 100 kHz / 0.1 V' and 'DCR (mOhm) Max.'"
+  }
+ },
+ "impedanceAsDcr": [
+  {
+   "reference": "SRF0905-400Y",
+   "document": "SRF0905",
+   "datasheetCell": "0.25 ohm",
+   "was": [
+    {
+     "shape": "dcResistances",
+     "maximum": 1.6
+    }
+   ],
+   "nowMaximum": 0.25
+  },
+  {
+   "reference": "SRF3225AB-101Y",
+   "document": "SRF3225AB",
+   "datasheetCell": "3.5 ohm",
+   "was": [
+    {
+     "shape": "dcResistances",
+     "maximum": 2.0
+    }
+   ],
+   "nowMaximum": 3.5
+  },
+  {
+   "reference": "SRF0905-500Y",
+   "document": "SRF0905",
+   "datasheetCell": "0.32 ohm",
+   "was": [
+    {
+     "shape": "dcResistances",
+     "maximum": 1.0
+    }
+   ],
+   "nowMaximum": 0.32
+  },
+  {
+   "reference": "SRF3225TABG-101Y",
+   "document": "SRF3225TABG",
+   "datasheetCell": "3.0 ohm",
+   "was": [
+    {
+     "shape": "dcResistances",
+     "maximum": 2.0
+    }
+   ],
+   "nowMaximum": 3.0
+  },
+  {
+   "reference": "SRF0905-250Y",
+   "document": "SRF0905",
+   "datasheetCell": "0.16 ohm",
+   "was": [
+    {
+     "shape": "dcResistances",
+     "maximum": 1.6
+    }
+   ],
+   "nowMaximum": 0.16
+  },
+  {
+   "reference": "SRF4532-220Y",
+   "document": "SRF4532",
+   "datasheetCell": "2.65 ohm",
+   "was": [
+    {
+     "shape": "dcResistances",
+     "nominal": 1.0
+    }
+   ],
+   "nowMaximum": 2.65
+  },
+  {
+   "reference": "SRF0504-191Y",
+   "document": "SRF0504",
+   "datasheetCell": "20.0 mohm",
+   "was": [
+    {
+     "shape": "dcResistances",
+     "maximum": 1.0
+    }
+   ],
+   "nowMaximum": 0.02
+  },
+  {
+   "reference": "SRF0504-152Y",
+   "document": "SRF0504",
+   "datasheetCell": "100.0 mohm",
+   "was": [
+    {
+     "shape": "dcResistances",
+     "maximum": 1.0
+    }
+   ],
+   "nowMaximum": 0.1
+  },
+  {
+   "reference": "SRF4532-101Y",
+   "document": "SRF4532",
+   "datasheetCell": "8.9 ohm",
+   "was": [
+    {
+     "shape": "dcResistances",
+     "nominal": 5.0
+    }
+   ],
+   "nowMaximum": 8.9
+  },
+  {
+   "reference": "SRF4532-510Y",
+   "document": "SRF4532",
+   "datasheetCell": "3.5 ohm",
+   "was": [
+    {
+     "shape": "dcResistances",
+     "nominal": 2.0
+    }
+   ],
+   "nowMaximum": 3.5
+  },
+  {
+   "reference": "SRF0905-501Y",
+   "document": "SRF0905",
+   "datasheetCell": "0.15 ohm",
+   "was": [
+    {
+     "shape": "dcResistances",
+     "maximum": 1.2
+    }
+   ],
+   "nowMaximum": 0.15
+  },
+  {
+   "reference": "SRF2012-301YA",
+   "document": "SRF2012A",
+   "datasheetCell": "0.5 ohm",
+   "was": [
+    {
+     "shape": "dcResistances",
+     "maximum": 300.0
+    }
+   ],
+   "nowMaximum": 0.5
+  },
+  {
+   "reference": "SRF7038A-102Y",
+   "document": "SRF7038A",
+   "datasheetCell": "17.0 mohm",
+   "was": [
+    {
+     "shape": "dcResistances",
+     "maximum": 1020.0
+    }
+   ],
+   "nowMaximum": 0.017
+  },
+  {
+   "reference": "SRF7038A-102Y",
+   "document": "SRF7038A",
+   "datasheetCell": "6.3 uH",
+   "wasInductance": 1e-05,
+   "nowInductance": 6.3e-06
+  },
+  {
+   "reference": "SRF4532TA-282Y",
+   "document": "SRF4532TA",
+   "datasheetCell": "0.35 ohm",
+   "was": [
+    {
+     "shape": "dcResistances",
+     "maximum": 2800.0
+    }
+   ],
+   "nowMaximum": 0.35
+  },
+  {
+   "reference": "SRF3225TAP-102Y",
+   "document": "SRF3225TAP",
+   "datasheetCell": "0.1 ohm",
+   "was": [
+    {
+     "shape": "dcResistances",
+     "maximum": 1000.0
+    }
+   ],
+   "nowMaximum": 0.1
+  },
+  {
+   "reference": "SRF0502-251Y",
+   "document": "SRF0502",
+   "datasheetCell": "20.0 mohm",
+   "was": [
+    {
+     "shape": "dcResistances",
+     "maximum": 15.0
+    }
+   ],
+   "nowMaximum": 0.02
+  },
+  {
+   "reference": "SRF0502-251Y",
+   "document": "SRF0502",
+   "datasheetCell": "0.55 uH",
+   "wasInductance": 1e-05,
+   "nowInductance": 5.5e-07
+  },
+  {
+   "reference": "SRF0502-142Y",
+   "document": "SRF0502",
+   "datasheetCell": "55.0 mohm",
+   "was": [
+    {
+     "shape": "dcResistances",
+     "maximum": 30.0
+    }
+   ],
+   "nowMaximum": 0.055
+  },
+  {
+   "reference": "SRF0502-142Y",
+   "document": "SRF0502",
+   "datasheetCell": "2.6 uH",
+   "wasInductance": 1e-05,
+   "nowInductance": 2.6e-06
+  },
+  {
+   "reference": "SRF0502-102Y",
+   "document": "SRF0502",
+   "datasheetCell": "45.0 mohm",
+   "was": [
+    {
+     "shape": "dcResistances",
+     "maximum": 20.0
+    }
+   ],
+   "nowMaximum": 0.045
+  },
+  {
+   "reference": "SRF0502-102Y",
+   "document": "SRF0502",
+   "datasheetCell": "2.5 uH",
+   "wasInductance": 1e-05,
+   "nowInductance": 2.5e-06
+  },
+  {
+   "reference": "SRF0502-501Y",
+   "document": "SRF0502",
+   "datasheetCell": "30.0 mohm",
+   "was": [
+    {
+     "shape": "dcResistances",
+     "maximum": 15.0
+    }
+   ],
+   "nowMaximum": 0.03
+  },
+  {
+   "reference": "SRF0502-501Y",
+   "document": "SRF0502",
+   "datasheetCell": "1.1 uH",
+   "wasInductance": 1e-05,
+   "nowInductance": 1.1e-06
+  },
+  {
+   "reference": "SRF3225TP-501Y",
+   "document": "SRF3225TP",
+   "datasheetCell": "0.1 ohm",
+   "was": [
+    {
+     "shape": "dcResistances",
+     "maximum": 500.0
+    }
+   ],
+   "nowMaximum": 0.1
+  },
+  {
+   "reference": "SRF3225TP-501Y",
+   "document": "SRF3225TP",
+   "datasheetCell": "2.2 uH",
+   "wasInductance": 1e-05,
+   "nowInductance": 2.2e-06
+  },
+  {
+   "reference": "SRF3225TP-102Y",
+   "document": "SRF3225TP",
+   "datasheetCell": "0.1 ohm",
+   "was": [
+    {
+     "shape": "dcResistances",
+     "maximum": 1000.0
+    }
+   ],
+   "nowMaximum": 0.1
+  },
+  {
+   "reference": "SRF3225TP-102Y",
+   "document": "SRF3225TP",
+   "datasheetCell": "8.2 uH",
+   "wasInductance": 1e-05,
+   "nowInductance": 8.2e-06
+  },
+  {
+   "reference": "SRF2012-361YA",
+   "document": "SRF2012A",
+   "datasheetCell": "0.5 ohm",
+   "was": [
+    {
+     "shape": "dcResistances",
+     "maximum": 360.0
+    }
+   ],
+   "nowMaximum": 0.5
+  },
+  {
+   "reference": "SRF2012-900YA",
+   "document": "SRF2012A",
+   "datasheetCell": "0.3 ohm",
+   "was": [
+    {
+     "shape": "dcResistances",
+     "maximum": 90.0
+    }
+   ],
+   "nowMaximum": 0.3
+  },
+  {
+   "reference": "SRF2012A-801Y",
+   "document": "SRF2012A-801Y",
+   "datasheetCell": "0.88 ohm",
+   "was": [
+    {
+     "shape": "dcResistances",
+     "maximum": 800.0
+    }
+   ],
+   "nowMaximum": 0.88
+  }
+ ],
+ "contradictsPublishedMaximum": [
+  {
+   "reference": "SRF7038A-700Y",
+   "document": "SRF7038A",
+   "datasheetCell": "5.0 mohm",
+   "was": [
+    {
+     "shape": "dcResistances",
+     "maximum": 0.1
+    }
+   ],
+   "nowMaximum": 0.005
+  },
+  {
+   "reference": "SRF7038A-700Y",
+   "document": "SRF7038A",
+   "datasheetCell": "0.83 uH",
+   "wasInductance": 1e-06,
+   "nowInductance": 8.3e-07
+  },
+  {
+   "reference": "SRF0905-251Y",
+   "document": "SRF0905",
+   "datasheetCell": "0.13 ohm",
+   "was": [
+    {
+     "shape": "dcResistances",
+     "maximum": 0.9
+    }
+   ],
+   "nowMaximum": 0.13
+  },
+  {
+   "reference": "SRF0502-101Y",
+   "document": "SRF0502",
+   "datasheetCell": "30.8 mohm",
+   "was": [
+    {
+     "shape": "dcResistances",
+     "maximum": 0.06
+    }
+   ],
+   "nowMaximum": 0.0308
+  },
+  {
+   "reference": "SRF0502-101Y",
+   "document": "SRF0502",
+   "datasheetCell": "1.55 uH",
+   "wasInductance": 1e-05,
+   "nowInductance": 1.55e-06
+  }
+ ],
+ "inductanceRemovedNotPublished": [
+  {
+   "reference": "SRF2012-301YA",
+   "document": "SRF2012A",
+   "removed": {
+    "nominal": 1e-05
+   }
+  },
+  {
+   "reference": "SRF3225TAP-102Y",
+   "document": "SRF3225TAP",
+   "removed": {
+    "nominal": 1e-05
+   }
+  },
+  {
+   "reference": "SRF2012-361YA",
+   "document": "SRF2012A",
+   "removed": {
+    "nominal": 1e-05
+   }
+  },
+  {
+   "reference": "SRF2012-900YA",
+   "document": "SRF2012A",
+   "removed": {
+    "nominal": 1e-05
+   }
+  },
+  {
+   "reference": "SRF2012A-801Y",
+   "document": "SRF2012A-801Y",
+   "removed": {
+    "nominal": 1e-05
+   }
+  }
+ ],
+ "impedanceRecorded": [
+  {
+   "reference": "SRF7038A-700Y",
+   "magnitude": 70.0,
+   "frequency": 100000000.0,
+   "datasheetCell": "70.0 ohm"
+  },
+  {
+   "reference": "SRF3225AB-101Y",
+   "magnitude": 5500.0,
+   "frequency": 10000000.0,
+   "datasheetCell": "5500.0 ohm"
+  },
+  {
+   "reference": "SRF3225TABG-101Y",
+   "magnitude": 3000.0,
+   "frequency": 10000000.0,
+   "datasheetCell": "3000.0 ohm"
+  },
+  {
+   "reference": "SRF4532-220Y",
+   "magnitude": 1000.0,
+   "frequency": 10000000.0,
+   "datasheetCell": "1000.0 ohm"
+  },
+  {
+   "reference": "SRF0504-191Y",
+   "magnitude": 190.0,
+   "frequency": 100000000.0,
+   "datasheetCell": "190.0 ohm"
+  },
+  {
+   "reference": "SRF0504-152Y",
+   "magnitude": 1500.0,
+   "frequency": 100000000.0,
+   "datasheetCell": "1500.0 ohm"
+  },
+  {
+   "reference": "SRF4532-101Y",
+   "magnitude": 5000.0,
+   "frequency": 10000000.0,
+   "datasheetCell": "5000.0 ohm"
+  },
+  {
+   "reference": "SRF4532-510Y",
+   "magnitude": 2000.0,
+   "frequency": 10000000.0,
+   "datasheetCell": "2000.0 ohm"
+  },
+  {
+   "reference": "SRF2012-301YA",
+   "magnitude": 300.0,
+   "frequency": 100000000.0,
+   "datasheetCell": "300.0 ohm"
+  },
+  {
+   "reference": "SRF7038A-102Y",
+   "magnitude": 1020.0,
+   "frequency": 100000000.0,
+   "datasheetCell": "1020.0 ohm"
+  },
+  {
+   "reference": "SRF4532TA-282Y",
+   "magnitude": 2800.0,
+   "frequency": 100000000.0,
+   "datasheetCell": "2800.0 ohm"
+  },
+  {
+   "reference": "SRF3225TAP-102Y",
+   "magnitude": 1000.0,
+   "frequency": 100000000.0,
+   "datasheetCell": "1000.0 ohm"
+  },
+  {
+   "reference": "SRF0502-251Y",
+   "magnitude": 250.0,
+   "frequency": 100000000.0,
+   "datasheetCell": "0.25 kohm"
+  },
+  {
+   "reference": "SRF0502-142Y",
+   "magnitude": 1400.0,
+   "frequency": 100000000.0,
+   "datasheetCell": "1.4 kohm"
+  },
+  {
+   "reference": "SRF0502-102Y",
+   "magnitude": 1000.0,
+   "frequency": 100000000.0,
+   "datasheetCell": "1.0 kohm"
+  },
+  {
+   "reference": "SRF0502-501Y",
+   "magnitude": 500.0,
+   "frequency": 100000000.0,
+   "datasheetCell": "0.5 kohm"
+  },
+  {
+   "reference": "SRF0502-101Y",
+   "magnitude": 100.0,
+   "frequency": 10000000.0,
+   "datasheetCell": "0.1 kohm"
+  },
+  {
+   "reference": "SRF3225TP-501Y",
+   "magnitude": 500.0,
+   "frequency": 100000000.0,
+   "datasheetCell": "500.0 ohm"
+  },
+  {
+   "reference": "SRF3225TP-102Y",
+   "magnitude": 1000.0,
+   "frequency": 100000000.0,
+   "datasheetCell": "1000.0 ohm"
+  },
+  {
+   "reference": "SRF2012-361YA",
+   "magnitude": 360.0,
+   "frequency": 100000000.0,
+   "datasheetCell": "360.0 ohm"
+  },
+  {
+   "reference": "SRF2012-900YA",
+   "magnitude": 90.0,
+   "frequency": 100000000.0,
+   "datasheetCell": "90.0 ohm"
+  },
+  {
+   "reference": "SRF2012A-801Y",
+   "magnitude": 800.0,
+   "frequency": 100000000.0,
+   "datasheetCell": "800.0 ohm"
+  }
+ ],
+ "withheld": [
+  {
+   "reference": "SRF2012A-201YA",
+   "reason": "Bourns' SRF2012A datasheet names this part 'SRF2012-201YA' (200 Ohm, DCR 0.40 Ohm max, IDC 300 mA); the string 'SRF2012A-201YA' appears in no Bourns document fetched. Stored inductance 200 uH equals the impedance code and that series publishes no inductance at all, so this row is suspect - but correcting it would mean citing a document that does not name it"
+  },
+  {
+   "reference": "SRF2012A-361YA",
+   "reason": "Bourns' SRF2012A datasheet names this part 'SRF2012-361YA' (360 Ohm, DCR 0.50 Ohm max); the string 'SRF2012A-361YA' appears in no Bourns document fetched. The J.W. Miller row SRF2012-361YA, which the document does name, IS corrected here and carries the same values"
+  },
+  {
+   "reference": "SRF2012A-900YA",
+   "reason": "Bourns' SRF2012A datasheet names this part 'SRF2012-900YA' (90 Ohm, DCR 0.30 Ohm max, IDC 400 mA); the string 'SRF2012A-900YA' appears in no Bourns document fetched. Its stored 0.4 Ohm exceeds that maximum and its stored 90 uH equals the impedance code, so this row is suspect too"
+  }
+ ],
+ "coupledInductorsNotInScope": [
+  {
+   "reference": "SRF0703A-151M",
+   "datasheet": "parallel L 150 uH / DCR 0.986 Ohm, series L 608.2 uH / DCR 3.63 Ohm"
+  },
+  {
+   "reference": "SRF1260A-221M",
+   "datasheet": "parallel L 220 uH / DCR 0.354 Ohm, series L 880 uH / DCR 1.416 Ohm"
+  },
+  {
+   "reference": "SRF1260A-331M",
+   "datasheet": "parallel L 330 uH / DCR 0.574 Ohm, series L 1320 uH / DCR 2.29 Ohm"
+  },
+  {
+   "reference": "SRF1280-471M",
+   "datasheet": "parallel L 470 uH / DCR 0.865 Ohm, series L 1868 uH / DCR 3.3 Ohm"
+  },
+  {
+   "reference": "SRF1280A-331M",
+   "datasheet": "parallel L 330 uH / DCR 0.54 Ohm, series L 1294 uH / DCR 2.172 Ohm"
+  },
+  {
+   "reference": "SRF1280A-681M",
+   "datasheet": "parallel L 680 uH / DCR 1.296 Ohm, series L 2707 uH / DCR 4.888 Ohm"
+  }
+ ],
+ "notedNotCorrected": [
+  {
+   "reference": "SRF0502-101Y",
+   "note": "stored ratedCurrents [6.0] A; Bourns' table says 2.5 A"
+  },
+  {
+   "reference": "SRF2012-301YA",
+   "note": "stored ratedCurrents [0.4] A; Bourns' table says IDC max 300 mA"
+  },
+  {
+   "reference": "SRF2012-361YA",
+   "note": "stored ratedCurrents [0.3] A; Bourns' table says IDC max 300 mA - agrees"
+  },
+  {
+   "reference": "SRF7038A-700Y",
+   "note": "stored saturationCurrentPeak 15.0 A; Bourns' table says rated current 15 A max, which is a rated current, not a saturation current"
+  }
+ ],
+ "counts": {
+  "inductanceCorrected": 9,
+  "rows": 27,
+  "contradictsMaximum": 3,
+  "impedanceAsDcr": 24
+ }
+}
