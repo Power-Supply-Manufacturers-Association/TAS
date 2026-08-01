@@ -158,7 +158,15 @@ Resolved resolve(const json& component_obj) {
 // below the floor is sparse — the signature of a near-empty fabricated record.
 const std::vector<std::string>* core_fields(const std::string& c) {
     static const std::map<std::string, std::vector<std::string>> M = {
-        {"magnetic", {"inductance", "dcResistance"}},
+        // "a|b" lists ALTERNATE spellings of one field; present in either form counts.
+        // An inductor carries a singular `dcResistance`, a common-mode choke or
+        // transformer a plural `dcResistances[]`. Counting only the singular capped
+        // every plural-shape row at 0.50 completeness however complete it really was -
+        // and 4,450 rows use that shape. This is the ABT #387 blindness in a fourth
+        // place (ABT #448), and it was self-concealing: the floor below was calibrated
+        // to "real-part min ~0.50", but that 0.50 was this bug, not a property of the
+        // catalogue.
+        {"magnetic", {"inductance", "dcResistance|dcResistances"}},
         {"capacitor", {"capacitance", "ratedVoltage"}},
         {"resistor", {"resistance", "powerRating", "tolerance"}},
         {"mosfet",
@@ -207,8 +215,19 @@ double compute_completeness(const std::string& component, const json& datasheet)
         obj = elec;
     if (obj == nullptr) return 0.0;  // electrical absent/empty => maximally sparse
     int present = 0;
-    for (const auto& f : *core)
-        if (obj->contains(f) && !(*obj)[f].is_null()) ++present;
+    for (const auto& f : *core) {
+        // A manifest entry may name alternate spellings of the same field, "a|b".
+        bool found = false;
+        for (size_t start = 0; start <= f.size() && !found;) {
+            const size_t bar = f.find('|', start);
+            const std::string name =
+                f.substr(start, bar == std::string::npos ? std::string::npos : bar - start);
+            if (!name.empty() && obj->contains(name) && !(*obj)[name].is_null()) found = true;
+            if (bar == std::string::npos) break;
+            start = bar + 1;
+        }
+        if (found) ++present;
+    }
     return static_cast<double>(present) / static_cast<double>(core->size());
 }
 
