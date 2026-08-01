@@ -1,0 +1,388 @@
+{
+ "ticket": "ABT #451 (magnetics subset)",
+ "date": "2026-08-01",
+ "recited": [
+  {
+   "reference": "IHLP4040DZER2R2MA1",
+   "document": "34245",
+   "title": "IHLP-4040DZ-A1",
+   "level": "series",
+   "wasCiting": "https://industrial.panasonic.com/cdbs/www-data/pdf/AGL0000/AGL0000C63.pdf"
+  },
+  {
+   "reference": "IHLP4040DZER3R3MA1",
+   "document": "34245",
+   "title": "IHLP-4040DZ-A1",
+   "level": "series",
+   "wasCiting": "https://industrial.panasonic.com/cdbs/www-data/pdf/AGL0000/AGL0000C63.pdf"
+  },
+  {
+   "reference": "IHLP2525BDER100MA1",
+   "document": "34240",
+   "title": "IHLP-2525BD-A1",
+   "level": "series",
+   "wasCiting": "https://industrial.panasonic.com/cdbs/www-data/pdf/AGL0000/AGL0000C63.pdf"
+  },
+  {
+   "reference": "IMC1008ER270J",
+   "document": "34041",
+   "title": "IMC-1008",
+   "level": "exact",
+   "wasCiting": "https://www.bourns.com/docs/Product-Datasheets/CW252016.pdf"
+  },
+  {
+   "reference": "IMC1008ER1R2J",
+   "document": "34041",
+   "title": "IMC-1008",
+   "level": "exact",
+   "wasCiting": "https://www.bourns.com/docs/Product-Datasheets/CW252016.pdf"
+  },
+  {
+   "reference": "IMC1008ER1R0J",
+   "document": "34041",
+   "title": "IMC-1008",
+   "level": "exact",
+   "wasCiting": "https://www.we-online.com/components/products/datasheet/744762310A.pdf"
+  },
+  {
+   "reference": "IMC1008ERR15J",
+   "document": "34041",
+   "title": "IMC-1008",
+   "level": "exact",
+   "wasCiting": "https://www.we-online.com/components/products/datasheet/744762215A.pdf"
+  },
+  {
+   "reference": "IMC1008ER3N3S",
+   "document": "34041",
+   "title": "IMC-1008",
+   "level": "exact",
+   "wasCiting": "https://www.we-online.com/components/products/datasheet/744762033A.pdf"
+  },
+  {
+   "reference": "IMC1008ERR56J",
+   "document": "34041",
+   "title": "IMC-1008",
+   "level": "exact",
+   "wasCiting": "https://www.bourns.com/docs/Product-Datasheets/CW252016.pdf"
+  },
+  {
+   "reference": "IMC1008ERR22J",
+   "document": "34041",
+   "title": "IMC-1008",
+   "level": "exact",
+   "wasCiting": "https://www.we-online.com/components/products/datasheet/744762222A.pdf"
+  },
+  {
+   "reference": "IMC1008ER39NJ",
+   "document": "34041",
+   "title": "IMC-1008",
+   "level": "exact",
+   "wasCiting": "https://www.we-online.com/components/products/datasheet/744762139A.pdf"
+  },
+  {
+   "reference": "IMC1008ERR18J",
+   "document": "34041",
+   "title": "IMC-1008",
+   "level": "exact",
+   "wasCiting": "https://www.we-online.com/components/products/datasheet/744762218A.pdf"
+  },
+  {
+   "reference": "IMC1008ER4R7J",
+   "document": "34041",
+   "title": "IMC-1008",
+   "level": "exact",
+   "wasCiting": "https://www.bourns.com/docs/Product-Datasheets/CW252016.pdf"
+  },
+  {
+   "reference": "IMC1008ER10NJ",
+   "document": "34041",
+   "title": "IMC-1008",
+   "level": "exact",
+   "wasCiting": "https://www.we-online.com/components/products/datasheet/744762110A.pdf"
+  },
+  {
+   "reference": "IMC1008ER12NJ",
+   "document": "34041",
+   "title": "IMC-1008",
+   "level": "exact",
+   "wasCiting": "https://www.we-online.com/components/products/datasheet/744762112A.pdf"
+  },
+  {
+   "reference": "IMC1008ER3R3J",
+   "document": "34041",
+   "title": "IMC-1008",
+   "level": "exact",
+   "wasCiting": "https://www.bourns.com/docs/Product-Datasheets/CW252016.pdf"
+  },
+  {
+   "reference": "IMC1008ER1R8J",
+   "document": "34041",
+   "title": "IMC-1008",
+   "level": "exact",
+   "wasCiting": "https://www.bourns.com/docs/Product-Datasheets/CW252016.pdf"
+  },
+  {
+   "reference": "IMC1008ER3R9J",
+   "document": "34041",
+   "title": "IMC-1008",
+   "level": "exact",
+   "wasCiting": "https://www.bourns.com/docs/Product-Datasheets/CW252016.pdf"
+  },
+  {
+   "reference": "IMC1008ER2R7J",
+   "document": "34041",
+   "title": "IMC-1008",
+   "level": "exact",
+   "wasCiting": "https://www.bourns.com/docs/Product-Datasheets/CW252016.pdf"
+  },
+  {
+   "reference": "IMC1008ER2R2J",
+   "document": "34041",
+   "title": "IMC-1008",
+   "level": "exact",
+   "wasCiting": "https://www.bourns.com/docs/Product-Datasheets/CW252016.pdf"
+  },
+  {
+   "reference": "IMC1008ERR47J",
+   "document": "34041",
+   "title": "IMC-1008",
+   "level": "exact",
+   "wasCiting": "https://www.bourns.com/docs/Product-Datasheets/CW252016.pdf"
+  },
+  {
+   "reference": "IMC1008ERR39J",
+   "document": "34041",
+   "title": "IMC-1008",
+   "level": "exact",
+   "wasCiting": "https://www.bourns.com/docs/Product-Datasheets/CW252016.pdf"
+  },
+  {
+   "reference": "IMC1008ER33NJ",
+   "document": "34041",
+   "title": "IMC-1008",
+   "level": "exact",
+   "wasCiting": "https://www.we-online.com/components/products/datasheet/744762133A.pdf"
+  },
+  {
+   "reference": "IMC1008ER22NJ",
+   "document": "34041",
+   "title": "IMC-1008",
+   "level": "exact",
+   "wasCiting": "https://www.we-online.com/components/products/datasheet/744762122A.pdf"
+  },
+  {
+   "reference": "IMC1008ER150J",
+   "document": "34041",
+   "title": "IMC-1008",
+   "level": "exact",
+   "wasCiting": "https://www.we-online.com/components/products/datasheet/744762415A.pdf"
+  },
+  {
+   "reference": "IMC1008ERR27J",
+   "document": "34041",
+   "title": "IMC-1008",
+   "level": "exact",
+   "wasCiting": "https://www.bourns.com/docs/Product-Datasheets/CW252016.pdf"
+  },
+  {
+   "reference": "IMC1008ER18NJ",
+   "document": "34041",
+   "title": "IMC-1008",
+   "level": "exact",
+   "wasCiting": "https://www.we-online.com/components/products/datasheet/744762118A.pdf"
+  },
+  {
+   "reference": "IMC1008ERR12J",
+   "document": "34041",
+   "title": "IMC-1008",
+   "level": "exact",
+   "wasCiting": "https://www.bourns.com/docs/Product-Datasheets/CW252016.pdf"
+  },
+  {
+   "reference": "IMC1008ER27NJ",
+   "document": "34041",
+   "title": "IMC-1008",
+   "level": "exact",
+   "wasCiting": "https://www.we-online.com/components/products/datasheet/744762127A.pdf"
+  },
+  {
+   "reference": "IMC1008ER8R2J",
+   "document": "34041",
+   "title": "IMC-1008",
+   "level": "exact",
+   "wasCiting": "https://www.we-online.com/components/products/datasheet/744762382A.pdf"
+  },
+  {
+   "reference": "IMC1008ER6N8J",
+   "document": "34041",
+   "title": "IMC-1008",
+   "level": "exact",
+   "wasCiting": "https://www.we-online.com/components/products/datasheet/744762068A.pdf"
+  },
+  {
+   "reference": "IMC1008ER82NJ",
+   "document": "34041",
+   "title": "IMC-1008",
+   "level": "exact",
+   "wasCiting": "https://www.we-online.com/components/products/datasheet/744762182A.pdf"
+  },
+  {
+   "reference": "IMC1008ER47NJ",
+   "document": "34041",
+   "title": "IMC-1008",
+   "level": "exact",
+   "wasCiting": "https://www.we-online.com/components/products/datasheet/744762147A.pdf"
+  },
+  {
+   "reference": "IMC0603ER22NG01",
+   "document": "34164",
+   "title": "IMC-0603-01",
+   "level": "series",
+   "wasCiting": "https://www.bourns.com/docs/Product-Datasheets/cw160808.pdf"
+  },
+  {
+   "reference": "IMC0603ER82NJ01",
+   "document": "34164",
+   "title": "IMC-0603-01",
+   "level": "series",
+   "wasCiting": "https://www.bourns.com/docs/Product-Datasheets/cw160808.pdf"
+  },
+  {
+   "reference": "IMC0805ERR47J01",
+   "document": "34115",
+   "title": "IMC-0805-01",
+   "level": "exact",
+   "wasCiting": "https://www.we-online.com/components/products/datasheet/744760247A.pdf"
+  },
+  {
+   "reference": "IMC0805ER8R2J01",
+   "document": "34115",
+   "title": "IMC-0805-01",
+   "level": "exact",
+   "wasCiting": "https://www.we-online.com/components/products/datasheet/744760382A.pdf"
+  },
+  {
+   "reference": "IMC0603ER33NJ01",
+   "document": "34164",
+   "title": "IMC-0603-01",
+   "level": "series",
+   "wasCiting": "https://www.bourns.com/docs/Product-Datasheets/cw160808.pdf"
+  },
+  {
+   "reference": "IMC0805ER2R2J01",
+   "document": "34115",
+   "title": "IMC-0805-01",
+   "level": "exact",
+   "wasCiting": "https://www.we-online.com/components/products/datasheet/744760322A.pdf"
+  },
+  {
+   "reference": "IMC0603ER56NJ01",
+   "document": "34164",
+   "title": "IMC-0603-01",
+   "level": "series",
+   "wasCiting": "https://www.bourns.com/docs/Product-Datasheets/cw160808.pdf"
+  },
+  {
+   "reference": "IMC0805ER2N7S01",
+   "document": "34115",
+   "title": "IMC-0805-01",
+   "level": "exact",
+   "wasCiting": "https://www.bourns.com/docs/Product-Datasheets/CE201210.pdf"
+  },
+  {
+   "reference": "IMC0603ER15NG01",
+   "document": "34164",
+   "title": "IMC-0603-01",
+   "level": "series",
+   "wasCiting": "https://www.bourns.com/docs/Product-Datasheets/cw160808.pdf"
+  },
+  {
+   "reference": "IMC0603ER15NJ01",
+   "document": "34164",
+   "title": "IMC-0603-01",
+   "level": "series",
+   "wasCiting": "https://www.bourns.com/docs/Product-Datasheets/cw160808.pdf"
+  },
+  {
+   "reference": "IMC1008ER8N2J",
+   "document": "34041",
+   "title": "IMC-1008",
+   "level": "exact",
+   "wasCiting": "https://www.we-online.com/components/products/datasheet/744762082A.pdf"
+  },
+  {
+   "reference": "IMC0603ER22NJ01",
+   "document": "34164",
+   "title": "IMC-0603-01",
+   "level": "series",
+   "wasCiting": "https://www.bourns.com/docs/Product-Datasheets/cw160808.pdf"
+  },
+  {
+   "reference": "IMC0603ER47NJ01",
+   "document": "34164",
+   "title": "IMC-0603-01",
+   "level": "series",
+   "wasCiting": "https://www.bourns.com/docs/Product-Datasheets/cw160808.pdf"
+  },
+  {
+   "reference": "IMC0805ER2R7J01",
+   "document": "34115",
+   "title": "IMC-0805-01",
+   "level": "exact",
+   "wasCiting": "https://www.we-online.com/components/products/datasheet/744760327A.pdf"
+  },
+  {
+   "reference": "IMC0805ER2N2S01",
+   "document": "34115",
+   "title": "IMC-0805-01",
+   "level": "exact",
+   "wasCiting": "https://www.bourns.com/docs/Product-Datasheets/CE201210.pdf"
+  },
+  {
+   "reference": "IMC1008ERR68J",
+   "document": "34041",
+   "title": "IMC-1008",
+   "level": "exact",
+   "wasCiting": "https://www.bourns.com/docs/Product-Datasheets/CW252016.pdf"
+  },
+  {
+   "reference": "IHLP4040DZER1R5MA1",
+   "document": "34245",
+   "title": "IHLP-4040DZ-A1",
+   "level": "series",
+   "wasCiting": "https://industrial.panasonic.com/cdbs/www-data/pdf/AGL0000/AGL0000C63.pdf"
+  },
+  {
+   "reference": "IHLP4040DZER4R7M1A",
+   "document": "34246",
+   "title": "IHLP-4040DZ-1A",
+   "level": "series",
+   "wasCiting": "https://industrial.panasonic.com/cdbs/www-data/pdf/AGL0000/AGL0000C63.pdf"
+  },
+  {
+   "reference": "IHLP4040DZERR56M1A",
+   "document": "34246",
+   "title": "IHLP-4040DZ-1A",
+   "level": "series",
+   "wasCiting": "https://www.bourns.com/docs/Product-Datasheets/SRP1038A.pdf"
+  }
+ ],
+ "byDoc": {
+  "34245 IHLP-4040DZ-A1": 3,
+  "34240 IHLP-2525BD-A1": 1,
+  "34041 IMC-1008": 32,
+  "34164 IMC-0603-01": 8,
+  "34115 IMC-0805-01": 6,
+  "34246 IHLP-4040DZ-1A": 2
+ },
+ "byLevel": {
+  "series": 14,
+  "exact": 38
+ },
+ "notRecitedNoVishayDocument": [
+  "IHTH0750JZEB220M5A",
+  "IHLP4040DZRZ2R2ML1",
+  "ILC0402ER3N3S",
+  "ILC0402ER3N9S"
+ ]
+}
