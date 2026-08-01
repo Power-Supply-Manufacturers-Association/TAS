@@ -166,30 +166,40 @@ def candidates(ref):
     separator-bearing vendors behaved (Würth 4,618 FOUND / 27 ABSENT). The verdict
     was measuring my regex, not the citations.
 
-    So the family is derived STRUCTURALLY: trim the trailing value / tolerance /
-    packaging characters progressively and offer each stem. EEUFC1V102 yields
-    EEUFC1V, EEUFC1, EEUFC ... — one of which a series document will name. Stems
-    A stem must keep at least HALF the part number and at least 6 characters. Without
-    that floor "CC0402JRN1A100" would offer "CC040", which appears in essentially every
-    Yageo document and would turn FAMILY_ONLY into a rubber stamp.
+    So the family is derived at TOKEN BOUNDARIES. A part number is an interleaving of
+    letter runs and digit runs, and a series name is a whole number of those runs — never
+    half of one. RC0100FR-073K3L splits as RC | 0100 | FR | - | 073 | K | 3 | L, so the
+    candidate families are RC0100, RC0100FR, RC0100FR-073 ... and Yageo's "RC_L series,
+    sizes 0075/0100/0402/..." datasheet does contain RC0100.
+
+    An earlier version cut at arbitrary character positions instead, keeping at least half
+    the code and 6 characters. That floor was there to stop "CC0402JRN1A100" degrading to
+    "CC040" — a fragment that matches essentially every Yageo document — but for a long
+    code it also made the true family unreachable: RC0100FR-073K3L could get no shorter
+    than RC0100FR, which appears nowhere, so 11,307 rows citing their own series datasheet
+    came back ABSENT. Token boundaries solve both: "CC040" is not a boundary and is never
+    offered, while "RC0100" and "CC0402" are.
+
+    A stem must also be at least 5 characters and contain both a letter and a digit, so a
+    bare vendor prefix ("RC", "CL") cannot match on its own.
     """
     forms = [("exact", ref)]
     stripped = SUFFIX.sub("", ref)
     if stripped != ref:
         forms.append(("suffix-stripped", stripped))
     seen = {normalise(ref), normalise(stripped)}
-    # separator-based stems first (they are the most meaningful where they exist)
-    for sep_base in re.split(r"[-_]", ref)[:1]:
-        if sep_base != ref and len(sep_base) >= 5 and normalise(sep_base) not in seen:
-            seen.add(normalise(sep_base))
-            forms.append(("family", sep_base))
-    # then structural stems, longest first, so the tightest family wins
-    stem = SUFFIX.sub("", ref).rstrip()
-    floor = max(6, (len(stem) + 1) // 2)
-    for cut in range(1, len(stem)):
-        cand = stem[: len(stem) - cut]
-        if len(cand) < floor:
-            break
+    stems = []
+    acc = ""
+    for tok in re.findall(r"[A-Za-z]+|\d+|[^A-Za-z0-9]+", ref):
+        acc += tok
+        cand = acc.strip()
+        if len(cand) < 5 or cand == ref:
+            continue
+        if not (re.search(r"[A-Za-z]", cand) and re.search(r"\d", cand)):
+            continue
+        stems.append(cand)
+    # longest first, so the tightest family that matches is the one reported
+    for cand in reversed(stems):
         if normalise(cand) in seen:
             continue
         seen.add(normalise(cand))
