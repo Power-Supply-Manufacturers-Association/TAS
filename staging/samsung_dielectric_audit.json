@@ -1,0 +1,2974 @@
+{
+ "ticket": "ABT #428 follow-on",
+ "date": "2026-08-01",
+ "source": "Samsung Electro-Mechanics MLCC catalogue, December 2025 (MLCC_2512.pdf), section 3 'DIELECTRIC CODE' - the characteristic letter of the part number and the class Samsung files it under",
+ "codeAdded": [
+  {
+   "reference": "CL21F104ZBCNNNC",
+   "code": "Y5V"
+  },
+  {
+   "reference": "CL05A105KQ5NNNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL10F104ZA8NNNC",
+   "code": "Y5V"
+  },
+  {
+   "reference": "CL10F104ZB8NNNC",
+   "code": "Y5V"
+  },
+  {
+   "reference": "CL03A104KQ3NNNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL21C101JBANNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C390JB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL31B104KBCNNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL31B102KBCNNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B103KO5NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL31C101JBCNNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05B222KB5NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B103KA5NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05F224ZO5NNNC",
+   "code": "Y5V"
+  },
+  {
+   "reference": "CL10B104JO8NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B473KB8NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10C100CB8NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL21A226MQQNNNE",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL10A105KA8NNNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL10B103JB8NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B223KB8NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL21C330JBANNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL31B224KBFNNNE",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL21C180JBANNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05A225KP5NSNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL21C100JBANNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL10B222KB8NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B224KA8NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B224KO8NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL21B106KQQNNNE",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL21F104ZBANNNC",
+   "code": "Y5V"
+  },
+  {
+   "reference": "CL03A104KP3NNNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL31B474KBHNNNE",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL32B106KOJNNNE",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL03B103KP3NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10C030CB8NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL21B472KBANNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL21C470JBANNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL31B103KCCNNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL31C0R5CBCNNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL31C3R9BBCNNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL21B224KAFNNNE",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL21C150JBANNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL21C221JBANNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL31B104JBCNNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL21B102KCANNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL21B103KDCNNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL21B222KBANNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL21C0R5BBANNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL21C121JDCNNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL02A102KP2NNNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL02A102KQ2NNNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL02A104MQ2NNNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL02A104MR2NNNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL02A222KQ2NNNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL02A473KQ2NNNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL02B102KP2NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL02B121KP2NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL02C100JO2ANNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL02C101JQ2ANNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL02C150JO2ANNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL02C180JO2ANNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL02C220JO2ANNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL02C270JO2ANNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL02C390JO2ANNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL02C470JO2ANNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL02C560JQ2ANNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL02C820JQ2ANNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05A104KO5NNNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL05A105MQ5NNNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL10C8R2CB8NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL21A475KPFNNNE",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL21B332KBANNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL21C271JBANNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL21C4R7CBANNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL31C390JBCNNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL31C560JBCNNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05B102KO5NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B683KO5NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05C020CB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C2R2CB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05X684JQ5NNNC",
+   "code": "X6S"
+  },
+  {
+   "reference": "CL31C103JAFNNNE",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL10B153KB8NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B561KB8NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B681JB8NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10C2R2CB8NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL21C681JBCNNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL21C8R2CBANNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL31B472KBCNNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL31C102JBCNNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL31F106ZOHNNNE",
+   "code": "Y5V"
+  },
+  {
+   "reference": "CL32B225KAINNNE",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL03A103KO3NNNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL03A103KP3NNNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL03A103KQ3NNNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL03A104MA3NNNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL03A105MQ3CSNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL03A105MR3CSNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL03A222KP3NNNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL03A223KP3NNNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL03A223KQ3NNNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL03A224KP3NNNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL03B682KP3NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL03B821KO3NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL03C010BA3GNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL03C020CA3GNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL03C030BA3GNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL03C030CA3GNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL03C030CB3GNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL03C060BA3GNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL03C060DA3GNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL03C080DA3GNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL03C090CA3GNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL03C090DA3GNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL03C0R2BA3GNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL03C0R4BA3GNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL03C0R5BA3GNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL03C0R6BA3GNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL03C0R7BA3GNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL03C0R8BA3GNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL03C0R9BA3GNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL03C101JA3ANNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL03C120JA3ANNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL03C120JA3GNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL03C180JA3ANNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL03C1R3BA3GNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL03C1R5BA3GNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL03C1R5CA3GNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL03C1R6BA3GNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL03C1R8BA3GNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL03C1R8CA3GNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL03C4R7BA3GNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL03C560JA3ANNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL03C5R6BA3GNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL03C680JA3ANNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL03C6R2BA3GNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL03C6R8CA3GNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL03C7R5BA3GNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL03C820JA3ANNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL03C8R2BA3GNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL03C8R2CA3GNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL03C9R1BA3GNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL03X104KR3NNNC",
+   "code": "X6S"
+  },
+  {
+   "reference": "CL05A104JO5NNNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL05A104KQ5NNNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL05A104MP5NNNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL05A105JQ5NNNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL05A105KQ3LNNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL05A105MO5NNNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL05A105MP5NNNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL05A105MQ3LNNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL05A106MR5NRNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL05A154KP5NNNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL05A224KO5NNNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL05A474KP5NFNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL05A474KQ5NNNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL05A475MQ5NQNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL05A475MR5NQNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL05A684KQ5NNNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL05A823KP5NNNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL05B102JB5NFNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B102JB5NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B102KA5NNWC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B102KB5NCNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B102KB5NFNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B103JA5NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B103JB5NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B103JO5NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B103KB5NFNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B103KO5NCNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B103KP5NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B183KA5NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B183KO5NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B221JB5NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B221KB5NCNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B221KB5NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B222JB5NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B222KB5NCNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B223JO5NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B223KA5NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B223KP5NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B224KP5NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B271KB5NCNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B273KO5NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B273KP5NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B301KB5NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B331JB5NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B331KB5NCNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B332JA5NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B332JB5NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B332KA5NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B332KB5NFNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B332KB5NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B333JO5NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B333KA5NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B333KO5NFNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B333KP5NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B391JB5NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B391KB5NCNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B392JB5NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B392KB5NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B682KA5NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B682KB5NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B683KP5NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B821KB5NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B822KB5NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B822KO5NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B823KO5NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B823KP5NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05C010CB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C020BB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C030BB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C030CB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C040BB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C040CB5NCNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C040CB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C050BB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C050CB5NCNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C050CB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C060CB5NCNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C060CB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C060DB5NCNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C060DB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C070CB5NCNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C070CB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C070DB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C080CB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C080DB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C0R3CB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C0R5BB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C0R5CB5NCNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C0R5CB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C100CB5NCNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C121JB51PNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C130JB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C150JB5NCNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C151JB51PNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C160JB5NCNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C160JB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C180GB5NCNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C180GB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C180JB5NCNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C181JA5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C1R2BB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C1R2CB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C1R3BB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C1R5BB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C1R5CB5NCNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C1R5CB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C1R8BB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C1R8CB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C200JB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C201JB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C220JB5NCNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C220JB5NNWC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C221JA5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C221JB5NFNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C240JB5NCNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C240JB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C271JB5NCNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C271JB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C2R2BB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C2R4CB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C2R5BB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C3R9CB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C430JB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C470FB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C470JB5NCNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C470JB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C471JO5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C4R3CB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C4R7BB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C4R7CB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C510JB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C560FB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C560JB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C561JA5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C561JB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C5R1CB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C5R6CB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C5R6DB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C620JB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C681JB5NNWC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C6R2CB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C6R8CB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C6R8DB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C750JB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C820JA5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C820JB5NCNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C821JB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C8R2BB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C8R2CB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C8R2DB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05C910JB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05CR75BB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05CR75CB5NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL05F103ZB5NNNC",
+   "code": "Y5V"
+  },
+  {
+   "reference": "CL05F103ZO5NNNC",
+   "code": "Y5V"
+  },
+  {
+   "reference": "CL05F104ZA5NNNC",
+   "code": "Y5V"
+  },
+  {
+   "reference": "CL05X225MS5NSNC",
+   "code": "X6S"
+  },
+  {
+   "reference": "CL10B332KB8NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10C1R2BB8NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL10C222JB8NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL10C240JB8NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL10F224ZO8NNNC",
+   "code": "Y5V"
+  },
+  {
+   "reference": "CL21B331KBANNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL21C010BBANNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL21C060CBANNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL21C121JBANNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL21C3R3CBANNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL31A226MQHNNNE",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL31B102KCCNNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL31B153KBCNNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL31F225ZAFNNNE",
+   "code": "Y5V"
+  },
+  {
+   "reference": "CL32B224KBFNNNE",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL21A225KOFNNNE",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL31B105KOFNNNE",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL31A475KPHNNNE",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL32B104KCFNNNE",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL32B105KCJNNNE",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B334KP8NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B683KB8NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10C020BB8NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL10C040BB8NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL10C080CB8NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL10C0R5BB8NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL10C1R5CB8NNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL10F225ZP8NNNC",
+   "code": "Y5V"
+  },
+  {
+   "reference": "CL21B102JBANNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL21B153KBANNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL21B222KBCNNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL21B223JBANNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL21B473MBCNNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL21C151JBANNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL21C200JBANNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL21C3R3BBANNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL21C4R7BBANNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL21C560JBANNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL21C561JBANNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL21C681JCCNNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL21C910JBANNNC",
+   "code": "C0G"
+  },
+  {
+   "reference": "CL21F474ZACNNNC",
+   "code": "Y5V"
+  },
+  {
+   "reference": "CL31B224KACNNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL31B683KBCNNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10A105KL8NNNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL10A105KO5LNNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL10A105MA8NNNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL10A105MO8NNNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL10A105MP8NNNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL10A105MQ8NNNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL10A106MO8NQNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL10A106MQ5LRNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL10A106MR5LQNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL10A106MR8NNNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL10A224KA8NNNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL10A224KB8NNNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL10A224KP8NNNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL10A225KO5LNNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL10A225KO8N3NC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL10A225KO8NFNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL10A225KP5LNNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL10A225MP8NNNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL10A225MQ8NNNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL10B102KB8NNWC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B102KB8SFNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B102KC85PNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B102MB8NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B103KA8NFNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B103KB85PNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B103KB8NCNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B103KB8NFNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B103KB8SFNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B103KO8NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B103MB8NCNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B103MB8NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B104KA85PNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B104KA8NFNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B104KB85PNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B104KB8NNWC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B104KB8SFNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B104KO85PNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B104KO8NFNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B104KO8NNWC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B154KA8NFNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B154KA8SFNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B154KO8NFNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B154KO8NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B181KB8NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B182KB8NFNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B182KB8NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B183JB8NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B183KA8NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B183KB8NFNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B183KB8NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B201KB8NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B202KB8NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B203KB8NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B221JB8NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B222JB8NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B222KB85PNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B222KB8NCNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B222KB8NNWC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B222KB8SFNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B222KC85PNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B222KC8NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B223JB8NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B223KA85PNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B223KA8NFNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B223KA8NNNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B223KA8NNWC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B223KB8NNWC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B223KB8SFNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL05B104KBD6PJC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL03Z105MQR6PNC",
+   "code": "X7T"
+  },
+  {
+   "reference": "CL03X105MP3CRWC",
+   "code": "X6S"
+  },
+  {
+   "reference": "CL10Y225KA8NRWC",
+   "code": "X7S"
+  },
+  {
+   "reference": "CL05X226MR6N3W8",
+   "code": "X6S"
+  },
+  {
+   "reference": "CL21B474KCYVPNE",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL31B226KPKVPNE",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL21B106KQY6PNE",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL31B106KLK6PNE",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL21Y106KABVPNE",
+   "code": "X7S"
+  },
+  {
+   "reference": "CL21B475KLB6PNE",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL21B475KAB6PNE",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL21B335KOQVPNE",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL21Z226MQYNNWE",
+   "code": "X7T"
+  },
+  {
+   "reference": "CL21Y106KABVPJE",
+   "code": "X7S"
+  },
+  {
+   "reference": "CL03X105MQ3CRWC",
+   "code": "X6S"
+  },
+  {
+   "reference": "CL10A475KO8NQWC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL05X106MQ5NUWC",
+   "code": "X6S"
+  },
+  {
+   "reference": "CL03X475MS3CNWC",
+   "code": "X6S"
+  },
+  {
+   "reference": "CL31Y475KCK64NE",
+   "code": "X7S"
+  },
+  {
+   "reference": "CL05X225KO5NUWC",
+   "code": "X6S"
+  },
+  {
+   "reference": "CL10X476MS8I3WC",
+   "code": "X6S"
+  },
+  {
+   "reference": "CL10X106MO8NRWC",
+   "code": "X6S"
+  },
+  {
+   "reference": "CL31B106KLK6PJE",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL32B475KCJZ4NE",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL21X107MSYNNWE",
+   "code": "X6S"
+  },
+  {
+   "reference": "CL10X475KA8NRWC",
+   "code": "X6S"
+  },
+  {
+   "reference": "CL21A107MRYNNWE",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL05X106MR5NUWC",
+   "code": "X6S"
+  },
+  {
+   "reference": "CL21A106KAYQNWE",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL05X105KA5NQWC",
+   "code": "X6S"
+  },
+  {
+   "reference": "CL10X226MQ8QRNC",
+   "code": "X6S"
+  },
+  {
+   "reference": "CL10A106MP8NQWC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL10A106ML8NRNC",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL10Z106MQ8NRWC",
+   "code": "X7T"
+  },
+  {
+   "reference": "CL32B335KBJ4PNE",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL03Z105MRR6PNC",
+   "code": "X7T"
+  },
+  {
+   "reference": "CL31Y106KLKVPJE",
+   "code": "X7S"
+  },
+  {
+   "reference": "CL31Y106KAKVPNE",
+   "code": "X7S"
+  },
+  {
+   "reference": "CL05X475MQ5NRWC",
+   "code": "X6S"
+  },
+  {
+   "reference": "CL31B226KQKVPNE",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B105KL9VPJC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL21B225KAFVPJE",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL31A107MPKNNWE",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL32B475KCVZ3WE",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL31B226KPKVPJE",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B105KB8NQNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B105KL9VPNC",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL31Y225KCHZ4NE",
+   "code": "X7S"
+  },
+  {
+   "reference": "CL02X474MR2NNNC",
+   "code": "X6S"
+  },
+  {
+   "reference": "CL03A105MP3ZSNH",
+   "code": "X5R"
+  },
+  {
+   "reference": "CL21B225KLYVPJE",
+   "code": "X7R"
+  },
+  {
+   "reference": "CL10B474KB8VPNC",
+   "code": "X7R"
+  }
+ ],
+ "technologyFixed": [
+  {
+   "reference": "CL21C101JBANNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C390JB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL31C101JBCNNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL10C100CB8NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL21C330JBANNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL21C180JBANNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL21C100JBANNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL10C030CB8NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL21C470JBANNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL31C0R5CBCNNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL31C3R9BBCNNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL21C150JBANNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL21C221JBANNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL21C0R5BBANNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL21C121JDCNNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL02C100JO2ANNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL02C101JQ2ANNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL02C150JO2ANNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL02C180JO2ANNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL02C220JO2ANNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL02C270JO2ANNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL02C390JO2ANNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL02C470JO2ANNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL02C560JQ2ANNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL02C820JQ2ANNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL10C8R2CB8NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL21C271JBANNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL21C4R7CBANNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL31C390JBCNNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL31C560JBCNNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C020CB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C2R2CB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL31C103JAFNNNE",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL10C2R2CB8NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL21C681JBCNNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL21C8R2CBANNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL31C102JBCNNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL03C010BA3GNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL03C020CA3GNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL03C030BA3GNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL03C030CA3GNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL03C030CB3GNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL03C060BA3GNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL03C060DA3GNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL03C080DA3GNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL03C090CA3GNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL03C090DA3GNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL03C0R2BA3GNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL03C0R4BA3GNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL03C0R5BA3GNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL03C0R6BA3GNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL03C0R7BA3GNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL03C0R8BA3GNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL03C0R9BA3GNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL03C101JA3ANNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL03C120JA3ANNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL03C120JA3GNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL03C180JA3ANNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL03C1R3BA3GNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL03C1R5BA3GNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL03C1R5CA3GNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL03C1R6BA3GNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL03C1R8BA3GNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL03C1R8CA3GNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL03C4R7BA3GNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL03C560JA3ANNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL03C5R6BA3GNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL03C680JA3ANNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL03C6R2BA3GNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL03C6R8CA3GNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL03C7R5BA3GNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL03C820JA3ANNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL03C8R2BA3GNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL03C8R2CA3GNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL03C9R1BA3GNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C010CB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C020BB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C030BB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C030CB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C040BB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C040CB5NCNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C040CB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C050BB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C050CB5NCNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C050CB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C060CB5NCNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C060CB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C060DB5NCNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C060DB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C070CB5NCNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C070CB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C070DB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C080CB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C080DB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C0R3CB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C0R5BB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C0R5CB5NCNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C0R5CB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C100CB5NCNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C121JB51PNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C130JB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C150JB5NCNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C151JB51PNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C160JB5NCNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C160JB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C180GB5NCNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C180GB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C180JB5NCNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C181JA5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C1R2BB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C1R2CB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C1R3BB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C1R5BB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C1R5CB5NCNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C1R5CB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C1R8BB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C1R8CB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C200JB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C201JB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C220JB5NCNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C220JB5NNWC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C221JA5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C221JB5NFNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C240JB5NCNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C240JB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C271JB5NCNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C271JB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C2R2BB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C2R4CB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C2R5BB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C3R9CB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C430JB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C470FB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C470JB5NCNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C470JB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C471JO5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C4R3CB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C4R7BB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C4R7CB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C510JB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C560FB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C560JB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C561JA5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C561JB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C5R1CB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C5R6CB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C5R6DB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C620JB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C681JB5NNWC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C6R2CB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C6R8CB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C6R8DB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C750JB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C820JA5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C820JB5NCNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C821JB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C8R2BB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C8R2CB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C8R2DB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05C910JB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05CR75BB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL05CR75CB5NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL10C1R2BB8NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL10C222JB8NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL10C240JB8NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL21C010BBANNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL21C060CBANNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL21C121JBANNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL21C3R3CBANNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL10C020BB8NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL10C040BB8NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL10C080CB8NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL10C0R5BB8NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL10C1R5CB8NNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL21C151JBANNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL21C200JBANNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL21C3R3BBANNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL21C4R7BBANNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL21C560JBANNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL21C561JBANNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL21C681JCCNNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  },
+  {
+   "reference": "CL21C910JBANNNC",
+   "was": "ceramic-class-2",
+   "now": "ceramic-class-1",
+   "dielectric": "C0G"
+  }
+ ],
+ "counts": {
+  "Y5V": 13,
+  "X5R": 71,
+  "C0G": 182,
+  "X7R": 171,
+  "X6S": 18,
+  "X7T": 4,
+  "X7S": 7
+ }
+}
