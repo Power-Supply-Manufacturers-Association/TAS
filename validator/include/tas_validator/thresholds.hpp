@@ -208,9 +208,89 @@ inline constexpr double CONN_RCONTACT_IMP_HI = 100.0;  // not a conducting conta
 // short, not an insulator (catches Ohm-vs-MOhm unit slips).
 inline constexpr double CONN_INSULATION_SUS_LO = 1.0e6;
 inline constexpr double CONN_INSULATION_IMP_LO = 1.0;
-// Air dielectric strength [V/m] = 3 kV/mm: minimum clearance for ratedVoltage is
-// V / this; a smaller clearance would arc over (IMPOSSIBLE).
+// Air dielectric strength [V/m] = 3 kV/mm. Retained for reference only: the
+// clearance checks now use the ideal uniform-field PASCHEN curve (below), which
+// is the correct physics and is strictly MORE permissive below ~10 mm — the
+// linear rule demands ~5 kV/mm of margin the physics does not require, so it
+// would call possible parts IMPOSSIBLE.
 inline constexpr double CONN_AIR_DIELECTRIC_VPM = 3.0e6;
+
+// Paschen curve for air at 1 atm, uniform field:
+//   V_b(d) = B*p*d / ( ln(A*p*d) - ln(ln(1 + 1/gamma)) )
+// Constants converted to SI from the standard air values A = 15 /(cm*Torr),
+// B = 365 V/(cm*Torr), secondary-emission coefficient gamma = 0.01.
+// Sanity: d = 1 mm -> 5.03 kV; d = 10 mm -> 35.5 kV (3.55 kV/mm) — matches the
+// textbook uniform-field values. Left of the Paschen minimum (d < ~10 um at
+// 1 atm) the denominator goes non-positive and the check must decline to fire.
+inline constexpr double CONN_PASCHEN_A = 11.25;      // 1/(Pa*m)
+inline constexpr double CONN_PASCHEN_B = 273.77;     // V/(Pa*m)
+inline constexpr double CONN_PASCHEN_LNLN = 1.5292;  // ln(ln(1 + 1/0.01))
+inline constexpr double CONN_ATM_PA = 101325.0;      // Pa
+
+// --- Holm contact-voltage relation -------------------------------------------
+// The voltage across a closed metallic contact fixes the supertemperature of the
+// constriction independently of its geometry (Kohlrausch/Holm voltage-temperature
+// relation, Holm, "Electric Contacts", 4th ed.):
+//     theta_max = sqrt(theta_bulk^2 + U^2 / (4*L)),  L = 2.44e-8 V^2/K^2
+// so each metal has a SOFTENING and a MELTING voltage. If a datasheet's own
+// ratedCurrentPerContact * contactResistance exceeds the melting voltage of its
+// own stated plating, the two numbers cannot describe the same measurement.
+// Measured on the live catalog (46,927 parts carry both): 464 fire (0.99%), and
+// the largest ratio to melting voltage is 3.08x — so the plating-based tiers are
+// SUSPICIOUS, never IMPOSSIBLE. A ratio of a few x is explained by the two specs
+// being written to different conventions (a bulk terminal-to-terminal LLCR that
+// includes the clamp and lead, vs the mated-pair constriction of IEC 60512-2-1),
+// which is a data-provenance defect, not an impossible part.
+// Highest melting voltage of ANY contact metal is tungsten at 1.10 V; five times
+// that cannot be reconciled by any measurement convention.
+inline constexpr double CONN_HOLM_LORENZ = 2.44e-8;        // V^2/K^2
+inline constexpr double CONN_UMELT_MAX_ANY = 1.10;         // W, the ceiling over all metals
+inline constexpr double CONN_UCONTACT_IMP_FACTOR = 5.0;    // x CONN_UMELT_MAX_ANY -> IMPOSSIBLE
+
+// Current density [A/m^2] through the contact cross-section implied by the pitch.
+// Both standard fine-pitch conventions put the square post at exactly pitch/4
+// (2.54 mm -> 0.64 mm sq; 2.00 mm -> 0.50 mm sq), so A_contact ~ (pitch/4)^2.
+// 100 A/mm^2 continuous is beyond any solid contact (busbar design runs 1-3
+// A/mm^2). SUSPICIOUS only, never IMPOSSIBLE: on a HYBRID connector the rated
+// current belongs to a wide power blade while the pitch belongs to the signal
+// field, so a legitimate part can exceed this (verified: Hirose BM50U, 15 A
+// power contacts in a 0.35 mm signal pitch). Fires on 1,829 / 246,344 = 0.74%.
+inline constexpr double CONN_PIN_SIDE_PER_PITCH = 0.25;
+inline constexpr double CONN_CURRENT_DENSITY_SUS = 1.0e8;  // A/m^2
+
+// Physically-possible SI ranges, to catch unit slips (mm or um stored as m).
+// A pitch of "2.54" is 2.54 METRES; the tightest real connector pitch is ~0.15 mm
+// and the widest busbar spacing ~35 mm (verified in-catalog).
+inline constexpr double CONN_PITCH_IMP_LO = 5.0e-5, CONN_PITCH_IMP_HI = 1.0e-1;
+inline constexpr double CONN_PLATING_IMP_LO = 1.0e-9, CONN_PLATING_IMP_HI = 1.0e-3;
+inline constexpr double CONN_LENGTH_IMP_LO = 1.0e-5, CONN_LENGTH_IMP_HI = 1.0;
+
+// Operating temperature [degC]. Polymer-housed parts top out near 260 degC
+// (PTFE/PEEK); 1000 degC is not a connector. Real catalog maximum is 260.
+inline constexpr double CONN_TEMP_MAX_IMP = 1000.0, CONN_TEMP_MAX_SUS = 300.0;
+inline constexpr double CONN_ABSOLUTE_ZERO_C = -273.15;
+// Unconverted-Fahrenheit detector: a maximum above 200 degC whose Fahrenheit
+// back-conversion lands on a round multiple of 5 degC is almost certainly an
+// unconverted degF value. Verified in-catalog: 302 -> 150, 392 -> 200,
+// 221 -> 105 (67 parts), while the genuine high-temperature values 205, 250 and
+// 260 degC back-convert to 96.1, 121.1 and 126.7 and are untouched.
+inline constexpr double CONN_FAHRENHEIT_PROBE_MIN_C = 200.0;
+inline constexpr double CONN_FAHRENHEIT_GRID_C = 5.0, CONN_FAHRENHEIT_TOL_C = 0.2;
+
+// Mating cycles. Spring-probe/pogo interfaces legitimately claim 1e6; nothing
+// claims 1e7. Tin is soft and fretting-prone (industry durability 25-250 cycles),
+// and gold thinner than 0.1 um is a "flash" that wears through in the low hundreds.
+inline constexpr double CONN_CYCLES_IMP = 1.0e7, CONN_CYCLES_SUS = 1.0e5;
+inline constexpr double CONN_CYCLES_TIN_SUS = 1.0e3;
+inline constexpr double CONN_GOLD_FLASH_M = 1.0e-7;
+
+// RF family. Coaxial interfaces are 50 or 75 Ohm; twinax differential pairs 100.
+inline constexpr double CONN_Z0_IMP_LO = 1.0, CONN_Z0_IMP_HI = 1.0e3;
+inline constexpr double CONN_Z0_SUS_LO = 10.0, CONN_Z0_SUS_HI = 200.0;
+inline constexpr double CONN_FREQ_IMP_HI = 1.0e12;  // 1 THz
+// A single part quoting mated heights spread wider than this has merged
+// conflicting series-level facts into one record.
+inline constexpr double CONN_MATED_HEIGHT_SPREAD_SUS = 10.0;
 
 // ---- Analog ICs (AAS) -------------------------------------------------------
 // Shared amplifier-family bounds. Sources: TI/ADI op-amp portfolios (GBW 50 MHz–8 GHz,

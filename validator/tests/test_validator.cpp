@@ -684,3 +684,220 @@ TEST_CASE("AAS: multiplexer with absurd on-resistance is impossible", "[analog]"
         "provenance": [{"source": "manufacturerDatasheet"}]}}}}})json");
     CHECK(has(V.validate(p), "SW_RON", Severity::Impossible));
 }
+
+// --- Connectors (CONAS) -------------------------------------------------------
+// Every threshold exercised below was calibrated against all 392,346 records of
+// TAS/data/connectors.ndjson; the fire counts quoted in connectors.cpp are the
+// measured ones. See that file's header for the three checks that were designed,
+// measured and REJECTED for firing on 45-85% of the catalog.
+
+namespace {
+// A real, physically sane 2.54 mm gold-plated pin header.
+json good_connector() {
+    return json::parse(R"json({"connector": {"manufacturerInfo": {
+      "name": "Harwin", "reference": "M20-9760246", "datasheetInfo": {
+        "part": {"partNumber": "M20-9760246", "matingPolarity": "male"},
+        "electrical": {"ratedCurrentPerContact": 3.0, "ratedVoltage": 250.0,
+                       "contactResistance": {"maximum": 0.02},
+                       "insulationResistance": 1.0e10},
+        "mechanical": {"pitch": 0.00254, "positions": 4, "rows": 2, "matingCycles": 500},
+        "material": {"contactPlating": {"matingAreaMaterialRef": "au-gold",
+                                        "matingAreaThickness": 7.62e-7}},
+        "environmental": {"operatingTemperature": {"minimum": -55.0, "maximum": 105.0}},
+        "familyDetails": {"family": "pinHeaderSocket", "tailLength": 0.003},
+        "provenance": [{"source": "manufacturerDatasheet"}]}}}})json");
+}
+}  // namespace
+
+TEST_CASE("CONN: a real pin header fires no connector finding", "[connector]") {
+    Verdict v = V.validate(good_connector());
+    CHECK(v.valid);
+    for (const auto& f : v.findings) CHECK(f.code.rfind("CONN_", 0) != 0);
+}
+
+// Holm voltage-temperature relation. 20 A through a stated 20 mOhm is 0.400 V,
+// 3.1x the 0.13 V melting voltage of tin — the two specs cannot describe the
+// same measurement. SUSPICIOUS, not IMPOSSIBLE: the largest ratio in the whole
+// catalog is 3.08x, which a bulk-LLCR-vs-mated-pair convention mismatch explains.
+TEST_CASE("CONN: rated current through stated resistance melts its own tin plating", "[connector]") {
+    json p = good_connector();
+    auto& d = p["connector"]["manufacturerInfo"]["datasheetInfo"];
+    d["electrical"]["ratedCurrentPerContact"] = 20.0;
+    d["electrical"]["contactResistance"] = 0.02;
+    d["material"]["contactPlating"]["matingAreaMaterialRef"] = "sn-tin";
+    Verdict v = V.validate(p);
+    CHECK(has(v, "CONN_CONTACT_VOLTAGE", Severity::Suspicious));
+    CHECK(v.valid);  // a provenance defect, not an impossible part
+}
+
+TEST_CASE("CONN: contact voltage past every metal's melting voltage is impossible", "[connector]") {
+    json p = good_connector();
+    auto& d = p["connector"]["manufacturerInfo"]["datasheetInfo"];
+    d["electrical"]["ratedCurrentPerContact"] = 100.0;
+    d["electrical"]["contactResistance"] = 0.1;  // 10 V across a "contact"
+    d["material"]["contactPlating"].erase("matingAreaMaterialRef");
+    Verdict v = V.validate(p);
+    CHECK(has(v, "CONN_CONTACT_VOLTAGE", Severity::Impossible));
+    CHECK(!v.valid);
+}
+
+TEST_CASE("CONN: gold plating tolerates a voltage that would melt tin", "[connector]") {
+    json p = good_connector();
+    auto& d = p["connector"]["manufacturerInfo"]["datasheetInfo"];
+    d["electrical"]["ratedCurrentPerContact"] = 3.0;
+    d["electrical"]["contactResistance"] = 0.02;  // 0.06 V: under gold's 0.08 V softening
+    CHECK(!has_code(V.validate(p), "CONN_CONTACT_VOLTAGE"));
+}
+
+// Paschen, not a linear kV/mm rule. A 1 mm gap breaks down at 5.03 kV ideal, so
+// 4 kV across 1 mm must NOT fire (the old 3 kV/mm rule would have called it
+// impossible) while 8 kV must.
+TEST_CASE("CONN: clearance uses the Paschen curve, not a linear kV/mm rule", "[connector]") {
+    json p = good_connector();
+    auto& e = p["connector"]["manufacturerInfo"]["datasheetInfo"]["electrical"];
+    e["clearance"] = 0.001;
+    e["ratedVoltage"] = 4000.0;
+    e["dielectricWithstandingVoltage"] = 4000.0;
+    CHECK(!has_code(V.validate(p), "CONN_CLEARANCE_BREAKDOWN"));
+    e["ratedVoltage"] = 8000.0;
+    e["dielectricWithstandingVoltage"] = 8000.0;
+    Verdict v = V.validate(p);
+    CHECK(has(v, "CONN_CLEARANCE_BREAKDOWN", Severity::Impossible));
+    CHECK(has(v, "CONN_DWV_VS_CLEARANCE", Severity::Impossible));
+}
+
+TEST_CASE("CONN: sub-Paschen-minimum gaps decline to fire rather than guess", "[connector]") {
+    json p = good_connector();
+    auto& e = p["connector"]["manufacturerInfo"]["datasheetInfo"]["electrical"];
+    e["clearance"] = 1.0e-6;  // left of the Paschen minimum: undefined, must not fire
+    e["ratedVoltage"] = 250.0;
+    CHECK(!has_code(V.validate(p), "CONN_CLEARANCE_BREAKDOWN"));
+}
+
+// Unit slip: a pitch of 2.54 is 2.54 METRES.
+TEST_CASE("CONN: a pitch stored in millimetres is impossible", "[connector]") {
+    json p = good_connector();
+    p["connector"]["manufacturerInfo"]["datasheetInfo"]["mechanical"]["pitch"] = 2.54;
+    Verdict v = V.validate(p);
+    CHECK(has(v, "CONN_UNIT_SCALE", Severity::Impossible));
+    CHECK(!v.valid);
+}
+
+TEST_CASE("CONN: a plating thickness stored in micrometres is impossible", "[connector]") {
+    json p = good_connector();
+    p["connector"]["manufacturerInfo"]["datasheetInfo"]["material"]["contactPlating"]
+     ["matingAreaThickness"] = 0.762;
+    CHECK(has(V.validate(p), "CONN_UNIT_SCALE", Severity::Impossible));
+}
+
+// The contact cross-section a 0.5 mm pitch allows cannot carry 20 A.
+TEST_CASE("CONN: current density beyond any contact cross-section is suspicious", "[connector]") {
+    json p = good_connector();
+    auto& d = p["connector"]["manufacturerInfo"]["datasheetInfo"];
+    d["mechanical"]["pitch"] = 0.0005;
+    d["electrical"]["ratedCurrentPerContact"] = 20.0;
+    d["electrical"]["contactResistance"] = 0.001;
+    Verdict v = V.validate(p);
+    CHECK(has(v, "CONN_CURRENT_DENSITY", Severity::Suspicious));
+    CHECK(v.valid);  // hybrid power+signal connectors legitimately reach this
+}
+
+// 392 degC is 200 degC read off a Fahrenheit datasheet. 260 degC is a real PTFE part.
+TEST_CASE("CONN: an unconverted Fahrenheit maximum is caught", "[connector]") {
+    json p = good_connector();
+    p["connector"]["manufacturerInfo"]["datasheetInfo"]["environmental"]["operatingTemperature"]
+     ["maximum"] = 392.0;
+    CHECK(has(V.validate(p), "CONN_TEMPERATURE_UNIT", Severity::Suspicious));
+}
+
+TEST_CASE("CONN: a genuine 260 degC PTFE part is not called Fahrenheit", "[connector]") {
+    json p = good_connector();
+    p["connector"]["manufacturerInfo"]["datasheetInfo"]["environmental"]["operatingTemperature"]
+     ["maximum"] = 260.0;
+    CHECK(!has_code(V.validate(p), "CONN_TEMPERATURE_UNIT"));
+}
+
+TEST_CASE("CONN: inverted operating temperature range is impossible", "[connector]") {
+    json p = good_connector();
+    auto& t = p["connector"]["manufacturerInfo"]["datasheetInfo"]["environmental"]
+               ["operatingTemperature"];
+    t["minimum"] = 125.0;
+    t["maximum"] = -40.0;
+    Verdict v = V.validate(p);
+    CHECK(has(v, "CONN_TEMPERATURE_RANGE", Severity::Impossible));
+    CHECK(!v.valid);
+}
+
+TEST_CASE("CONN: more rows than positions is suspicious", "[connector]") {
+    json p = good_connector();
+    auto& m = p["connector"]["manufacturerInfo"]["datasheetInfo"]["mechanical"];
+    m["positions"] = 2;
+    m["rows"] = 3;
+    CHECK(has(V.validate(p), "CONN_ROWS_POSITIONS", Severity::Suspicious));
+}
+
+TEST_CASE("CONN: durability beyond a tin mating surface is suspicious", "[connector]") {
+    json p = good_connector();
+    auto& d = p["connector"]["manufacturerInfo"]["datasheetInfo"];
+    d["material"]["contactPlating"]["matingAreaMaterialRef"] = "sn-tin";
+    d["mechanical"]["matingCycles"] = 5000;
+    CHECK(has(V.validate(p), "CONN_DURABILITY", Severity::Suspicious));
+}
+
+TEST_CASE("CONN: durability beyond a gold flash is suspicious", "[connector]") {
+    json p = good_connector();
+    auto& d = p["connector"]["manufacturerInfo"]["datasheetInfo"];
+    d["material"]["contactPlating"]["matingAreaThickness"] = 5.0e-8;  // 0.05 um flash
+    d["mechanical"]["matingCycles"] = 5000;
+    CHECK(has(V.validate(p), "CONN_DURABILITY", Severity::Suspicious));
+}
+
+TEST_CASE("CONN: 30 uin gold at 500 cycles is fine", "[connector]") {
+    CHECK(!has_code(V.validate(good_connector()), "CONN_DURABILITY"));
+}
+
+TEST_CASE("CONN: a VSWR below unity is impossible", "[connector]") {
+    json p = good_connector();
+    auto& f = p["connector"]["manufacturerInfo"]["datasheetInfo"]["familyDetails"];
+    f["family"] = "rf";
+    f["characteristicImpedance"] = 50.0;
+    f["maxVswr"] = 0.8;
+    Verdict v = V.validate(p);
+    CHECK(has(v, "CONN_RF_BAND", Severity::Impossible));
+    CHECK(!v.valid);
+}
+
+TEST_CASE("CONN: an inverted RF frequency range is impossible", "[connector]") {
+    json p = good_connector();
+    auto& f = p["connector"]["manufacturerInfo"]["datasheetInfo"]["familyDetails"];
+    f["family"] = "rf";
+    f["characteristicImpedance"] = 50.0;
+    f["frequencyRange"] = json::parse(R"json({"minimum": 1.8e10, "maximum": 6.0e9})json");
+    CHECK(has(V.validate(p), "CONN_RF_BAND", Severity::Impossible));
+}
+
+TEST_CASE("CONN: a 50 Ohm SMA fires no RF finding", "[connector]") {
+    json p = good_connector();
+    auto& f = p["connector"]["manufacturerInfo"]["datasheetInfo"]["familyDetails"];
+    f["family"] = "rf";
+    f["interface"] = "SMA";
+    f["characteristicImpedance"] = 50.0;
+    f["frequencyRange"] = json::parse(R"json({"maximum": 1.8e10})json");
+    f["maxVswr"] = 1.3;
+    CHECK(!has_code(V.validate(p), "CONN_RF_BAND"));
+}
+
+TEST_CASE("CONN: mated heights spanning an order of magnitude are suspicious", "[connector]") {
+    json p = good_connector();
+    p["connector"]["manufacturerInfo"]["datasheetInfo"]["mating"] = json::parse(R"json(
+      {"matesWith": [{"series": "A", "relation": "mates", "matedHeight": 0.005},
+                     {"series": "B", "relation": "mates", "matedHeight": 0.09}]})json");
+    CHECK(has(V.validate(p), "CONN_MATED_HEIGHT", Severity::Suspicious));
+}
+
+TEST_CASE("CONN: a connector with no electrical block skips rather than passes", "[connector]") {
+    json p = json::parse(R"json({"connector": {"manufacturerInfo": {
+      "name": "X", "reference": "Y", "datasheetInfo": {"part": {"partNumber": "Y"}}}}})json");
+    Verdict v = V.validate(p);
+    CHECK(std::find(v.skipped.begin(), v.skipped.end(), "CONN_ELECTRICAL_*") != v.skipped.end());
+}
