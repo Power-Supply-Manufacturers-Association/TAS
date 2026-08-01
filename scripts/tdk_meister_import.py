@@ -80,12 +80,18 @@ def case_code(specs):
             if m: return m.group(1).strip()
     return None
 
+# TDK's `series` table carries two sentinel rows on its negative ids - -1 "dummy" and
+# -2 "TBD" - which a class points at when it has no series. They are not device families,
+# and there is nothing behind them to recover: `class` is the only part -> series link.
+# So the field is left ABSENT rather than filled from the part number, which would invent
+# a series TDK never published.
+SENTINEL_SERIES = {'dummy', 'tbd'}
+
 def family_of(rec):
-    s = rec.get('series') or ''
-    if s and s.lower() != 'dummy':
+    s = (rec.get('series') or '').strip()
+    if s and s.lower() not in SENTINEL_SERIES:
         return s
-    m = re.match(r'[A-Za-z]+', rec['part_no'])
-    return m.group(0) if m else None
+    return None
 
 def datasheet_url(rec):
     sub = rec.get('url_substring')
