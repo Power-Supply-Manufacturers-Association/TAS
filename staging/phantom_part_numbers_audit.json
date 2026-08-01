@@ -1,0 +1,133 @@
+{
+ "ticket": "ABT #460",
+ "date": "2026-08-01",
+ "quarantined": [
+  {
+   "catalogue": "mosfets",
+   "reference": "GAN033-650WSP",
+   "manufacturer": "Wolfspeed",
+   "evidence": "the GANxxx-650WSy naming is Nexperia's, not Wolfspeed's, and Nexperia does not list this code either"
+  },
+  {
+   "catalogue": "mosfets",
+   "reference": "CSD86320Q5D",
+   "manufacturer": "Texas Instruments",
+   "evidence": "TI's site search returns 'Results 1-0 of 0' and ti.com/lit/gpn 404s; the cited SLPS223F is CSD86350Q5D's datasheet"
+  },
+  {
+   "catalogue": "mosfets",
+   "reference": "IPI40CN05S4",
+   "manufacturer": "Infineon",
+   "evidence": "Infineon's Coveo index returns 0 hits for the part and for the stem IPI40CN05; /part/ 404s"
+  },
+  {
+   "catalogue": "mosfets",
+   "reference": "IPP50R99C7",
+   "manufacturer": "Infineon",
+   "evidence": "Infineon's Coveo index returns 0 hits for the part or the stem IPP50R99"
+  },
+  {
+   "catalogue": "mosfets",
+   "reference": "IPB090N10N3",
+   "manufacturer": "Infineon",
+   "evidence": "Infineon's Coveo index returns 0 hits; it returns the product page for IPB090N06N3 in the same run"
+  },
+  {
+   "catalogue": "mosfets",
+   "reference": "NVMFD7N06CL",
+   "manufacturer": "ON Semiconductor",
+   "evidence": "onsemi's endpoint serves a PDF for FPF2G120BF07AS and NVMFD5C466NL but redirects this one to notFound"
+  },
+  {
+   "catalogue": "mosfets",
+   "reference": "IPD50R380C6",
+   "manufacturer": "Infineon",
+   "evidence": "Infineon's Coveo index returns 0 hits; the stem IPD50R380 returns only IPD50R380CE"
+  },
+  {
+   "catalogue": "mosfets",
+   "reference": "NTHS4H080N065M2C",
+   "manufacturer": "onsemi",
+   "evidence": "onsemi redirects to notFound; the record also carries series 'NexFET', a TI trademark"
+  },
+  {
+   "catalogue": "mosfets",
+   "reference": "IKM120R060M1H",
+   "manufacturer": "Infineon",
+   "evidence": "Infineon's Coveo index returns 0 hits; IMZ120R060M1H - the part the cited document is for - does return"
+  },
+  {
+   "catalogue": "diodes",
+   "reference": "SS54",
+   "manufacturer": "Vishay",
+   "evidence": "Vishay's part search returns SS5N42, SS5NH102S, SS5P3..SS5P10 and MOSFETs but no SS54; the cited doc 88751 covers SS32-SS36"
+  },
+  {
+   "catalogue": "resistors",
+   "reference": "AF102MJR-0733RL",
+   "manufacturer": "YAGEO",
+   "evidence": "Yageo's complete resource library (7,332 items via their own graphql) has no AF102*/AF104* key; the only anti-sulfurated array sheet is PYU-AF122_124_162_164, size codes 12 and 16"
+  },
+  {
+   "catalogue": "resistors",
+   "reference": "AF104MJR-0736RL",
+   "manufacturer": "YAGEO",
+   "evidence": "Yageo's complete resource library (7,332 items via their own graphql) has no AF102*/AF104* key; the only anti-sulfurated array sheet is PYU-AF122_124_162_164, size codes 12 and 16"
+  },
+  {
+   "catalogue": "resistors",
+   "reference": "AF102MJR-0715RL",
+   "manufacturer": "YAGEO",
+   "evidence": "Yageo's complete resource library (7,332 items via their own graphql) has no AF102*/AF104* key; the only anti-sulfurated array sheet is PYU-AF122_124_162_164, size codes 12 and 16"
+  },
+  {
+   "catalogue": "resistors",
+   "reference": "AF102MJR-0722RL",
+   "manufacturer": "YAGEO",
+   "evidence": "Yageo's complete resource library (7,332 items via their own graphql) has no AF102*/AF104* key; the only anti-sulfurated array sheet is PYU-AF122_124_162_164, size codes 12 and 16"
+  },
+  {
+   "catalogue": "resistors",
+   "reference": "AF102MJR-0730RL",
+   "manufacturer": "YAGEO",
+   "evidence": "Yageo's complete resource library (7,332 items via their own graphql) has no AF102*/AF104* key; the only anti-sulfurated array sheet is PYU-AF122_124_162_164, size codes 12 and 16"
+  },
+  {
+   "catalogue": "resistors",
+   "reference": "AF102MJR-0743RL",
+   "manufacturer": "YAGEO",
+   "evidence": "Yageo's complete resource library (7,332 items via their own graphql) has no AF102*/AF104* key; the only anti-sulfurated array sheet is PYU-AF122_124_162_164, size codes 12 and 16"
+  },
+  {
+   "catalogue": "resistors",
+   "reference": "AF102MJR-0747RL",
+   "manufacturer": "YAGEO",
+   "evidence": "Yageo's complete resource library (7,332 items via their own graphql) has no AF102*/AF104* key; the only anti-sulfurated array sheet is PYU-AF122_124_162_164, size codes 12 and 16"
+  },
+  {
+   "catalogue": "resistors",
+   "reference": "AF104MJR-0739RL",
+   "manufacturer": "YAGEO",
+   "evidence": "Yageo's complete resource library (7,332 items via their own graphql) has no AF102*/AF104* key; the only anti-sulfurated array sheet is PYU-AF122_124_162_164, size codes 12 and 16"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "SRP2512A",
+   "manufacturer": "Bourns",
+   "evidence": "series stub, not an orderable part: no datasheetUrl and an inductance maximum of 0.47 H against a 4.7 uH nominal (0.47 uH stored as henries)"
+  },
+  {
+   "catalogue": "magnetics",
+   "reference": "SRP2512A-4R7M",
+   "manufacturer": "Bourns",
+   "evidence": "Bourns' SRP2512.pdf has no 4.7 uH part; the series runs 0.47 to 2.2 uH (the other five SRP2512A rows were repaired as SRP2512-*)"
+  }
+ ],
+ "byCatalogue": {
+  "mosfets": 9,
+  "diodes": 1,
+  "resistors": 8,
+  "magnetics": 2
+ },
+ "notFound": []
+}
