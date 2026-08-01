@@ -1,0 +1,16 @@
+{
+ "ticket": "ABT #465",
+ "date": "2026-08-01",
+ "sourceUrl": "https://www.ti.com/lit/ds/symlink/esd2canfd24.pdf",
+ "fixed": [
+  {
+   "reference": "ESD2CANFD24",
+   "was": {
+    "clampingVoltage": 24.0,
+    "forwardVoltage": 36.0
+   },
+   "nowClampingVoltage": 37.0,
+   "forwardVoltageRemoved": true
+  }
+ ]
+}
