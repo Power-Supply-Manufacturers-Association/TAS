@@ -153,6 +153,17 @@ void check_package_mount(const json& ds, const Ctx& ctx, std::vector<Finding>& o
         {R"(LGA\b.*)", "smt"},
         {R"((TOLL|LFPAK|PowerPAK|PowerFLAT|TDSON|TSDSON|SuperSO8|H2PAK)\b.*)", "smt"},
         {R"(TO-?277\b.*)", "smt"},
+        // CFP15 = SOT1289, Nexperia's "thermal enhanced ultra thin SMD package".
+        // \d+ and not \d*: the latter also swallows IQD's CFPS-/CFPX- crystal
+        // outlines, which are a different family this rule has not been checked on.
+        {R"(CFP\d+)", "smt"},
+        // The surface-mount bridge-rectifier outlines. Each of these three is titled
+        // "... Surface Mount Bridge Rectifier Diode" on its own vendor datasheet
+        // (Bourns CD-HD0x = TO-269AA, CD-DF4xxS(L) = DFS-4, CD-MBL1xxS = MBLS), and
+        // each ships on EIA-481 tape and reel with a recommended footprint.
+        {R"(TO-?269.*)", "smt"},
+        {R"(DFS-?\d*.*)", "smt"},
+        {R"(MBL?S\b.*)", "smt"},
         // Through hole.
         {R"((PG-)?TO-?220\b.*)", "tht"},           // incl. FullPAK/FP — still leaded
         {R"((PG-)?TO-?24[47]\b.*)", "tht"},        // TO-247 / TO-264

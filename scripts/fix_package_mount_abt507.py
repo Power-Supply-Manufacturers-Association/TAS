@@ -124,7 +124,10 @@ def phase_a(dry):
         os.fsync(out.fileno())
 
     print(f"phase A: quarantining {len(taken)} fabricated rows, keeping {kept}")
-    if dry:
+    # Nothing to move means nothing to rewrite. Replacing the file anyway would
+    # drop whatever a concurrent appender wrote while this pass was reading it,
+    # and on a re-run (the ladder is already quarantined) that is the only case.
+    if dry or not taken:
         tmp.unlink(missing_ok=True)
         return taken
     with open(QUAR, "a", encoding="utf-8") as q:
@@ -198,11 +201,16 @@ def main(argv):
         print("  BLOCKED", b)
     if not dry:
         AUDIT.parent.mkdir(exist_ok=True)
-        AUDIT.write_text(json.dumps(
-            {"ticket": "ABT #507", "date": DATE, "quarantineFile": QUAR.name,
-             "reason": REASON, "codes": CODES, "quarantined": taken,
-             "assemblyTypeCorrected": fixed, "blocked": blocked}, indent=1))
-        print(f"audit -> {AUDIT}")
+        run = {"ticket": "ABT #507", "date": DATE, "quarantineFile": QUAR.name,
+               "reason": REASON, "codes": CODES, "quarantined": taken,
+               "assemblyTypeCorrected": fixed, "blocked": blocked}
+        # Each pass repairs whatever the GEN_PACKAGE_MOUNT table has learned since
+        # the last one, so the audit accumulates: overwriting it would erase which
+        # records the earlier pass touched, which is the only record of that.
+        prior = json.loads(AUDIT.read_text()) if AUDIT.is_file() else None
+        runs = prior.get("runs", [prior]) if isinstance(prior, dict) else []
+        AUDIT.write_text(json.dumps({"ticket": "ABT #507", "runs": runs + [run]}, indent=1))
+        print(f"audit -> {AUDIT}  ({len(runs) + 1} runs)")
     return 0
 
 

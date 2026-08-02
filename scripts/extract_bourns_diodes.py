@@ -37,9 +37,16 @@ _CASE_NORM = {
     "smc (do-214ab)":     "SMC",
 }
 
-# DFN3538 was in here (ABT #507): a DFN is a leadless surface-mount outline, so
-# every Bourns DFN3538 diode was imported as through-hole.
-_THR_HOLE_PACKAGES = {"to-269aa", "dfs-4", "mbls"}
+# Every entry this set ever held was a surface-mount outline, so it is now empty
+# (ABT #507). DFN3538 went first — a DFN is leadless SMD. The other three named
+# the bridge-rectifier packages, and each vendor datasheet the records themselves
+# cite is titled "... Surface Mount Bridge Rectifier Diode": CD-HD0x = TO-269AA,
+# CD-DF4xxS(L) = DFS-4, CD-MBL1xxS = MBLS. The Bourns diode export has no
+# through-hole part in it at all, which is why nothing correct ever depended on
+# this list. Keep it, rather than dropping the branch: the export may yet gain a
+# leaded part, and Blade Runner's GEN_PACKAGE_MOUNT table is the cross-check on
+# whatever is added here.
+_THR_HOLE_PACKAGES: set[str] = set()
 
 
 def _build_registry() -> Registry:

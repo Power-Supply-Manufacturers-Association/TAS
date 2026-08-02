@@ -496,11 +496,75 @@ TEST_CASE("AntiSynthesis: PackageMountContradictionImpossible", "[antisynthesis]
     CHECK(!has_code(V.validate(diode("TO-263 (D2PAK)", "smt")), "GEN_PACKAGE_MOUNT"));
     CHECK(!has_code(V.validate(diode("TO-220AB", "tht")), "GEN_PACKAGE_MOUNT"));
     CHECK(!has_code(V.validate(diode("TO-251 (IPAK)", "tht")), "GEN_PACKAGE_MOUNT"));
+    // The surface-mount outlines the first pass missed (ABT #507 follow-up): the
+    // Nexperia clip-bond FlatPower body and the three bridge-rectifier outlines the
+    // Bourns extractor's through-hole list named.
+    CHECK(has(V.validate(diode("CFP15", "tht")), "GEN_PACKAGE_MOUNT", Severity::Impossible));
+    CHECK(has(V.validate(diode("TO-269AA", "tht")), "GEN_PACKAGE_MOUNT", Severity::Impossible));
+    CHECK(has(V.validate(diode("DFS-4", "tht")), "GEN_PACKAGE_MOUNT", Severity::Impossible));
+    CHECK(has(V.validate(diode("MBLS", "tht")), "GEN_PACKAGE_MOUNT", Severity::Impossible));
+    CHECK(!has_code(V.validate(diode("CFP15", "smt")), "GEN_PACKAGE_MOUNT"));
+    CHECK(!has_code(V.validate(diode("MBS", "smt")), "GEN_PACKAGE_MOUNT"));
+    // IQD's CFPS-/CFPX- crystal outlines are a different family — CFP\d+ must not
+    // reach them, or the rule would be judging 242 records it was never checked on.
+    CHECK(!has_code(V.validate(diode("CFPS-39", "tht")), "GEN_PACKAGE_MOUNT"));
+    CHECK(!has_code(V.validate(diode("CFPX-180", "tht")), "GEN_PACKAGE_MOUNT"));
     // Screw-terminal / module bricks are neither smt nor tht — never flagged.
     CHECK(!has_code(V.validate(diode("SOT-227", "chassis")), "GEN_PACKAGE_MOUNT"));
     CHECK(!has_code(V.validate(diode("SOT-227", "smt")), "GEN_PACKAGE_MOUNT"));
     CHECK(!has_code(V.validate(diode("Module", "smt")), "GEN_PACKAGE_MOUNT"));
     CHECK(!has_code(V.validate(diode("Unknown", "smt")), "GEN_PACKAGE_MOUNT"));
+}
+
+// ABT #508: a small-outline body cannot be a power package's. 58 diodes filed as
+// SO-8 carried their DPAK sibling's 10 x 8 x 4 mm body; cross-reference then
+// rendered that envelope as the part's real footprint.
+TEST_CASE("AntiSynthesis: PackageEnvelopeImpossible", "[antisynthesis]") {
+    auto diode = [](const char* kase, double l, double w, double h) {
+        json p = json::parse(R"json({"semiconductor":{"diode":{"manufacturerInfo":{
+          "reference":"X","datasheetInfo":{"provenance":[{"source":"manufacturerDatasheet"}],
+          "electrical":{"reverseVoltage":1200,"forwardCurrent":10},
+          "mechanical":{}}}}}})json");
+        json& m = p["semiconductor"]["diode"]["manufacturerInfo"]["datasheetInfo"]["mechanical"];
+        m["case"] = kase;
+        m["length"]["nominal"] = l;
+        m["width"]["nominal"] = w;
+        m["height"]["nominal"] = h;
+        return p;
+    };
+    // The reported record, and the same body under its sibling package names.
+    CHECK(has(V.validate(diode("SO-8", 0.01, 0.008, 0.004)), "GEN_PACKAGE_ENVELOPE",
+              Severity::Impossible));
+    CHECK(has(V.validate(diode("SOIC-8", 0.01, 0.008, 0.004)), "GEN_PACKAGE_ENVELOPE",
+              Severity::Impossible));
+    CHECK(has(V.validate(diode("DPAK", 0.01, 0.008, 0.004)), "GEN_PACKAGE_ENVELOPE",
+              Severity::Impossible));
+    CHECK(has(V.validate(diode("SOT-23", 0.003, 0.003, 0.0025)), "GEN_PACKAGE_ENVELOPE",
+              Severity::Impossible));
+    // Orientation-free: the catalogue fixes no axis convention, so the offending
+    // 4 mm is caught whichever field holds it.
+    CHECK(has(V.validate(diode("SO-8", 0.004, 0.01, 0.008)), "GEN_PACKAGE_ENVELOPE",
+              Severity::Impossible));
+    // Real bodies stay silent — narrow SOIC-8, wide-body SOIC-8 (2.65 mm, 10.3 mm
+    // lead span), DPAK, D2PAK.
+    CHECK(!has_code(V.validate(diode("SO-8", 0.006, 0.0049, 0.00175)), "GEN_PACKAGE_ENVELOPE"));
+    CHECK(!has_code(V.validate(diode("SO-8", 0.0103, 0.0075, 0.00265)), "GEN_PACKAGE_ENVELOPE"));
+    CHECK(!has_code(V.validate(diode("TO-252", 0.006, 0.0061, 0.0023)), "GEN_PACKAGE_ENVELOPE"));
+    CHECK(!has_code(V.validate(diode("TO-263 (D2PAK)", 0.0103, 0.0089, 0.0045)),
+                    "GEN_PACKAGE_ENVELOPE"));
+    // Outlines with no single legal thickness are not listed, and neither are
+    // packages the table does not know.
+    CHECK(!has_code(V.validate(diode("QFN (12x12)", 0.012, 0.012, 0.002)),
+                    "GEN_PACKAGE_ENVELOPE"));
+    CHECK(!has_code(V.validate(diode("SOT-227", 0.038, 0.025, 0.012)), "GEN_PACKAGE_ENVELOPE"));
+    CHECK(!has_code(V.validate(diode("TO-220", 0.0157, 0.0102, 0.0045)), "GEN_PACKAGE_ENVELOPE"));
+    CHECK(!has_code(V.validate(diode("Unknown", 0.01, 0.008, 0.004)), "GEN_PACKAGE_ENVELOPE"));
+    // A partial dimension set is not enough to know the thickness.
+    json partial = json::parse(R"json({"semiconductor":{"diode":{"manufacturerInfo":{
+      "reference":"X","datasheetInfo":{"provenance":[{"source":"manufacturerDatasheet"}],
+      "electrical":{"reverseVoltage":1200,"forwardCurrent":10},
+      "mechanical":{"case":"SO-8","height":{"nominal":0.004}}}}}}})json");
+    CHECK(!has_code(V.validate(partial), "GEN_PACKAGE_ENVELOPE"));
 }
 
 // ABT #524: a uA/mA leakage figure left in the amps field. 54 Infineon records
