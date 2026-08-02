@@ -5,7 +5,7 @@ Auto-classifies each file by columns; routes records missing a SAS-required fiel
 <type>.incomplete.ndjson (librarian); skips JFETs (no SAS schema). Stamps provenance.
 Run: python3 scripts/onsemi_csv_import.py
 """
-import csv, json, re, datetime, os, glob
+import csv, json, re, datetime, os, glob, sys
 DL="/mnt/c/Users/Alfonso/Downloads"; OUT="/home/alf/PSMA/TAS/staging/onsemi"; os.makedirs(OUT,exist_ok=True)
 DATA="/home/alf/PSMA/TAS/data"; TODAY=datetime.date.today().isoformat()
 PROV=[{"source":"manufacturerParametric","sourceName":"onsemi parametric export (CSV)","retrievedDate":TODAY}]
@@ -24,6 +24,33 @@ def status_of(s):
     s=norm(s)
     if "obsolet" in s or "last shipment" in s or "lifetime" in s: return "obsolete"
     return "production"
+def mohms(v):
+    """'95' / 'Q1=Q2=95' / 'Q1: 62.0, Q2: 62.0' -> ohms. onsemi publishes a
+    multi-channel r_DS(on) with the channel labels INLINE, and num()'s bare-number
+    regex takes the '1' out of 'Q1': FDC6561AN's 95 mOhm was stored as 1 mOhm, and
+    NTJD5121NT1G's 1.6 Ohm too, which is what dragged their honest gate charges
+    into ABT #512's net. Strip the labels first, and refuse the cell when the
+    channels disagree -- there is no single onResistance for the record then."""
+    v=clean(v)
+    if v is None: return None
+    vals={float(x) for x in re.findall(r"[-+]?\d*\.?\d+",re.sub(r"[Qq]\d+\s*[:=]"," ",v))}
+    return vals.pop()*1e-3 if len(vals)==1 else None
+def gate_charge(r):
+    """The row's total gate charge in coulombs, or None when the export's own
+    neighbours contradict the column. "Qg Typ @ VGS = 10 V (nC)" is not always a
+    TOTAL gate charge: for NTTFS4C05NTAG it reads 3 nC beside a Qgd of 5.5 nC and
+    a 4.5 V Qg of 8.4 nC -- it is the gate-SOURCE charge under a total-gate-charge
+    heading (ABT #512). Q_gd < Q_g, and Q_g >= 0.4*Ciss*10 V (Q_g is the integral
+    of C_iss over the drive, and C_iss is quoted near its minimum, so 0.4 leaves a
+    2.5x allowance). A row that fails either yields no gate charge and goes to the
+    librarian; it never yields a guess."""
+    qg=r.n("qg typ @ vgs = 10","qg total","qg (nc)")
+    if qg is None: return None
+    qgd=r.n("qgd typ")
+    if qgd is not None and qgd>=qg: return None
+    ciss=r.n("ciss typ")
+    if ciss is not None and qg*1e-9 < 0.4*ciss*1e-12*10.0: return None
+    return round(qg*1e-9,12)
 
 class Row:
     def __init__(s,hdr,r): s.h={norm(h):i for i,h in enumerate(hdr)}; s.r=r; s.hdr=hdr
@@ -57,15 +84,15 @@ def mosfet(r,pn):
     if clean(r.get("Package Type","package")): part["case"]=clean(r.get("Package Type","package"))
     el={}
     vds=r.n("v(br)dss","bvdss","blocking voltage","drain source voltage","vds(max)","vds max")
-    rds=r.n("rds(on) max @ vgs = 10","rds(on) typ @ 25","rds(on) max","rds(on) typ","typical rds(on)","rds(on)","rdson")
+    rds=mohms(r.get("rds(on) max @ vgs = 10","rds(on) typ @ 25","rds(on) max","rds(on) typ","typical rds(on)","rds(on)","rdson"))
     idc=r.n("id max","id(peak)","id(max)","id typ","id (a)","id ")
     vth=r.n("vgs(th) max","vgs(th)","vth")
-    qg=r.n("qg typ @ vgs = 10","qg total","qg (nc)","qoss typ","qg")
+    qg=gate_charge(r)
     if vds is not None: el["drainSourceVoltage"]=vds
-    if rds is not None: el["onResistance"]=rds*1e-3; el["onResistanceVgs"]=10
+    if rds is not None: el["onResistance"]=rds; el["onResistanceVgs"]=10
     if idc is not None: el["continuousDrainCurrent"]=idc
     if vth is not None: el["gateThresholdVoltage"]={"maximum":vth}
-    if qg is not None: el["totalGateCharge"]=round(qg*1e-9,12)
+    if qg is not None: el["totalGateCharge"]=qg
     if (v:=r.n("pd max","ptot")) is not None: el["powerDissipation"]=v
     miss=[k for k in("drainSourceVoltage","onResistance","continuousDrainCurrent","gateThresholdVoltage","totalGateCharge") if k not in el]
     return ("mosfet",part,el,miss)
@@ -146,8 +173,11 @@ def load_have(disc):
     return have
 
 def main():
+    sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)))
+    from blade_gate import BladeGate   # raises if unbuilt: a gate that cannot run is not a gate
     files=["parametrics.csv"]+[f"parametrics ({i}).csv" for i in range(1,28)]
     haves={d:load_have(d) for d in("mosfet","igbt","bjt","diode")}
+    gates={d:BladeGate(("semiconductor",d)) for d in haves}
     buckets={}  # tag -> list
     seen=set(); summary={}
     for f in files:
@@ -170,7 +200,15 @@ def main():
             mi={"name":"onsemi","reference":pn,"status":status_of(r.get("Status","status")),
                 "datasheetInfo":{"part":part,"electrical":el,"provenance":PROV}}
             rec={"semiconductor":{disc:{"manufacturerInfo":mi}}}
+            # ABT #512: a heading-based mapper is one mislabelled column away from
+            # writing a gate-source charge into totalGateCharge, and this converter
+            # had no physics gate between it and data/*.ndjson at all.
             tag=f"{disc}.{'incomplete' if miss else 'main'}"
+            if not miss:
+                ok,why=gates[disc].check(rec["semiconductor"][disc])
+                if not ok:
+                    rec=dict(rec); rec["quarantineReason"]=f"blade runner IMPOSSIBLE: {why}"
+                    tag=f"{disc}.blocked"
             buckets.setdefault(tag,[]).append((rec,miss))
     for tag,recs in buckets.items():
         with open(f"{OUT}/{tag}.ndjson","w") as fo:
@@ -179,5 +217,6 @@ def main():
                 fo.write(json.dumps(rec,ensure_ascii=False)+"\n")
     print("classification:", {f:summary[f] for f in summary})
     print("buckets:", {t:len(v) for t,v in sorted(buckets.items())})
+    for d,g in gates.items(): print(f"  {d}: {g.summary()}")
 
 if __name__=="__main__": main()
