@@ -95,6 +95,16 @@ void check_mosfets(const json& datasheet, const Ctx& ctx, std::vector<Finding>& 
     // within |gateSourceVoltageMax|.
     auto vgsmax = scalar_at(*elec, {"gateSourceVoltageMax"});
     auto vdrive = scalar_at(*elec, {"onResistanceVgs"});
+
+    // CHECK (NEW): the gate rating is a gate-oxide rating. Magnitude, so the
+    // P-channel sign convention does not matter.
+    if (vgsmax && std::fabs(*vgsmax) > thr::MOS_VGS_MAX_ABS_IMP)
+        emit(out, ctx, "MOS_VGS_MAX_RATING", Severity::Impossible, std::fabs(*vgsmax),
+             thr::MOS_VGS_MAX_ABS_IMP,
+             fmt("|gateSourceVoltageMax| exceeds any gate-oxide rating [V] (a watt or "
+                 "another column, not a gate limit)",
+                 std::fabs(*vgsmax), thr::MOS_VGS_MAX_ABS_IMP));
+
     if (vdrive && vthf) {
         auto vthmax = scalar_at(*vthf, {"maximum"});
         if (!vthmax) vthmax = scalar_at(*vthf, {"nominal"});
@@ -127,6 +137,7 @@ void check_mosfets(const json& datasheet, const Ctx& ctx, std::vector<Finding>& 
 
     // CHECK (NEW): power vs thermal consistency Pdiss ~ (Tjmax-25)/Rth(j-c).
     auto pdiss = scalar_at(*elec, {"powerDissipation"});
+    auto ron = scalar_at(*elec, {"onResistance"});
     auto rthjc = scalar_at(datasheet, {"thermal", "thermalResistanceJunctionCase"});
     auto tjmax = scalar_at(datasheet, {"thermal", "junctionTemperatureMax"});
     if (pdiss && rthjc && tjmax && *rthjc > 0 && *pdiss > 0) {
@@ -141,6 +152,41 @@ void check_mosfets(const json& datasheet, const Ctx& ctx, std::vector<Finding>& 
         }
     }
 
+    // CHECK (NEW): the rated continuous drain current against the record's own
+    // thermal path. ABT #500: a TO-247 record carrying a sibling package's thermal
+    // table is internally consistent between Ptot and Rth(j-c) -- both come from the
+    // same wrong row -- so MOS_POWER_THERMAL above cannot see it. What gives it away
+    // is that the die cannot conduct its own rated current through that thermal path:
+    // IPW80R280P7 stored 16 A through 0.28 ohm (71.7 W cold) behind a 3.5 K/W path
+    // good for 35.7 W, where the TO-247 datasheet says 1.2 K/W / 101 W.
+    if (idc && ron && rthjc && tjmax && *ron > 0 && *rthjc > 0 && *tjmax > 25.0) {
+        double pcond = (*idc) * (*idc) * (*ron);  // conduction loss at the 25 C Rds(on)
+        double pmax = (*tjmax - 25.0) / *rthjc;   // case held at 25 C
+        // Isolated packages (FullPAK / TO-220F / TO-3PF) are rated by vendors at
+        // the NON-isolated sibling's silicon current with an explicit duty-cycle
+        // footnote ("Limited by Tj max. Maximum duty cycle D=0.5" -- Infineon
+        // IPA60R120P7's own front page: 26 A behind 4.49 K/W, a 2.9x cold
+        // overcommit), so on those a 2-3x excess is the vendor's rating
+        // convention, not broken data. The impossible bar moves to 4x for them
+        // (ABT #500 calibration, datasheet-verified 2026-08-02); the band in
+        // between stays visible as Suspicious. Bare packages keep the 2x bar --
+        // the #500 exhibit, a TO-247 wearing FullPak thermals, is exactly what
+        // this check exists to catch, and it stays caught.
+        std::string pkg = norm_tech(at(datasheet, "part", "case"));
+        bool isolated = tech_has(pkg, "fullpak") || tech_has(pkg, "fullpack") ||
+                        tech_has(pkg, "to220f") || tech_has(pkg, "to3pf");
+        double bar = isolated ? thr::MOS_IDC_THERMAL_RATIO_ISO_IMP
+                              : thr::MOS_IDC_THERMAL_RATIO_IMP;
+        if (pcond > pmax * bar)
+            emit(out, ctx, "MOS_IDC_VS_THERMAL", Severity::Impossible, pcond, pmax,
+                 fmt("conduction loss at the rated continuous drain current exceeds "
+                     "(Tjmax-25)/Rth(j-c) [W]", pcond, pmax));
+        else if (isolated && pcond > pmax * thr::MOS_IDC_THERMAL_RATIO_IMP)
+            emit(out, ctx, "MOS_IDC_VS_THERMAL", Severity::Suspicious, pcond, pmax,
+                 fmt("conduction loss at rated Id exceeds (Tjmax-25)/Rth(j-c) on an "
+                     "isolated package (vendor silicon-rated Id) [W]", pcond, pmax));
+    }
+
     // CHECK (NEW): powerDissipation that is really an on-resistance. The May-2026
     // Vishay import wrote the grid's r_DS(on)-at-4.5-V column (P7016) into the
     // watt field (P7008) on 961 records -- SiRS4300DP, a 680 A part, stored
@@ -152,8 +198,25 @@ void check_mosfets(const json& datasheet, const Ctx& ctx, std::vector<Finding>& 
              fmt("powerDissipation below any package able to carry the rated continuous "
                  "drain current [W]", *pdiss, thr::MOS_PD_IDC_W));
 
+    // CHECK (NEW): a totalGateCharge that is not gate charge. ABT #512 -- 2 nC on a
+    // Vishay 80 V / 5.5 mohm / 72 A die (the grid's real Qg is 55 nC), and onsemi's
+    // parametric export publishes Q_gs under its "Qg Typ @ VGS = 10 V" heading.
+    // Ron and Qg both scale with channel width in opposite directions, so their
+    // product is a die-area-independent technology constant; see the thresholds.
+    if (qg && ron && *qg > 0 && *ron > 0) {
+        double fom = *ron * (*qg);  // ohm*C
+        double floor = tech_has(tech, "gan") ? thr::MOS_QG_RON_FOM_GAN_IMP
+                                             : thr::MOS_QG_RON_FOM_SI_IMP;
+        if (fom < floor)
+            emit(out, ctx, "MOS_QG_VS_RON", Severity::Impossible, fom, floor,
+                 fmt("onResistance*totalGateCharge below the switching figure of merit "
+                     "any real die reaches [ohm*C] (the charge field holds another "
+                     "quantity)", fom, floor));
+    } else {
+        skipped.push_back("MOS_QG_VS_RON");
+    }
+
     // CHECK (NEW, advisory): specific-Ron floor proxy Ron*Vds^2 by technology.
-    auto ron = scalar_at(*elec, {"onResistance"});
     auto vds = scalar_at(*elec, {"drainSourceVoltage"});
     if (ron && vds && *ron > 0 && *vds > 0) {
         double metric = *ron * (*vds) * (*vds);  // ohm*V^2

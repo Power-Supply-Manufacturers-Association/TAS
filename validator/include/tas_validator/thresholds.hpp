@@ -137,6 +137,22 @@ inline constexpr double MOS_VTH_GAN_LO = 0.7, MOS_VTH_GAN_HI = 2.5;
 inline constexpr double MOS_BODY_VF_LO = 0.2, MOS_BODY_VF_HI = 5.0;
 // Power-vs-thermal consistency factor: Pdiss should track (Tjmax-25)/Rth(j-c).
 inline constexpr double MOS_PTHERMAL_RATIO_SUS = 3.0;
+// A rated continuous drain current that the record's OWN thermal path cannot
+// carry (ABT #500: TO-247 records built from a sibling package's thermal table).
+// The datasheet derives ID at TC=25 C from Id^2*Rds(on)@Tjmax <= (Tjmax-25)/RthJC,
+// and Rds(on) rises ~2-2.5x from 25 C to Tjmax, so a consistent record sits near
+// ratio 0.4-0.5 when the COLD Rds(on) the catalogue stores is used. Ratios just
+// above 1 are real (ID is often bond-wire- rather than thermally-limited, and the
+// stored Rds(on) is a max while ID is derived from typ), so only a cold-loss
+// overcommit of this factor is called impossible: at 2x cold the part is 4-5x
+// over its own ceiling hot, which no rounding explains.
+inline constexpr double MOS_IDC_THERMAL_RATIO_IMP = 2.0;
+// Isolated packages (FullPAK/TO-220F/TO-3PF): vendors publish the bare sibling's
+// silicon Id with a duty-cycle footnote, so 2-3x cold overcommit is the rating
+// convention, not a defect. Datasheet-verified on Infineon IPA60R120P7 (2.9x)
+// and IPA60R190P6 (2.3x) during the ABT #500 campaign; 4x still catches wrong
+// thermal tables (the pre-repair records sat at 3-13x with FABRICATED pairs).
+inline constexpr double MOS_IDC_THERMAL_RATIO_ISO_IMP = 4.0;
 // A powerDissipation that is really an on-resistance (ABT #482/#494: Vishay
 // serves "On-resistance at 4.5 V" one column from "Power dissipation (max.)").
 // Anchored on the PACKAGE, not on the ohm value: a die rated to carry
@@ -146,6 +162,15 @@ inline constexpr double MOS_PTHERMAL_RATIO_SUS = 3.0;
 // is 0.69 W at 46 A, an SO-8FL steady-state figure). Below it, the number is not
 // a power rating at all.
 inline constexpr double MOS_PD_IDC_A = 20.0, MOS_PD_IDC_W = 0.5;
+// A gateSourceVoltageMax that is really a power dissipation (ABT #501: the mirror
+// of the above -- the same Vishay grid serves "Power dissipation (max.)" one
+// column from "Gate-to-source voltage", so 60 W lands as a 60 V gate rating).
+// V_GS(max) is a gate-OXIDE breakdown rating, and the oxide sets a hard ceiling
+// no process crosses: Si tops out at +-30 V, SiC at +-25, GaN at +-7 (+-20 for
+// cascodes); the highest real rating in this catalogue is 30 V. Anything past
+// this is not a gate rating at all -- at 156 V a ~50-100 nm oxide has punched
+// through, so the number came from another column.
+inline constexpr double MOS_VGS_MAX_ABS_IMP = 40.0;
 // Specific-Ron floor proxy: Ron*Vds^2 [ohm*V^2] minimum for a single die by
 // technology. Silicon obeys Ron,sp ~ k*BV^2.5; with die area unknown this is an
 // advisory (SUS) lower bound only. Calibrated so a 600 V Si part with Ron < a
@@ -156,6 +181,20 @@ inline constexpr double MOS_PD_IDC_A = 20.0, MOS_PD_IDC_W = 0.5;
 inline constexpr double MOS_RON_VDS2_SI_SUS = 0.15;    // Si / superjunction
 inline constexpr double MOS_RON_VDS2_SIC_SUS = 0.5;    // SiC
 inline constexpr double MOS_RON_VDS2_GAN_SUS = 0.1;    // GaN
+// A totalGateCharge that is not a gate charge (ABT #512: Vishay's grid served
+// Q_g one column from another quantity, onsemi's export publishes Q_gs under the
+// "Qg Typ @ VGS = 10 V" heading, and 2 nC landed on an 80 V / 5.5 mohm / 72 A die).
+// Ron*Qg [ohm*C] is the switching figure of merit. Both factors scale with the
+// same channel width -- Ron ~ 1/W, Qg ~ W -- so their PRODUCT is a technology
+// constant independent of die area, which is exactly what makes it a usable floor
+// when the die area is unknown. Nothing in the field is below it: the lowest of
+// TI's 177 published silicon MOSFETs is 24.2 pOhm*C (CSD16415Q5) and the lowest of
+// EPC's 97 published GaN parts is 8.6 pOhm*C (EPC2370) -- GaN gets its own floor
+// because a better FOM is the whole point of the technology. Each floor sits ~1.6x
+// below its technology's verified best, so only a value that is not gate charge
+// at all can reach it.
+inline constexpr double MOS_QG_RON_FOM_SI_IMP = 1.5e-11;   // Si / SiC [ohm*C]
+inline constexpr double MOS_QG_RON_FOM_GAN_IMP = 5.0e-12;  // GaN [ohm*C]
 
 // ---- Diodes -----------------------------------------------------------------
 // Forward-voltage windows by technology [V].

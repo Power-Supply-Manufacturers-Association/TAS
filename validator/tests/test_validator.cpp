@@ -208,6 +208,39 @@ TEST_CASE("Semiconductors: MosfetChargeHierarchy", "[semiconductors]") {
     CHECK(has(v, "MOS_CHARGE_HIERARCHY", Severity::Impossible));
 }
 
+// ABT #512: SiZF680LDT carried 2 nC as its total gate charge -- an 80 V, 5.5 mohm,
+// 72 A die whose own vendor grid publishes 55 nC. Ron*Qg is die-area independent,
+// so 11 pOhm*C says the field is not gate charge whatever the die size.
+TEST_CASE("Semiconductors: MosfetGateChargeIsAnotherColumn", "[semiconductors]") {
+    json p = json::parse(R"json({"semiconductor": {"mosfet": {"manufacturerInfo": {
+      "reference": "SiZF680LDT", "datasheetInfo": {"part": {"technology": "Si"},
+      "electrical": {"drainSourceVoltage": 80, "onResistance": 0.0055,
+                     "continuousDrainCurrent": 72, "totalGateCharge": 2e-9}}}}}})json");
+    Verdict v = V.validate(p);
+    CHECK(has(v, "MOS_QG_VS_RON", Severity::Impossible));
+    CHECK(!v.valid);
+    // The grid's own Q_g for that row clears it.
+    p["semiconductor"]["mosfet"]["manufacturerInfo"]["datasheetInfo"]["electrical"]
+     ["totalGateCharge"] = 55e-9;
+    CHECK(!has(V.validate(p), "MOS_QG_VS_RON", Severity::Impossible));
+}
+
+// The floor must clear the best figure of merit either technology actually ships:
+// TI's CSD17522Q5A (8.1 mohm, 3.6 nC) is the lowest of 177 published TI silicon
+// parts, and EPC2370 (0.33 mohm, 26 nC) the lowest of 97 published EPC GaN parts.
+TEST_CASE("Semiconductors: BestInClassFigureOfMeritValid", "[semiconductors]") {
+    json p = json::parse(R"json({"semiconductor": {"mosfet": {"manufacturerInfo": {
+      "reference": "CSD17522Q5A", "datasheetInfo": {"part": {"technology": "Si"},
+      "electrical": {"drainSourceVoltage": 30, "onResistance": 0.0081,
+                     "totalGateCharge": 3.6e-9}}}}}})json");
+    CHECK(!has(V.validate(p), "MOS_QG_VS_RON", Severity::Impossible));
+    json g = json::parse(R"json({"semiconductor": {"mosfet": {"manufacturerInfo": {
+      "reference": "EPC2370", "datasheetInfo": {"part": {"technology": "GaN"},
+      "electrical": {"drainSourceVoltage": 100, "onResistance": 0.00033,
+                     "totalGateCharge": 26e-9}}}}}})json");
+    CHECK(!has(V.validate(g), "MOS_QG_VS_RON", Severity::Impossible));
+}
+
 // ABT #494: Vishay's "On-resistance at 4.5 V" column landed in powerDissipation.
 // SiRS4300DP is the real record: 680 A rated, 0.00068 stored as watts.
 TEST_CASE("Semiconductors: MosfetPowerDissipationIsOnResistance", "[semiconductors]") {
@@ -232,6 +265,100 @@ TEST_CASE("Semiconductors: SmallSignalMosfetSubWattPdValid", "[semiconductors]")
       "electrical": {"drainSourceVoltage": 60, "onResistance": 1.6,
                      "continuousDrainCurrent": 0.115, "powerDissipation": 0.42}}}}}})json");
     CHECK(!has(V.validate(p), "MOS_PD_VS_IDC", Severity::Impossible));
+}
+
+// ABT #501: the Vishay grid's watt column landed in the gate field -- IRF9540S
+// carried its 150 W P_D as a 150 V gate rating. The oxide sets a hard ceiling, so
+// this is impossible however the record is otherwise shaped.
+TEST_CASE("Semiconductors: MosfetGateRatingIsAWattFigure", "[semiconductors]") {
+    json p = json::parse(R"json({"semiconductor": {"mosfet": {"manufacturerInfo": {
+      "reference": "IRF9540S, SiHF9540S", "datasheetInfo": {"part": {"technology": "Si"},
+      "electrical": {"drainSourceVoltage": -100, "onResistance": 0.2,
+                     "continuousDrainCurrent": -19, "gateSourceVoltageMax": 150}}}}}})json");
+    Verdict v = V.validate(p);
+    CHECK(has(v, "MOS_VGS_MAX_RATING", Severity::Impossible));
+    CHECK(!v.valid);
+    // The datasheet's own +-20 V rating clears it.
+    p["semiconductor"]["mosfet"]["manufacturerInfo"]["datasheetInfo"]["electrical"]
+     ["gateSourceVoltageMax"] = 20;
+    CHECK(!has(V.validate(p), "MOS_VGS_MAX_RATING", Severity::Impossible));
+}
+
+// The ceiling must clear every real gate rating, including the 30 V Si parts that
+// are the highest in this catalogue and the negative P-channel convention.
+TEST_CASE("Semiconductors: RealGateRatingsValid", "[semiconductors]") {
+    for (double vgs : {30.0, -30.0, 25.0, 7.0}) {
+        json p = json::parse(R"json({"semiconductor": {"mosfet": {"manufacturerInfo": {
+          "reference": "X", "datasheetInfo": {"part": {"technology": "Si"},
+          "electrical": {"drainSourceVoltage": 600, "onResistance": 0.1}}}}}})json");
+        p["semiconductor"]["mosfet"]["manufacturerInfo"]["datasheetInfo"]["electrical"]
+         ["gateSourceVoltageMax"] = vgs;
+        CHECK(!has(V.validate(p), "MOS_VGS_MAX_RATING", Severity::Impossible));
+    }
+}
+
+// ABT #500: a TO-247 record built from a sibling package's thermal table. The
+// stored pair is self-consistent -- (150-25)/3.5 = 35.7 W matches the stored
+// Ptot 36 W -- so MOS_POWER_THERMAL passes it; what is impossible is conducting
+// the rated 16 A through 0.28 ohm (71.7 W cold) behind that 3.5 K/W path.
+TEST_CASE("Semiconductors: MosfetRatedCurrentExceedsOwnThermalPath", "[semiconductors]") {
+    json p = json::parse(R"json({"semiconductor": {"mosfet": {"manufacturerInfo": {
+      "reference": "IPW80R280P7", "datasheetInfo": {"part": {"technology": "Si", "case": "TO-247"},
+      "electrical": {"drainSourceVoltage": 800, "onResistance": 0.28,
+                     "continuousDrainCurrent": 16, "powerDissipation": 36},
+      "thermal": {"thermalResistanceJunctionCase": 3.5,
+                  "junctionTemperatureMax": 150}}}}}})json");
+    Verdict v = V.validate(p);
+    CHECK(has(v, "MOS_IDC_VS_THERMAL", Severity::Impossible));
+    CHECK(!v.valid);
+    // The TO-247 datasheet's own thermal row (1.2 K/W, Ptot 101 W) reconciles it.
+    p["semiconductor"]["mosfet"]["manufacturerInfo"]["datasheetInfo"]["thermal"]
+     ["thermalResistanceJunctionCase"] = 1.2;
+    p["semiconductor"]["mosfet"]["manufacturerInfo"]["datasheetInfo"]["electrical"]
+     ["powerDissipation"] = 101.0;
+    CHECK(!has(V.validate(p), "MOS_IDC_VS_THERMAL", Severity::Impossible));
+}
+
+// An isolated FullPAK carrying its DATASHEET's own values must not be
+// impossible: Infineon IPA60R120P7's front page rates 26 A (the TO-220
+// equivalent silicon current, "Limited by Tj max. D=0.5") behind 4.49 K/W /
+// 28 W — a 2.9x cold overcommit that is the vendor's rating convention.
+// It stays visible as Suspicious; only above 4x does isolated become
+// impossible (ABT #500 calibration).
+TEST_CASE("Semiconductors: FullPakSiliconRatedIdValid", "[semiconductors]") {
+    json p = json::parse(R"json({"semiconductor": {"mosfet": {"manufacturerInfo": {
+      "reference": "IPA60R120P7", "datasheetInfo": {"part": {"technology": "Si", "case": "TO-220 FullPAK"},
+      "electrical": {"drainSourceVoltage": 600, "onResistance": 0.12,
+                     "continuousDrainCurrent": 26, "powerDissipation": 28},
+      "thermal": {"thermalResistanceJunctionCase": 4.49,
+                  "junctionTemperatureMax": 150}}}}}})json");
+    Verdict v = V.validate(p);
+    CHECK(!has(v, "MOS_IDC_VS_THERMAL", Severity::Impossible));
+    CHECK(has(v, "MOS_IDC_VS_THERMAL", Severity::Suspicious));
+    // The same 4.49 K/W table on a BARE TO-220 record is the #500 disease and
+    // must stay impossible — the exemption is package-gated, not a loosening.
+    p["semiconductor"]["mosfet"]["manufacturerInfo"]["datasheetInfo"]["part"]
+     ["case"] = "TO-220";
+    CHECK(has(V.validate(p), "MOS_IDC_VS_THERMAL", Severity::Impossible));
+    // And a FullPAK whose Id overcommits by >4x (fabricated thermal pair) is
+    // still impossible: 26 A / 0.12 ohm behind 10 K/W is 6.5x.
+    p["semiconductor"]["mosfet"]["manufacturerInfo"]["datasheetInfo"]["part"]
+     ["case"] = "TO-220 FullPAK";
+    p["semiconductor"]["mosfet"]["manufacturerInfo"]["datasheetInfo"]["thermal"]
+     ["thermalResistanceJunctionCase"] = 10.0;
+    CHECK(has(V.validate(p), "MOS_IDC_VS_THERMAL", Severity::Impossible));
+}
+
+// A small SiC die genuinely sits above 2 K/W in TO-247 and must not fire:
+// Wolfspeed C3M0280090D is 2.8 K/W / 45 W, rated 11.5 A through 0.28 ohm.
+TEST_CASE("Semiconductors: SmallDieTo247HighRthjcValid", "[semiconductors]") {
+    json p = json::parse(R"json({"semiconductor": {"mosfet": {"manufacturerInfo": {
+      "reference": "C3M0280090D", "datasheetInfo": {"part": {"technology": "SiC", "case": "TO-247-3"},
+      "electrical": {"drainSourceVoltage": 900, "onResistance": 0.28,
+                     "continuousDrainCurrent": 11.5, "powerDissipation": 45},
+      "thermal": {"thermalResistanceJunctionCase": 2.8,
+                  "junctionTemperatureMax": 175}}}}}})json");
+    CHECK(!has(V.validate(p), "MOS_IDC_VS_THERMAL", Severity::Impossible));
 }
 
 TEST_CASE("Semiconductors: DiodeSurgeBelowForward", "[semiconductors]") {
@@ -343,6 +470,54 @@ TEST_CASE("AntiSynthesis: FamilyMismatchWarns", "[antisynthesis]") {
 TEST_CASE("AntiSynthesis: MultiDiscriminatorImpossible", "[antisynthesis]") {
     json p = json::parse(R"json({"magnetic":{},"capacitor":{}})json");
     CHECK(has(V.validate(p), "GEN_MULTI_DISCRIMINATOR", Severity::Impossible));
+}
+
+// ABT #507: a package outline's mount class is definitional. TO-252 (DPAK) is
+// surface mount; tagging it "tht" made a THT->SMT substitution invisible to
+// cross-reference, which reported only "different land pattern".
+TEST_CASE("AntiSynthesis: PackageMountContradictionImpossible", "[antisynthesis]") {
+    auto diode = [](const char* kase, const char* mount) {
+        return json::parse(std::string(R"json({"semiconductor":{"diode":{"manufacturerInfo":{
+          "reference":"X","datasheetInfo":{"provenance":[{"source":"manufacturerDatasheet"}],
+          "electrical":{"reverseVoltage":1200,"forwardCurrent":10},
+          "mechanical":{"case":")json") + kase + R"json(","assemblyType":")json" + mount +
+                          R"json("}}}}}})json");
+    };
+    CHECK(has(V.validate(diode("TO-252", "tht")), "GEN_PACKAGE_MOUNT", Severity::Impossible));
+    CHECK(has(V.validate(diode("DPAK", "tht")), "GEN_PACKAGE_MOUNT", Severity::Impossible));
+    CHECK(has(V.validate(diode("SMA", "tht")), "GEN_PACKAGE_MOUNT", Severity::Impossible));
+    // The mirror direction: a leaded outline filed as surface mount.
+    CHECK(has(V.validate(diode("TO-220", "smt")), "GEN_PACKAGE_MOUNT", Severity::Impossible));
+    CHECK(has(V.validate(diode("TO-247-4", "smt")), "GEN_PACKAGE_MOUNT", Severity::Impossible));
+    // TO-251/IPAK and TO-262/I2PAK are the through-hole relatives of TO-252/TO-263.
+    CHECK(has(V.validate(diode("TO-251 (IPAK)", "smt")), "GEN_PACKAGE_MOUNT", Severity::Impossible));
+    // Correct pairings stay silent.
+    CHECK(!has_code(V.validate(diode("TO-252", "smt")), "GEN_PACKAGE_MOUNT"));
+    CHECK(!has_code(V.validate(diode("TO-263 (D2PAK)", "smt")), "GEN_PACKAGE_MOUNT"));
+    CHECK(!has_code(V.validate(diode("TO-220AB", "tht")), "GEN_PACKAGE_MOUNT"));
+    CHECK(!has_code(V.validate(diode("TO-251 (IPAK)", "tht")), "GEN_PACKAGE_MOUNT"));
+    // Screw-terminal / module bricks are neither smt nor tht — never flagged.
+    CHECK(!has_code(V.validate(diode("SOT-227", "chassis")), "GEN_PACKAGE_MOUNT"));
+    CHECK(!has_code(V.validate(diode("SOT-227", "smt")), "GEN_PACKAGE_MOUNT"));
+    CHECK(!has_code(V.validate(diode("Module", "smt")), "GEN_PACKAGE_MOUNT"));
+    CHECK(!has_code(V.validate(diode("Unknown", "smt")), "GEN_PACKAGE_MOUNT"));
+}
+
+// ABT #507: the wave-2 SiC-diode ladder generator's MPN template.
+TEST_CASE("AntiSynthesis: Wave2SicDiodeLadderMpn", "[antisynthesis]") {
+    auto ref = [](const char* r) {
+        return json::parse(std::string(R"json({"semiconductor":{"diode":{"manufacturerInfo":{
+          "reference":")json") + r + R"json(","datasheetInfo":{
+          "provenance":[{"source":"manufacturerDatasheet"}],
+          "electrical":{"reverseVoltage":1200,"forwardCurrent":10}}}}}})json");
+    };
+    CHECK(has(V.validate(ref("IDH30SG22C")), "GEN_FABRICATED_MPN", Severity::Impossible));
+    CHECK(has(V.validate(ref("IDH02S10C")), "GEN_FABRICATED_MPN", Severity::Impossible));
+    CHECK(has(V.validate(ref("IDH30SO22C")), "GEN_FABRICATED_MPN", Severity::Impossible));
+    // Real Infineon numbering (60/65/120 voltage tokens) must not match.
+    CHECK(!has_code(V.validate(ref("IDH06S60C")), "GEN_FABRICATED_MPN"));
+    CHECK(!has_code(V.validate(ref("IDH40S120C")), "GEN_FABRICATED_MPN"));
+    CHECK(!has_code(V.validate(ref("IDH03G65C6")), "GEN_FABRICATED_MPN"));
 }
 
 // P3: IEC 60063 E-series preferred-value membership (resistors / capacitors).
@@ -980,4 +1155,182 @@ TEST_CASE("CONN: a connector with no electrical block skips rather than passes",
       "name": "X", "reference": "Y", "datasheetInfo": {"part": {"partNumber": "Y"}}}}})json");
     Verdict v = V.validate(p);
     CHECK(std::find(v.skipped.begin(), v.skipped.end(), "CONN_ELECTRICAL_*") != v.skipped.end());
+}
+
+// ---------------------------------------------------------------------------
+// CIAS circuit bricks — validate_circuit (the "Blade Runner for circuits").
+// A brick is not a part: no discriminator, no manufacturerInfo, own entry point.
+// ---------------------------------------------------------------------------
+
+namespace {
+
+// Minimal two-winding brick carrying one coupledInductors component. `matrix` is
+// substituted verbatim so a test can hand it a deliberately broken one.
+json coupled_brick(const std::string& matrix, const std::string& extra = "") {
+    return json::parse(R"json({"name":"t","ports":[{"name":"a"},{"name":"b"}],
+      "components":[{"name":"LM","data":{"behavioral":{"nature":"coupledInductors",
+        "inductanceMatrix":)json" + matrix + extra + R"json(},
+        "inputs":{"designRequirements":{"name":"t"}}}}],
+      "connections":[
+        {"name":"n1","endpoints":[{"component":"LM","pin":"winding1_start"},{"port":"a"}]},
+        {"name":"n2","endpoints":[{"component":"LM","pin":"winding1_end"},{"port":"b"}]}]})json");
+}
+
+bool has(const Verdict& v, const std::string& code) {
+    for (const Finding& f : v.findings)
+        if (f.code == code) return true;
+    return false;
+}
+
+}  // namespace
+
+TEST_CASE("circuit: a well-formed coupled-inductor brick is valid", "[circuits]") {
+    Verdict v = validate_circuit(coupled_brick("[[1e-9,2e-10],[2e-10,1e-9]]"));
+    CHECK(v.valid);
+    CHECK(v.findings.empty());
+}
+
+TEST_CASE("circuit: pairwise |k| <= 1 does NOT imply positive-definite", "[circuits]") {
+    // Every off-diagonal |k| is exactly 0.9, so the converter's pairwise coupling bound
+    // passes and it emits the netlist happily. The eigenvalues are {-0.8, 1.9, 1.9}: the
+    // current vector [1,-1,1] stores 0.5*i^T L i = -1.2 J. Negative stored energy.
+    // This case is the entire reason CIR_L_NOT_PD exists.
+    Verdict v = validate_circuit(
+        coupled_brick("[[1.0,0.9,-0.9],[0.9,1.0,0.9],[-0.9,0.9,1.0]]"));
+    CHECK_FALSE(v.valid);
+    REQUIRE(has(v, "CIR_L_NOT_PD"));
+    for (const Finding& f : v.findings)
+        if (f.code == "CIR_L_NOT_PD") {
+            CHECK(f.severity == Severity::Impossible);
+            CHECK(f.value == 3.0);   // Cholesky fails at the 3rd leading minor
+        }
+    // and it must NOT be reported as a pairwise-coupling problem, because it is not one
+    CHECK_FALSE(has(v, "CIR_L_ASYMMETRIC"));
+}
+
+TEST_CASE("circuit: a positive-definite 3x3 with strong coupling stays valid", "[circuits]") {
+    // Same magnitudes, consistent signs — physically realizable, must not fire.
+    Verdict v = validate_circuit(
+        coupled_brick("[[1.0,0.9,0.81],[0.9,1.0,0.9],[0.81,0.9,1.0]]"));
+    CHECK(v.valid);
+    CHECK_FALSE(has(v, "CIR_L_NOT_PD"));
+}
+
+TEST_CASE("circuit: mutual inductance must be reciprocal", "[circuits]") {
+    Verdict v = validate_circuit(coupled_brick("[[1e-9,3e-10],[2e-10,1e-9]]"));
+    CHECK_FALSE(v.valid);
+    CHECK(has(v, "CIR_L_ASYMMETRIC"));
+}
+
+TEST_CASE("circuit: a winding with no self inductance is a short", "[circuits]") {
+    Verdict v = validate_circuit(coupled_brick("[[1e-9,0],[0,0]]"));
+    CHECK_FALSE(v.valid);
+    CHECK(has(v, "CIR_L_NONPOS_DIAG"));
+    // Cholesky says nothing new once the diagonal is already bad — no double report
+    CHECK_FALSE(has(v, "CIR_L_NOT_PD"));
+}
+
+TEST_CASE("circuit: seriesResistance must have one entry per winding", "[circuits]") {
+    Verdict v = validate_circuit(
+        coupled_brick("[[1e-9,2e-10],[2e-10,1e-9]]", R"json(,"seriesResistance":[1e-3])json"));
+    CHECK_FALSE(v.valid);
+    CHECK(has(v, "CIR_L_R_LENGTH"));
+}
+
+TEST_CASE("circuit: a zero-farad capacitor is not an element", "[circuits]") {
+    // Live case: bricks 750811612 and 750315229 each carry one. It passes CIAS.json,
+    // passes validate_cias_structure, and LOWERS cleanly to "CCpri2 Cpri2__pi 1 0".
+    json b = json::parse(R"json({"name":"z","ports":[{"name":"a"},{"name":"b"}],
+      "components":[{"name":"C1","data":{"capacitor":{},
+        "inputs":{"designRequirements":{"capacitance":{"nominal":0}}}}}],
+      "connections":[
+        {"name":"n1","endpoints":[{"component":"C1","pin":"1"},{"port":"a"}]},
+        {"name":"n2","endpoints":[{"component":"C1","pin":"2"},{"port":"b"}]}]})json");
+    Verdict v = validate_circuit(b);
+    CHECK_FALSE(v.valid);
+    CHECK(has(v, "CIR_NONPOSITIVE"));
+}
+
+TEST_CASE("circuit: 1e100 ohm is an in-band sentinel, not a measurement", "[circuits]") {
+    // Live case: SC70_82400274 carries 1,196 of them. Suspicious, not impossible — it is
+    // a widespread modelling idiom for "open", and it simulates.
+    json b = json::parse(R"json({"name":"s","ports":[{"name":"a"},{"name":"b"}],
+      "components":[{"name":"R1","data":{"resistor":{},
+        "inputs":{"designRequirements":{"resistance":{"nominal":1e100}}}}}],
+      "connections":[
+        {"name":"n1","endpoints":[{"component":"R1","pin":"1"},{"port":"a"}]},
+        {"name":"n2","endpoints":[{"component":"R1","pin":"2"},{"port":"b"}]}]})json");
+    Verdict v = validate_circuit(b);
+    CHECK(v.valid);                       // suspicious does not invalidate
+    REQUIRE(has(v, "CIR_SENTINEL_VALUE"));
+    for (const Finding& f : v.findings)
+        if (f.code == "CIR_SENTINEL_VALUE") CHECK(f.severity == Severity::Suspicious);
+    CHECK_FALSE(has(v, "CIR_VALUE_RANGE"));  // diagnosed as a sentinel, not a range slip
+}
+
+TEST_CASE("circuit: a supercapacitor is not out of range", "[circuits]") {
+    // Calibration case: a 1 F ceiling fired on 87 real bricks (851617031001_100F is a
+    // 100 F cell). Correct physics must not trip a range check.
+    json b = json::parse(R"json({"name":"sc","ports":[{"name":"a"},{"name":"b"}],
+      "components":[{"name":"C1","data":{"capacitor":{},
+        "inputs":{"designRequirements":{"capacitance":{"nominal":350}}}}}],
+      "connections":[
+        {"name":"n1","endpoints":[{"component":"C1","pin":"1"},{"port":"a"}]},
+        {"name":"n2","endpoints":[{"component":"C1","pin":"2"},{"port":"b"}]}]})json");
+    Verdict v = validate_circuit(b);
+    CHECK(v.valid);
+    CHECK(v.findings.empty());
+}
+
+TEST_CASE("circuit: a net reachable only through C but exposed at a port does not float",
+          "[circuits]") {
+    // The connector pin-field shape: `ref` is reached only through capacitors inside the
+    // brick, and the consumer ties it to the board return plane. Ignoring the port
+    // exemption fired this check on 38.84% of the live corpus.
+    json b = json::parse(R"json({"name":"pf","ports":[{"name":"a"},{"name":"b"},{"name":"ref"}],
+      "components":[
+        {"name":"L1","data":{"magnetic":{},
+          "inputs":{"designRequirements":{"magnetizingInductance":{"nominal":1e-9},
+                                          "turnsRatios":[]}}}},
+        {"name":"Cref","data":{"capacitor":{},
+          "inputs":{"designRequirements":{"capacitance":{"nominal":1e-13}}}}}],
+      "connections":[
+        {"name":"na","endpoints":[{"component":"L1","pin":"primary_start"},{"port":"a"},
+                                  {"component":"Cref","pin":"1"}]},
+        {"name":"nb","endpoints":[{"component":"L1","pin":"primary_end"},{"port":"b"}]},
+        {"name":"nref","endpoints":[{"port":"ref"},{"component":"Cref","pin":"2"}]}]})json");
+    Verdict v = validate_circuit(b);
+    CHECK(v.valid);
+    CHECK_FALSE(has(v, "CIR_FLOATING_NODE"));
+}
+
+TEST_CASE("circuit: a net reachable only through C and NOT ported does float", "[circuits]") {
+    json b = json::parse(R"json({"name":"fl","ports":[{"name":"a"},{"name":"b"}],
+      "components":[
+        {"name":"R1","data":{"resistor":{},
+          "inputs":{"designRequirements":{"resistance":{"nominal":50}}}}},
+        {"name":"C1","data":{"capacitor":{},
+          "inputs":{"designRequirements":{"capacitance":{"nominal":1e-9}}}}}],
+      "connections":[
+        {"name":"na","endpoints":[{"component":"R1","pin":"1"},{"port":"a"}]},
+        {"name":"nb","endpoints":[{"component":"R1","pin":"2"},{"port":"b"},
+                                  {"component":"C1","pin":"1"}]},
+        {"name":"norphan","endpoints":[{"component":"C1","pin":"2"},
+                                       {"component":"C1","pin":"2b"}]}]})json");
+    Verdict v = validate_circuit(b);
+    REQUIRE(has(v, "CIR_FLOATING_NODE"));
+    for (const Finding& f : v.findings)
+        if (f.code == "CIR_FLOATING_NODE") CHECK(f.severity == Severity::Suspicious);
+    CHECK(v.valid);   // suspicious: this rule was wrong about a third of the corpus once
+}
+
+TEST_CASE("circuit: a non-object brick is rejected, not coerced", "[circuits]") {
+    CHECK_THROWS_AS(validate_circuit(json::parse("[]")), std::invalid_argument);
+}
+
+TEST_CASE("circuit: check codes are unique and non-empty", "[circuits]") {
+    std::vector<std::string> codes = circuit_check_codes();
+    CHECK_FALSE(codes.empty());
+    std::sort(codes.begin(), codes.end());
+    CHECK(std::adjacent_find(codes.begin(), codes.end()) == codes.end());
 }
