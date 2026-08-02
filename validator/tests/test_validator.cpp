@@ -562,6 +562,23 @@ TEST_CASE("AntiSynthesis: TvsVoltageOrderingImpossible", "[antisynthesis]") {
     CHECK(has(V.validate(p), "DIO_TVS_ORDERING", Severity::Impossible));
 }
 
+// A snapback ESD diode whose 1 mA breakdown LIMIT is guard-banded just below
+// the working voltage is the vendor's own table, not a defect: Toshiba
+// DF2B26M4SL publishes VRWM 24 V / VBR min 21.0 V / VC 33 V. Suspicious at
+// most; a breakdown at half the standoff (wrong column) stays impossible.
+TEST_CASE("AntiSynthesis: TvsSnapbackGuardBandValid", "[antisynthesis]") {
+    json p = json::parse(R"json({"semiconductor":{"diode":{"manufacturerInfo":{
+      "reference":"DF2B26M4SL","datasheetInfo":{"part":{"subType":"esd"},
+      "electrical":{"standoffVoltage":24.0,"breakdownVoltage":{"minimum":21.0},
+                    "clampingVoltage":33.0}}}}}})json");
+    Verdict v = V.validate(p);
+    CHECK(!has(v, "DIO_TVS_ORDERING", Severity::Impossible));
+    CHECK(has(v, "DIO_TVS_ORDERING", Severity::Suspicious));
+    p["semiconductor"]["diode"]["manufacturerInfo"]["datasheetInfo"]["electrical"]
+     ["breakdownVoltage"]["minimum"] = 12.0;
+    CHECK(has(V.validate(p), "DIO_TVS_ORDERING", Severity::Impossible));
+}
+
 TEST_CASE("AntiSynthesis: IgbtVcesatRatioIncoherent", "[antisynthesis]") {
     // Vces=100, Vcesat=4: each individually plausible, ratio 0.04 is incoherent.
     json p = json::parse(R"json({"semiconductor":{"igbt":{"manufacturerInfo":{

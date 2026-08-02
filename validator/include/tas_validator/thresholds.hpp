@@ -197,6 +197,11 @@ inline constexpr double MOS_QG_RON_FOM_SI_IMP = 1.5e-11;   // Si / SiC [ohm*C]
 inline constexpr double MOS_QG_RON_FOM_GAN_IMP = 5.0e-12;  // GaN [ohm*C]
 
 // ---- Diodes -----------------------------------------------------------------
+// Snapback ESD parts guard-band the 1 mA breakdown LIMIT below the working
+// voltage (Toshiba DF2B26M4SL: VRWM 24 V, VBR min 21.0 V = 0.875x, with leakage
+// separately guaranteed at VRWM). Below 0.75x no spec convention explains it —
+// that is a wrong-column value. Calibrated during ABT #500/#507 (2026-08-02).
+inline constexpr double DIO_TVS_VBR_VSO_GUARD = 0.75;
 // Forward-voltage windows by technology [V].
 inline constexpr double DIO_VF_HARD_LO = 0.05, DIO_VF_HARD_HI = 5.0;  // IMP outside
 inline constexpr double DIO_VF_SCHOTTKY_LO = 0.2, DIO_VF_SCHOTTKY_HI = 1.3;  // real Schottky Vf 0.26-1.2

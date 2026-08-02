@@ -81,9 +81,19 @@ void check_diodes(const json& datasheet, const Ctx& ctx, std::vector<Finding>& o
         if (vso && vcl && *vso > 0 && *vcl > 0 && *vso >= *vcl)
             emit(out, ctx, "DIO_TVS_ORDERING", Severity::Impossible, *vso, *vcl,
                  fmt("standoffVoltage >= clampingVoltage", *vso, *vcl));
-        if (vso && vbr && *vso > 0 && *vbr > 0 && *vbr < *vso)
+        // Snapback ESD parts guard-band the 1 mA breakdown LIMIT below the
+        // working voltage: Toshiba DF2B26M4SL's own table is VRWM 24 V with
+        // VBR min 21.0 V (leakage separately guaranteed 0.1 uA at 24 V), a
+        // 0.875x ratio that is a spec convention, not a broken record. Only a
+        // breakdown MEANINGFULLY below standoff (a wrong-column value) is
+        // impossible; the guard band stays visible as Suspicious.
+        if (vso && vbr && *vso > 0 && *vbr > 0 && *vbr < *vso * thr::DIO_TVS_VBR_VSO_GUARD)
             emit(out, ctx, "DIO_TVS_ORDERING", Severity::Impossible, *vbr, *vso,
                  fmt("breakdownVoltage < standoffVoltage", *vbr, *vso));
+        else if (vso && vbr && *vso > 0 && *vbr > 0 && *vbr < *vso)
+            emit(out, ctx, "DIO_TVS_ORDERING", Severity::Suspicious, *vbr, *vso,
+                 fmt("breakdownVoltage inside the snapback guard band below "
+                     "standoffVoltage", *vbr, *vso));
         if (vbr && vcl && *vbr > 0 && *vcl > 0 && *vcl < *vbr)
             emit(out, ctx, "DIO_TVS_ORDERING", Severity::Impossible, *vcl, *vbr,
                  fmt("clampingVoltage < breakdownVoltage", *vcl, *vbr));
