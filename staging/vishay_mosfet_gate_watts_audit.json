@@ -1,0 +1,915 @@
+{
+ "ticket": "ABT #501",
+ "live": [
+  {
+   "reference": "IRF520S, SiHF520S",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 60.0,
+     "now": 20
+    },
+    "continuousDrainCurrent": {
+     "was": 20.0,
+     "now": 9.2
+    },
+    "powerDissipation": {
+     "was": null,
+     "now": 60
+    },
+    "onResistanceVgs": {
+     "was": null,
+     "now": 10
+    },
+    "totalGateCharge": {
+     "was": null,
+     "now": 1.6e-08
+    },
+    "gateThresholdVoltage": {
+     "was": 2.0,
+     "now": {
+      "minimum": 2.0,
+      "maximum": 4.0
+     }
+    }
+   },
+   "evidence": "Vishay docs/91018"
+  },
+  {
+   "reference": "IRLZ14S, SiHLZ14S",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 43.0,
+     "now": 10
+    },
+    "powerDissipation": {
+     "was": null,
+     "now": 43
+    },
+    "onResistance": {
+     "was": null,
+     "now": 0.2
+    },
+    "onResistanceVgs": {
+     "was": null,
+     "now": 5
+    },
+    "totalGateCharge": {
+     "was": null,
+     "now": 8.4e-09
+    },
+    "gateThresholdVoltage": {
+     "was": 1.5,
+     "now": {
+      "minimum": 1.0,
+      "maximum": 2.0
+     }
+    }
+   },
+   "evidence": "Vishay docs/90414"
+  },
+  {
+   "reference": "IRF9540S, SiHF9540S",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 150.0,
+     "now": 20
+    },
+    "continuousDrainCurrent": {
+     "was": 20.0,
+     "now": -19
+    },
+    "powerDissipation": {
+     "was": null,
+     "now": 150
+    },
+    "onResistanceVgs": {
+     "was": null,
+     "now": -10
+    },
+    "totalGateCharge": {
+     "was": null,
+     "now": 6.1e-08
+    },
+    "gateThresholdVoltage": {
+     "was": -2.0,
+     "now": {
+      "minimum": -2.0,
+      "maximum": -4.0
+     }
+    }
+   },
+   "evidence": "Vishay docs/91079"
+  }
+ ],
+ "quarantined": [
+  {
+   "reference": "SQJ500EP",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 48.0,
+     "now": 20
+    },
+    "continuousDrainCurrent": {
+     "was": 20.0,
+     "now": 8
+    },
+    "powerDissipation": {
+     "was": 0.015,
+     "now": 48
+    }
+   },
+   "evidence": "Vishay docs/67517/sqj500ep.pdf: N-channel of the N- and P-pair, T_C = 25 C: V_GS +-20 V, I_D 8 A, P_D 48 W = the stored gate figure; pinned by r_DS(on) 0.014 at +-10 V"
+  },
+  {
+   "reference": "SQJ748ELP",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 85.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (85 W); row tied by r_DS(on) 0.0073"
+  },
+  {
+   "reference": "SQJQ143EL",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 283.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (283 W); row tied by r_DS(on) 0.004"
+  },
+  {
+   "reference": "SQJQ161EL",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 348.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (348 W); row tied by r_DS(on) 0.0035"
+  },
+  {
+   "reference": "SQJQ162ER",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 93.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (93 W); row tied by r_DS(on) 0.00164"
+  },
+  {
+   "reference": "SQM120P10-10m1L",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 375.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (375 W); row tied by r_DS(on) 0.0101"
+  },
+  {
+   "reference": "SQRS518EP",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 57.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (57 W); row tied by r_DS(on) 0.0074"
+  },
+  {
+   "reference": "SQS186ENW",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 79.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (79 W); row tied by r_DS(on) 0.0115"
+  },
+  {
+   "reference": "IRFBE30S, SiHFBE30S, IRFBE30L, SiHFBE30L",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 125.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (125 W); row tied by r_DS(on) 3.0"
+  },
+  {
+   "reference": "IRF620S, SiHF620S",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 50.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (50 W); row tied by r_DS(on) 0.8"
+  },
+  {
+   "reference": "IRFR430A, IRFU430A, SiHFR430A, SiHFU430A",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 110.0,
+     "now": 30
+    }
+   },
+   "evidence": "stored figure is the row's P_D (110 W); row tied by r_DS(on) 1.7"
+  },
+  {
+   "reference": "IRFBC30AS, SiHFBC30AS, IRFBC30AL, SiHFBC30AL",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 74.0,
+     "now": 30
+    }
+   },
+   "evidence": "stored figure is the row's P_D (74 W); row tied by r_DS(on) 2.2"
+  },
+  {
+   "reference": "IRFR9310, IRFU9310, SiHFR9310, SiHFU9310",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 50.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (50 W); row tied by r_DS(on) 7.0"
+  },
+  {
+   "reference": "IRF510S, SiHF510S",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 43.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (43 W); row tied by r_DS(on) 0.54"
+  },
+  {
+   "reference": "IRF9640S, SiHF9640S, IRF9640L, SiHF9640L",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 125.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (125 W); row tied by r_DS(on) 0.5"
+  },
+  {
+   "reference": "IRF9Z34S, SiHF9Z34S",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 88.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (88 W); row tied by r_DS(on) 0.14"
+  },
+  {
+   "reference": "SiHP135N65S",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 255.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (255 W); row tied by r_DS(on) 0.139"
+  },
+  {
+   "reference": "SiHH120N60E-FE3",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 156.0,
+     "now": 30
+    }
+   },
+   "evidence": "stored figure is the row's P_D (156 W); row tied by r_DS(on) 0.12"
+  },
+  {
+   "reference": "IRFZ14S, SiHFZ14S, SiHFZ14L",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 43.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (43 W); row tied by r_DS(on) 0.2"
+  },
+  {
+   "reference": "IRF9620S, SiHF9620S",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 40.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (40 W); row tied by r_DS(on) 1.5"
+  },
+  {
+   "reference": "IRF640S, SiHF640S, SiHF640L",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 130.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (130 W); row tied by r_DS(on) 0.18"
+  },
+  {
+   "reference": "IRFR9120, IRFU9120, SiHFR9120, SiHFU9120",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 42.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (42 W); row tied by r_DS(on) 0.6"
+  },
+  {
+   "reference": "IRF9520S, SiHF9520S",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 60.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (60 W); row tied by r_DS(on) 0.6"
+  },
+  {
+   "reference": "IRFR120, IRFU120, SiHFR120, SiHFU120",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 42.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (42 W); row tied by r_DS(on) 0.27"
+  },
+  {
+   "reference": "IRLZ44S, SiHLZ44S",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 150.0,
+     "now": 10
+    }
+   },
+   "evidence": "Vishay docs/91329/sihlz44s.pdf: V_GS +-10 V; V_DS 60, P_D 150 W = the stored figure"
+  },
+  {
+   "reference": "IRF720S, SiHF720S, IRF720L, SiHF720L",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 50.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (50 W); row tied by r_DS(on) 1.8"
+  },
+  {
+   "reference": "IRFR1N60A, IRFU1N60A, SiHFR1N60A, SiHFU1N60A",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 36.0,
+     "now": 30
+    }
+   },
+   "evidence": "stored figure is the row's P_D (36 W); row tied by r_DS(on) 7.0"
+  },
+  {
+   "reference": "IRF9Z20, SiHF9Z20",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 40.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (40 W); row tied by r_DS(on) 0.28"
+  },
+  {
+   "reference": "IRF644S, SiHF644S",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 125.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (125 W); row tied by r_DS(on) 0.28"
+  },
+  {
+   "reference": "IRF840LCS, IRF840LCL, SiHF840LCS,  SiHF840LCL",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 125.0,
+     "now": 30
+    }
+   },
+   "evidence": "stored figure is the row's P_D (125 W); row tied by r_DS(on) 0.85"
+  },
+  {
+   "reference": "IRFR420, IRFU420, SiHFR420, SiHFU420",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 42.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (42 W); row tied by r_DS(on) 3.0"
+  },
+  {
+   "reference": "IRF840AS, SiHF840AS, IRF840AL, SiHF840AL",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 125.0,
+     "now": 30
+    }
+   },
+   "evidence": "stored figure is the row's P_D (125 W); row tied by r_DS(on) 0.85"
+  },
+  {
+   "reference": "IRFBC40S, SiHFBC40S, IRFBC40L, SiHFBC40L",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 130.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (130 W); row tied by r_DS(on) 1.2"
+  },
+  {
+   "reference": "IRFR220, IRFU220, SiHFR220, SiHFU220",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 42.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (42 W); row tied by r_DS(on) 0.8"
+  },
+  {
+   "reference": "IRF820AS, SiHF820AS, IRF820AL, SiHF820AL",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 50.0,
+     "now": 30
+    }
+   },
+   "evidence": "stored figure is the row's P_D (50 W); row tied by r_DS(on) 3.0"
+  },
+  {
+   "reference": "IRFBF20S, SiHFBF20S, IRFBF20L, SiHFBF20L",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 54.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (54 W); row tied by r_DS(on) 8.0"
+  },
+  {
+   "reference": "IRFR9020, IRFU9020, SiHFR9020, SiHFU9020",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 42.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (42 W); row tied by r_DS(on) 0.28"
+  },
+  {
+   "reference": "IRF730AS, SiHF730AS, IRF730AL, SiHF730AL",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 74.0,
+     "now": 30
+    }
+   },
+   "evidence": "stored figure is the row's P_D (74 W); row tied by r_DS(on) 1.0"
+  },
+  {
+   "reference": "IRFR9220, IRFU9220, SiHFR9220, SiHFU9220",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 42.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (42 W); row tied by r_DS(on) 1.5"
+  },
+  {
+   "reference": "IRFS9N60A, SiHFS9N60A",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 170.0,
+     "now": 30
+    }
+   },
+   "evidence": "stored figure is the row's P_D (170 W); row tied by r_DS(on) 0.75"
+  },
+  {
+   "reference": "IRFR9214, IRFU9214, SiHFR9214, SiHFU9214",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 50.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (50 W); row tied by r_DS(on) 3.0"
+  },
+  {
+   "reference": "IRFBC40AS, SiHFBC40AS",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 125.0,
+     "now": 30
+    }
+   },
+   "evidence": "stored figure is the row's P_D (125 W); row tied by r_DS(on) 1.2"
+  },
+  {
+   "reference": "IRF540S, SiHF540S",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 150.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (150 W); row tied by r_DS(on) 0.077"
+  },
+  {
+   "reference": "IRF9Z14S, SiHF9Z14S, IRF9Z14L, SiHF9Z14L",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 43.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (43 W); row tied by r_DS(on) 0.5"
+  },
+  {
+   "reference": "SiHH240N60E-FE3",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 89.0,
+     "now": 30
+    }
+   },
+   "evidence": "stored figure is the row's P_D (89 W); row tied by r_DS(on) 0.24"
+  },
+  {
+   "reference": "SiHH180N60E-FE3",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 114.0,
+     "now": 30
+    }
+   },
+   "evidence": "stored figure is the row's P_D (114 W); row tied by r_DS(on) 0.18"
+  },
+  {
+   "reference": "SiHB135N65S",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 255.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (255 W); row tied by r_DS(on) 0.139"
+  },
+  {
+   "reference": "IRFR420A, IRFU420A, SiHFR420A, SiHFU420A",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 83.0,
+     "now": 30
+    }
+   },
+   "evidence": "stored figure is the row's P_D (83 W); row tied by r_DS(on) 3.0"
+  },
+  {
+   "reference": "IRFS11N50A, SiHFS11N50A",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 170.0,
+     "now": 30
+    }
+   },
+   "evidence": "stored figure is the row's P_D (170 W); row tied by r_DS(on) 0.52"
+  },
+  {
+   "reference": "SiHH150N60E-FE3",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 156.0,
+     "now": 30
+    }
+   },
+   "evidence": "stored figure is the row's P_D (156 W); row tied by r_DS(on) 0.158"
+  },
+  {
+   "reference": "IRFR024, IRFU024, SiHFR024, SiHFU024",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 42.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (42 W); row tied by r_DS(on) 0.1"
+  },
+  {
+   "reference": "IRF830S, SiHF830S, IRF830L, SiHF830L",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 74.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (74 W); row tied by r_DS(on) 1.5"
+  },
+  {
+   "reference": "IRF9510S, SiHF9510S",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 43.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (43 W); row tied by r_DS(on) 1.2"
+  },
+  {
+   "reference": "IRL640S, SiHL640S",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 125.0,
+     "now": 10
+    }
+   },
+   "evidence": "Vishay docs/91306/sihl640s.pdf: V_GS +-10 V; V_DS 200, P_D 125 W = the stored figure"
+  },
+  {
+   "reference": "IRF9Z24S, SiHF9Z24S",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 60.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (60 W); row tied by r_DS(on) 0.28"
+  },
+  {
+   "reference": "IRFR9024, IRFU9024, SiHFR9024, SiHFU9024",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 42.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (42 W); row tied by r_DS(on) 0.28"
+  },
+  {
+   "reference": "IRF610S, SiHF610S, IRF610L, SiHF610L",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 36.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (36 W); row tied by r_DS(on) 1.5"
+  },
+  {
+   "reference": "IRF634S, SiHF634S",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 74.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (74 W); row tied by r_DS(on) 0.45"
+  },
+  {
+   "reference": "IRFR020, IRFU020, SiHFR020, SiHFU020",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 42.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (42 W); row tied by r_DS(on) 0.1"
+  },
+  {
+   "reference": "IRFR320, IRFU320, SiHFR320, SiHFU320",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 42.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (42 W); row tied by r_DS(on) 1.8"
+  },
+  {
+   "reference": "SiHD250N60EF",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 78.0,
+     "now": 30
+    }
+   },
+   "evidence": "stored figure is the row's P_D (78 W); row tied by r_DS(on) 0.269"
+  },
+  {
+   "reference": "IRFRC20, IRFUC20, SiHFRC20, SiHFUC20",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 42.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (42 W); row tied by r_DS(on) 4.4"
+  },
+  {
+   "reference": "IRF740S, SiHF740S",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 125.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (125 W); row tied by r_DS(on) 0.55"
+  },
+  {
+   "reference": "IRF730S, SiHF730S",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 74.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (74 W); row tied by r_DS(on) 1.0"
+  },
+  {
+   "reference": "IRF630S, SiHF630S",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 74.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (74 W); row tied by r_DS(on) 0.4"
+  },
+  {
+   "reference": "IRF530S, SiHF530S",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 88.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (88 W); row tied by r_DS(on) 0.16"
+  },
+  {
+   "reference": "SiHK135N65S",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 278.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (278 W); row tied by r_DS(on) 0.139"
+  },
+  {
+   "reference": "SiHH186N60EF-FE3",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 114.0,
+     "now": 30
+    }
+   },
+   "evidence": "stored figure is the row's P_D (114 W); row tied by r_DS(on) 0.193"
+  },
+  {
+   "reference": "IRL510S, SiHL510S",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 43.0,
+     "now": 10
+    }
+   },
+   "evidence": "Vishay docs/90380/sihf510s.pdf: V_GS +-10 V; V_DS 100, P_D 43 W = the stored figure (the doc is filed under sihf510s but is the IRL510S sheet)"
+  },
+  {
+   "reference": "IRF9630S, SiHF9630S",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 74.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (74 W); row tied by r_DS(on) 0.8"
+  },
+  {
+   "reference": "IRFSL9N60A, SiHFSL9N60A",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 170.0,
+     "now": 30
+    }
+   },
+   "evidence": "stored figure is the row's P_D (170 W); row tied by r_DS(on) 0.75"
+  },
+  {
+   "reference": "IRF9530S, SiHF9530S",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 88.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (88 W); row tied by r_DS(on) 0.3"
+  },
+  {
+   "reference": "IRFP048R, SiHFP048R",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 190.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (190 W); row tied by r_DS(on) 0.018"
+  },
+  {
+   "reference": "IRF840S, SiHF840S",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 125.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (125 W); row tied by r_DS(on) 0.85"
+  },
+  {
+   "reference": "IRFZ24S, SiHFZ24S",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 60.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (60 W); row tied by r_DS(on) 0.1"
+  },
+  {
+   "reference": "IRF710S, SiHF710S",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 36.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (36 W); row tied by r_DS(on) 3.6"
+  },
+  {
+   "reference": "IRF840L, SiHF840L",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 125.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (125 W); row tied by r_DS(on) 0.85"
+  },
+  {
+   "reference": "IRFZ48RS, SiHFZ48RS",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 190.0,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (190 W); row tied by r_DS(on) 0.018"
+  },
+  {
+   "reference": "IRFSL11N50A, SiHFSL11N50A",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 190.0,
+     "now": 30
+    }
+   },
+   "evidence": "stored figure is the row's P_D (190 W); row tied by r_DS(on) 0.55"
+  },
+  {
+   "reference": "SiR4407DP",
+   "changed": {
+    "gateSourceVoltageMax": {
+     "was": 83.3,
+     "now": 20
+    }
+   },
+   "evidence": "stored figure is the row's P_D (83.3 W); row tied by r_DS(on) 0.0045"
+  }
+ ],
+ "unresolved": []
+}
