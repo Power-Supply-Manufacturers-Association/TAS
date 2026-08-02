@@ -157,7 +157,11 @@ def _build_record(row: tuple) -> dict:
         thermal = {"junctionTemperatureMax": float(tj_max)}
 
     # --- mechanical ---
-    mechanical = {"case": str(package).strip(), "assemblyType": "tht"}
+    # The Bourns IGBT export carries a Package column but no mount column, and
+    # hardcoding "tht" here filed every surface-mount package (TO-263, TO-252)
+    # as through-hole (ABT #507). Omit what the source does not state rather than
+    # guessing it.
+    mechanical = {"case": str(package).strip()}
 
     # --- datasheetInfo ---
     datasheet_info: dict = {"part": part_block, "electrical": electrical}

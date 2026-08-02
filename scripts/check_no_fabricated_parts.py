@@ -69,6 +69,12 @@ KNOWN_TEMPLATES = [
     (re.compile(r"^(Vis|Yag|Bou|Pan|KOA)(wir|car|mel|met|thi|MCS|PTF)\d+R\d{4}\d{4}$"), "phase3/5 resistor generator"),
     (re.compile(r"^(GRM|CL|FK)\d{4}\d{4}\d{3}V$"), "phase2 MLCC generator (fake GRM/CL/FK numbering)"),
     (re.compile(r"^MLCC\d{6}$"), "phase2 MLCC generator (generic fallback)"),
+    # ABT #507 audit (2026-08-02): the "wave 2" SiC-diode ladder generator. Real
+    # Infineon SiC Schottky numbering carries the voltage class in the token
+    # (IDH06S60C, IDH03G65C6, IDH05G120C5 -> 60/65/120); this one minted
+    # 10C/11C/12C/20C/21C/22C and swept every integer amp 2..30 A across three
+    # package variants (DPAK/TO-252/SO-8) of a single die.
+    (re.compile(r"^IDH\d{2}S[GO]?(?:1[0-2]|2[0-2])C$"), "wave2 SiC diode ladder generator"),
 ]
 
 # (1b) PROVENANCE CITING A URL THE VENDOR DOES NOT USE. A fabricator can mint a

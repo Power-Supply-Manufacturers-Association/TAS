@@ -37,7 +37,9 @@ _CASE_NORM = {
     "smc (do-214ab)":     "SMC",
 }
 
-_THR_HOLE_PACKAGES = {"to-269aa", "dfn3538", "dfs-4", "mbls"}
+# DFN3538 was in here (ABT #507): a DFN is a leadless surface-mount outline, so
+# every Bourns DFN3538 diode was imported as through-hole.
+_THR_HOLE_PACKAGES = {"to-269aa", "dfs-4", "mbls"}
 
 
 def _build_registry() -> Registry:
