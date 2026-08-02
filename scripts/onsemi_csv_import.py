@@ -65,6 +65,15 @@ class Row:
         return clean(s.r[best]) if best is not None and best<len(s.r) else None
     def n(s,*frags,**k):
         v=s.get(*frags,**k); return num(v) if v is not None else None
+    def exact(s,*names):
+        """The named column and no other. get() matches by SUBSTRING, so asking it
+        for "Type" also answers with "Package Type" or "MSL Type" -- fine for a
+        numeric field nobody else is named like, fatal for the column that decides
+        what the device IS (ABT #523)."""
+        for nm in names:
+            i=s.h.get(norm(nm))
+            if i is not None and i<len(s.r): return clean(s.r[i])
+        return None
 
 def classify(cols):
     c=[norm(x) for x in cols]; has=lambda *f:any(any(x in col for col in c) for x in f)
@@ -77,10 +86,23 @@ def classify(cols):
     if has("vrrm","vr min","vr max","vfm","io(rec)","if(ave)") or any(col.startswith("vf") for col in c): return "rect"
     return "?"
 
+# The columns that NAME a MOSFET's technology, by exact header. "Family" is NOT one of
+# them: onsemi's EliteSiC export files it as a die generation (M1/M2/M3S/M3P), exactly as
+# its SiC-diode export files D1/D2/D3 -- a generation code says nothing about the material.
+MOSFET_TECH_COLS=("Silicon Family","Technology","Device Technology")
+
 def mosfet(r,pn):
-    pol=norm(r.get("Channel Polarity","polarity")); fam=norm(r.get("Silicon Family","family","type"))
-    tech="SiC" if "sic" in fam else ("GaN" if "gan" in fam else "Si")
-    part={"partNumber":pn,"subType":"pChannel" if "p-channel" in pol else "nChannel","technology":tech}
+    """The technology comes from a column that NAMES it, by exact header (ABT #523).
+    The diode half of this same read was the ticket: get() matches by SUBSTRING, so the
+    lookup for "type" answered with "Package Type" and the device's technology was decided
+    by its package name. onsemi's SiC-MOSFET exports (UF3C/UG3SC/UG4SC/NTBG, 227 rows)
+    carry no technology column at all, so all of them would be asserted "Si". No column
+    naming it means no technology and the row goes to the librarian -- part.technology is
+    SAS-required, so a guess is the only way such a row could ever reach the catalogue."""
+    pol=norm(r.get("Channel Polarity","polarity")); fam=norm(r.exact(*MOSFET_TECH_COLS))
+    tech=("SiC" if "sic" in fam else "GaN" if "gan" in fam else "Si") if fam else None
+    part={"partNumber":pn,"subType":"pChannel" if "p-channel" in pol else "nChannel"}
+    if tech: part["technology"]=tech
     if clean(r.get("Package Type","package")): part["case"]=clean(r.get("Package Type","package"))
     el={}
     vds=r.n("v(br)dss","bvdss","blocking voltage","drain source voltage","vds(max)","vds max")
@@ -95,6 +117,7 @@ def mosfet(r,pn):
     if qg is not None: el["totalGateCharge"]=qg
     if (v:=r.n("pd max","ptot")) is not None: el["powerDissipation"]=v
     miss=[k for k in("drainSourceVoltage","onResistance","continuousDrainCurrent","gateThresholdVoltage","totalGateCharge") if k not in el]
+    if tech is None: miss=miss+["part.technology"]
     return ("mosfet",part,el,miss)
 
 def igbt(r,pn):
@@ -128,16 +151,39 @@ def bjt(r,pn):
     miss=[k for k in("collectorEmitterVoltage","collectorCurrent") if k not in el]
     return ("bjt",part,el,miss)
 
+# The words a diode export uses to state what the device IS, most specific first,
+# with the (subType, technology) each one means. Nothing outside this vocabulary
+# classifies a row -- a package name, a die generation ("D2") or a package
+# configuration ("Single", "Common Cathode", "Bridge") says nothing about the
+# technology and must not be read as one.
+DIODE_TECH=(("sic schottky","sicSchottky","SiC"),("schottky","schottky","Si"),
+            ("sbd","schottky","Si"),                     # onsemi writes RF Schottkys "RF-SBD"
+            ("ultrafast","ultrafast","Si"),("ultra fast","ultrafast","Si"),
+            ("ultrasoft","ultrafast","Si"),("fast recovery","fastRecovery","Si"),
+            ("standard recovery","rectifier","Si"),("rectifier","rectifier","Si"))
+
 def diode(r,pn,kind):
-    cfg=norm(r.get("Type","configuration","family"))
-    if kind=="zener": st="zener"
-    elif kind=="esd": st="esd"
-    elif "sic" in cfg and "schottky" in cfg: st="sicSchottky"
-    elif "schottky" in cfg: st="schottky"
-    elif "ultrafast" in cfg or "ultra fast" in cfg: st="ultrafast"
-    elif "fast" in cfg: st="fastRecovery"
-    else: st="rectifier"
-    part={"partNumber":pn,"subType":st,"technology":"SiC" if "sic" in cfg else "Si"}
+    """subType/technology come from a column that NAMES the device, and nothing else.
+    ABT #523: this read `r.get("Type","configuration","family")`, and get() matches by
+    SUBSTRING -- onsemi's SiC-diode export has no Type column (its Family is a die
+    generation D1/D2/D3, its Configuration is Single/Common Cathode), so the lookup
+    answered with "Package Type" and the `else` branch asserted technology "Si",
+    subType "rectifier" for all 117 rows of the silicon-carbide portfolio. Kelvin's
+    DiodeRow.technology IS part.subType, so a 1200 V SiC Schottky reached the
+    cross-reference ranker indistinguishable from a mains rectifier and no
+    technology-change note could ever fire. An export that does not state the
+    technology no longer gets one guessed: the row carries neither field, and `miss`
+    routes it to the librarian."""
+    cfg=norm(r.exact("Type","Device Type","Diode Type","Technology"))
+    hit=next((h for h in DIODE_TECH if h[0] in cfg),None)
+    st,tech=(hit[1],hit[2]) if hit else (None,None)
+    # zener/esd are pinned by the export's own columns (classify()), and a zener or
+    # clamp junction is silicon by construction -- there is no SiC one to confuse it with.
+    if kind=="zener": st,tech="zener","Si"
+    elif kind=="esd": st,tech="esd","Si"
+    part={"partNumber":pn}
+    if st: part["subType"]=st
+    if tech: part["technology"]=tech
     if clean(r.get("Package Type")): part["case"]=clean(r.get("Package Type"))
     el={}
     if (v:=r.n("vrrm","vr min","vr max","reverse voltage")) is not None: el["reverseVoltage"]=v
@@ -159,6 +205,9 @@ def diode(r,pn,kind):
     elif st=="esd":
         miss=([ "standoffVoltage"] if "standoffVoltage" not in el else [])+(["pulseRating"] if not any(k in el for k in("peakPulseCurrent","peakPulsePower","esdVoltageContact")) else [])
     else: miss=[k for k in("reverseVoltage","forwardVoltage","forwardCurrent") if k not in el]
+    # part.technology is SAS-required and is never invented; without it the row is
+    # incomplete, not silicon.
+    if tech is None: miss=miss+["part.technology"]
     return ("diode",part,el,miss)
 
 def load_have(disc):

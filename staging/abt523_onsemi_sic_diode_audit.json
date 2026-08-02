@@ -1,0 +1,1215 @@
+{
+ "ticket": "ABT #523",
+ "relabelled": [
+  {
+   "reference": "FFSB0665A",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSB0665B",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSB0665B-F085",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSB0865A",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSB0865B",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSB10120A",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSB10120A-F085",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSB1065A",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSB1065B",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSB20120A",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSB20120A-F085",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSB2065B",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSB2065B-F085",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSB2065BDN-F085",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSB3065B",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSB3065B-F085",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSD0665A",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSD0665B-F085",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSD08120A",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSD10120A",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSD1065B-F085",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSH10120A-F085",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSH1065B-F085",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSH1065B-F155",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSH1265BDN-F085",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSH15120ADN-F155",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSH1665ADN-F155",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSH20120A-F085",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSH20120ADN-F085",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSH20120ADN-F155",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSH2065B-F085",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSH2065B-F155",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSH2065BDN",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSH2065BDN-F085",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSH30120A-F155",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSH30120ADN-F155",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSH3065B",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSH3065B-F085",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSH40120ADN-F085",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSH40120ADN-F155",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSH4065ADN-F155",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSH4065BDN",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSH4065BDN-F085",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSH50120A",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSH5065A",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSH5065B-F085",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSH5065B-F155",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSM0665A",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSM0665B",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSM1065B",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSP0665B",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSP08120A",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSP10120A",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSP1065B",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSP1065B-F085",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSP15120A",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSP1665A",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSP2065B",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSP2065BDN-F085",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSP3065B",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "FFSP3065B-F085",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "NDC25170A",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "NDSH10120C-F155",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "NDSH10170A",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "NDSH20120C",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "NDSH20120C-F155",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "NDSH20120CDN",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "NDSH25170A",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "NDSH30120C-F155",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "NDSH30120CDN",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "NDSH40120C-F155",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "NDSH40120CDN",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "NDSH50120C",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "NDSH50120C-F155",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "NVDSH20120C",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "NVDSH50120C",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "PCFFS08120AF",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "PCFFS15120AF",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "PCFFS20120AF",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "PCFFS30120AF",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "PCFFS40120AF",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "PCFFS50120AF",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "UJ3D06520KSD",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "UJ3D06560KSD",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "UJ3D1210K2",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "UJ3D1210KS",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "UJ3D1210KSD",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "UJ3D1220K2",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "UJ3D1220KSD",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "UJ3D1250K",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "UJ3D1250K2",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  },
+  {
+   "reference": "UJ3D1725K2",
+   "changed": {
+    "technology": {
+     "was": "Si",
+     "now": "SiC"
+    },
+    "subType": {
+     "was": "rectifier",
+     "now": "sicSchottky"
+    }
+   }
+  }
+ ],
+ "quarantined": [
+  {
+   "reference": "FFSD1065C",
+   "why": "record is 65 V / 10 A, V_F 0.75 V in SMB; onsemi's FFSD family is EliteSiC SiC Schottky at 650 V and 1200 V only and publishes FFSD1065A and FFSD1065B, no -C; the cited onsemi.com/pub/Collateral/FFSD1065C-D.PDF returns 403"
+  },
+  {
+   "reference": "FFSD2045C",
+   "why": "record is 45 V / 20 A, V_F 0.65 V in SMB; no such onsemi part number, datasheetUrl is empty, and 20 A is several times what an SMB (DO-214AA) body carries"
+  },
+  {
+   "reference": "FFSD4045S",
+   "why": "record is 45 V / 40 A, V_F 0.72 V in DO-214AA; no such onsemi part number, datasheetUrl is empty, and 40 A is an order above what a DO-214AA (SMB) body carries"
+  }
+ ]
+}
