@@ -567,6 +567,55 @@ TEST_CASE("AntiSynthesis: PackageEnvelopeImpossible", "[antisynthesis]") {
     CHECK(!has_code(V.validate(partial), "GEN_PACKAGE_ENVELOPE"));
 }
 
+// ABT #506: TE's parametric brand column repeats the house name for every part that
+// belongs to no sub-brand, and the importer copied it into series/family on 12,914
+// connectors. A manufacturer name in the series slot is a silent ingestion fallback
+// where the honest value is null.
+TEST_CASE("AntiSynthesis: SeriesIsManufacturerSuspicious", "[antisynthesis]") {
+    // series/family: nullptr leaves the key absent, so the repaired shape can be
+    // tested as well as the reported one.
+    auto conn = [](const char* series, const char* family, const char* name) {
+        json p = json::parse(R"json({"connector":{"manufacturerInfo":{
+          "name":"X","reference":"1-2","datasheetInfo":{
+          "provenance":[{"source":"manufacturerParametric"}],
+          "part":{"partNumber":"1-2"},"electrical":{"ratedCurrentPerContact":25},
+          "mechanical":{"positions":9,"pitch":0.00953},
+          "familyDetails":{"family":"terminalBlock"}}}}})json");
+        json& mi = p["connector"]["manufacturerInfo"];
+        mi["name"] = name;
+        if (series != nullptr) mi["datasheetInfo"]["part"]["series"] = series;
+        if (family != nullptr) mi["family"] = family;
+        return p;
+    };
+    // The reported shape: both slots carrying the manufacturer's own name.
+    CHECK(has(V.validate(conn("TE Connectivity", "TE Connectivity", "TE Connectivity")),
+              "GEN_SERIES_IS_MANUFACTURER", Severity::Suspicious));
+    // Either slot alone is enough, and case/spacing do not launder the copy.
+    CHECK(has(V.validate(conn("TE Connectivity", nullptr, "TE Connectivity")),
+              "GEN_SERIES_IS_MANUFACTURER", Severity::Suspicious));
+    CHECK(has(V.validate(conn(nullptr, "TE Connectivity", "TE Connectivity")),
+              "GEN_SERIES_IS_MANUFACTURER", Severity::Suspicious));
+    CHECK(has(V.validate(conn("te connectivity", nullptr, "TE Connectivity")),
+              "GEN_SERIES_IS_MANUFACTURER", Severity::Suspicious));
+    CHECK(has(V.validate(conn("Würth Elektronik ", nullptr, "Würth Elektronik")),
+              "GEN_SERIES_IS_MANUFACTURER", Severity::Suspicious));
+    // A real series stays silent, including TE's own acquired sub-brands — the
+    // criterion is equality with the record's manufacturer, not a vendor list.
+    CHECK(!has_code(V.validate(conn("Buchanan", "Buchanan", "TE Connectivity")),
+                    "GEN_SERIES_IS_MANUFACTURER"));
+    CHECK(!has_code(V.validate(conn("AMP", "AMP", "TE Connectivity")),
+                    "GEN_SERIES_IS_MANUFACTURER"));
+    // A sub-brand that merely CONTAINS the house name is a series, not a copy.
+    CHECK(!has_code(V.validate(conn("Amphenol RF", nullptr, "Amphenol")),
+                    "GEN_SERIES_IS_MANUFACTURER"));
+    // The repaired shape: withdrawn, not invented — absent, and explicitly null.
+    CHECK(!has_code(V.validate(conn(nullptr, nullptr, "TE Connectivity")),
+                    "GEN_SERIES_IS_MANUFACTURER"));
+    json nulled = conn(nullptr, nullptr, "TE Connectivity");
+    nulled["connector"]["manufacturerInfo"]["datasheetInfo"]["part"]["series"] = nullptr;
+    CHECK(!has_code(V.validate(nulled), "GEN_SERIES_IS_MANUFACTURER"));
+}
+
 // ABT #524: a uA/mA leakage figure left in the amps field. 54 Infineon records
 // carried their finder's "40 uA" as 40 -- 5x an 8 A part's own forward rating, i.e.
 // 26 kW dissipated while blocking -- and 129 Bourns records carried a column

@@ -249,6 +249,33 @@ void check_package_envelope(const json& ds, const Ctx& ctx, std::vector<Finding>
     }
 }
 
+// GEN_SERIES_IS_MANUFACTURER: the series/family slot holding a verbatim copy of the
+// record's OWN manufacturer name. A vendor parametric feed reports a sub-brand column
+// (TE: AMP, Buchanan, Raychem, DEUTSCH) and, where the part belongs to no sub-brand,
+// repeats the house name in it; an importer that copies the column unconditionally
+// writes 'TE Connectivity' into series (ABT #506, 12,914 connectors). It is not a
+// series — it carries no device-class information, and series-based family matching
+// reads it as if it did. The honest value is null. SUSPICIOUS: a provenance defect,
+// not a physics impossibility. The test is equality with the record's own
+// manufacturer, not a list of vendor names, so it holds as the catalogue grows.
+void check_series_is_manufacturer(const json& ds, const Ctx& ctx, std::vector<Finding>& out) {
+    if (ctx.component_obj == nullptr) return;
+    const json* mi = at(*ctx.component_obj, "manufacturerInfo");
+    if (mi == nullptr) return;
+    const std::string name = norm_tech(at(*mi, "name"));
+    if (name.empty()) return;
+    struct Slot { const char* label; const json* value; };
+    const Slot SLOTS[] = {{"datasheetInfo.part.series", at(ds, "part", "series")},
+                          {"manufacturerInfo.family", at(*mi, "family")}};
+    for (const auto& s : SLOTS) {
+        if (norm_tech(s.value) != name) continue;
+        emit(out, ctx, "GEN_SERIES_IS_MANUFACTURER", Severity::Suspicious, 0, 0,
+             std::string(s.label) + " is a verbatim copy of the manufacturer name '" +
+                 (*at(*mi, "name")).get<std::string>() + "' — that is not a product series");
+        return;
+    }
+}
+
 // Generic checks applicable to every family, run on the datasheetInfo object.
 void check_generic(const json& ds, const Ctx& ctx, std::vector<Finding>& out) {
     // GEN_TEMP_ORDER: a temperature min/max pair where min > max. Restricted to
@@ -282,6 +309,7 @@ void check_generic(const json& ds, const Ctx& ctx, std::vector<Finding>& out) {
     check_package_mount(ds, ctx, out);
     check_package_envelope(ds, ctx, out);
     check_family_coherence(ds, ctx, out);
+    check_series_is_manufacturer(ds, ctx, out);
 }
 
 // Resolve the datasheetInfo object and a part reference for a discriminator.
@@ -519,6 +547,7 @@ std::vector<std::string> PartValidator::check_codes() {
         "GEN_TEMP_ORDER", "GEN_PROVENANCE_MISSING", "GEN_FAMILY_MISMATCH", "GEN_MULTI_DISCRIMINATOR",
         "GEN_OVERPRECISION", "GEN_SPARSE", "GEN_COHORT_OUTLIER", "GEN_COHORT_CEILING",
         "GEN_PACKAGE_MOUNT", "GEN_PACKAGE_ENVELOPE", "GEN_FABRICATED_MPN",
+        "GEN_SERIES_IS_MANUFACTURER",
         // magnetics
         "MAG_DCR_GEOM", "MAG_DCR_PER_H", "MAG_ISAT_POWER", "MAG_SRF_L", "MAG_SRF_SANE",
         "MAG_ENERGY_DENSITY", "MAG_L_TOLERANCE", "MAG_L_MAGNITUDE", "MAG_RATED_LE_SAT",

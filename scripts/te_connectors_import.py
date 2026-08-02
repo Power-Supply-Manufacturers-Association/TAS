@@ -70,6 +70,23 @@ def map_family(r):
 
 STATUS = {"active":"production","obsolete":"obsolete","not recommended":"nrnd","end of life":"obsolete"}
 
+MANUFACTURER = "TE Connectivity"
+
+def series(r):
+    """ABT #506: TE's `brand` column is a SUB-BRAND column — AMP, Buchanan, Raychem,
+    DEUTSCH, Neohm, Holsworthy are real product lines and belong in series/family. But
+    a part that belongs to no sub-brand is filed under the house name, so 34,985 of
+    105,449 source rows carry brand 'TE Connectivity' and copying the column
+    unconditionally wrote the manufacturer's own name into the series slot on 12,914
+    catalogue records. A manufacturer name is not a series: it is identical for every
+    part TE sells, yet series-based family matching reads it as device-class evidence.
+    No series is the honest answer, so emit none. The test is equality with our own
+    manufacturer name (punctuation/case-insensitive), not a list — a sub-brand that
+    merely contains it ('AMP Connectors') is still a series."""
+    fold = lambda s: "".join(c.lower() for c in s if c.isalnum())
+    brand = (r.get("brand") or "").strip()
+    return brand if brand and fold(brand) != fold(MANUFACTURER) else None
+
 def convert(r):
     pn = (r.get("pn") or "").strip()
     if not pn: return None, ["partNumber"]
@@ -81,7 +98,8 @@ def convert(r):
     part = {"partNumber": pn}
     if pol: part["matingPolarity"] = pol
     if r.get("desc"): part["description"] = r["desc"][:1000]
-    if r.get("brand"): part["series"] = r["brand"]
+    brand = series(r)
+    if brand: part["series"] = brand
 
     electrical = {}
     if cur is not None: electrical["ratedCurrentPerContact"] = cur
@@ -101,10 +119,10 @@ def convert(r):
         m = re.findall(r"[-+]?\d+", t)
         if len(m) >= 2: di["environmental"] = {"operatingTemperature": {"minimum": float(m[0]), "maximum": float(m[1])}}
 
-    mi = {"name": "TE Connectivity", "reference": pn,
+    mi = {"name": MANUFACTURER, "reference": pn,
           "status": STATUS.get((r.get("status") or "active").lower(), "production"),
           "datasheetInfo": di}
-    if r.get("brand"): mi["family"] = r["brand"]
+    if brand: mi["family"] = brand
     if r.get("desc"): mi["description"] = r["desc"][:1000]
     ds = r.get("datasheet")
     if ds and str(ds).startswith("http"): mi["datasheetUrl"] = ds
