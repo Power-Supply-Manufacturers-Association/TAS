@@ -29,14 +29,24 @@
 //
 // KNOWN EXCEPTION, not a defect: the outermost pin of a long array is unshielded on one
 // side, so its direct coupling capacitance to the aggressor survives while its node
-// loading drops. On conn-pinfield-p2000-50x1-l8000-hi and -p2540-40x1-l8540-hi that
-// lifts the LAST pin ~0.4-4% above its neighbour and trips C2. Verified as the finite-
-// array edge effect: on p2540-40x1-l8540-hi the mutual inductance stays monotone to the
-// end (77.6 -> 75.5 -> 73.6 pH for pins 38/39/40) while C_1i jumps 1.29 -> 2.14 fF and
-// the node total drops 1026 -> 878 fF. Expect exactly these two.
+// loading drops. That lifts the last pin (occasionally the last two or three) above its
+// neighbour and trips C2. Verified as the finite-array edge effect rather than assumed:
+// on p2540-40x1-l8540-hi the mutual inductance stays monotone to the end (77.6 -> 75.5
+// -> 73.6 pH for pins 38/39/40) while C_1i jumps 1.29 -> 2.14 fF and the node total
+// drops 1026 -> 878 fF.
 //
-// Result on the 2026-08-01 generation: 1636 bricks, 1636 converted, 1636 solved,
-// 1634 pass all four checks, 2 are the edge-effect exception above.
+// Result on the 2026-08-02 generation (7,554 bricks, the provenance-carrying set):
+//   7554 converted, 7554 SOLVED (zero ngspice failures), 7230 pass all four checks.
+//   All 324 violations are C2, all on the 'hi' interval endpoint, and all at the END of
+//   their array — 311 at the last pin, 9 at the second-to-last, 4 at the third-to-last,
+//   ZERO mid-array. In all 324 the coupling capacitance to the aggressor RISES at the
+//   violating pin, which is the edge-effect signature; there are no counterexamples.
+//
+// So the pass criterion for a future run is NOT "324 failures". It is: no ERROR lines at
+// all, every violation is C2, and every violation sits at the end of its array with a
+// rising C_1i. A violation in the MIDDLE of an array is a real regression.
+//
+// (Earlier 1,636-brick generation, for reference: 1636 solved, 1634 passed, 2 edge cases.)
 //
 // build:
 //   g++ -std=c++20 -O2 -DENABLE_NGSPICE \
