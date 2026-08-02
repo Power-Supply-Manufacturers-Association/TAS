@@ -87,6 +87,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--rowpitch")
     ap.add_argument("--derating")
+    ap.add_argument("--insulation")
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
 
@@ -101,6 +102,9 @@ def main():
     derating = json.load(open(args.derating)) if args.derating else {}
     if derating:
         print(f"derating staged: {len(derating)} parts")
+    insulation = json.load(open(args.insulation)) if args.insulation else {}
+    if insulation:
+        print(f"insulation staged: {len(insulation)} parts")
 
     validator = build_validator()
     stats = Counter()
@@ -167,6 +171,20 @@ def main():
                 stats["derating"] += 1
                 modified = True
 
+            # --- electrical.insulationPaths (only when absent; WAGO #468) ---
+            if pn and pn in insulation and "insulationPaths" not in (di.get("electrical") or {}):
+                e = insulation[pn]
+                di.setdefault("electrical", {})["insulationPaths"] = e["insulationPaths"]
+                di.setdefault("provenance", []).append({
+                    "source": "manufacturerParametric",
+                    "sourceName": "WAGO product classifications API (wago.com), IEC 60664-1 chain (#468)",
+                    "sourceUrl": e.get("sourceUrl"),
+                    "retrievedDate": TODAY,
+                    "fields": ["electrical.insulationPaths"],
+                })
+                stats["insulation"] += 1
+                modified = True
+
             if not modified:
                 out.write(raw)
                 continue
@@ -189,7 +207,7 @@ def main():
         tmp.unlink()
         sys.exit(f"ABORT: line count {n_out} != {stats['lines'] + stats['tail']}")
     print(f"lines={stats['lines']} rowpitch={stats['rowpitch']} derating={stats['derating']} "
-          f"modified={stats['modified']} tail={stats['tail']}")
+          f"insulation={stats['insulation']} modified={stats['modified']} tail={stats['tail']}")
     if args.dry_run:
         tmp.unlink()
         print("dry-run: no swap")
