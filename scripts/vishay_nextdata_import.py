@@ -64,6 +64,9 @@ def build_diode(r,pn):
     return ("diode",part,el,miss)
 BUILD={"mosfet":build_mosfet,"diode":build_diode}
 def main():
+    sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)))
+    from blade_gate import BladeGate   # raises if unbuilt: a gate that cannot run is not a gate
+    gates={d:BladeGate(("semiconductor",d)) for d in BUILD}
     haves={d:load_have(d) for d in("mosfet","diode","igbt","bjt")}; seen=set(); buckets={}
     for path in sys.argv[1:]:
         d=json.load(open(path)); cm=d["colmap"]; rows=d["rows"]
@@ -78,11 +81,22 @@ def main():
             mi={"name":"Vishay","reference":pn,"status":"production","datasheetInfo":{"part":part,"electrical":el,"provenance":PROV}}
             fn=row.get("FILE_NAME")
             if fn: mi["datasheetUrl"]=f"https://www.vishay.com/doc?{fn}"
-            buckets.setdefault(f"{dd}.{'incomplete' if miss else 'main'}",[]).append(({"semiconductor":{dd:{"manufacturerInfo":mi}}},miss))
+            rec={"semiconductor":{dd:{"manufacturerInfo":mi}}}
+            # ABT #494: a label-based mapper is one mislabelled column away from writing
+            # ohms into powerDissipation. Blade Runner is what catches that; nothing else
+            # stood between this converter and data/*.ndjson.
+            tag=f"{dd}.{'incomplete' if miss else 'main'}"
+            if not miss:
+                ok,why=gates[dd].check(rec["semiconductor"][dd])
+                if not ok:
+                    rec=dict(rec); rec["quarantineReason"]=f"blade runner IMPOSSIBLE: {why}"
+                    tag=f"{dd}.blocked"
+            buckets.setdefault(tag,[]).append((rec,miss))
     for tag,recs in buckets.items():
         with open(f"{OUT}/{tag}.ndjson","w") as fo:
             for rec,miss in recs:
                 if miss: rec=dict(rec); rec["quarantineReason"]=f"incomplete Vishay; missing {','.join(miss)} ({TODAY})"
                 fo.write(json.dumps(rec,ensure_ascii=False)+"\n")
     print("buckets:",{t:len(v) for t,v in sorted(buckets.items())})
+    for d,g in gates.items(): print(f"  {d}: {g.summary()}")
 if __name__=="__main__": main()

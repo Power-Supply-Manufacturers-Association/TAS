@@ -137,6 +137,15 @@ inline constexpr double MOS_VTH_GAN_LO = 0.7, MOS_VTH_GAN_HI = 2.5;
 inline constexpr double MOS_BODY_VF_LO = 0.2, MOS_BODY_VF_HI = 5.0;
 // Power-vs-thermal consistency factor: Pdiss should track (Tjmax-25)/Rth(j-c).
 inline constexpr double MOS_PTHERMAL_RATIO_SUS = 3.0;
+// A powerDissipation that is really an on-resistance (ABT #482/#494: Vishay
+// serves "On-resistance at 4.5 V" one column from "Power dissipation (max.)").
+// Anchored on the PACKAGE, not on the ohm value: a die rated to carry
+// MOS_PD_IDC_A [A] continuously sits behind a thermal path good for several
+// watts, and even the ambient-referenced minimum-pad P_D some vendors publish
+// for such a die stays above MOS_PD_IDC_W [W] (worst real case in this catalogue
+// is 0.69 W at 46 A, an SO-8FL steady-state figure). Below it, the number is not
+// a power rating at all.
+inline constexpr double MOS_PD_IDC_A = 20.0, MOS_PD_IDC_W = 0.5;
 // Specific-Ron floor proxy: Ron*Vds^2 [ohm*V^2] minimum for a single die by
 // technology. Silicon obeys Ron,sp ~ k*BV^2.5; with die area unknown this is an
 // advisory (SUS) lower bound only. Calibrated so a 600 V Si part with Ron < a

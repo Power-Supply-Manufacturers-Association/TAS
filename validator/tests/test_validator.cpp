@@ -208,6 +208,32 @@ TEST_CASE("Semiconductors: MosfetChargeHierarchy", "[semiconductors]") {
     CHECK(has(v, "MOS_CHARGE_HIERARCHY", Severity::Impossible));
 }
 
+// ABT #494: Vishay's "On-resistance at 4.5 V" column landed in powerDissipation.
+// SiRS4300DP is the real record: 680 A rated, 0.00068 stored as watts.
+TEST_CASE("Semiconductors: MosfetPowerDissipationIsOnResistance", "[semiconductors]") {
+    json p = json::parse(R"json({"semiconductor": {"mosfet": {"manufacturerInfo": {
+      "reference": "SiRS4300DP", "datasheetInfo": {"part": {"technology": "Si"},
+      "electrical": {"drainSourceVoltage": 30, "onResistance": 0.0004,
+                     "continuousDrainCurrent": 680, "powerDissipation": 0.00068}}}}}})json");
+    Verdict v = V.validate(p);
+    CHECK(has(v, "MOS_PD_VS_IDC", Severity::Impossible));
+    CHECK(!v.valid);
+    // The vendor's own P_D for that row (278 W at Tc = 25 C) is fine.
+    p["semiconductor"]["mosfet"]["manufacturerInfo"]["datasheetInfo"]["electrical"]
+     ["powerDissipation"] = 278.0;
+    CHECK(!has(V.validate(p), "MOS_PD_VS_IDC", Severity::Impossible));
+}
+
+// The floor must not fire on a small-signal part that genuinely dissipates under
+// half a watt: 2N7002 is 0.42 W, but it is rated 0.115 A, not 20 A.
+TEST_CASE("Semiconductors: SmallSignalMosfetSubWattPdValid", "[semiconductors]") {
+    json p = json::parse(R"json({"semiconductor": {"mosfet": {"manufacturerInfo": {
+      "reference": "2N7002", "datasheetInfo": {"part": {"technology": "Si"},
+      "electrical": {"drainSourceVoltage": 60, "onResistance": 1.6,
+                     "continuousDrainCurrent": 0.115, "powerDissipation": 0.42}}}}}})json");
+    CHECK(!has(V.validate(p), "MOS_PD_VS_IDC", Severity::Impossible));
+}
+
 TEST_CASE("Semiconductors: DiodeSurgeBelowForward", "[semiconductors]") {
     json p = json::parse(R"json({"semiconductor": {"diode": {"manufacturerInfo": {
       "reference": "X", "datasheetInfo": {"part": {"technology": "Schottky"},

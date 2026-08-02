@@ -141,6 +141,17 @@ void check_mosfets(const json& datasheet, const Ctx& ctx, std::vector<Finding>& 
         }
     }
 
+    // CHECK (NEW): powerDissipation that is really an on-resistance. The May-2026
+    // Vishay import wrote the grid's r_DS(on)-at-4.5-V column (P7016) into the
+    // watt field (P7008) on 961 records -- SiRS4300DP, a 680 A part, stored
+    // 0.00068 "W". Ohms in a watt field land orders of magnitude below any
+    // package rating, so test against the package the drain rating implies rather
+    // than against the ohm value itself.
+    if (pdiss && idc && std::fabs(*idc) >= thr::MOS_PD_IDC_A && *pdiss < thr::MOS_PD_IDC_W)
+        emit(out, ctx, "MOS_PD_VS_IDC", Severity::Impossible, *pdiss, thr::MOS_PD_IDC_W,
+             fmt("powerDissipation below any package able to carry the rated continuous "
+                 "drain current [W]", *pdiss, thr::MOS_PD_IDC_W));
+
     // CHECK (NEW, advisory): specific-Ron floor proxy Ron*Vds^2 by technology.
     auto ron = scalar_at(*elec, {"onResistance"});
     auto vds = scalar_at(*elec, {"drainSourceVoltage"});
