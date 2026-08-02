@@ -8,6 +8,9 @@
 //   v.skipped          -> [str, ...]           (checks skipped for missing data)
 //   f.code, f.severity, f.component, f.reference, f.message, f.value, f.threshold
 //   tas_validator.check_codes() -> [str, ...]
+//
+//   v = tas_validator.validate_circuit(brick)  # a CIAS brick, NOT a part
+//   tas_validator.circuit_check_codes() -> [str, ...]
 #include "tas_validator/helpers.hpp"
 #include "tas_validator/validator.hpp"
 
@@ -38,6 +41,8 @@ Verdict do_validate(const py::object& obj) {
     static const PartValidator validator;
     return validator.validate(to_json(obj));
 }
+
+Verdict do_validate_circuit(const py::object& obj) { return validate_circuit(to_json(obj)); }
 
 }  // namespace
 
@@ -105,4 +110,11 @@ PYBIND11_MODULE(tas_validator, m) {
         },
         py::arg("text"), "Validate one part record given as a JSON string.");
     m.def("check_codes", &PartValidator::check_codes, "All check codes the validator can emit.");
+
+    m.def("validate_circuit", &do_validate_circuit, py::arg("brick"),
+          "Validate one CIAS circuit brick (dict or JSON string) — the physics gate for "
+          "circuits, complementary to CIAS.json (shape), validate_cias_structure (graph) "
+          "and CiasCircuitConverter (emittability). Returns a Verdict.");
+    m.def("circuit_check_codes", &circuit_check_codes,
+          "All CIR_* check codes the circuit validator can emit.");
 }

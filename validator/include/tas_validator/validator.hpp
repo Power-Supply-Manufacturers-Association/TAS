@@ -83,6 +83,23 @@ public:
     static std::vector<std::string> check_codes();
 };
 
+// --- circuits -----------------------------------------------------------------
+// A CIAS brick is not a part: it has no discriminator to dispatch on and no
+// manufacturerInfo, so it gets its own entry point rather than a branch inside
+// PartValidator::validate. The per-record contract for parts is unchanged.
+//
+// Verdict semantics are identical: `valid` is false iff some finding is IMPOSSIBLE.
+// Throws std::invalid_argument if `brick` is not a JSON object; MalformedField if a
+// field a check needs is present but uninterpretable.
+//
+// This is the physics gate for circuits. Shape belongs to CIAS.json, graph integrity to
+// CIAS::validate_cias_structure, emittability to CiasCircuitConverter — none of which
+// can see a 0 F capacitor or an inductance matrix that stores negative energy.
+Verdict validate_circuit(const json& brick);
+
+// All CIR_* check codes (for documentation / tests).
+std::vector<std::string> circuit_check_codes();
+
 // A corpus-level finding: produced by validate_corpus, which screens a whole batch
 // of records for anomalies invisible to per-record validation.
 struct CorpusFinding {
@@ -122,5 +139,7 @@ void check_latches(const json& datasheet, const Ctx&, std::vector<Finding>&, std
 // Light unit-slip screening of the ideal `behavioral` atom (a TDAS record may be
 // a part-less behavioral-only document, so this runs even without datasheetInfo).
 void check_time_base_behavioral(const json& behavioral, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
+// CIAS bricks (see validate_circuit above). Takes the WHOLE brick, not a datasheetInfo.
+void check_circuit(const json& brick, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
 
 }  // namespace tas

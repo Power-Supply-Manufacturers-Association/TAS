@@ -198,6 +198,18 @@ def gate_circuits(reg, max_report):
             "            -DFETCHCONTENT_SOURCE_DIR_JSON=../AAS/build/_deps/json-src\n"
             "      cmake --build ../CIAS/build-py --target PyCIAS -j8") from e
 
+    # ABT #397 bit here for real: blade_gate imports validator/build, and a 4.5-hour-old
+    # .so in that tree had no validate_circuit at all. hasattr would simply have been
+    # False and this gate would have run with a subset of its rules while reporting clean.
+    # So probe for the capability and refuse to run without it.
+    sys.path.insert(0, str(TAS / "validator" / "build"))
+    import tas_validator as blade_circuit
+    if not hasattr(blade_circuit, "validate_circuit"):
+        raise RuntimeError(
+            f"tas_validator at {TAS / 'validator' / 'build'} has no validate_circuit() — it "
+            "predates the circuit checks. A gate running a subset of its rules is not a "
+            "gate. Rebuild it: cmake --build TAS/validator/build")
+
     schema = json.loads((PSMA / "CIAS" / "schemas" / "CIAS.json").read_text())
     validator = Draft202012Validator(schema, registry=reg)
     conv = PyCIAS.CiasCircuitConverter(PyCIAS.CircuitSimulator.Ngspice)
@@ -205,6 +217,8 @@ def gate_circuits(reg, max_report):
 
     path = TAS / "data" / CIRCUITS
     bad = checked = reported = lowered = byref = parts = 0
+    circuit_reported = 0
+    circuit_findings = __import__('collections').Counter()
     t0 = time.time()
     with path.open(encoding="utf-8") as fh:
         for lineno, raw in enumerate(fh, 1):
@@ -267,12 +281,34 @@ def gate_circuits(reg, max_report):
                     break
             if failed_part:
                 bad += 1
+                continue
+
+            # Blade Runner for the BRICK ITSELF (tas_validator.validate_circuit). The
+            # per-component pass above asks "is each part physically possible"; this asks
+            # "would the assembled network be physics". They catch different things: a 0 F
+            # capacitor and an inductance matrix that stores negative energy are both
+            # invisible to every part-level check, to JSON Schema, and to the lowering.
+            cv = blade_circuit.validate_circuit(brick)
+            for f in cv.findings:
+                circuit_findings[f.code] += 1
+            if not cv.valid:
+                bad += 1
+                # Own report budget. With a shared one the circuit findings are starved:
+                # the schema/structure/lowering failures come first in file order and ate
+                # all 20 slots, so the two bricks only THIS check can see printed nothing.
+                if circuit_reported < max_report:
+                    worst = next(f for f in cv.findings if "IMPOSSIBLE" in str(f.severity).upper())
+                    print(f"    CIRCUIT {name}: {worst.code}: {worst.message[:150]}")
+                    circuit_reported += 1
 
             if checked % 5000 == 0:
                 print(f"    …{checked} checked ({time.time() - t0:.0f}s)", flush=True)
     print(f"  {CIRCUITS}: {checked} bricks, {lowered} lowered to a netlist, "
           f"{byref} skipped (components are catalogue URIs, not inline PEAS), "
           f"{parts} inline parts blade-checked, {bad} FAILED ({time.time() - t0:.0f}s)")
+    if circuit_findings:
+        print("    circuit blade-runner: " + ", ".join(
+            f"{c}x{n}" for c, n in circuit_findings.most_common()))
     try:
         print(f"    {gate.summary()}")
     except Exception:  # noqa: BLE001
