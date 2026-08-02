@@ -171,13 +171,24 @@ def main():
                 stats["derating"] += 1
                 modified = True
 
-            # --- electrical.insulationPaths (only when absent; WAGO #468) ---
+            # --- electrical.insulationPaths (only when absent) ---
+            # Vendor auto-routed by sourceUrl domain: WAGO classifications API or
+            # Weidmüller eShop ETIM (Playwright pull); both are the IEC 60664-1 chain (#468).
             if pn and pn in insulation and "insulationPaths" not in (di.get("electrical") or {}):
                 e = insulation[pn]
+                url = e.get("sourceUrl") or ""
+                if "weidmueller" in url:
+                    ins_source_name = ("Weidmüller eShop ETIM classification "
+                                       "(eshop.weidmueller.com), IEC 60947-7-1 (#468)")
+                elif "wago" in url:
+                    ins_source_name = ("WAGO product classifications API (wago.com), "
+                                       "IEC 60664-1 chain (#468)")
+                else:
+                    ins_source_name = "Vendor ETIM insulation classification, IEC 60664-1 chain (#468)"
                 di.setdefault("electrical", {})["insulationPaths"] = e["insulationPaths"]
                 di.setdefault("provenance", []).append({
                     "source": "manufacturerParametric",
-                    "sourceName": "WAGO product classifications API (wago.com), IEC 60664-1 chain (#468)",
+                    "sourceName": ins_source_name,
                     "sourceUrl": e.get("sourceUrl"),
                     "retrievedDate": TODAY,
                     "fields": ["electrical.insulationPaths"],
