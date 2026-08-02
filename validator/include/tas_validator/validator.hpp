@@ -45,6 +45,12 @@ struct Verdict {
 struct Ctx {
     std::string component;  // discriminator, set by the dispatcher
     std::string reference;  // part reference for findings
+    // The whole component object, not just its datasheetInfo. Set by the
+    // dispatcher; null on the record-level findings raised before dispatch. A
+    // check needs this when the fact that reinterprets a datasheet scalar lives
+    // OUTSIDE datasheetInfo — CONAS puts the per-contact tier-2 detail in
+    // connector.contactSystem, a sibling of manufacturerInfo.
+    const json* component_obj = nullptr;
 };
 
 // Append a fired finding. `message` should already name the offending quantity.

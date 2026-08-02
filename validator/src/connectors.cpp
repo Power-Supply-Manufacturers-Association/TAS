@@ -84,6 +84,22 @@ bool holm_voltages(const std::string& plating, HolmVoltages& out) {
     return false;
 }
 
+// True if the record documents a per-contact current rating of its own, i.e. it
+// says WHICH contact a high current belongs to. CONAS puts this in tier-2
+// contactSystem.contacts[].currentRating, whose own description is "overrides the
+// shared electrical rating when contacts differ, e.g. power vs signal pins" — so
+// its presence is exactly the hybrid connector's declaration. `component` is the
+// whole connector object; contactSystem is a sibling of manufacturerInfo, not part
+// of datasheetInfo, which is why Ctx carries the component.
+bool declares_per_contact_current(const json* component) {
+    if (component == nullptr) return false;
+    const json* contacts = at(*component, "contactSystem", "contacts");
+    if (contacts == nullptr || !contacts->is_array()) return false;
+    for (const auto& c : *contacts)
+        if (scalar_at(c, {"currentRating"})) return true;
+    return false;
+}
+
 // True if a Celsius value looks like an unconverted Fahrenheit reading: high
 // enough to be implausible, and landing on a round Celsius value when converted
 // back. One helper used for BOTH temperature ends so the two branches cannot
@@ -316,6 +332,28 @@ void check_connectors(const json& datasheet, const Ctx& ctx, std::vector<Finding
                          "than total contacts, or one of the two is wrong",
                          *rows, *positions));
         }
+
+        // CHECK: a per-contact current rating that belongs to a power terminal
+        // while the pitch belongs to a signal field (ABT #486). Unlike the density
+        // check below, this one is separable and therefore IMPOSSIBLE: a terminal
+        // carrying more than 10 A is a crimp barrel or blade whose body does not
+        // fit a <= 2.54 mm grid, and the catalogue's own distribution puts the
+        // step there (see the threshold). The hybrid explanation that keeps the
+        // density check SUSPICIOUS is not available here, because a record that
+        // really is hybrid can SAY so in contactSystem.contacts[].currentRating —
+        // and one that does is exempt. Fired on 1,273 / 392,346 = 0.32% before
+        // those were quarantined to connectors.quarantine_current_pitch_conflict;
+        // fires on 0 today.
+        if (I && pitch && *I > thr::CONN_POWER_CONTACT_A &&
+            *pitch > 0 && *pitch <= thr::CONN_POWER_CONTACT_PITCH_M &&
+            !declares_per_contact_current(ctx.component_obj))
+            emit(out, ctx, "CONN_CURRENT_VS_PITCH", Severity::Impossible, *I,
+                 thr::CONN_POWER_CONTACT_A,
+                 fmt("ratedCurrentPerContact is a power-terminal rating but the pitch is a "
+                     "signal field: no contact on a pitch this fine carries this current [A] "
+                     "(the two fields describe different contacts; state the power contact in "
+                     "contactSystem.contacts[].currentRating if the part really is hybrid)",
+                     *I, thr::CONN_POWER_CONTACT_A));
 
         // CHECK: current density through the contact cross-section the pitch
         // allows. SUSPICIOUS only — see the threshold comment for why a hybrid

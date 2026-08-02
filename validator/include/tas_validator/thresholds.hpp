@@ -258,6 +258,30 @@ inline constexpr double CONN_UCONTACT_IMP_FACTOR = 5.0;    // x CONN_UMELT_MAX_A
 inline constexpr double CONN_PIN_SIDE_PER_PITCH = 0.25;
 inline constexpr double CONN_CURRENT_DENSITY_SUS = 1.0e8;  // A/m^2
 
+// Where a per-contact rating stops being a contact of the stated pitch (ABT #486).
+// The density check above cannot separate a wrong record from a legitimate hybrid,
+// which is why it is SUSPICIOUS — but a POWER-terminal rating is separable, because
+// a terminal carrying tens of amps is a crimp barrel or blade whose BODY does not
+// fit on a fine grid. The catalogue states where that boundary is; per-contact
+// current above 10 A, by pitch band, over all 392,346 records:
+//
+//     pitch [mm]   n        median   p99     fraction > 10 A
+//     <= 0.8       10,675    0.5      11.5     3.26%
+//     0.8 - 1.3    18,326    1.0       4.0     0.04%
+//     1.3 - 2.0    60,275    3.9       4.5     0.17%
+//     2.0 - 2.54  104,723    3.0       7.0     0.78%
+//     2.55 - 3.5   12,746    8.0      17.5    21.07%   <- power terminals start
+//     3.6 - 5.0    28,810   12.0      32.5    63.00%
+//     5.1 - 7.6     6,575   20.0      57.0    93.11%
+//
+// The step at 2.54 mm is the vendors' own: >10 A is 0.04-3.26% of parts below it
+// and 21-93% above. So a rating above 10 A on a pitch <= 2.54 mm does not describe
+// a contact of that pitch. It is IMPOSSIBLE only when the record offers nothing to
+// reinterpret it — see CONN_CURRENT_VS_PITCH in connectors.cpp for the
+// contactSystem exemption that keeps documented hybrids valid.
+inline constexpr double CONN_POWER_CONTACT_A = 10.0;         // A
+inline constexpr double CONN_POWER_CONTACT_PITCH_M = 2.54e-3;  // m
+
 // Physically-possible SI ranges, to catch unit slips (mm or um stored as m).
 // A pitch of "2.54" is 2.54 METRES; the tightest real connector pitch is ~0.15 mm
 // and the widest busbar spacing ~35 mm (verified in-catalog).

@@ -4,8 +4,18 @@
 Source: api.te.com search API (pulled via the Playwright MCP browser, Akamai-gated).
 Relaxed CONAS (2026-06-24): required = partNumber + familyDetails.family +
 electrical.ratedCurrentPerContact; matingPolarity + ratedVoltage optional.
+
+ABT #486: this importer ran with NO physics gate, and TE's parametric row is where
+the current/pitch conflict enters. On a hybrid part TE publishes the POWER
+terminal's current and the SIGNAL field's centerline as two flat attributes, so
+copying both into one record asserts 42 A on a 2.54 mm contact (5-6450120-9, whose
+own description reads "2.54 mm / 6.35 mm / 7.62 mm Centerline"). 1,241 such records
+reached the catalogue and were read downstream as verified current upgrades. Every
+converted record now goes through Blade Runner, which rejects that shape as
+CONN_CURRENT_VS_PITCH; blocked records land in connectors.blocked.ndjson with the
+firing check, never in connectors.main.ndjson.
 """
-import glob, json, os, re
+import glob, json, os, re, sys
 
 SRC = "/home/alf/PSMA/.playwright-mcp"
 OUT = "/home/alf/PSMA/TAS/staging/te"
@@ -106,7 +116,11 @@ def convert(r):
     return rec, missing
 
 def main():
-    seen=set(); mains=[]; inc=[]; n=dup=0
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    from blade_gate import BladeGate
+    gate = BladeGate("connector")   # raises if unbuilt: a gate that cannot run is not a gate
+
+    seen=set(); mains=[]; inc=[]; blocked=[]; n=dup=0
     for f in sorted(glob.glob(f"{SRC}/te_*.json")):
         d = json.load(open(f))
         for r in d.get("records", []):
@@ -118,10 +132,18 @@ def main():
             if missing:
                 rec["quarantineReason"]="incomplete TE data; missing: "+"; ".join(map(str,missing))+" (2026-06-24)"
                 inc.append(rec)
+                continue
+            ok, why = gate.check(rec["connector"])
+            if not ok:
+                rec["quarantineReason"]="blade runner IMPOSSIBLE: "+str(why)
+                blocked.append(rec)
             else: mains.append(rec)
-    for name,recs in [("connectors.main",mains),("connectors.incomplete",inc)]:
+    for name,recs in [("connectors.main",mains),("connectors.incomplete",inc),
+                      ("connectors.blocked",blocked)]:
         with open(f"{OUT}/{name}.ndjson","w") as fo:
             for x in recs: fo.write(json.dumps(x,ensure_ascii=False)+"\n")
-    print(json.dumps({"rows":n,"dup":dup,"main":len(mains),"incomplete":len(inc)},indent=2))
+    print(json.dumps({"rows":n,"dup":dup,"main":len(mains),"incomplete":len(inc),
+                      "blocked":len(blocked)},indent=2))
+    print(gate.summary())
 
 if __name__=="__main__": main()

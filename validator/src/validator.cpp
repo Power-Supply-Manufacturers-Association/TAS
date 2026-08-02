@@ -270,6 +270,7 @@ Verdict PartValidator::validate(const json& part) const {
         }
         ctx.component = component;
         ctx.reference = r.reference;
+        ctx.component_obj = &comp_obj;
         check_generic(*r.datasheet, ctx, v.findings);
         fn(*r.datasheet, ctx, v.findings, v.skipped);
         // GEN_SPARSE: authenticity/completeness signal. Below the real-part floor,

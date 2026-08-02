@@ -722,6 +722,10 @@ TEST_CASE("CONN: a real pin header fires no connector finding", "[connector]") {
 TEST_CASE("CONN: rated current through stated resistance melts its own tin plating", "[connector]") {
     json p = good_connector();
     auto& d = p["connector"]["manufacturerInfo"]["datasheetInfo"];
+    // 5.08 mm, not the fixture's 2.54 mm: a 20 A terminal is a real part only on a
+    // power pitch, and on a signal pitch it would fire CONN_CURRENT_VS_PITCH and
+    // mask the resistance defect this case is about.
+    d["mechanical"]["pitch"] = 0.00508;
     d["electrical"]["ratedCurrentPerContact"] = 20.0;
     d["electrical"]["contactResistance"] = 0.02;
     d["material"]["contactPlating"]["matingAreaMaterialRef"] = "sn-tin";
@@ -790,16 +794,66 @@ TEST_CASE("CONN: a plating thickness stored in micrometres is impossible", "[con
     CHECK(has(V.validate(p), "CONN_UNIT_SCALE", Severity::Impossible));
 }
 
-// The contact cross-section a 0.5 mm pitch allows cannot carry 20 A.
+// The contact cross-section a 0.5 mm pitch allows cannot carry 20 A. The part is
+// the legitimate case this check exists to tolerate — a wide power blade inside a
+// fine signal field — so it carries the contactSystem entry that SAYS which
+// contact the 20 A belongs to. Without that declaration the same numbers are
+// CONN_CURRENT_VS_PITCH/IMPOSSIBLE (next test): the density is suspicious either
+// way, what separates them is whether the record identifies the contact.
 TEST_CASE("CONN: current density beyond any contact cross-section is suspicious", "[connector]") {
     json p = good_connector();
     auto& d = p["connector"]["manufacturerInfo"]["datasheetInfo"];
     d["mechanical"]["pitch"] = 0.0005;
     d["electrical"]["ratedCurrentPerContact"] = 20.0;
     d["electrical"]["contactResistance"] = 0.001;
+    p["connector"]["contactSystem"] = json::parse(
+        R"json({"contacts": [{"id": "P1", "signalRole": "power", "currentRating": 20.0},
+                             {"id": "S1", "signalRole": "signal", "currentRating": 0.5}]})json");
     Verdict v = V.validate(p);
     CHECK(has(v, "CONN_CURRENT_DENSITY", Severity::Suspicious));
-    CHECK(v.valid);  // hybrid power+signal connectors legitimately reach this
+    CHECK(!has_code(v, "CONN_CURRENT_VS_PITCH"));
+    CHECK(v.valid);  // a declared hybrid power+signal connector is a real part
+}
+
+// ABT #486. TE 5-6450120-9 shipped "ratedCurrentPerContact": 42 with
+// "pitch": 0.00254 — a power-blade rating against the signal centerline of a
+// multi-pitch header — and the cross-reference ranker read it as a verified 10x
+// current upgrade over a 3.9 A part. Nothing in the record said the 42 A belonged
+// to a different contact, so nothing downstream could know.
+TEST_CASE("CONN: a power-terminal current on a signal pitch is impossible", "[connector]") {
+    json p = good_connector();
+    auto& d = p["connector"]["manufacturerInfo"]["datasheetInfo"];
+    d["mechanical"]["pitch"] = 0.00254;
+    d["electrical"]["ratedCurrentPerContact"] = 42.0;
+    Verdict v = V.validate(p);
+    CHECK(has(v, "CONN_CURRENT_VS_PITCH", Severity::Impossible));
+    CHECK(!v.valid);
+}
+
+// The boundary is the vendors' own: >10 A is 0.04-3.26% of parts at or below
+// 2.54 mm pitch and 21-93% above it. Neither side of it may drift.
+TEST_CASE("CONN: 10 A on a 2.54 mm pitch, and 42 A on a 3.96 mm one, both stand", "[connector]") {
+    json p = good_connector();
+    auto& d = p["connector"]["manufacturerInfo"]["datasheetInfo"];
+    d["mechanical"]["pitch"] = 0.00254;
+    d["electrical"]["ratedCurrentPerContact"] = 10.0;
+    CHECK(!has_code(V.validate(p), "CONN_CURRENT_VS_PITCH"));
+
+    d["mechanical"]["pitch"] = 0.00396;  // MATE-N-LOK territory: a real power terminal
+    d["electrical"]["ratedCurrentPerContact"] = 42.0;
+    CHECK(!has_code(V.validate(p), "CONN_CURRENT_VS_PITCH"));
+}
+
+// The exemption is the currentRating, not the mere presence of a contact list:
+// a contactSystem that never states a per-contact current explains nothing.
+TEST_CASE("CONN: a contactSystem without currentRating does not excuse the conflict", "[connector]") {
+    json p = good_connector();
+    auto& d = p["connector"]["manufacturerInfo"]["datasheetInfo"];
+    d["mechanical"]["pitch"] = 0.00254;
+    d["electrical"]["ratedCurrentPerContact"] = 42.0;
+    p["connector"]["contactSystem"] = json::parse(
+        R"json({"contacts": [{"id": "A1", "pinName": "1"}, {"id": "A2", "pinName": "2"}]})json");
+    CHECK(has(V.validate(p), "CONN_CURRENT_VS_PITCH", Severity::Impossible));
 }
 
 // 392 degC is 200 degC read off a Fahrenheit datasheet. 260 degC is a real PTFE part.
