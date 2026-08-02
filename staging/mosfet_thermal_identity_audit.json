@@ -1,0 +1,663 @@
+{
+ "ticket": "ABT #500 / #512 gate unblock",
+ "date": "2026-08-02",
+ "result": "mosfets.ndjson: 0 records with any Blade Runner IMPOSSIBLE finding (was 76 across two strata)",
+ "calibrations": [
+  "MOS_IDC_VS_THERMAL isolated-package 4x bar (c0f2e7c)",
+  "DIO_TVS_ORDERING snapback guard band 0.75x (cc84779)",
+  "DIO_TVS_ORDERING esd-array forward-VF clamp -> Suspicious"
+ ],
+ "runs": [
+  {
+   "campaign": "thermal identity: 40 MOS_IDC_VS_THERMAL records (ABT #500)",
+   "repaired": [
+    {
+     "partNumber": "SCT3160KLGC11",
+     "actualManufacturer": "ROHM",
+     "id_25c_A": 17,
+     "rdson_max_ohm": 0.208,
+     "ptot_25c_W": 103,
+     "rth_jc_max_KperW": 1.46,
+     "tj_max_C": 175,
+     "vds_V": 1200,
+     "package": "TO-247N",
+     "technology": "SiC",
+     "datasheetUrl": "https://fscdn.rohm.com/en/products/databook/datasheet/discrete/sic/mosfet/sct3160kl-e.pdf",
+     "provenance_note": "re-attributed from STMicroelectronics: SCT3160KL is a ROHM part (GC11 = ROHM C11 tube packing code); the recorded DPAK case, 650 V and 30 A belonged to no variant of this part \u2014 all values re-read from ROHM datasheet TSQ50211 Rev.006"
+    },
+    {
+     "partNumber": "SCT3080ALGC11",
+     "actualManufacturer": "ROHM",
+     "id_25c_A": 30,
+     "rdson_max_ohm": 0.104,
+     "ptot_25c_W": 134,
+     "rth_jc_max_KperW": 1.12,
+     "tj_max_C": 175,
+     "vds_V": 650,
+     "package": "TO-247N",
+     "technology": "SiC",
+     "datasheetUrl": "https://fscdn.rohm.com/en/products/databook/datasheet/discrete/sic/mosfet/sct3080al-e.pdf",
+     "provenance_note": "re-attributed from STMicroelectronics: SCT3080AL is a ROHM part (GC11 = ROHM C11 tube packing code); recorded DPAK case and blended electrical values re-read from ROHM datasheet TSQ50211 Rev.006"
+    },
+    {
+     "partNumber": "IPP60R360P7",
+     "id_25c_A": 9,
+     "rdson_max_ohm": 0.36,
+     "ptot_25c_W": 41,
+     "rth_jc_max_KperW": 3.04,
+     "tj_max_C": 150,
+     "datasheetUrl": "https://www.infineon.com/dgdl/Infineon-IPP60R360P7-DS-v02_03-EN.pdf?fileId=5546d46259d9a4bf015a5be590fa3cc2",
+     "provenance_note": "recorded Id 14 A, Ptot 159 W and RthJC 5.1 K/W belonged to no variant of this part (datasheet: 9 A / 41 W / 3.04 K/W)"
+    },
+    {
+     "partNumber": "IPW60R120P7",
+     "id_25c_A": 26,
+     "rdson_max_ohm": 0.12,
+     "ptot_25c_W": 95,
+     "rth_jc_max_KperW": 1.31,
+     "tj_max_C": 150,
+     "datasheetUrl": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-ipw60r120p7-datasheet-en.pdf",
+     "provenance_note": "recorded Id 37 A, Ptot 214 W and RthJC 1.6 K/W disagree with the datasheet (26 A / 95 W / 1.31 K/W)"
+    },
+    {
+     "partNumber": "IPA80R450P7",
+     "id_25c_A": 11,
+     "rdson_max_ohm": 0.45,
+     "ptot_25c_W": 29,
+     "rth_jc_max_KperW": 4.4,
+     "tj_max_C": 150,
+     "datasheetUrl": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-ipa80r450p7-datasheet-en.pdf",
+     "provenance_note": "recorded Ptot 24 W / RthJC 5.2 disagree with the datasheet (29 W / 4.4); Id is the TO-220-equivalent silicon rating per the datasheet footnote"
+    },
+    {
+     "partNumber": "IPA80R900P7",
+     "id_25c_A": 6,
+     "rdson_max_ohm": 0.9,
+     "ptot_25c_W": 26,
+     "rth_jc_max_KperW": 4.8,
+     "tj_max_C": 150,
+     "datasheetUrl": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-ipa80r900p7-datasheet-en.pdf",
+     "provenance_note": "recorded Ptot 12.5 W / RthJC 10 disagree with the datasheet (26 W / 4.8)"
+    },
+    {
+     "partNumber": "IPD80R2K0P7",
+     "id_25c_A": 3,
+     "rdson_max_ohm": 2.0,
+     "ptot_25c_W": 24,
+     "rth_jc_max_KperW": 5.1,
+     "tj_max_C": 150,
+     "datasheetUrl": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-ipd80r2k0p7-datasheet-en.pdf",
+     "provenance_note": "recorded Ptot 6.3 W / RthJC 20 disagree with the datasheet (24 W / 5.1)"
+    },
+    {
+     "partNumber": "IPA80R1K4P7",
+     "id_25c_A": 4,
+     "rdson_max_ohm": 1.4,
+     "ptot_25c_W": 24,
+     "rth_jc_max_KperW": 5.1,
+     "tj_max_C": 150,
+     "datasheetUrl": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-ipa80r1k4p7-datasheet-en.pdf",
+     "provenance_note": "recorded Ptot 7.8 W / RthJC 16 disagree with the datasheet (24 W / 5.1)"
+    },
+    {
+     "partNumber": "IPD80R1K4P7",
+     "id_25c_A": 4,
+     "rdson_max_ohm": 1.4,
+     "ptot_25c_W": 32,
+     "rth_jc_max_KperW": 3.9,
+     "tj_max_C": 150,
+     "datasheetUrl": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-ipd80r1k4p7-datasheet-en.pdf",
+     "provenance_note": "recorded Ptot 7.8 W / RthJC 16 disagree with the datasheet (32 W / 3.9); the recorded pair matched no package of this die"
+    },
+    {
+     "partNumber": "IPP60R600P6",
+     "id_25c_A": 7.3,
+     "rdson_max_ohm": 0.6,
+     "ptot_25c_W": 63,
+     "rth_jc_max_KperW": 2.0,
+     "tj_max_C": 150,
+     "datasheetUrl": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-ipx60r600p6-datasheet-en.pdf",
+     "provenance_note": "recorded Ptot 16 W / RthJC 8.0 match neither the TO-220 (63 W / 2.0) nor the FullPAK variant (28 W / 4.5); TO-220 values written per the IPP prefix"
+    },
+    {
+     "partNumber": "IPA80R1K0CE",
+     "id_25c_A": 5.7,
+     "rdson_max_ohm": 0.95,
+     "ptot_25c_W": 32,
+     "rth_jc_max_KperW": 3.9,
+     "tj_max_C": 150,
+     "datasheetUrl": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-ipa80r1k0ce-datasheet-en.pdf",
+     "provenance_note": "recorded Id 5 A, Rdson 1.0, Ptot 10 W, RthJC 12 all disagree with the datasheet (5.7 A / 0.95 max / 32 W / 3.9)"
+    },
+    {
+     "partNumber": "IPA80R650CE",
+     "id_25c_A": 8.0,
+     "rdson_max_ohm": 0.65,
+     "ptot_25c_W": 33,
+     "rth_jc_max_KperW": 3.8,
+     "tj_max_C": 150,
+     "datasheetUrl": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-ipa80r650ce-datasheet-en.pdf",
+     "provenance_note": "recorded Id 7.6 A, Ptot 16 W, RthJC 8.0 disagree with the datasheet (8.0 A / 33 W / 3.8)"
+    },
+    {
+     "partNumber": "IPP60R600P7",
+     "id_25c_A": 6,
+     "rdson_max_ohm": 0.6,
+     "ptot_25c_W": 30,
+     "rth_jc_max_KperW": 4.19,
+     "tj_max_C": 150,
+     "datasheetUrl": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-ipp60r600p7-datasheet-en.pdf",
+     "provenance_note": "recorded Id 10 A, Ptot 159 W, RthJC 8.0 disagree with the datasheet (6 A / 30 W / 4.19); 159 W was a value copied across the IPP60R series"
+    },
+    {
+     "partNumber": "IPP80R280P7",
+     "id_25c_A": 17,
+     "rdson_max_ohm": 0.28,
+     "ptot_25c_W": 101,
+     "rth_jc_max_KperW": 1.2,
+     "tj_max_C": 150,
+     "datasheetUrl": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-ipp80r280p7-datasheet-en.pdf",
+     "provenance_note": "recorded Ptot 135 W / RthJC 3.1 disagree with the datasheet (101 W / 1.2); 135 W was a value copied across the IPP80R series"
+    },
+    {
+     "partNumber": "IPP80R360P7",
+     "id_25c_A": 13,
+     "rdson_max_ohm": 0.36,
+     "ptot_25c_W": 84,
+     "rth_jc_max_KperW": 1.5,
+     "tj_max_C": 150,
+     "datasheetUrl": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-ipp80r360p7-ds-en.pdf",
+     "provenance_note": "recorded Id 14 A, Ptot 135 W, RthJC 3.9 disagree with the datasheet (13 A / 84 W / 1.5)"
+    },
+    {
+     "partNumber": "IPP80R450P7",
+     "id_25c_A": 11,
+     "rdson_max_ohm": 0.45,
+     "ptot_25c_W": 73,
+     "rth_jc_max_KperW": 1.7,
+     "tj_max_C": 150,
+     "datasheetUrl": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-ipp80r450p7-datasheet-en.pdf",
+     "provenance_note": "recorded Id 12 A, Ptot 135 W, RthJC 4.8 disagree with the datasheet (11 A / 73 W / 1.7)"
+    },
+    {
+     "partNumber": "FDP18N50",
+     "id_25c_A": 18,
+     "rdson_max_ohm": 0.265,
+     "ptot_25c_W": 235,
+     "rth_jc_max_KperW": 0.53,
+     "tj_max_C": 150,
+     "datasheetUrl": "https://docs.rs-online.com/70e9/0900766b80d27066.pdf",
+     "provenance_note": "recorded Pd 42 W / RthJC 3.0 approximate the FDPF18N50 TO-220F FullPak column (38.5 W / 3.3), not this bare TO-220 part (235 W / 0.53); Fairchild PDF Rev B"
+    },
+    {
+     "partNumber": "AON6250",
+     "id_25c_A": 52,
+     "rdson_max_ohm": 0.0165,
+     "ptot_25c_W": 104,
+     "rth_jc_max_KperW": 1.2,
+     "tj_max_C": 150,
+     "datasheetUrl": "https://www.aosmd.com/res/data_sheets/AON6250.pdf",
+     "provenance_note": "recorded Rdson 0.066 is 4x the datasheet max 0.0165 (Vgs=10 V); Pd 41.5 W was the Tc=100C value; RthJC 3.0 vs steady-state max 1.2; AOS PDF Rev 2.1"
+    },
+    {
+     "partNumber": "AON6220",
+     "id_25c_A": 48,
+     "rdson_max_ohm": 0.0062,
+     "ptot_25c_W": 113.5,
+     "rth_jc_max_KperW": 1.1,
+     "tj_max_C": 150,
+     "datasheetUrl": "https://www.alldatasheet.com/datasheet-pdf/view/1060256/AOSMD/AON6220.html",
+     "provenance_note": "recorded Rdson 0.066 is >10x the datasheet max 0.0062; Pd 38 W vs 113.5 W at Tc=25C; RthJC 3.3 vs steady-state max 1.1; AOS PDF Rev 1.0 (aosmd URL now 404s, fetched via alldatasheet viewer)"
+    },
+    {
+     "partNumber": "STP10NK80Z",
+     "id_25c_A": 9,
+     "rdson_max_ohm": 0.9,
+     "ptot_25c_W": 160,
+     "rth_jc_max_KperW": 0.78,
+     "tj_max_C": 150,
+     "datasheetUrl": "https://datasheet.octopart.com/STP10NK80Z-STMicroelectronics-datasheet-15144.pdf",
+     "provenance_note": "recorded Pd 30 W and RthJC 4.17 are the STP10NK80ZFP FullPak column; this bare TO-220 part is 160 W / 0.78 (ST PDF Rev 6); Rdson set to the 0.9 max (recorded 0.85 was neither typ nor max)"
+    }
+   ],
+   "quarantined": [
+    {
+     "partNumber": "SCT170300AL",
+     "evidence": "rohm.com SiC parametric enumerated (152 parts, no SCT170*; only 1700V discretes are SCT2750NWC/SCT2H12NWB/SCT2H12NZ, none TO-247); DigiKey/Mouser 0 results; Octopart no indexed listing; recorded rohm.com datasheet URL 404; in real ROHM naming 'A'=650V class, contradicting the recorded 1700V"
+    },
+    {
+     "partNumber": "SCT170300KL",
+     "evidence": "rohm.com SiC parametric enumerated (no SCT170*, no 300 mOhm 1700V part); DigiKey/Mouser 0 results; Octopart no indexed listing; recorded PDF URL pattern 404s; 'K'=1200V class in real ROHM naming, contradicting the recorded 1700V"
+    },
+    {
+     "partNumber": "SCT170300AW",
+     "evidence": "rohm.com SiC parametric enumerated (no SCT170*); DigiKey/Mouser 0 results; Octopart no indexed listing; ROHM's 'W'/'W7' suffix means TO-263-7L SMD, contradicting the recorded TO-247-3pin"
+    },
+    {
+     "partNumber": "SCT170300AW7",
+     "evidence": "rohm.com SiC parametric enumerated (no SCT170*; real AW7 parts are SCT3xxxAW7 650V TO-263-7L); DigiKey/Mouser 0 results; Octopart no indexed listing; quoted web search 0 exact hits"
+    },
+    {
+     "partNumber": "SCT170250AL",
+     "evidence": "rohm.com SiC parametric enumerated (no SCT170*, no 250 mOhm 1700V part); DigiKey 'no results'; Mouser no results; Octopart no indexed listing; recorded rohm.com/SCT170250AL.pdf 404"
+    },
+    {
+     "partNumber": "SCT170250KL",
+     "evidence": "rohm.com SiC parametric enumerated (no SCT170*); DigiKey/Mouser 0 results; Octopart no indexed listing; 'K'=1200V class in real ROHM naming, contradicting recorded 1700V"
+    },
+    {
+     "partNumber": "SCT170250AW",
+     "evidence": "rohm.com SiC parametric enumerated (no SCT170*); DigiKey/Mouser 0 results; Octopart no indexed listing; recorded TO-247-3pin contradicts ROHM's 'W' = TO-263-7L SMD suffix"
+    },
+    {
+     "partNumber": "SCT170250AW7",
+     "evidence": "rohm.com SiC parametric enumerated (no SCT170*); DigiKey/Mouser 0 results; Octopart no indexed listing; all 8 SCT170xxx records share templated thermal data (192.5/230 W, 2.0/1.75 K/W) consistent with fabrication"
+    },
+    {
+     "partNumber": "IPW65R120CFD7",
+     "evidence": "Infineon site search (Coveo API, exact phrase) returns 0 results while control queries on real parts return 16-98 hits (did-you-mean: ipw65r190cfd7a); no CFD7 120 mOhm class exists; Google and infineon.com asset/dgdl URL probes empty"
+    },
+    {
+     "partNumber": "IPW65R150CFD7",
+     "evidence": "Infineon site search 0 results; the real neighbours are IPW65R150CFD (CFD2 gen) and IPW65R150CFDA (automotive) - the record is likely a corrupted name of one of those; repair would be a guess, so quarantined for re-sourcing"
+    },
+    {
+     "partNumber": "IPW60R160G7",
+     "evidence": "Infineon site search 0 results; no G7-family part at 160 mOhm exists (real neighbours: IPW60R160C6, IPW60R160P6, IPP/IPA60R160P7)"
+    },
+    {
+     "partNumber": "IPP60R450P7",
+     "evidence": "Infineon site search 0 results (did-you-mean: IPP80R450P7); the 600 V P7 TO-220 series has no 450 mOhm class - likely conflation with IPP80R450P7, which cannot be assumed"
+    },
+    {
+     "partNumber": "IPP60R520P7",
+     "evidence": "Infineon site search 0 results; the 600 V P7 series has no 520 mOhm class (520 was a CoolMOS CP-era class); Google and asset-URL probes empty"
+    },
+    {
+     "partNumber": "IPD80R650CE",
+     "evidence": "Infineon site search 0 results (controls: IPA80R650CE 88 hits, IPD80R1K0CE 98 hits); the 800 V CE series has no DPAK 650 mOhm variant - record is a package-swapped clone of IPA80R650CE"
+    },
+    {
+     "partNumber": "IPP80R650P7",
+     "evidence": "Infineon site search 0 results (did-you-mean: IPP80R450P7); the 800 V P7 TO-220 lineup (280/360/450/900/1K2/1K4/2K0) has no 650 mOhm class"
+    },
+    {
+     "partNumber": "FCP380N60F",
+     "evidence": "onsemi product.do redirects to the generic obsoletePart page; alldatasheet historical index of 380N60 lists FCP380N60/FCP380N60E/FCD380N60E/FCPF380N60 but no F-suffix variant; recorded Id 14 A / Pd 278 W / RthJC 4.5 match no real variant (FCP380N60 is 10.2 A / 106 W / 1.18; FCPF FullPak is 31 W / 4)"
+    },
+    {
+     "partNumber": "FCP360N65",
+     "evidence": "onsemi redirects to obsoletePart; the real TO-220 part is FCP360N65S3R0 (10 A / 83 W / 1.5 K/W per onsemi PDF Rev 4); recorded Id 12 A / Pd 208 W / RthJC 5.0 match nothing real; repair would be a guess at which S3-family variant was meant"
+    },
+    {
+     "partNumber": "FCP520N65",
+     "evidence": "zero parts by any manufacturer contain 520N65 (onsemi catalogue, web search, alldatasheet full-text index); no onsemi 650 V family has a 520 mOhm member"
+    }
+   ]
+  },
+  {
+   "campaign": "gate-charge/on-resistance: 34 of 36 MOS_QG_VS_RON records (ABT #512 class)",
+   "repaired": [
+    {
+     "partNumber": "CSD13380F3",
+     "found": true,
+     "datasheetUrl": "https://www.ti.com/lit/ds/symlink/csd13380f3.pdf",
+     "rdson_max_ohm": 0.076,
+     "rdson_vgs_V": 4.5,
+     "qg_typ_C": 9.1e-10,
+     "qg_vgs_V": 4.5,
+     "provenance_note": "ron wrong: recorded 0.015 is ~5x below the 4.5V max 0.076 - impossible for this die; recorded qg ~ typ (kept to datasheet typ 0.91nC)"
+    },
+    {
+     "partNumber": "CSD13381F4",
+     "found": true,
+     "datasheetUrl": "https://www.ti.com/lit/ds/symlink/csd13381f4.pdf",
+     "rdson_max_ohm": 0.18,
+     "rdson_vgs_V": 4.5,
+     "qg_typ_C": 1.06e-09,
+     "qg_vgs_V": 4.5,
+     "provenance_note": "ron wrong: recorded 0.011 is ~16x low vs 0.18 max @4.5V; qg 1060pC typ correct"
+    },
+    {
+     "partNumber": "BSG0812ND",
+     "found": true,
+     "datasheetUrl": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-bsg0812nd-datasheet-cn.pdf",
+     "rdson_max_ohm": 0.0013,
+     "rdson_vgs_V": 4.5,
+     "qg_typ_C": 2e-08,
+     "qg_vgs_V": 4.5,
+     "provenance_note": "mixed-FET record: recorded qg 5.6nC was Q1's (control) gate charge paired with Q2's (sync) ron; repaired to Q2's own pair (0.9 mOhm max @10V, Qg 20 nC typ @4.5V); Ron stored as the 4.5 V max so both fields share one drive condition"
+    },
+    {
+     "partNumber": "BSG0810NDI",
+     "found": true,
+     "datasheetUrl": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-bsg0810ndi-datasheet-en.pdf",
+     "rdson_max_ohm": 0.0012,
+     "rdson_vgs_V": 4.5,
+     "qg_typ_C": 1.6e-08,
+     "qg_vgs_V": 4.5,
+     "provenance_note": "mixed-FET record: qg 5.6nC = Q1's; repaired to Q2's pair (0.85 mOhm max @10V, 16 nC typ @4.5V); Ron stored as the 4.5 V max so both fields share one drive condition"
+    },
+    {
+     "partNumber": "BSG0813NDI",
+     "found": true,
+     "datasheetUrl": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-bsg0813ndi-datasheet-en.pdf",
+     "rdson_max_ohm": 0.0017,
+     "rdson_vgs_V": 4.5,
+     "qg_typ_C": 1.5e-08,
+     "qg_vgs_V": 4.5,
+     "provenance_note": "mixed-FET record: qg 5.6nC = Q1's; repaired to Q2's pair (1.2 mOhm max @10V, 15 nC typ @4.5V); Ron stored as the 4.5 V max so both fields share one drive condition"
+    },
+    {
+     "partNumber": "BSG0811ND",
+     "found": true,
+     "datasheetUrl": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-bsg0811nd-datasheet-en.pdf",
+     "rdson_max_ohm": 0.0011,
+     "rdson_vgs_V": 4.5,
+     "qg_typ_C": 2e-08,
+     "qg_vgs_V": 4.5,
+     "provenance_note": "mixed-FET record: qg 5.6nC = Q1's; repaired to Q2's pair (0.8 mOhm max @10V, 20 nC typ @4.5V); Ron stored as the 4.5 V max so both fields share one drive condition"
+    },
+    {
+     "partNumber": "BSC0921NDI",
+     "found": true,
+     "datasheetUrl": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-bsc0921ndi-datasheet-en.pdf",
+     "rdson_max_ohm": 0.0021,
+     "rdson_vgs_V": 4.5,
+     "qg_typ_C": 2.2e-08,
+     "qg_vgs_V": 4.5,
+     "provenance_note": "mixed-FET record: qg 5.9nC = Q1's; repaired to Q2's pair (1.6 mOhm max @10V, 22 nC typ @4.5V); Ron stored as the 4.5 V max so both fields share one drive condition"
+    },
+    {
+     "partNumber": "BSC0910NDI",
+     "found": true,
+     "datasheetUrl": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-bsc0910ndi-datasheet-en.pdf",
+     "rdson_max_ohm": 0.0016,
+     "rdson_vgs_V": 4.5,
+     "qg_typ_C": 2.3e-08,
+     "qg_vgs_V": 4.5,
+     "provenance_note": "mixed-FET record: qg 5.0nC = Q1's; repaired to Q2's pair (1.2 mOhm max @10V, 23 nC typ @4.5V); Ron stored as the 4.5 V max so both fields share one drive condition"
+    },
+    {
+     "partNumber": "BSC0911ND",
+     "found": true,
+     "datasheetUrl": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-bsc0911nd-datasheet-en.pdf",
+     "rdson_max_ohm": 0.0017,
+     "rdson_vgs_V": 4.5,
+     "qg_typ_C": 2.5e-08,
+     "qg_vgs_V": 4.5,
+     "provenance_note": "mixed-FET record: qg 7.7nC = Q1's; repaired to Q2's pair (1.2 mOhm max @10V, 25 nC typ @4.5V); Ron stored as the 4.5 V max so both fields share one drive condition"
+    },
+    {
+     "partNumber": "BSV236SP",
+     "found": true,
+     "datasheetUrl": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-bsv236sp-datasheet-en.pdf",
+     "rdson_max_ohm": 0.175,
+     "rdson_vgs_V": -4.5,
+     "qg_typ_C": 3.8e-09,
+     "qg_vgs_V": -4.5,
+     "provenance_note": "both wrong: single P-ch -20V small-signal SOT-363; recorded ron 4.2 mOhm ~42x low (max 175 mOhm @-4.5V), recorded qg 1 nC ~4x low (typ 3.8 nC)"
+    },
+    {
+     "partNumber": "Si7997DP",
+     "found": true,
+     "datasheetUrl": "https://www.vishay.com/docs/66719/si7997dp.pdf",
+     "rdson_max_ohm": 0.0055,
+     "rdson_vgs_V": -10,
+     "qg_typ_C": 1.06e-07,
+     "qg_vgs_V": -10,
+     "provenance_note": "qg wrong: recorded 2 nC ~50x low vs 106 nC typ @-10V; ron 5.5 mOhm max correct (dual P-ch, per-FET values)"
+    },
+    {
+     "partNumber": "SiZ926DT",
+     "found": true,
+     "datasheetUrl": "https://www.vishay.com/docs/68127/siz926dt.pdf",
+     "rdson_max_ohm": 0.0048,
+     "rdson_vgs_V": 10,
+     "qg_typ_C": 1.25e-08,
+     "qg_vgs_V": 10,
+     "provenance_note": "qg wrong: recorded 2 nC matches nothing on the datasheet; repaired to Ch1's (control, matches recorded ron 4.8 mOhm max) 12.5 nC typ @10V"
+    },
+    {
+     "partNumber": "SiZ710DT",
+     "found": true,
+     "datasheetUrl": "https://www.vishay.com/docs/65733/siz710dt.pdf",
+     "rdson_max_ohm": 0.0068,
+     "rdson_vgs_V": 10,
+     "qg_typ_C": 1.15e-08,
+     "qg_vgs_V": 10,
+     "provenance_note": "qg wrong: recorded 1 nC matches nothing; repaired to Ch1's (control, matches recorded ron 6.8 mOhm max) 11.5 nC typ @10V"
+    },
+    {
+     "partNumber": "FDS6975",
+     "found": true,
+     "datasheetUrl": "https://www.onsemi.com/pdf/datasheet/fds6975-d.pdf",
+     "rdson_max_ohm": 0.032,
+     "rdson_vgs_V": -10,
+     "qg_typ_C": 1.45e-08,
+     "qg_vgs_V": -5,
+     "provenance_note": "ron was the 0.001 onsemi template; real 32 mOhm max @-10V per FET; recorded qg = datasheet typ exactly"
+    },
+    {
+     "partNumber": "FDS8949",
+     "found": true,
+     "datasheetUrl": "https://www.onsemi.com/pdf/datasheet/fds8949-d.pdf",
+     "rdson_max_ohm": 0.029,
+     "rdson_vgs_V": 10,
+     "qg_typ_C": 7.7e-09,
+     "qg_vgs_V": 5,
+     "provenance_note": "ron was the 0.001 template; real 29 mOhm max @10V; qg = typ exactly"
+    },
+    {
+     "partNumber": "FDS8984",
+     "found": true,
+     "datasheetUrl": "https://www.onsemi.com/pdf/datasheet/fds8984-d.pdf",
+     "rdson_max_ohm": 0.023,
+     "rdson_vgs_V": 10,
+     "qg_typ_C": 9.2e-09,
+     "qg_vgs_V": 10,
+     "provenance_note": "ron was the 0.001 template; real 23 mOhm max @10V; recorded qg 5 nC was the reduced-drive @5V value, set to the 10V-drive 9.2 nC typ matching onResistanceVgs"
+    },
+    {
+     "partNumber": "FDS9945",
+     "found": true,
+     "datasheetUrl": "https://www.onsemi.com/pdf/datasheet/fds9945-d.pdf",
+     "rdson_max_ohm": 0.1,
+     "rdson_vgs_V": 10,
+     "qg_typ_C": 8e-09,
+     "qg_vgs_V": 5,
+     "provenance_note": "ron was the 0.001 template; real 100 mOhm max @10V; qg = typ exactly"
+    },
+    {
+     "partNumber": "FDS9958",
+     "found": true,
+     "datasheetUrl": "https://www.onsemi.com/pdf/datasheet/fds9958-d.pdf",
+     "rdson_max_ohm": 0.105,
+     "rdson_vgs_V": -10,
+     "qg_typ_C": 1.6e-08,
+     "qg_vgs_V": -10,
+     "provenance_note": "ron was the 0.001 template; real 105 mOhm max @-10V; recorded qg 8 nC was the -4.5V-drive value, set to the -10V-drive 16 nC typ matching onResistanceVgs"
+    },
+    {
+     "partNumber": "NDC7003P",
+     "found": true,
+     "datasheetUrl": "https://www.onsemi.com/pdf/datasheet/ndc7003p-d.pdf",
+     "rdson_max_ohm": 5.0,
+     "rdson_vgs_V": -10,
+     "qg_typ_C": 1.6e-09,
+     "qg_vgs_V": -10,
+     "provenance_note": "ron was the 0.001 template, 5000x low: real max 5 Ohm @-10V (dual P-ch -60V small-signal SuperSOT-6); qg = typ exactly"
+    },
+    {
+     "partNumber": "NDS9945",
+     "found": true,
+     "datasheetUrl": "https://www.onsemi.com/pdf/datasheet/nds9945-d.pdf",
+     "rdson_max_ohm": 0.1,
+     "rdson_vgs_V": 10,
+     "qg_typ_C": 1.29e-08,
+     "qg_vgs_V": 10,
+     "provenance_note": "ron was the 0.001 template; real 100 mOhm max @10V; qg = typ exactly"
+    },
+    {
+     "partNumber": "NDS9948",
+     "found": true,
+     "datasheetUrl": "https://www.onsemi.com/pdf/datasheet/nds9948-d.pdf",
+     "rdson_max_ohm": 0.25,
+     "rdson_vgs_V": -10,
+     "qg_typ_C": 9e-09,
+     "qg_vgs_V": -10,
+     "provenance_note": "ron was the 0.001 template; real 250 mOhm max @-10V; qg = typ exactly"
+    },
+    {
+     "partNumber": "NTMD4N03R2G",
+     "found": true,
+     "datasheetUrl": "https://www.onsemi.com/pdf/datasheet/ntmd4n03r2-d.pdf",
+     "rdson_max_ohm": 0.06,
+     "rdson_vgs_V": 10,
+     "qg_typ_C": 8e-09,
+     "qg_vgs_V": 10,
+     "provenance_note": "ron was the 0.001 template; real 60 mOhm max @10V per FET; qg = typ exactly"
+    },
+    {
+     "partNumber": "NVMD4N03R2G",
+     "found": true,
+     "datasheetUrl": "https://www.onsemi.com/pdf/datasheet/ntmd4n03r2-d.pdf",
+     "rdson_max_ohm": 0.06,
+     "rdson_vgs_V": 10,
+     "qg_typ_C": 8e-09,
+     "qg_vgs_V": 10,
+     "provenance_note": "AEC version, same datasheet (header NTMD4N03, NVMD4N03); ron was the 0.001 template, real 60 mOhm max @10V"
+    },
+    {
+     "partNumber": "FDD3682",
+     "found": true,
+     "datasheetUrl": "https://www.onsemi.com/pdf/datasheet/fdd3682-d.pdf",
+     "rdson_max_ohm": 0.036,
+     "rdson_vgs_V": 10,
+     "qg_typ_C": 1.85e-08,
+     "qg_vgs_V": 10,
+     "provenance_note": "recorded ron 60 uOhm was 600x low (unit misparse); real 36 mOhm max @10V, 100V DPAK; qg = typ exactly"
+    },
+    {
+     "partNumber": "FDMC7208S",
+     "found": true,
+     "datasheetUrl": "https://www.onsemi.com/pdf/datasheet/fdmc7208s-d.pdf",
+     "rdson_max_ohm": 0.009,
+     "rdson_vgs_V": 10,
+     "qg_typ_C": 1.3e-08,
+     "qg_vgs_V": 10,
+     "provenance_note": "ron was the 0.001 template matching neither FET; repaired to Q1 (control): 9 mOhm max @10V, Qg 13 nC typ @10V"
+    },
+    {
+     "partNumber": "FDMC8200",
+     "found": true,
+     "datasheetUrl": "https://www.onsemi.com/pdf/datasheet/fdmc8200-d.pdf",
+     "rdson_max_ohm": 0.02,
+     "rdson_vgs_V": 10,
+     "qg_typ_C": 7.3e-09,
+     "qg_vgs_V": 10,
+     "provenance_note": "ron was the 0.001 template; repaired to Q1 (control): 20 mOhm max @10V, Qg 7.3 nC typ @10V"
+    },
+    {
+     "partNumber": "FDMC8200S",
+     "found": true,
+     "datasheetUrl": "https://www.onsemi.com/pdf/datasheet/fdmc8200s-d.pdf",
+     "rdson_max_ohm": 0.02,
+     "rdson_vgs_V": 10,
+     "qg_typ_C": 7.3e-09,
+     "qg_vgs_V": 10,
+     "provenance_note": "ron was the 0.001 template; repaired to Q1 (control): 20 mOhm max @10V, Qg 7.3 nC typ @10V"
+    },
+    {
+     "partNumber": "FDMS3669S",
+     "found": true,
+     "datasheetUrl": "https://www.onsemi.com/pdf/datasheet/fdms3669s-d.pdf",
+     "rdson_max_ohm": 0.01,
+     "rdson_vgs_V": 10,
+     "qg_typ_C": 1.7e-08,
+     "qg_vgs_V": 10,
+     "provenance_note": "ron was the 0.001 template; repaired to Q1 (control): 10 mOhm max @10V, Qg 17 nC typ @10V"
+    },
+    {
+     "partNumber": "FDMS7608S",
+     "found": true,
+     "datasheetUrl": "https://www.onsemi.com/pdf/datasheet/fdms7608s-d.pdf",
+     "rdson_max_ohm": 0.01,
+     "rdson_vgs_V": 10,
+     "qg_typ_C": 1.8e-08,
+     "qg_vgs_V": 10,
+     "vds_V": 30,
+     "provenance_note": "ron was the 0.001 template; repaired to Q1 (control): 10 mOhm max @10V, Qg 18 nC typ @10V; recorded Vds 20 V corrected to the 30 V family rating"
+    },
+    {
+     "partNumber": "FDMS7620S",
+     "found": true,
+     "datasheetUrl": "https://www.onsemi.com/pdf/datasheet/fdms7620s-d.pdf",
+     "rdson_max_ohm": 0.02,
+     "rdson_vgs_V": 10,
+     "qg_typ_C": 7.2e-09,
+     "qg_vgs_V": 10,
+     "provenance_note": "ron was the 0.001 template; repaired to Q1 (control): 20 mOhm max @10V, Qg 7.2 nC typ @10V"
+    },
+    {
+     "partNumber": "FDMS8090",
+     "found": true,
+     "datasheetUrl": "https://www.onsemi.com/pdf/datasheet/fdms8090-d.pdf",
+     "rdson_max_ohm": 0.013,
+     "rdson_vgs_V": 10,
+     "qg_typ_C": 1.9e-08,
+     "qg_vgs_V": 10,
+     "provenance_note": "ron was the 0.001 template; real 13 mOhm max @10V per FET (symmetric dual 100V); recorded qg 10 nC was the 5V-drive typ, set to the 10V-drive 19 nC typ"
+    },
+    {
+     "partNumber": "NTTFD1D8N02P1E",
+     "found": true,
+     "datasheetUrl": "https://www.onsemi.com/pdf/datasheet/nttfd1d8n02p1e-d.pdf",
+     "rdson_max_ohm": 0.0042,
+     "rdson_vgs_V": 10,
+     "qg_typ_C": 1.2e-08,
+     "qg_vgs_V": 10,
+     "provenance_note": "ron was the 0.001 template matching no max; repaired to Q1 (control): 4.2 mOhm max @10V, Qg 12 nC typ @10V; recorded qg 1 nC matched nothing"
+    }
+   ],
+   "quarantined": [
+    {
+     "partNumber": "BSC004N04LS",
+     "evidence": "infineon.com/part/BSC004N04LS returns 404 while the 8 real Infineon PNs in the same batch return 200; 3 web searches incl. distributor-scoped find only BSC010N04LS (1 mOhm, the lowest-Rdson 40V OptiMOS5 SuperSO8), BSC014N04LS, BSC007N04LS6; no 0.4 mOhm 40V SuperSO8 exists in any Infineon family - PN and ron 0.0004 fabricated from the 004 digits"
+    },
+    {
+     "partNumber": "IPD060N03S4",
+     "evidence": "infineon.com/part 404; octopart/digikey/mouser/alldatasheet-scoped searches find only IPD060N03L G and the unrelated IPx70N03S4L family; the record is almost certainly IPD060N03L G (its Qg typ 22 nC exactly equals the recorded 2.2e-8, real Rdson 6 mOhm max vs recorded 0.0005) but re-identification would be a guess - quarantined for re-sourcing"
+    }
+   ]
+  },
+  {
+   "campaign": "gate-charge stragglers: full re-read + final fabrication (ABT #512 class)",
+   "repaired": [
+    {
+     "partNumber": "CSD15380F3",
+     "id_25c_A": 0.9,
+     "rdson_max_ohm": 1.46,
+     "rdson_vgs_V": 4.5,
+     "qg_typ_C": 2.16e-10,
+     "qgs_typ_C": 7.7e-11,
+     "qgd_typ_C": 2.7e-11,
+     "ptot_25c_W": 1.4,
+     "rth_ja_KperW": 90,
+     "tj_max_C": 150,
+     "remove": [
+      "thermal.thermalResistanceJunctionCase"
+     ],
+     "datasheetUrl": "https://www.ti.com/lit/ds/symlink/csd15380f3.pdf",
+     "provenance_note": "full re-read from TI SLPS579B: recorded Id 3 A was 3.3x the best-case rating (0.9 A at Ta=25 C on 1-in2 2-oz Cu, RthJA 90 K/W), recorded Qgs+Qgd 0.45 nC exceeded the real total (Qgs 0.077 nC + Qgd 0.027 nC vs Qg 0.216 nC typ at 4.5 V), Ron 63x low; thermalResistanceJunctionCase REMOVED - the datasheet defines no junction-to-case path for this chip-scale LGA, only RthJA (90 K/W on 1-in2 Cu, 255 K/W minimum-Cu)"
+    }
+   ],
+   "quarantined": [
+    {
+     "partNumber": "NVMFD5N02LT4G",
+     "evidence": "the real onsemi NVMFD5xxx automotive dual family (NVMFD5483NL, NVMFD5C462NL/5C668NL/5C672NL/5C680NL, 40-60 V, DFN/SO-8FL, T1G/T3G suffixes) has no 20 V member, no SOIC-8 member, no LT4G suffix; onsemi.com/pdf/datasheet slugs for every plausible variant return the generic fallback page while every real part in the batch returned a PDF; DigiKey (which indexes obsolete onsemi PNs) shows 0 results for both NVMFD5N02LT4G and NVMFD5N02; ron 0.001 is the same placeholder template as the 17 repaired records"
+    }
+   ]
+  }
+ ]
+}
