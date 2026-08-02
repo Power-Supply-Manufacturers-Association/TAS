@@ -556,10 +556,23 @@ TEST_CASE("AntiSynthesis: OverPrecisionFlags", "[antisynthesis]") {
 
 // P4: cross-parameter physics correlations.
 TEST_CASE("AntiSynthesis: TvsVoltageOrderingImpossible", "[antisynthesis]") {
+    // Avalanche TVS: standoff >= clamp is physically impossible.
     json p = json::parse(R"json({"semiconductor":{"diode":{"manufacturerInfo":{
-      "reference":"X","datasheetInfo":{"part":{"subType":"esd"},
+      "reference":"X","datasheetInfo":{"part":{"subType":"tvs"},
       "electrical":{"standoffVoltage":24.0,"clampingVoltage":24.0}}}}}})json");
     CHECK(has(V.validate(p), "DIO_TVS_ORDERING", Severity::Impossible));
+    // ESD steering array: the spec'd clamp may be the steering path's forward
+    // VF (Eaton STS142700UL55: VRWM 70 V, "Forward Clamping voltage" 9 V max),
+    // so the same inversion is Suspicious, not impossible. Was pinned as
+    // Impossible-on-esd before the ABT #507 gate work; the Eaton datasheet is
+    // the evidence the old pin captured a wrong assumption.
+    json q = json::parse(R"json({"semiconductor":{"diode":{"manufacturerInfo":{
+      "reference":"STS142700UL55","datasheetInfo":{"part":{"subType":"esd"},
+      "electrical":{"standoffVoltage":70.0,"breakdownVoltage":85.0,
+                    "clampingVoltage":9.0}}}}}})json");
+    Verdict v = V.validate(q);
+    CHECK(!has(v, "DIO_TVS_ORDERING", Severity::Impossible));
+    CHECK(has(v, "DIO_TVS_ORDERING", Severity::Suspicious));
 }
 
 // A snapback ESD diode whose 1 mA breakdown LIMIT is guard-banded just below

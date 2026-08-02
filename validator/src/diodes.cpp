@@ -78,9 +78,19 @@ void check_diodes(const json& datasheet, const Ctx& ctx, std::vector<Finding>& o
         auto vso = scalar_at(*elec, {"standoffVoltage"});
         auto vbr = scalar_at(*elec, {"breakdownVoltage"});
         auto vcl = scalar_at(*elec, {"clampingVoltage"});
+        // ESD steering-diode arrays spec the FORWARD clamping voltage (the
+        // steering path's VF at IPP), which legitimately sits far below the
+        // working voltage: Eaton STS142700UL55's own datasheet is VRWM 70 V
+        // with "** Forward Clamping voltage" 7 V typ / 9 V max at 24 A, and
+        // reverse breakdown 85 V. On an esd subType the inversion is therefore
+        // Suspicious, not impossible; avalanche TVS keep the hard check.
+        bool esd_array = tech_has(tech, "esd");
         if (vso && vcl && *vso > 0 && *vcl > 0 && *vso >= *vcl)
-            emit(out, ctx, "DIO_TVS_ORDERING", Severity::Impossible, *vso, *vcl,
-                 fmt("standoffVoltage >= clampingVoltage", *vso, *vcl));
+            emit(out, ctx, "DIO_TVS_ORDERING",
+                 esd_array ? Severity::Suspicious : Severity::Impossible, *vso, *vcl,
+                 fmt(esd_array ? "standoffVoltage >= clampingVoltage (esd array: "
+                                 "clamp may be the steering diode's forward VF)"
+                               : "standoffVoltage >= clampingVoltage", *vso, *vcl));
         // Snapback ESD parts guard-band the 1 mA breakdown LIMIT below the
         // working voltage: Toshiba DF2B26M4SL's own table is VRWM 24 V with
         // VBR min 21.0 V (leakage separately guaranteed 0.1 uA at 24 V), a
@@ -95,8 +105,11 @@ void check_diodes(const json& datasheet, const Ctx& ctx, std::vector<Finding>& o
                  fmt("breakdownVoltage inside the snapback guard band below "
                      "standoffVoltage", *vbr, *vso));
         if (vbr && vcl && *vbr > 0 && *vcl > 0 && *vcl < *vbr)
-            emit(out, ctx, "DIO_TVS_ORDERING", Severity::Impossible, *vcl, *vbr,
-                 fmt("clampingVoltage < breakdownVoltage", *vcl, *vbr));
+            emit(out, ctx, "DIO_TVS_ORDERING",
+                 esd_array ? Severity::Suspicious : Severity::Impossible, *vcl, *vbr,
+                 fmt(esd_array ? "clampingVoltage < breakdownVoltage (esd array: "
+                                 "a forward-VF clamp sits below reverse breakdown)"
+                               : "clampingVoltage < breakdownVoltage", *vcl, *vbr));
     }
 
     // CHECK (NEW): surge current must exceed continuous forward current.
