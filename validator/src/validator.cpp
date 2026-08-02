@@ -81,6 +81,12 @@ void check_fabricated_mpn(const json& ds, const Ctx& ctx, std::vector<Finding>& 
         std::regex(R"(^(Vis|Yag|Bou|Pan|KOA)(wir|car|mel|met|thi|MCS|PTF)\d+R\d{4}\d{4}$)"),
         std::regex(R"(^(GRM|CL|FK)\d{4}\d{4}\d{3}V$)"),
         std::regex(R"(^MLCC\d{6}$)"),
+        // ABT #507 audit (2026-08-02): the "wave 2" SiC-diode ladder generator.
+        // Real Infineon SiC Schottky numbering carries the voltage class in the
+        // token (IDH06S60C, IDH03G65C6, IDH05G120C5 -> 60/65/120); the generator
+        // minted 10C/11C/12C/20C/21C/22C and swept EVERY integer amp 2..30 A
+        // across three package variants of one die.
+        std::regex(R"(^IDH\d{2}S[GO]?(?:1[0-2]|2[0-2])C$)"),
     };
     // The phase2-5 generators wrote part.partNumber ONLY (no reference) — that
     // is how their output evaded reference-keyed checks. Test both identifiers.
@@ -100,6 +106,135 @@ void check_fabricated_mpn(const json& ds, const Ctx& ctx, std::vector<Finding>& 
                 return;
             }
         }
+    }
+}
+
+// GEN_PACKAGE_MOUNT: mechanical.assemblyType contradicting the package named in
+// mechanical.case. A package outline's mount class is definitional, not a vendor
+// option — TO-252 (DPAK) is surface mount (gull-wing leads + solderable tab), and
+// its through-hole relatives are separate outlines with their own numbers (TO-251/
+// IPAK, TO-262/I2PAK). A wrong mount silently turns a THT->SMT process change into
+// a "different land pattern" note in cross-reference (ABT #507), so it is a data
+// impossibility, not a style difference.
+//
+// Only outlines whose class is definitional are listed. Screw-terminal and module
+// bricks (SOT-227/ISOTOP, INT-A-PAK, EMIPAK, ACEPACK, "Module", 62mm, SEMITOP,
+// ECONO) are deliberately absent: they are neither smt nor tht and the catalogue
+// legitimately files them as chassis/pcbPad/smt.
+void check_package_mount(const json& ds, const Ctx& ctx, std::vector<Finding>& out) {
+    const json* mech = at(ds, "mechanical");
+    if (mech == nullptr || !mech->is_object()) return;
+    if (!mech->contains("case") || !(*mech)["case"].is_string()) return;
+    if (!mech->contains("assemblyType") || !(*mech)["assemblyType"].is_string()) return;
+    const std::string kase = (*mech)["case"].get<std::string>();
+    const std::string mount = (*mech)["assemblyType"].get<std::string>();
+
+    struct Outline {
+        const char* pattern;
+        const char* mount;
+    };
+    static const Outline OUTLINES[] = {
+        // Surface mount.
+        {R"((PG-)?TO-?25[23]\b.*)", "smt"},        // TO-252/253 = DPAK
+        {R"(D-?PAK\b.*)", "smt"},
+        {R"((PG-)?TO-?263\b.*)", "smt"},           // TO-263 = D2PAK
+        {R"(D2PAK\b.*)", "smt"},
+        {R"((TO-?268|D3PAK)\b.*)", "smt"},
+        {R"(DO-214.*)", "smt"},                    // SMA/SMB/SMC bodies
+        {R"(SM[ABC]\b.*)", "smt"},
+        {R"(SOD-(80|123|128|323|523|882|962)\b.*)", "smt"},
+        {R"(SOT-(23|223|323|346|363|5X3|9X3|SC70)\b.*)", "smt"},
+        {R"(SC-?70\b.*)", "smt"},
+        {R"((SO|SOP|SOIC|MSOP|TSSOP|DSO)-?8?\b.*)", "smt"},
+        {R"(([UWVX][12]?)?SON\b.*)", "smt"},
+        {R"([UPHD]?QFN\b.*)", "smt"},
+        {R"(DFN.*)", "smt"},
+        {R"((DS)?BGA\b.*)", "smt"},
+        {R"(LGA\b.*)", "smt"},
+        {R"((TOLL|LFPAK|PowerPAK|PowerFLAT|TDSON|TSDSON|SuperSO8|H2PAK)\b.*)", "smt"},
+        {R"(TO-?277\b.*)", "smt"},
+        // Through hole.
+        {R"((PG-)?TO-?220\b.*)", "tht"},           // incl. FullPAK/FP — still leaded
+        {R"((PG-)?TO-?24[47]\b.*)", "tht"},        // TO-247 / TO-264
+        {R"((HiP|MAX|PLUS|ISOPLUS)-?247.*)", "tht"},
+        {R"(ISOPLUS-?264.*)", "tht"},
+        {R"(TO-?3P.*)", "tht"},
+        {R"((TO-?251|IPAK)\b.*)", "tht"},          // the through-hole DPAK relative
+        {R"((TO-?262|I2PAK)\b.*)", "tht"},         // the through-hole D2PAK relative
+        {R"(DO-(14|15|27|35|41|201|204|247)\b.*)", "tht"},
+        {R"(SOD-(57|64|68)\b.*)", "tht"},          // leaded glass, not the SMD SODs
+        {R"((PG-)?[QC]?DIP-?\d*\b.*)", "tht"},
+        {R"(ITO-220.*)", "tht"},
+    };
+    for (const auto& o : OUTLINES) {
+        if (!std::regex_match(kase, std::regex(o.pattern, std::regex::icase))) continue;
+        if (mount == o.mount) return;
+        emit(out, ctx, "GEN_PACKAGE_MOUNT", Severity::Impossible, 0, 0,
+             "mechanical.case '" + kase + "' is a " + std::string(o.mount) +
+                 " package outline but mechanical.assemblyType is '" + mount + "'");
+        return;
+    }
+}
+
+// GEN_PACKAGE_ENVELOPE: a body a named package outline cannot physically have.
+// A flat plastic outline's THICKNESS is definitional, not a vendor option: a
+// SOIC-8 is 1.75 mm max (JEDEC MS-012, narrow body) or 2.65 mm (MS-013, wide
+// body), and no variant of it is 4 mm thick. Copying a power package's body onto
+// a small-outline record is how importers lose the distinction — ABT #508: 58
+// diodes filed as SO-8 carried their DPAK sibling's 10 x 8 x 4 mm body, and the
+// cross-reference tool then showed that envelope to the user as a real footprint.
+//
+// The catalogue fixes NO axis convention — length/width/height are whichever way
+// the vendor drawing happened to be read (real TO-220 records store the 15.2 mm
+// tab axis under "height"), so this bounds the SMALLEST of the three dimensions,
+// which is the body thickness whichever field holds it. That also sidesteps the
+// lead span, which varies 6.0 -> 10.3 mm between the narrow and wide SOIC bodies.
+//
+// Only outlines whose thickness is fixed by one drawing are listed. Power and
+// module bricks are absent, and so are QFN/DFN/SON: their thickness genuinely
+// varies with the vendor's top-side-cooling variant, so no single bound holds.
+void check_package_envelope(const json& ds, const Ctx& ctx, std::vector<Finding>& out) {
+    const json* mech = at(ds, "mechanical");
+    if (mech == nullptr || !mech->is_object()) return;
+    if (!mech->contains("case") || !(*mech)["case"].is_string()) return;
+    const std::string kase = (*mech)["case"].get<std::string>();
+
+    // All three axes must be present: the thinnest of a partial set is not the
+    // thickness, and guessing which axis is missing would invent geometry.
+    double thickness = 0.0;
+    for (const char* axis : {"length", "width", "height"}) {
+        auto v = scalar_at(*mech, {axis, "nominal"});
+        if (!v || *v <= 0.0) return;
+        if (thickness == 0.0 || *v < thickness) thickness = *v;
+    }
+
+    struct Envelope {
+        const char* pattern;
+        double max_thickness;  // [m], the tallest legal variant of the outline
+    };
+    static const Envelope ENVELOPES[] = {
+        // Small-outline plastic bodies. 2.65 mm is the tallest legal SOIC
+        // (MS-013 wide); the bound is set at 3 mm so only gross contradictions
+        // — a power body, not a thick-variant rounding — are called impossible.
+        {R"((SO|SOIC|SOP|DSO)-?\d*\b.*)", 3.0e-3},
+        {R"((MSOP|TSSOP|SSOP|VSSOP|QSOP)-?\d*\b.*)", 2.2e-3},
+        {R"(SOT-?(23|323|343|346|363|416|523|723)\b.*)", 1.6e-3},  // not SOT-223/227
+        {R"(SC-?70\b.*)", 1.4e-3},
+        {R"(SOD-?(80|123|128|323|523|882|923|962)\b.*)", 1.3e-3},  // SMD SODs only
+        // Tab-mount power bodies, where the tab side is still a fixed thickness.
+        {R"(((PG-)?TO-?25[23]|D-?PAK)\b.*)", 2.6e-3},  // DPAK, 2.38 mm max
+        {R"(((PG-)?TO-?263|D2PAK)\b.*)", 5.0e-3},      // D2PAK, 4.70 mm max
+    };
+    for (const auto& e : ENVELOPES) {
+        if (!std::regex_match(kase, std::regex(e.pattern, std::regex::icase))) continue;
+        if (thickness <= e.max_thickness) return;
+        emit(out, ctx, "GEN_PACKAGE_ENVELOPE", Severity::Impossible, thickness,
+             e.max_thickness,
+             "mechanical.case '" + kase + "' has no variant thicker than " +
+                 std::to_string(e.max_thickness * 1e3) +
+                 " mm, but the record's smallest body dimension is " +
+                 std::to_string(thickness * 1e3) + " mm — a larger package's body");
+        return;
     }
 }
 
@@ -133,6 +268,8 @@ void check_generic(const json& ds, const Ctx& ctx, std::vector<Finding>& out) {
              "datasheetInfo.provenance is not set — data origin is untracked");
 
     check_fabricated_mpn(ds, ctx, out);
+    check_package_mount(ds, ctx, out);
+    check_package_envelope(ds, ctx, out);
     check_family_coherence(ds, ctx, out);
 }
 
@@ -369,7 +506,7 @@ Verdict PartValidator::validate_json(const std::string& text) const {
 std::vector<std::string> PartValidator::check_codes() {
     return {
         "GEN_TEMP_ORDER", "GEN_PROVENANCE_MISSING", "GEN_FAMILY_MISMATCH", "GEN_MULTI_DISCRIMINATOR",
-        "GEN_OVERPRECISION", "GEN_SPARSE", "GEN_COHORT_OUTLIER",
+        "GEN_OVERPRECISION", "GEN_SPARSE", "GEN_COHORT_OUTLIER", "GEN_PACKAGE_MOUNT",
         // magnetics
         "MAG_DCR_GEOM", "MAG_DCR_PER_H", "MAG_ISAT_POWER", "MAG_SRF_L", "MAG_SRF_SANE",
         "MAG_ENERGY_DENSITY", "MAG_L_TOLERANCE", "MAG_L_MAGNITUDE", "MAG_RATED_LE_SAT",
