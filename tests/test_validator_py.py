@@ -8,6 +8,7 @@ Then run from the TAS repo root:
 """
 import json
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -47,6 +48,39 @@ def test_module_surface():
     codes = tas_validator.check_codes()
     assert isinstance(codes, list) and len(codes) > 20
     assert "MAG_ENERGY_DENSITY" in codes
+
+
+# check_codes() is a hand-maintained list, so a new rule can be emitted by the
+# validator while nothing declares it — it then reads as "not a code this
+# validator has" to anything that enumerates the registry. Tie the list back to
+# the emit sites so the drift cannot recur silently.
+EMIT_SITES = [
+    # emit(out, ctx, "CODE", …) — the per-part rules
+    re.compile(r'\bemit\s*\([^,]+,\s*[^,]+,\s*"([A-Z][A-Z0-9_]+)"'),
+    # out.push_back({ref, "CODE", …}) — the corpus rules in corpus.cpp
+    re.compile(r'\bout\.push_back\s*\(\s*\{[^;]*?"([A-Z][A-Z0-9_]+)"'),
+]
+
+
+def test_every_emitted_code_is_declared():
+    """Every code the C++ can emit must appear in check_codes()."""
+    src_dir = REPO / "validator" / "src"
+    if not src_dir.is_dir():
+        pytest.skip(f"validator sources not present at {src_dir}")
+
+    emitted = set()
+    for path in sorted(src_dir.glob("*.cpp")):
+        text = path.read_text()
+        for pattern in EMIT_SITES:
+            emitted.update(pattern.findall(text))
+    assert emitted, f"no emit sites found under {src_dir} — the scan is broken"
+
+    declared = set(tas_validator.check_codes()) | set(tas_validator.circuit_check_codes())
+    undeclared = sorted(emitted - declared)
+    assert not undeclared, (
+        f"{len(undeclared)} check code(s) are emitted but missing from "
+        f"check_codes(): {undeclared}"
+    )
 
 
 def test_known_good_inductor_is_valid():
