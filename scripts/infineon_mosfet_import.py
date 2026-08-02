@@ -1,10 +1,18 @@
 #!/usr/bin/env python3
 """Infineon 'MOSFET Finder' xlsx export -> SAS mosfet NDJSON. Complete records
 (VDS, Id, RDS(on), VGS(th), Qg all present). NEW part numbers only; stamps provenance.
+
+Every emitted record goes through Blade Runner (ABT #500): this was the only
+importer writing into mosfets.ndjson with no physics gate, and the mosfet catalogue
+is where the TO-247 thermal-package conflict accumulated. Schema-legal is not the
+same as physically possible.
 """
-import openpyxl, json, re, datetime, sys
+import openpyxl, json, re, datetime, sys, os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from blade_gate import BladeGate
+
 SRC="/mnt/c/Users/Alfonso/Downloads/MOSFET Finder.xlsx"
-OUT="/home/alf/PSMA/TAS/staging/infineon"; import os; os.makedirs(OUT,exist_ok=True)
+OUT="/home/alf/PSMA/TAS/staging/infineon"; os.makedirs(OUT,exist_ok=True)
 TODAY=datetime.date.today().isoformat()
 def val(s):
     if s is None: return None
@@ -44,7 +52,8 @@ def main():
     rows=list(ws.iter_rows(values_only=True)); hdr=[str(c) for c in rows[0]]
     H={h:i for i,h in enumerate(hdr)}
     def g(r,name): return r[H[name]] if name in H and H[name]<len(r) else None
-    have=load_have(); out=[]; seen=set()
+    have=load_have(); out=[]; seen=set(); blocked=0
+    gate=BladeGate(("semiconductor","mosfet"))
     for r in rows[1:]:
         pn=g(r,"Part number")
         pn=re.sub(r"\s+"," ",str(pn)).strip() if pn else None
@@ -77,9 +86,14 @@ def main():
         mi={"name":"Infineon","reference":pn,"status":"production",
             "datasheetInfo":{"part":part,"electrical":el,"provenance":prov}}
         if ds and str(ds).startswith("http"): mi["datasheetUrl"]=str(ds)
-        out.append({"semiconductor":{"mosfet":{"manufacturerInfo":mi}}})
+        comp={"manufacturerInfo":mi}
+        ok,why=gate.check(comp)
+        if not ok:
+            blocked+=1; print(f"  BLOCKED {pn}: {why}",file=sys.stderr); continue
+        out.append({"semiconductor":{"mosfet":comp}})
     with open(f"{OUT}/mosfets.ndjson","w") as fo:
         for o in out: fo.write(json.dumps(o,ensure_ascii=False)+"\n")
-    print(f"new Infineon MOSFETs: {len(out)}")
+    print(f"new Infineon MOSFETs: {len(out)} (blocked by Blade Runner: {blocked})")
+    print(gate.summary())
 
 if __name__=="__main__": main()

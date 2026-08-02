@@ -1,0 +1,38 @@
+{
+ "ticket": "ABT #500",
+ "date": "2026-08-02",
+ "repaired": [
+  {
+   "reference": "C3M0280090D",
+   "changed": {
+    "electrical.continuousDrainCurrent": [
+     11.5,
+     10.2
+    ],
+    "electrical.continuousDrainCurrentAt100C": [
+     7.5,
+     6.8
+    ],
+    "electrical.pulsedDrainCurrent": [
+     36,
+     22
+    ],
+    "electrical.bodyDiodeContinuousCurrent": [
+     11.5,
+     9
+    ],
+    "thermal.junctionTemperatureMax": [
+     175,
+     150
+    ]
+   },
+   "datasheet": "https://assets.wolfspeed.com/uploads/2020/12/C3M0280090D.pdf"
+  }
+ ],
+ "quarantined": [
+  {
+   "reference": "TP65H150G4",
+   "reason": "to247-thermal-block-belongs-to-another-package-variant: no TO-247 variant of this die exists to re-source the row from. Renesas/Transphorm sell the 650 V / 150 mOhm Gen-4 SuperGaN die as TP65H150G4PS (TO-220, RthJC 1.5 K/W, PD 83 W), TP65H150G4LSG and TP65H150G4LSGBE (PQFN88, RthJC 2.4 and 2.0 K/W, PD 52 W) and TP65H150BG4JSG (PQFN56) -- four SKUs, none in TO-247, and every one carries a package suffix that this record's bare 'TP65H150G4' lacks. The stored TO-247-4 / RthJC 3.5 K/W / PD 25 W matches no published variant, and the record's own datasheetUrl (transphormusa.com/document/tp65h150g4-datasheet/) now redirects to the Renesas GaN category landing page. ABT #500, checked 2026-08-02"
+  }
+ ]
+}
