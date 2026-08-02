@@ -211,6 +211,28 @@ inline constexpr double DIO_VF_SIC_LO = 0.5, DIO_VF_SIC_HI = 3.5;
 inline constexpr double DIO_QRR_MAJORITY_SUS = 1e-9;  // 1 nC
 // Vf*If conduction vs powerDissipation rating ratio.
 inline constexpr double DIO_VFIF_RATIO_SUS = 2.0;
+// Reverse leakage as a fraction of the forward-current rating. Leakage sits orders
+// of magnitude below the rating, so the ratio is a unit-free way to catch a uA/mA
+// figure left in the amps field.
+//
+// CALIBRATED over the whole live catalogue, 2026-08-02 (ABT #524), after the 183
+// leakage repairs in this same change: 3,794 diodes carry both fields positive.
+// Above 0.02 sits 251 of them (6.62%) — and every single one is Nexperia, whose
+// parametric import lost a 1e3 on forwardCurrent, not on leakage (395 of the 491
+// PMEG parts whose type name pins both ratings store If 1000x low; ABT #550).
+// Excluding that one cohort the fire rate is 0 of 3,665 at every threshold tried
+// (0.02 / 0.05 / 0.5 / 1.0). The highest genuine datasheet convention is a hot-Tj
+// figure near 1e-2 (Bourns CD2010-B160: 0.5 mA at TJ=25 C on a 1 A part), so 0.02
+// clears every real record while still catching a 1e3 prefix slip.
+//
+// SUSPICIOUS ONLY, deliberately. An Impossible tier is for forward guards that
+// invalidate ~nothing existing, and there is no threshold that qualifies today:
+// even ratio > 1.0 — leaking more blocking than the part conducts, which is not a
+// diode — fires on 20 live records. An earlier draft of this rule shipped 0.05 as
+// Impossible on the strength of a "tops out at 0.0167" reading that turned out to
+// be wrong about 3.74% of the corpus, which is its own argument for the softer
+// grade. Promote only once ABT #550 lands and a real failure is traced here.
+inline constexpr double DIO_LEAK_IF_SUS = 0.02;
 
 // ---- IGBTs ------------------------------------------------------------------
 // Collector-emitter saturation voltage [V].

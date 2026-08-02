@@ -503,6 +503,52 @@ TEST_CASE("AntiSynthesis: PackageMountContradictionImpossible", "[antisynthesis]
     CHECK(!has_code(V.validate(diode("Unknown", "smt")), "GEN_PACKAGE_MOUNT"));
 }
 
+// ABT #524: a uA/mA leakage figure left in the amps field. 54 Infineon records
+// carried their finder's "40 uA" as 40 -- 5x an 8 A part's own forward rating, i.e.
+// 26 kW dissipated while blocking -- and 129 Bourns records carried a column
+// labelled mA that is really uA.
+TEST_CASE("AntiSynthesis: DiodeLeakageUnitsSuspicious", "[antisynthesis]") {
+    auto diode = [](double leak, double iff) {
+        json p = json::parse(R"json({"semiconductor":{"diode":{"manufacturerInfo":{
+          "reference":"X","datasheetInfo":{"provenance":[{"source":"manufacturerDatasheet"}],
+          "part":{"subType":"rectifier","technology":"Si"},
+          "electrical":{"reverseVoltage":650,"forwardVoltage":1.6}}}}}})json");
+        json& e = p["semiconductor"]["diode"]["manufacturerInfo"]["datasheetInfo"]["electrical"];
+        e["reverseLeakageCurrent"] = leak;
+        e["forwardCurrent"] = iff;
+        return p;
+    };
+    // The reported record: IDV08E65D2, 40 uA read as 40 A on an 8 A part. Flagged,
+    // never condemned -- the ratio proves the pair disagrees, not which half is bad.
+    CHECK(has(V.validate(diode(40.0, 8.0)), "DIO_LEAKAGE_VS_IF", Severity::Suspicious));
+    // The rest of the Infineon cohort: 20 uA and 100 uA, on their own ratings.
+    CHECK(has(V.validate(diode(20.0, 150.0)), "DIO_LEAKAGE_VS_IF", Severity::Suspicious));
+    CHECK(has(V.validate(diode(100.0, 50.0)), "DIO_LEAKAGE_VS_IF", Severity::Suspicious));
+    // The Bourns cohort: a mA-labelled uA column, 1e3 out (CD2010-B160, CD-HD004).
+    CHECK(has(V.validate(diode(0.5, 1.0)), "DIO_LEAKAGE_VS_IF", Severity::Suspicious));
+    CHECK(has(V.validate(diode(0.2, 1.0)), "DIO_LEAKAGE_VS_IF", Severity::Suspicious));
+    // No Impossible tier exists: ratio > 1 is not a diode, yet 20 live records sit
+    // there today on a bad forwardCurrent (ABT #550), so it cannot condemn.
+    CHECK(!has(V.validate(diode(1.9e-03, 1.0e-03)), "DIO_LEAKAGE_VS_IF", Severity::Impossible));
+    CHECK(has(V.validate(diode(1.9e-03, 1.0e-03)), "DIO_LEAKAGE_VS_IF", Severity::Suspicious));
+    // The repaired values are silent.
+    CHECK(!has_code(V.validate(diode(4.0e-05, 8.0)), "DIO_LEAKAGE_VS_IF"));
+    CHECK(!has_code(V.validate(diode(1.0e-04, 50.0)), "DIO_LEAKAGE_VS_IF"));
+    CHECK(!has_code(V.validate(diode(5.0e-04, 1.0)), "DIO_LEAKAGE_VS_IF"));
+    // Real leaky parts stay silent: the ceiling among the 3,665 non-Nexperia diodes
+    // carrying both fields is 0.0167 (onsemi RB751V40T1G, 0.5 mA on a 30 mA
+    // small-signal Schottky), and CD2010-B160 is 0.5 mA on a 1 A part.
+    CHECK(!has_code(V.validate(diode(5.0e-04, 0.03)), "DIO_LEAKAGE_VS_IF"));
+    CHECK(!has_code(V.validate(diode(1.0e-02, 1.0)), "DIO_LEAKAGE_VS_IF"));
+    // Just over the line is still only a flag.
+    CHECK(has(V.validate(diode(0.03, 1.0)), "DIO_LEAKAGE_VS_IF", Severity::Suspicious));
+    // Nothing to compare against: no finding, never a guessed rating.
+    json no_if = json::parse(R"json({"semiconductor":{"diode":{"manufacturerInfo":{
+      "reference":"X","datasheetInfo":{"provenance":[{"source":"manufacturerDatasheet"}],
+      "electrical":{"reverseVoltage":650,"reverseLeakageCurrent":40}}}}}})json");
+    CHECK(!has_code(V.validate(no_if), "DIO_LEAKAGE_VS_IF"));
+}
+
 // ABT #507: the wave-2 SiC-diode ladder generator's MPN template.
 TEST_CASE("AntiSynthesis: Wave2SicDiodeLadderMpn", "[antisynthesis]") {
     auto ref = [](const char* r) {

@@ -523,7 +523,7 @@ std::vector<std::string> PartValidator::check_codes() {
         "MOS_BODY_DIODE_VF", "MOS_POWER_THERMAL", "MOS_RON_FLOOR", "MOS_IPULSE_VS_IDC",
         // diodes
         "DIO_POSITIVITY", "DIO_VF_RANGE", "DIO_SURGE_VS_IF", "DIO_VF_POWER", "DIO_QRR_SCHOTTKY",
-        "DIO_CJ_VR", "DIO_TVS_ORDERING",
+        "DIO_CJ_VR", "DIO_TVS_ORDERING", "DIO_LEAKAGE_VS_IF",
         // igbts
         "IGBT_POSITIVITY", "IGBT_VCESAT_RANGE", "IGBT_VCESAT_VS_VCES", "IGBT_IC_RANGE",
         "IGBT_VCES_RANGE", "IGBT_VCESAT_RATIO",

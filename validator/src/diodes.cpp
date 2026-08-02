@@ -42,10 +42,23 @@ void check_diodes(const json& datasheet, const Ctx& ctx, std::vector<Finding>& o
         emit(out, ctx, "DIO_POSITIVITY", Severity::Impossible, *Vr, 0, "reverseVoltage <= 0");
     if (If && *If <= 0)
         emit(out, ctx, "DIO_POSITIVITY", Severity::Impossible, *If, 0, "forwardCurrent <= 0");
-    if (auto ilk = scalar_at(*elec, {"reverseLeakageCurrent"}))
-        if (*ilk < 0)
-            emit(out, ctx, "DIO_POSITIVITY", Severity::Impossible, *ilk, 0,
-                 "reverseLeakageCurrent < 0");
+    auto Ilk = scalar_at(*elec, {"reverseLeakageCurrent"});
+    if (Ilk && *Ilk < 0)
+        emit(out, ctx, "DIO_POSITIVITY", Severity::Impossible, *Ilk, 0,
+             "reverseLeakageCurrent < 0");
+
+    // CHECK (NEW): reverse leakage against the forward-current rating. Both are
+    // amps, so the ratio is unit-free and a uA/mA figure left in the amps field
+    // shows up as a leakage comparable to the rating — Infineon's IDV08E65D2
+    // carried its datasheet's "40 uA" as 40, i.e. 5x the part's own 8 A forward
+    // rating and 26 kW dissipated while blocking (ABT #524). Suspicious only: the
+    // ratio says the two numbers disagree, not which of them is the wrong one —
+    // every live record it fires on today is a bad forwardCurrent, not a bad
+    // leakage. See the calibration note on DIO_LEAK_IF_SUS.
+    if (Ilk && If && *Ilk > 0 && *If > 0 && *Ilk / *If > thr::DIO_LEAK_IF_SUS)
+        emit(out, ctx, "DIO_LEAKAGE_VS_IF", Severity::Suspicious, *Ilk, *If,
+             fmt("reverseLeakageCurrent above any datasheet fraction of "
+                 "forwardCurrent [A]", *Ilk, *If));
 
     // CHECK (NEW): forward-voltage range by technology (skipped for TVS/Zener,
     // whose forwardVoltage field carries clamp/breakdown voltage).

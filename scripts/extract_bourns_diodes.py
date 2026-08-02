@@ -85,7 +85,7 @@ def _normalize_case(raw: str | None) -> str | None:
 
 def _build_record(row: tuple) -> dict:
     (part_number, series, if_a, vrrm_v, ifsm_a, vf_v, trr_ns,
-     irrm_ma, cap_pf, rth_ja, tj_min, tj_max,
+     irrm_ua, cap_pf, rth_ja, tj_min, tj_max,
      function, package, length_mm, width_mm, _aec, _eng, _buy,
      datasheet_url) = row[:20]
 
@@ -106,9 +106,16 @@ def _build_record(row: tuple) -> dict:
     f = _float(trr_ns)
     if f is not None:
         electrical["reverseRecoveryTime"] = f * 1e-9
-    f = _float(irrm_ma)
+    # ABT #524: the export's header says "IRRM (mA)" and the column is MICROamps —
+    # every value landed 1e3 too large, up to 0.55 A of leakage on a 3 A Schottky.
+    # Checked against Bourns' own datasheets for all 32 series in the export: the
+    # uA-spec'd families match digit for digit (CD1408-FU1200 2 / FU1400 5 vs "2.0 /
+    # 5.0 uA"; CD0603-B0240R 0.5 / B0340R 3 vs "0.5 / 3 uA"), and the mA-spec'd
+    # Schottkys are the same number scaled by 1e3 (CD214A-B340LR 550 vs "0.55 mA",
+    # CD214A-B140R 20 vs "0.02 mA"). Divisor, not 1e-6: 550/1e6 is exactly 5.5e-04.
+    f = _float(irrm_ua)
     if f is not None:
-        electrical["reverseLeakageCurrent"] = f * 1e-3
+        electrical["reverseLeakageCurrent"] = f / 1e6
     f = _float(cap_pf)
     if f is not None:
         electrical["junctionCapacitance"] = f * 1e-12

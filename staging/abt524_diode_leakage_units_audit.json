@@ -1,0 +1,1286 @@
+{
+ "ticket": "ABT #524",
+ "rescaled": [
+  {
+   "reference": "CD0603-B0240R",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.0005,
+   "now": 5e-07,
+   "forwardCurrent": 0.2
+  },
+  {
+   "reference": "CD0603-B0340R",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.003,
+   "now": 3e-06,
+   "forwardCurrent": 0.3
+  },
+  {
+   "reference": "CD1206-B2100",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.5,
+   "now": 0.0005,
+   "forwardCurrent": 2.0
+  },
+  {
+   "reference": "CD1206-B220",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.5,
+   "now": 0.0005,
+   "forwardCurrent": 2.0
+  },
+  {
+   "reference": "CD1206-B240",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.5,
+   "now": 0.0005,
+   "forwardCurrent": 2.0
+  },
+  {
+   "reference": "CD1206-B260",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.5,
+   "now": 0.0005,
+   "forwardCurrent": 2.0
+  },
+  {
+   "reference": "CD123D-B120R",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.015,
+   "now": 1.4999999999999999e-05,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD123D-B140LR",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.3,
+   "now": 0.0003,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD123D-B140R",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.015,
+   "now": 1.4999999999999999e-05,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD1408-F11000",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.005,
+   "now": 5e-06,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD1408-F1200",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.005,
+   "now": 5e-06,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD1408-F1400",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.005,
+   "now": 5e-06,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD1408-F1600",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.005,
+   "now": 5e-06,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD1408-F1800",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.005,
+   "now": 5e-06,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD1408-FF11000",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.005,
+   "now": 5e-06,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD1408-FF1200",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.005,
+   "now": 5e-06,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD1408-FF1400",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.005,
+   "now": 5e-06,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD1408-FF1600",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.005,
+   "now": 5e-06,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD1408-FF1800",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.005,
+   "now": 5e-06,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD1408-FU1200",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.002,
+   "now": 2e-06,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD1408-FU1400",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.005,
+   "now": 5e-06,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD1408-FU1600",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.005,
+   "now": 5e-06,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD1408-FU1800",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.005,
+   "now": 5e-06,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD1408-R11000",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.001,
+   "now": 1e-06,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD1408-R1200",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.001,
+   "now": 1e-06,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD1408-R1400",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.001,
+   "now": 1e-06,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD1408-R1600",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.001,
+   "now": 1e-06,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD1408-R1800",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.001,
+   "now": 1e-06,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD2010-B140",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.1,
+   "now": 0.0001,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD2010-B160",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.5,
+   "now": 0.0005,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD214A-B1100R",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.02,
+   "now": 2e-05,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD214A-B120LR",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.35000000000000003,
+   "now": 0.00035000000000000005,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD214A-B120R",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.02,
+   "now": 2e-05,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD214A-B140LR",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.35000000000000003,
+   "now": 0.00035000000000000005,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD214A-B140R",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.02,
+   "now": 2e-05,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD214A-B160R",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.02,
+   "now": 2e-05,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD214A-B220LR",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.28,
+   "now": 0.00028000000000000003,
+   "forwardCurrent": 2.0
+  },
+  {
+   "reference": "CD214A-B220R",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.025,
+   "now": 2.5e-05,
+   "forwardCurrent": 2.0
+  },
+  {
+   "reference": "CD214A-B240LR",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.28,
+   "now": 0.00028000000000000003,
+   "forwardCurrent": 2.0
+  },
+  {
+   "reference": "CD214A-B240R",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.025,
+   "now": 2.5e-05,
+   "forwardCurrent": 2.0
+  },
+  {
+   "reference": "CD214A-B260R",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.025,
+   "now": 2.5e-05,
+   "forwardCurrent": 2.0
+  },
+  {
+   "reference": "CD214A-B320LR",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.55,
+   "now": 0.00055,
+   "forwardCurrent": 3.0
+  },
+  {
+   "reference": "CD214A-B320R",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.02,
+   "now": 2e-05,
+   "forwardCurrent": 3.0
+  },
+  {
+   "reference": "CD214A-B340LR",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.55,
+   "now": 0.00055,
+   "forwardCurrent": 3.0
+  },
+  {
+   "reference": "CD214A-B340R",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.02,
+   "now": 2e-05,
+   "forwardCurrent": 3.0
+  },
+  {
+   "reference": "CD214A-B360R",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.02,
+   "now": 2e-05,
+   "forwardCurrent": 3.0
+  },
+  {
+   "reference": "CD214A-FS1D",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.0002,
+   "now": 2.0000000000000002e-07,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD214A-FS1G",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.0002,
+   "now": 2.0000000000000002e-07,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD214A-FS1J",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.0002,
+   "now": 2.0000000000000002e-07,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD214A-FS1K",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.0002,
+   "now": 2.0000000000000002e-07,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD214A-R12000R",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.005,
+   "now": 5e-06,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD214A-RS1D",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.0001,
+   "now": 1.0000000000000001e-07,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD214A-RS1G",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.0001,
+   "now": 1.0000000000000001e-07,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD214A-RS1J",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.0001,
+   "now": 1.0000000000000001e-07,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD214A-RS1K",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.0001,
+   "now": 1.0000000000000001e-07,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD214A-RS1M",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.0001,
+   "now": 1.0000000000000001e-07,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD214A-S1D",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.0001,
+   "now": 1.0000000000000001e-07,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD214A-S1G",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.0001,
+   "now": 1.0000000000000001e-07,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD214A-S1J",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.0001,
+   "now": 1.0000000000000001e-07,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD214A-S1K",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.0001,
+   "now": 1.0000000000000001e-07,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD214A-S1M",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.0001,
+   "now": 1.0000000000000001e-07,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD214A-S1Q",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.0001,
+   "now": 1.0000000000000001e-07,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD214A-S1Y",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.0001,
+   "now": 1.0000000000000001e-07,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD214B-B2100R",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.025,
+   "now": 2.5e-05,
+   "forwardCurrent": 2.0
+  },
+  {
+   "reference": "CD214B-B220R",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.025,
+   "now": 2.5e-05,
+   "forwardCurrent": 2.0
+  },
+  {
+   "reference": "CD214B-B240R",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.025,
+   "now": 2.5e-05,
+   "forwardCurrent": 2.0
+  },
+  {
+   "reference": "CD214B-B260R",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.025,
+   "now": 2.5e-05,
+   "forwardCurrent": 2.0
+  },
+  {
+   "reference": "CD214B-B3100R",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.04,
+   "now": 4e-05,
+   "forwardCurrent": 3.0
+  },
+  {
+   "reference": "CD214B-B320R",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.04,
+   "now": 4e-05,
+   "forwardCurrent": 3.0
+  },
+  {
+   "reference": "CD214B-B340R",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.04,
+   "now": 4e-05,
+   "forwardCurrent": 3.0
+  },
+  {
+   "reference": "CD214B-B360R",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.04,
+   "now": 4e-05,
+   "forwardCurrent": 3.0
+  },
+  {
+   "reference": "CD214B-FS2D",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.0002,
+   "now": 2.0000000000000002e-07,
+   "forwardCurrent": 2.0
+  },
+  {
+   "reference": "CD214B-FS2G",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.0002,
+   "now": 2.0000000000000002e-07,
+   "forwardCurrent": 2.0
+  },
+  {
+   "reference": "CD214B-FS2J",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.0002,
+   "now": 2.0000000000000002e-07,
+   "forwardCurrent": 2.0
+  },
+  {
+   "reference": "CD214B-FS2K",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.0002,
+   "now": 2.0000000000000002e-07,
+   "forwardCurrent": 2.0
+  },
+  {
+   "reference": "CD214B-FS3D",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.005,
+   "now": 5e-06,
+   "forwardCurrent": 3.0
+  },
+  {
+   "reference": "CD214B-FS3G",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.005,
+   "now": 5e-06,
+   "forwardCurrent": 3.0
+  },
+  {
+   "reference": "CD214B-FS3J",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.005,
+   "now": 5e-06,
+   "forwardCurrent": 3.0
+  },
+  {
+   "reference": "CD214B-FS3K",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.005,
+   "now": 5e-06,
+   "forwardCurrent": 3.0
+  },
+  {
+   "reference": "CD214B-S2D",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.0001,
+   "now": 1.0000000000000001e-07,
+   "forwardCurrent": 2.0
+  },
+  {
+   "reference": "CD214B-S2G",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.0001,
+   "now": 1.0000000000000001e-07,
+   "forwardCurrent": 2.0
+  },
+  {
+   "reference": "CD214B-S2J",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.0001,
+   "now": 1.0000000000000001e-07,
+   "forwardCurrent": 2.0
+  },
+  {
+   "reference": "CD214B-S2K",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.0001,
+   "now": 1.0000000000000001e-07,
+   "forwardCurrent": 2.0
+  },
+  {
+   "reference": "CD214B-S2M",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.0001,
+   "now": 1.0000000000000001e-07,
+   "forwardCurrent": 2.0
+  },
+  {
+   "reference": "CD214B-S3D",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.0001,
+   "now": 1.0000000000000001e-07,
+   "forwardCurrent": 3.0
+  },
+  {
+   "reference": "CD214B-S3G",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.0001,
+   "now": 1.0000000000000001e-07,
+   "forwardCurrent": 3.0
+  },
+  {
+   "reference": "CD214B-S3J",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.0001,
+   "now": 1.0000000000000001e-07,
+   "forwardCurrent": 3.0
+  },
+  {
+   "reference": "CD214B-S3K",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.0001,
+   "now": 1.0000000000000001e-07,
+   "forwardCurrent": 3.0
+  },
+  {
+   "reference": "CD214B-S3M",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.0001,
+   "now": 1.0000000000000001e-07,
+   "forwardCurrent": 3.0
+  },
+  {
+   "reference": "CD214C-B3100R",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.025,
+   "now": 2.5e-05,
+   "forwardCurrent": 3.0
+  },
+  {
+   "reference": "CD214C-B320R",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.025,
+   "now": 2.5e-05,
+   "forwardCurrent": 3.0
+  },
+  {
+   "reference": "CD214C-B340R",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.025,
+   "now": 2.5e-05,
+   "forwardCurrent": 3.0
+  },
+  {
+   "reference": "CD214C-B360R",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.025,
+   "now": 2.5e-05,
+   "forwardCurrent": 3.0
+  },
+  {
+   "reference": "CD214C-FS3D",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.0002,
+   "now": 2.0000000000000002e-07,
+   "forwardCurrent": 3.0
+  },
+  {
+   "reference": "CD214C-FS3G",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.0002,
+   "now": 2.0000000000000002e-07,
+   "forwardCurrent": 3.0
+  },
+  {
+   "reference": "CD214C-FS3J",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.0002,
+   "now": 2.0000000000000002e-07,
+   "forwardCurrent": 3.0
+  },
+  {
+   "reference": "CD214C-S3D",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.0001,
+   "now": 1.0000000000000001e-07,
+   "forwardCurrent": 3.0
+  },
+  {
+   "reference": "CD214C-S3G",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.0001,
+   "now": 1.0000000000000001e-07,
+   "forwardCurrent": 3.0
+  },
+  {
+   "reference": "CD214C-S3J",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.0001,
+   "now": 1.0000000000000001e-07,
+   "forwardCurrent": 3.0
+  },
+  {
+   "reference": "CD214C-S3K",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.0001,
+   "now": 1.0000000000000001e-07,
+   "forwardCurrent": 3.0
+  },
+  {
+   "reference": "CD214C-S3M",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.0001,
+   "now": 1.0000000000000001e-07,
+   "forwardCurrent": 3.0
+  },
+  {
+   "reference": "CD-DF406S",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.005,
+   "now": 5e-06,
+   "forwardCurrent": 4.0
+  },
+  {
+   "reference": "CD-DF406SL",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.005,
+   "now": 5e-06,
+   "forwardCurrent": 4.0
+  },
+  {
+   "reference": "CD-DF408S",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.005,
+   "now": 5e-06,
+   "forwardCurrent": 4.0
+  },
+  {
+   "reference": "CD-DF408SL",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.005,
+   "now": 5e-06,
+   "forwardCurrent": 4.0
+  },
+  {
+   "reference": "CD-DF410S",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.005,
+   "now": 5e-06,
+   "forwardCurrent": 4.0
+  },
+  {
+   "reference": "CD-DF410SL",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.005,
+   "now": 5e-06,
+   "forwardCurrent": 4.0
+  },
+  {
+   "reference": "CD-HD004",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.2,
+   "now": 0.0002,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD-HD006",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.2,
+   "now": 0.0002,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD-HD01",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.2,
+   "now": 0.0002,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD-HD2004",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.2,
+   "now": 0.0002,
+   "forwardCurrent": 2.0
+  },
+  {
+   "reference": "CD-HD2006",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.2,
+   "now": 0.0002,
+   "forwardCurrent": 2.0
+  },
+  {
+   "reference": "CD-HD2006L",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.2,
+   "now": 0.0002,
+   "forwardCurrent": 2.0
+  },
+  {
+   "reference": "CD-HD201",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.2,
+   "now": 0.0002,
+   "forwardCurrent": 2.0
+  },
+  {
+   "reference": "CD-MBL102S",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.005,
+   "now": 5e-06,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD-MBL104S",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.005,
+   "now": 5e-06,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD-MBL106S",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.005,
+   "now": 5e-06,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD-MBL106SL",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.005,
+   "now": 5e-06,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD-MBL108S",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.005,
+   "now": 5e-06,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD-MBL108SL",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.005,
+   "now": 5e-06,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD-MBL110S",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.005,
+   "now": 5e-06,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD-MBL110SL",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.005,
+   "now": 5e-06,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "CD-MBL206S",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.005,
+   "now": 5e-06,
+   "forwardCurrent": 2.0
+  },
+  {
+   "reference": "CD-MBL206SL",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.005,
+   "now": 5e-06,
+   "forwardCurrent": 2.0
+  },
+  {
+   "reference": "CD-MBL208S",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.005,
+   "now": 5e-06,
+   "forwardCurrent": 2.0
+  },
+  {
+   "reference": "CD-MBL208SL",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.005,
+   "now": 5e-06,
+   "forwardCurrent": 2.0
+  },
+  {
+   "reference": "CD-MBL210S",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.005,
+   "now": 5e-06,
+   "forwardCurrent": 2.0
+  },
+  {
+   "reference": "CD-MBL210SL",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.005,
+   "now": 5e-06,
+   "forwardCurrent": 2.0
+  },
+  {
+   "reference": "CD-MMBL110S",
+   "cohort": "Bourns parametric Excel export",
+   "was": 0.005,
+   "now": 5e-06,
+   "forwardCurrent": 1.0
+  },
+  {
+   "reference": "IDB30E120",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 100.0,
+   "now": 0.0001,
+   "forwardCurrent": 50.0
+  },
+  {
+   "reference": "IDFW60C65D1",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 40.0,
+   "now": 4e-05,
+   "forwardCurrent": 60.0
+  },
+  {
+   "reference": "IDP08E65D1",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 40.0,
+   "now": 4e-05,
+   "forwardCurrent": 16.0
+  },
+  {
+   "reference": "IDP12E120",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 100.0,
+   "now": 0.0001,
+   "forwardCurrent": 28.0
+  },
+  {
+   "reference": "IDP15E65D1",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 40.0,
+   "now": 4e-05,
+   "forwardCurrent": 30.0
+  },
+  {
+   "reference": "IDP18E120",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 100.0,
+   "now": 0.0001,
+   "forwardCurrent": 31.0
+  },
+  {
+   "reference": "IDP30E120",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 100.0,
+   "now": 0.0001,
+   "forwardCurrent": 50.0
+  },
+  {
+   "reference": "IDP30E65D1",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 40.0,
+   "now": 4e-05,
+   "forwardCurrent": 60.0
+  },
+  {
+   "reference": "IDV20E65D1",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 40.0,
+   "now": 4e-05,
+   "forwardCurrent": 28.0
+  },
+  {
+   "reference": "IDW30C65D1",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 40.0,
+   "now": 4e-05,
+   "forwardCurrent": 30.0
+  },
+  {
+   "reference": "IDW30E65D1",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 40.0,
+   "now": 4e-05,
+   "forwardCurrent": 60.0
+  },
+  {
+   "reference": "IDW40E65D1",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 40.0,
+   "now": 4e-05,
+   "forwardCurrent": 80.0
+  },
+  {
+   "reference": "IDW60C65D1",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 40.0,
+   "now": 4e-05,
+   "forwardCurrent": 60.0
+  },
+  {
+   "reference": "IDW75D65D1",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 40.0,
+   "now": 4e-05,
+   "forwardCurrent": 150.0
+  },
+  {
+   "reference": "IDW80C65D1",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 40.0,
+   "now": 4e-05,
+   "forwardCurrent": 80.0
+  },
+  {
+   "reference": "IDFW80C65D1",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 40.0,
+   "now": 4e-05,
+   "forwardCurrent": 74.0
+  },
+  {
+   "reference": "IDWD100E65E7",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 20.0,
+   "now": 2e-05,
+   "forwardCurrent": 150.0
+  },
+  {
+   "reference": "IDWD120E65E7",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 20.0,
+   "now": 2e-05,
+   "forwardCurrent": 150.0
+  },
+  {
+   "reference": "IDWD150E65E7",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 20.0,
+   "now": 2e-05,
+   "forwardCurrent": 200.0
+  },
+  {
+   "reference": "IDWD20E65E7",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 20.0,
+   "now": 2e-05,
+   "forwardCurrent": 42.0
+  },
+  {
+   "reference": "IDWD30E65E7",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 20.0,
+   "now": 2e-05,
+   "forwardCurrent": 50.0
+  },
+  {
+   "reference": "IDWD40E65E7",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 20.0,
+   "now": 2e-05,
+   "forwardCurrent": 50.0
+  },
+  {
+   "reference": "IDWD50E65E7",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 20.0,
+   "now": 2e-05,
+   "forwardCurrent": 92.0
+  },
+  {
+   "reference": "IDWD60E65E7",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 20.0,
+   "now": 2e-05,
+   "forwardCurrent": 100.0
+  },
+  {
+   "reference": "IDWD75E65E7",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 20.0,
+   "now": 2e-05,
+   "forwardCurrent": 100.0
+  },
+  {
+   "reference": "IDWD100E120D7",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 20.0,
+   "now": 2e-05,
+   "forwardCurrent": 150.0
+  },
+  {
+   "reference": "IDWD120E120D7",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 20.0,
+   "now": 2e-05,
+   "forwardCurrent": 177.0
+  },
+  {
+   "reference": "IDWD140E120D7",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 20.0,
+   "now": 2e-05,
+   "forwardCurrent": 207.0
+  },
+  {
+   "reference": "IDWD30E120D7",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 20.0,
+   "now": 2e-05,
+   "forwardCurrent": 52.0
+  },
+  {
+   "reference": "IDWD40E120D7",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 20.0,
+   "now": 2e-05,
+   "forwardCurrent": 67.0
+  },
+  {
+   "reference": "IDWD50E120D7",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 20.0,
+   "now": 2e-05,
+   "forwardCurrent": 81.0
+  },
+  {
+   "reference": "IDWD60E120D7",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 20.0,
+   "now": 2e-05,
+   "forwardCurrent": 94.0
+  },
+  {
+   "reference": "IDWD75E120D7",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 20.0,
+   "now": 2e-05,
+   "forwardCurrent": 116.0
+  },
+  {
+   "reference": "IDFW40E65D1E",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 40.0,
+   "now": 4e-05,
+   "forwardCurrent": 42.0
+  },
+  {
+   "reference": "IDP08E65D2",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 40.0,
+   "now": 4e-05,
+   "forwardCurrent": 16.0
+  },
+  {
+   "reference": "IDP15E65D2",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 40.0,
+   "now": 4e-05,
+   "forwardCurrent": 30.0
+  },
+  {
+   "reference": "IDP20E65D2",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 40.0,
+   "now": 4e-05,
+   "forwardCurrent": 40.0
+  },
+  {
+   "reference": "IDP30E65D2",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 40.0,
+   "now": 4e-05,
+   "forwardCurrent": 60.0
+  },
+  {
+   "reference": "IDP40E65D2",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 40.0,
+   "now": 4e-05,
+   "forwardCurrent": 80.0
+  },
+  {
+   "reference": "IDV08E65D2",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 40.0,
+   "now": 4e-05,
+   "forwardCurrent": 8.0
+  },
+  {
+   "reference": "IDV15E65D2",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 40.0,
+   "now": 4e-05,
+   "forwardCurrent": 15.0
+  },
+  {
+   "reference": "IDV30E65D2",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 40.0,
+   "now": 4e-05,
+   "forwardCurrent": 30.0
+  },
+  {
+   "reference": "IDW100E60",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 40.0,
+   "now": 4e-05,
+   "forwardCurrent": 150.0
+  },
+  {
+   "reference": "IDW30E60",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 40.0,
+   "now": 4e-05,
+   "forwardCurrent": 120.0
+  },
+  {
+   "reference": "IDW40E65D2",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 40.0,
+   "now": 4e-05,
+   "forwardCurrent": 80.0
+  },
+  {
+   "reference": "IDW50E60",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 40.0,
+   "now": 4e-05,
+   "forwardCurrent": 80.0
+  },
+  {
+   "reference": "IDW75E60",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 40.0,
+   "now": 4e-05,
+   "forwardCurrent": 120.0
+  },
+  {
+   "reference": "IDW80C65D2",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 40.0,
+   "now": 4e-05,
+   "forwardCurrent": 80.0
+  },
+  {
+   "reference": "IDB18E120",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 100.0,
+   "now": 0.0001,
+   "forwardCurrent": 31.0
+  },
+  {
+   "reference": "IDW15E65D2",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 40.0,
+   "now": 4e-05,
+   "forwardCurrent": 30.0
+  },
+  {
+   "reference": "IDW20C65D2",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 40.0,
+   "now": 4e-05,
+   "forwardCurrent": 20.0
+  },
+  {
+   "reference": "IDW30C65D2",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 40.0,
+   "now": 4e-05,
+   "forwardCurrent": 30.0
+  },
+  {
+   "reference": "IDP20C65D2",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 40.0,
+   "now": 4e-05,
+   "forwardCurrent": 20.0
+  },
+  {
+   "reference": "IDP30C65D2",
+   "cohort": "Infineon Diode Rectifier Finder (xlsx export)",
+   "was": 40.0,
+   "now": 4e-05,
+   "forwardCurrent": 30.0
+  }
+ ]
+}

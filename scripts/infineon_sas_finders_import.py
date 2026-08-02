@@ -35,6 +35,18 @@ def farads(s):
     if "pf" in u: return v*1e-12
     if "nf" in u: return v*1e-9
     return v
+# Divisors, not multipliers: 40/1e6 is exactly 4e-05 where 40*1e-6 is 3.9999...e-05.
+AMP_PER={"a":1,"ma":1e3,"ua":1e6,"µa":1e6,"na":1e9,"pa":1e12}
+def amps(s):
+    """ABT #524: the Finder writes the unit INSIDE the cell ('40 uA') and val() keeps
+    only the number, so every IR max landed 1e6 too large — 40 A of reverse leakage on
+    an 8 A part. The unit is read off what REMAINS after the number, not by substring
+    ('ma' is a substring of 'max'), and a cell with no unit has no known scale, so it
+    yields nothing rather than being assumed base SI."""
+    v=val(s)
+    if v is None: return None
+    rest=re.sub(r"[-+]?\d*\.?\d+","",str(s).replace(",","."),count=1).strip().lower()
+    return v/AMP_PER[rest] if rest in AMP_PER else None
 
 class Row:
     def __init__(self,hdr,r):
@@ -126,7 +138,7 @@ def build_diode(row,pn):
     if (v:=val(row.get("VF","forward voltage"))) is not None: el["forwardVoltage"]=v
     if (v:=val(row.get("IF (av)","ifav","if max","if(av)","forward current","if "))) is not None: el["forwardCurrent"]=v
     if (v:=val(row.get("IFSM","surge current"))) is not None: el["surgeCurrent"]=v
-    if (v:=val(row.get("IR","reverse leakage","ir max"))) is not None: el["reverseLeakageCurrent"]=v
+    if (v:=amps(row.get("IR","reverse leakage","ir max"))) is not None: el["reverseLeakageCurrent"]=v
     missing=[k for k in ("reverseVoltage","forwardVoltage","forwardCurrent") if k not in el]
     rec={"manufacturerInfo":{"name":"Infineon","reference":pn,"status":"production","datasheetInfo":{"part":part,"electrical":el}}}
     return rec, (",".join(missing) if missing else None)
