@@ -115,18 +115,26 @@ def try_contact_array(doc):
     rows = m.get("rows")
     rp = num(m.get("rowPitch"))
     L, W, H = num(m.get("length")), num(m.get("width")), num(m.get("height"))
+    # The lattice must be determinate; body dims are now OPTIONAL (ABT #478 —
+    # boundingEnvelope no longer required, and length in particular is a
+    # per-series formula that is often unstated and is implied by the array).
     if not (pitch and isinstance(pos, int) and isinstance(rows, int)
             and rows >= 1 and pos >= 1 and pos % rows == 0
-            and (rows == 1 or rp) and L and W and H):
+            and (rows == 1 or rp)):
         return False
     arr = {"pitchX": pitch, "countX": pos // rows, "countY": rows}
     if rows > 1:
         arr["pitchY"] = rp
-    c["geometry"] = {
+    geom = {
         "coordinateSystem": {"originDatum": "pin1"},
-        "boundingEnvelope": {"length": L, "width": W, "height": H},
         "parametric": {"contactArray": arr},
     }
+    # Record whatever body axes the vendor actually stated; never invent one.
+    env = {k: v for k, v in (("length", L), ("width", W), ("height", H)) if v}
+    if env:
+        geom["boundingEnvelope"] = env
+    c["geometry"] = geom
+    envfields = "+".join(env) if env else "none stated"
     di.setdefault("provenance", []).append({
         "source": "derived",
         "sourceName": "OpenConverters connector fill 2026-08 (contactArray generator)",
@@ -135,9 +143,10 @@ def try_contact_array(doc):
         "derivation": ("contactArray from vendor-stated mechanical fields: pitchX=pitch, "
                        "countX=positions/rows, countY=rows"
                        + (", pitchY=rowPitch" if rows > 1 else "")
-                       + "; boundingEnvelope copied from mechanical length/width/height nominals; "
-                         "originDatum=pin1 declares the generated frame. Regular-lattice assumption; "
-                         "no pin cross-section, no z, no mateAxis is asserted."),
+                       + f"; boundingEnvelope = vendor-stated body axes ({envfields}), "
+                         "length omitted when unstated (it is the per-series formula the array "
+                         "already implies); originDatum=pin1 declares the generated frame. "
+                         "Regular-lattice assumption; no pin cross-section, no z, no mateAxis asserted."),
     })
     return True
 
