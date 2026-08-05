@@ -1,24 +1,68 @@
+# What this repo tracks: the schemas, the NDJSON catalogues the DB is built from,
+# the validation scripts + their tests, and the docs for those three. Everything
+# else — sourcing/scraping/repair campaign tooling, audits, staging dumps, scratch
+# files — lives here on disk but is NEVER committed. The rules below are an
+# allowlist, not a blocklist: a new file is ignored unless it is one of those four.
+
+# ── data/ — only the live catalogues, plus exactly ONE quarantine file ─────────
+/data/*
+!/data/analog_ics.ndjson
+!/data/bjts.ndjson
+!/data/capacitors.ndjson
+!/data/circuits.ndjson
+!/data/connectors.ndjson
+!/data/controllers.ndjson
+!/data/converters.ndjson
+!/data/diodes.ndjson
+!/data/igbts.ndjson
+!/data/magnetics.ndjson
+!/data/mosfets.ndjson
+!/data/resistors.ndjson
+!/data/thermistors.ndjson
+!/data/timing_devices.ndjson
+!/data/varistors.ndjson
+# The single consolidated quarantine sink. Per-catalogue quarantine files
+# (*.quarantine_*.ndjson), backups, vendor dumps and staging live local-only.
+!/data/quarantine.ndjson
+
+# ── scripts/ — only the validation entry points ───────────────────────────────
+# Everything else in scripts/ is one-off ETL: vendor scraping/import, data repair,
+# recovery, schema-migration campaigns. Historical tooling, not a library.
+/scripts/*
+!/scripts/validate_topology.py
+!/scripts/validate_db.py
+!/scripts/check_component_uris.py
+!/scripts/check_no_fabricated_parts.py
+!/scripts/verify_provenance_content.py
+!/scripts/changed_records_gate.py
+!/scripts/blade_gate.py
+# Retired on purpose: tests/test_no_fabricated_parts.py asserts it refuses to run.
+!/scripts/backfill_provenance.py
+
+# ── validator/ — the C++ Blade Runner sources, not its campaign drivers ───────
+/validator/*.py
+/validator/build/
+
+# ── local-only trees ──────────────────────────────────────────────────────────
+/staging/
+# librarian/ — local-only missing-field enrichment system (Postgres-backed ticket
+# queue + nightly DigiKey/Mouser+Sonnet loop). Runs only on this machine.
+/librarian/
+/backups/
+.playwright-mcp/
+.pytest_cache/
+
+# ── loose scratch at the repo root ────────────────────────────────────────────
+/*.py
+/*.json
+/*.ndjson
+/*.csv
+/*.txt
+
+# ── scratch/temp everywhere ───────────────────────────────────────────────────
 *.bak
+*.backup
 *_pre_excel*
-backups/
-
-# Local-only safety backups produced by scripts/port_part_libraries.py.
-data/*.v1.backup.ndjson
-data/quarantine.ndjson.pre-port-*
-data/quarantine.ndjson.corrupted-*
-
+*.ndjson.tmp
 __pycache__/
 *.pyc
-
-# librarian/ — local-only missing-field enrichment system (Postgres-backed ticket
-# queue + nightly DigiKey/Mouser+Sonnet loop). Runs only on this machine; never committed.
-/librarian/
-
-# Local-only scrape/import scratch & rescued raw vendor pulls — regenerable, never committed.
-.playwright-mcp/
-/data/sources/
-/data/staging/*/
-/staging/*/
-
-# transient temp files from atomic-rewrite campaigns (never commit a partial file)
-*.ndjson.tmp

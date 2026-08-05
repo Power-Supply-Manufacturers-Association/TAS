@@ -227,12 +227,38 @@ def impossible_ratings(info, electrical):
 def load_quarantined_fabricated(data_dir):
     """References already condemned as fabricated must never reappear live.
 
-    Self-maintaining denylist: every *.quarantine_fabricated.ndjson record's
-    reference. Zero false-positive risk (each entry was individually
-    evidence-checked when it was quarantined) and exact recall against
-    re-imports of the same invented parts.
+    Self-maintaining denylist: every record quarantined as fabricated. The
+    per-catalogue quarantine files were consolidated into a single
+    ``data/quarantine.ndjson`` whose records carry ``_quarantineSource`` — the
+    list of files they came from — so the fabricated subset is the records whose
+    source names contain ``quarantine_fabricated``. Any surviving
+    ``*.quarantine_fabricated.ndjson`` is still read, for older checkouts.
+    Zero false-positive risk (each entry was individually evidence-checked when
+    it was quarantined) and exact recall against re-imports of the same
+    invented parts.
     """
     refs = set()
+
+    def harvest(record):
+        for info, _ in iter_parts(record):
+            refs.add(str(info.get("reference", "")))
+            refs.add(str((((info.get("datasheetInfo") or {}).get("part")) or {})
+                         .get("partNumber", "")))
+
+    consolidated = data_dir / "quarantine.ndjson"
+    if consolidated.is_file():
+        with consolidated.open(encoding="utf-8", errors="replace") as fh:
+            for line in fh:
+                try:
+                    record = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+                sources = record.get("_quarantineSource") or []
+                if isinstance(sources, str):
+                    sources = [sources]
+                if any("quarantine_fabricated" in s for s in sources):
+                    harvest(record)
+
     for qpath in data_dir.glob("*.quarantine_fabricated.ndjson"):
         with qpath.open(encoding="utf-8", errors="replace") as fh:
             for line in fh:
@@ -240,10 +266,8 @@ def load_quarantined_fabricated(data_dir):
                     record = json.loads(line)
                 except json.JSONDecodeError:
                     continue
-                for info, _ in iter_parts(record):
-                    refs.add(str(info.get("reference", "")))
-                    refs.add(str((((info.get("datasheetInfo") or {}).get("part")) or {})
-                                 .get("partNumber", "")))
+                harvest(record)
+
     refs.discard("")
     return refs
 
