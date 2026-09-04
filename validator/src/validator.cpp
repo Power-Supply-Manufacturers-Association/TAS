@@ -363,6 +363,63 @@ const std::vector<std::string>* core_fields(const std::string& c) {
         // the catalog is brand-new (no live field-presence statistics to calibrate
         // a sparse floor against), and behavioral-only records are legitimately
         // near-empty. Completeness is not scored for them (returns -1).
+        //
+        // ABT #1015: "controller" and 11 of the 14 AAS analog-IC discriminators had
+        // NO manifest at all -- compute_completeness() returned -1 unconditionally,
+        // so GEN_SPARSE could never fire no matter how empty a row was. Measured
+        // live: 1,665 of 2,133 controller rows (78%) carry ONLY identity/category/
+        // provenance and no datasheetInfo.electrical object whatsoever -- a full
+        // validator sweep of that catalog returned 0 findings, indistinguishable
+        // from "checked and sound". A single '|'-joined entry (not several AND'd
+        // fields) is used deliberately: controller categories (pwmController vs
+        // gateDriver vs pfcController...) and several AAS subtypes carry disjoint
+        // field sets by DESIGN (a gate driver has gateDrive+isolation, a PWM
+        // controller has switchingFrequencyMax+currentMode, neither has the
+        // other's fields) -- an AND'd manifest across categories would false-flag
+        // real parts as sparse; presence of ANY ONE real spec field is what
+        // distinguishes a sourced record from a bare parametric-tagging stub.
+        {"controller",
+         {"supplyVoltage|switchingFrequencyMin|switchingFrequencyMax|gateDrive|isolation|"
+          "currentMode|referenceVoltage|shuntReference|syncRectifier|maxDutyCycle|deadTime|"
+          "uvlo|supplyVoltageAbsoluteMax"}},
+        // AAS amplifier family (operationalAmplifier/buffer/differenceAmplifier/
+        // instrumentationAmplifier/programmableGainAmplifier/sampleHold) all route
+        // through check_amplifier() in analog.cpp -- same shared field set.
+        {"operationalAmplifier",
+         {"numberOfChannels|supply|slewRate|inputOffsetVoltage|gainBandwidthProduct|"
+          "commonModeRejectionRatio|gain|minimumGain"}},
+        {"buffer",
+         {"numberOfChannels|supply|slewRate|inputOffsetVoltage|gainBandwidthProduct|"
+          "commonModeRejectionRatio|gain|minimumGain"}},
+        {"differenceAmplifier",
+         {"numberOfChannels|supply|slewRate|inputOffsetVoltage|gainBandwidthProduct|"
+          "commonModeRejectionRatio|gain|minimumGain"}},
+        {"instrumentationAmplifier",
+         {"numberOfChannels|supply|slewRate|inputOffsetVoltage|gainBandwidthProduct|"
+          "commonModeRejectionRatio|gain|minimumGain"}},
+        {"programmableGainAmplifier",
+         {"numberOfChannels|supply|slewRate|inputOffsetVoltage|gainBandwidthProduct|"
+          "commonModeRejectionRatio|gain|minimumGain"}},
+        {"sampleHold",
+         {"numberOfChannels|supply|slewRate|inputOffsetVoltage|gainBandwidthProduct|"
+          "commonModeRejectionRatio|gain|minimumGain"}},
+        {"comparator", {"numberOfChannels|supply|propagationDelay|inputOffsetVoltage"}},
+        {"adc", {"resolution|sampleRate|updateRate|referenceVoltage|numberOfChannels|supply"}},
+        {"dac", {"resolution|sampleRate|updateRate|referenceVoltage|numberOfChannels|supply"}},
+        // analogSwitch's channel-count field is `numberOfSwitches`, NOT
+        // `numberOfChannels` (multiplexer's field, one line down) -- a minimal-but-
+        // real TI TMDS/DisplayPort switch (numberOfSwitches + switchConfiguration
+        // only, no onResistance/supply extracted) false-fired GEN_SPARSE against
+        // `numberOfChannels` before this was caught (ABT #1015 counter-check).
+        {"analogSwitch",
+         {"onResistance|offLeakageCurrent|numberOfSwitches|switchConfiguration|supply"}},
+        {"multiplexer",
+         {"onResistance|offLeakageCurrent|numberOfChannels|multiplexerConfiguration|supply"}},
+        {"multiplier", {"scaleFactor|totalError|bandwidth|supply"}},
+        // integrator/summer are intentionally omitted: check_analog() (analog.cpp)
+        // treats them as behavioral-only atoms with NO electrical block by design
+        // (schema has nothing to put there) -- a manifest would score every real
+        // one of them 0.0 and false-flag the entire subtype as sparse.
     };
     auto it = M.find(c);
     return it == M.end() ? nullptr : &it->second;

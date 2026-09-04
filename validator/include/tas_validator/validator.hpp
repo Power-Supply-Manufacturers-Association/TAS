@@ -83,6 +83,20 @@ public:
     static std::vector<std::string> check_codes();
 };
 
+// --- build freshness (ABT #397) -----------------------------------------------
+// A content fingerprint (sha256) over validator/src/*.cpp +
+// validator/include/tas_validator/*.hpp, computed by tools/gen_build_fingerprint.py
+// at BUILD time and baked into the module. Any consumer that loads a compiled
+// tas_validator (Python binding or this static lib) can recompute the SAME
+// fingerprint from a checkout's current validator/ tree (calling the same
+// script -- see tools/check_freshness.py) and compare: a mismatch means the
+// loaded artifact predates source changes it should reflect, regardless of
+// which build-* directory it came from or what its mtime claims. Several
+// build-* trees in this checkout all configure against the one validator/src;
+// only a content comparison -- never a timestamp -- can tell a rebuilt tree
+// from a stale sibling (mtimes survive touch/checkout/rsync unchanged).
+std::string build_fingerprint();
+
 // --- circuits -----------------------------------------------------------------
 // A CIAS brick is not a part: it has no discriminator to dispatch on and no
 // manufacturerInfo, so it gets its own entry point rather than a branch inside

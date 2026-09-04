@@ -60,7 +60,37 @@ v.findings    # list of Finding: .code .severity .component .reference .message 
 v.skipped     # list of check codes skipped because required input data was absent
 tas_validator.validate_json(text)    # same, JSON string only
 tas_validator.check_codes()          # every check id the validator can emit
+tas_validator.build_fingerprint()    # content hash of the src this .so was built from (ABT #397)
 ```
+
+## Build freshness (ABT #397) — verify before you trust an import
+
+This repo routinely has several out-of-source build directories at once
+(`build/`, `build-ninja/`, ad-hoc `build-<task>/` trees other sessions use),
+all configuring against the one `validator/src`. Each is only as fresh as its
+own last rebuild — importing a stale one does not fail, it just silently
+behaves like an older validator (a missing check reads as "this part passed",
+not as an error). This has already cost a real investigation (ABT #552) and
+broke a same-day rollout (ABT #549's `validate_circuit()`) with nothing to
+tell the trees apart at import time.
+
+**Never trust a build directory by name or mtime.** Before relying on an
+imported `tas_validator` module (a gate, a bulk audit, an interactive
+session), verify it by CONTENT:
+
+```bash
+python3 validator/tools/check_freshness.py \
+    --module-dir validator/build \
+    --validator-dir validator
+# -> "FRESH <sha256>" on success; non-zero exit + a diagnosis naming both
+#    hashes if the module was built from different source than what's on
+#    disk right now.
+```
+
+This works for ANY build directory, not just `build/` — point `--module-dir`
+at whichever tree you're about to import from. `tests/test_validator.cpp`
+runs the equivalent check on every build via the
+`"Framework: build_fingerprint matches on-disk source"` test case.
 
 Verdict model: each check emits a `Finding` only when it fires. A part is
 **INVALID** iff it has at least one `IMPOSSIBLE` finding; `SUSPICIOUS` findings

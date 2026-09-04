@@ -75,12 +75,44 @@ add_custom_command(
 add_custom_target(tas_validator_generated_check_codes
   DEPENDS "${GEN_DIR}/check_codes.inc" "${GEN_DIR}/circuit_check_codes.inc")
 
+# --- generated build fingerprint (ABT #397) -----------------------------------
+# Several out-of-source build-* directories all configure against this SAME
+# validator/src -- each is only as fresh as its own last rebuild, and nothing
+# stops a consumer importing a .so that is hours stale relative to the tree
+# (bit ABT #552's investigation for real). tools/gen_build_fingerprint.py
+# hashes validator/src/*.cpp + validator/include/tas_validator/*.hpp by
+# CONTENT (never mtime -- mtimes survive touch/checkout/rsync unchanged) into
+# a single sha256 baked into the module as tas::build_fingerprint() /
+# tas_validator.build_fingerprint(). tools/check_freshness.py (or
+# tests/test_validator.cpp's guard test) recomputes the SAME hash from
+# whatever is on disk right now and compares -- a mismatch means the loaded
+# artifact predates source it should reflect, regardless of which build-*
+# directory produced it or what its mtime says.
+set(BUILD_FINGERPRINT_GEN_SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/tools/gen_build_fingerprint.py")
+file(GLOB FINGERPRINT_INPUT_HEADERS CONFIGURE_DEPENDS
+     "${CMAKE_CURRENT_SOURCE_DIR}/include/tas_validator/*.hpp")
+file(GLOB FINGERPRINT_INPUT_SRCS CONFIGURE_DEPENDS
+     "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
+
+add_custom_command(
+  OUTPUT "${GEN_DIR}/build_fingerprint.inc"
+  COMMAND Python3::Interpreter "${BUILD_FINGERPRINT_GEN_SCRIPT}"
+          --validator-dir "${CMAKE_CURRENT_SOURCE_DIR}"
+          --emit-header "${GEN_DIR}/build_fingerprint.inc"
+  DEPENDS "${BUILD_FINGERPRINT_GEN_SCRIPT}" ${FINGERPRINT_INPUT_SRCS} ${FINGERPRINT_INPUT_HEADERS}
+  COMMENT "Fingerprinting validator/src + validator/include by content (ABT #397)"
+  VERBATIM)
+
+add_custom_target(tas_validator_generated_build_fingerprint
+  DEPENDS "${GEN_DIR}/build_fingerprint.inc")
+
 # --- core library (pure C++, no Python) --------------------------------------
 add_library(tas_validator_core STATIC
   src/helpers.cpp
   src/eseries.cpp
   src/corpus.cpp
   src/validator.cpp
+  src/build_info.cpp
   src/magnetics.cpp
   src/capacitors.cpp
   src/resistors.cpp
@@ -95,7 +127,8 @@ add_library(tas_validator_core STATIC
   src/controllers.cpp
   src/time_bases.cpp
   src/circuits.cpp)
-add_dependencies(tas_validator_core tas_validator_generated_check_codes)
+add_dependencies(tas_validator_core tas_validator_generated_check_codes
+                  tas_validator_generated_build_fingerprint)
 target_include_directories(tas_validator_core PUBLIC
   "${CMAKE_CURRENT_SOURCE_DIR}/include")
 target_include_directories(tas_validator_core PRIVATE
@@ -122,4 +155,10 @@ if(BUILD_TAS_VALIDATOR_TESTS)
   target_compile_definitions(tas_validator_tests PRIVATE
     TAS_VALIDATOR_GEN_SCRIPT="${CHECK_CODES_GEN_SCRIPT}"
     TAS_VALIDATOR_SRC_DIR="${CMAKE_CURRENT_SOURCE_DIR}/src")
+  # ABT #397 guard test: recompute the build fingerprint fresh from
+  # validator/ at TEST time and assert it equals the compiled-in
+  # tas::build_fingerprint(), same idea as the #549 check_codes guard above.
+  target_compile_definitions(tas_validator_tests PRIVATE
+    TAS_VALIDATOR_FINGERPRINT_SCRIPT="${BUILD_FINGERPRINT_GEN_SCRIPT}"
+    TAS_VALIDATOR_ROOT_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
 endif()

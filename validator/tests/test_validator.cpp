@@ -801,6 +801,41 @@ TEST_CASE("Controllers: GoodControllerValid", "[controllers]") {
     CHECK(!has_code(v, "CTL_UVLO_ORDER"));
 }
 
+// ABT #1015: 78% of live controller rows (1,665/2,133) carry ONLY identity +
+// function.category + provenance -- no datasheetInfo.electrical object at all --
+// and core_fields() had no "controller" manifest, so compute_completeness()
+// returned -1 unconditionally and GEN_SPARSE could never fire regardless of how
+// empty a row was. A full validator sweep of that catalog therefore reported 0
+// findings, indistinguishable from "checked and sound". These two tests pin the
+// fix: a category-only parametric-tagging stub IS flagged; a row that actually
+// carries a real controller electrical field is NOT (the false-positive risk a
+// per-category AND'd manifest would have -- pwmController and gateDriver rows
+// carry disjoint field sets by design, so the manifest is a single '|' OR list).
+TEST_CASE("Controllers: GEN_SPARSE fires for a category-only parametric stub",
+          "[controllers]") {
+    // Real shape (ABT #1015 sample): Infineon ICE3PCS01G-style stub -- category +
+    // identity + provenance, NO electrical object whatsoever.
+    json p = json::parse(R"json({"controller":{"manufacturerInfo":{"name":"Infineon",
+      "reference":"ICE3PCS01G","datasheetInfo":{"function":{"category":"pfcController",
+      "intendedTopologies":["boostConverter"]},"part":{"partNumber":"ICE3PCS01G"}}}}})json");
+    Verdict v = V.validate(p);
+    CHECK(has(v, "GEN_SPARSE", Severity::Suspicious));
+    CHECK(v.valid);  // Suspicious only -- a stub is a data-quality flag, not IMPOSSIBLE
+}
+
+TEST_CASE("Controllers: GEN_SPARSE does not fire for a sparsely-but-really populated row",
+          "[controllers]") {
+    // A real gate driver carries gateDrive + isolation but legitimately NOT
+    // switchingFrequencyMax/currentMode/referenceVoltage (those are PWM-controller
+    // fields) -- the OR manifest must not penalize a category for lacking a SIBLING
+    // category's fields.
+    json p = json::parse(R"json({"controller":{"manufacturerInfo":{"reference":"X",
+      "datasheetInfo":{"function":{"category":"gateDriver"},
+      "electrical":{"gateDrive":{"sourceCurrentPeak":4.0,"sinkCurrentPeak":6.0}}}}}})json");
+    Verdict v = V.validate(p);
+    CHECK(!has_code(v, "GEN_SPARSE"));
+}
+
 // Time bases (TDAS): oscillators / crystals / timers / latches + behavioral atoms.
 TEST_CASE("TimeBases: GoodMemsOscillatorValid", "[timebases]") {
     Verdict v = V.validate(good_oscillator());
@@ -1038,6 +1073,30 @@ TEST_CASE("Framework: check_codes matches emit() call sites", "[framework]") {
     }
 }
 
+// ABT #397: several out-of-source build-* directories all configure against
+// this SAME validator/src, and nothing stopped a consumer from importing a
+// .so that was hours stale relative to the tree (a real ABT #552 false
+// investigation, and the actual bug that broke #549's own validate_circuit()
+// rollout the same day). tas::build_fingerprint() bakes a content hash of
+// validator/src + validator/include into the compiled module at build time
+// (tools/gen_build_fingerprint.py, wired into CMakeLists.txt); this test
+// independently re-invokes the SAME script at TEST time against the same
+// tree the binary was just built from and asserts the two hashes agree --
+// catching a custom command that silently didn't re-run, or a hand-edited
+// generated header, the same way the check_codes guard above does.
+TEST_CASE("Framework: build_fingerprint matches on-disk source", "[framework]") {
+    const std::string script = TAS_VALIDATOR_FINGERPRINT_SCRIPT;
+    const std::string root_dir = TAS_VALIDATOR_ROOT_DIR;
+    std::string cmd = "python3 \"" + script + "\" --validator-dir \"" + root_dir + "\" --print";
+    std::string fresh = run_capture(cmd);
+    while (!fresh.empty() && (fresh.back() == '\n' || fresh.back() == '\r')) fresh.pop_back();
+    std::string compiled = build_fingerprint();
+    INFO("compiled-in fingerprint: " << compiled);
+    INFO("freshly recomputed:      " << fresh);
+    CHECK(compiled == fresh);
+    CHECK(compiled.size() == 64);  // sha256 hex
+}
+
 // ---- Thermistors (THERM_*) -------------------------------------------------
 namespace {
 // A real-shaped NTC (Vishay NTCLE100E3, 10 kOhm, B25/85 = 3977 K).
@@ -1146,6 +1205,36 @@ TEST_CASE("AAS: multiplexer with absurd on-resistance is impossible", "[analog]"
         "electrical": {"multiplexerConfiguration": "8:1", "onResistance": 5.0e6},
         "provenance": [{"source": "manufacturerDatasheet"}]}}}}})json");
     CHECK(has(V.validate(p), "SW_RON", Severity::Impossible));
+}
+
+// ABT #1015: 11 of the 14 AAS discriminators had NO core_fields() manifest, so
+// GEN_SPARSE could never fire for an analog IC no matter how empty. Also pins the
+// specific field-name bug the counter-check caught while adding the fix: an
+// analogSwitch's channel-count field is `numberOfSwitches`, NOT `numberOfChannels`
+// (that's multiplexer's field) -- using the wrong name in the manifest false-fired
+// GEN_SPARSE on all 7 real TI TMDS/DisplayPort switch rows in the live catalog
+// (numberOfSwitches + switchConfiguration only, no onResistance/supply extracted)
+// before the field name was corrected against live-catalog data.
+TEST_CASE("AAS: GEN_SPARSE fires for an analog IC with datasheetInfo but no real spec",
+          "[analog]") {
+    json p = json::parse(R"json({"analog": {"operationalAmplifier": {"manufacturerInfo": {
+      "name": "X", "reference": "STUB", "datasheetInfo": {
+        "part": {"partNumber": "STUB"},
+        "provenance": [{"source": "manufacturerDatasheet"}]}}}}})json");
+    Verdict v = V.validate(p);
+    CHECK(has(v, "GEN_SPARSE", Severity::Suspicious));
+    CHECK(v.valid);
+}
+
+TEST_CASE("AAS: analog switch with only numberOfSwitches is NOT sparse", "[analog]") {
+    // Real shape (ABT #1015 sample: TI SN75DP126) -- numberOfSwitches +
+    // switchConfiguration only, no onResistance/offLeakageCurrent/supply.
+    json p = json::parse(R"json({"analog": {"analogSwitch": {"manufacturerInfo": {
+      "name": "TI", "reference": "SN75DP126", "datasheetInfo": {
+        "part": {"partNumber": "SN75DP126"},
+        "electrical": {"numberOfSwitches": 2, "switchConfiguration": "SPST-NO"},
+        "provenance": [{"source": "manufacturerDatasheet"}]}}}}})json");
+    CHECK(!has_code(V.validate(p), "GEN_SPARSE"));
 }
 
 // --- Connectors (CONAS) -------------------------------------------------------

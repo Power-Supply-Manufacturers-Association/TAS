@@ -8,6 +8,7 @@
 //   v.skipped          -> [str, ...]           (checks skipped for missing data)
 //   f.code, f.severity, f.component, f.reference, f.message, f.value, f.threshold
 //   tas_validator.check_codes() -> [str, ...]
+//   tas_validator.build_fingerprint() -> str   (ABT #397 staleness guard, see tools/check_freshness.py)
 //
 //   v = tas_validator.validate_circuit(brick)  # a CIAS brick, NOT a part
 //   tas_validator.circuit_check_codes() -> [str, ...]
@@ -110,6 +111,12 @@ PYBIND11_MODULE(tas_validator, m) {
         },
         py::arg("text"), "Validate one part record given as a JSON string.");
     m.def("check_codes", &PartValidator::check_codes, "All check codes the validator can emit.");
+    m.def("build_fingerprint", &build_fingerprint,
+          "Content fingerprint (sha256 over validator/src + validator/include) baked in at "
+          "build time (ABT #397). Compare against tools.gen_build_fingerprint.compute_fingerprint "
+          "on the current checkout -- see tools/check_freshness.py -- to detect a stale build "
+          "before trusting it; a mismatch means this module predates source changes it should "
+          "reflect, regardless of which build-* directory produced it or its file mtime.");
 
     m.def("validate_circuit", &do_validate_circuit, py::arg("brick"),
           "Validate one CIAS circuit brick (dict or JSON string) — the physics gate for "

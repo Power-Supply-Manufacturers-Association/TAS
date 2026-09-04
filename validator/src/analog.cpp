@@ -7,7 +7,8 @@
 //   comparator  -> own offset/bias/supply + propagationDelay (required)
 //   converter   (adc, dac) -> resolution, sample/update rate, referenceVoltage, dynamics
 //   switch      (analogSwitch, multiplexer) -> utils.switchCore (onResistance, ...)
-//   behavioral  (integrator, summer, multiplier) -> no electrical; nothing to check
+//   multiplier  -> own scaleFactor/totalError/bandwidth -> check_multiplier()
+//   behavioral  (integrator, summer only) -> no electrical; nothing to check
 // Bounds: TI/ADI op-amp portfolios (GBW 50 MHz–8 GHz; slew ≤~3500 V/µs; CMRR/PSRR 60–140 dB;
 // Vos µV–10 mV), ADC ≤32 bits / ~GSPS, comparator t_PD ns–µs.
 #include "tas_validator/helpers.hpp"
