@@ -22,6 +22,13 @@ genuine 1.0uH part whose 8.5 mOhm DCR happens to equal 0.01 * 0.85. So each rule
 below demands CORROBORATING evidence of fabrication, never a lone resemblance.
 A guard that cries wolf gets switched off, and then it protects nothing.
 
+IDENTITY. Every rule keys on part_ids(): datasheetInfo.part.partNumber first,
+manufacturerInfo.reference as the fallback. Both are optional and neither is
+universal (35,966 capacitors have only partNumber, 51,741 magnetics only
+reference), so a screen keyed on one field silently skips the other population --
+ABT #256 and the 448 TDK magnetics of 2026-09-04 both got through that way. A
+record with NEITHER identity is a loud failure, never a skip.
+
 Two signatures, both evidence-backed:
 
  1. KNOWN GENERATOR TEMPLATE -- the exact MPN shapes the fabrication scripts
@@ -65,7 +72,12 @@ KNOWN_TEMPLATES = [
     # ABT #256 audit (2026-07-22): the phase2-5 'reach 100K entries' generators.
     # Vendor-abbreviated internal codes no vendor sells; verified against live
     # catalogues (17,183 quarantined, zero real MPNs match these shapes).
-    (re.compile(r"^(Coi|Bou|TDK|Wur|Vis|Mur|Pul|Sum)\d{3}u[A-Za-z0-9]+_\d+$"), "phase5 magnetics generator"),
+    # 2026-09-04: the thirteenth batch (448 TDK, quarantine tag "fabricated cohort
+    # 13") was this generator's output with the unit letter 'm' where the template
+    # only knew 'u' (TDK001m08051065_50) -- so it slipped a template written for it.
+    # Widened to n/u/m; zero live MPNs match the widened shape (scan of every live
+    # catalogue that day), while 3,696 quarantined 'm' rows do.
+    (re.compile(r"^(Coi|Bou|TDK|Wur|Vis|Mur|Pul|Sum)\d{3}[num][A-Za-z0-9]+_\d+$"), "phase5 magnetics generator"),
     (re.compile(r"^(Vis|Yag|Bou|Pan|KOA)(wir|car|mel|met|thi|MCS|PTF)\d+R\d{4}\d{4}$"), "phase3/5 resistor generator"),
     (re.compile(r"^(GRM|CL|FK)\d{4}\d{4}\d{3}V$"), "phase2 MLCC generator (fake GRM/CL/FK numbering)"),
     (re.compile(r"^MLCC\d{6}$"), "phase2 MLCC generator (generic fallback)"),
@@ -289,28 +301,71 @@ def _ladder_numeric_fields(electrical):
     return out
 
 
-def iter_parts(record):
-    """Yield every (manufacturerInfo, electrical-dict) in a catalogue record.
+# ── record identity ──────────────────────────────────────────────────────────
+# Every rule keys on part_ids(), never on one field. Both identity fields are
+# OPTIONAL in PEAS and NEITHER is universal in this corpus (census of the live
+# tree, 2026-09-04): 35,966 capacitors carry datasheetInfo.part.partNumber and
+# no manufacturerInfo.reference, while 51,741 magnetics carry reference and no
+# partNumber. A screen keyed on either one alone silently skips the other
+# population and reports clean -- that is how 17,183 partNumber-only rows walked
+# past the reference-keyed version of this guard (ABT #256) and how the 448
+# reference-less TDK magnetics of 2026-09-04 walked past every reference-keyed
+# screen in the corpus. partNumber comes first: it is the identity a vendor
+# datasheet actually carries; reference is the fallback, not the other way round.
+#
+# A record that has NEITHER is not skipped -- it is reported as UNIDENTIFIABLE
+# and fails the build (see check_file). A gate that cannot run must fail, never
+# pass.
+UNIDENTIFIABLE = ("UNIDENTIFIABLE: record carries neither datasheetInfo.part.partNumber "
+                  "nor manufacturerInfo.reference, so no rule can key on it; the guard "
+                  "will not pass a part it cannot name")
+NO_MANUFACTURER_INFO = ("UNIDENTIFIABLE: component record has no manufacturerInfo at all, "
+                        "so there is nothing for the guard to key on")
+# Top-level keys that mark a record as a CIAS brick / TAS converter document
+# rather than a component -- those carry no manufacturerInfo by design.
+NON_COMPONENT_KEYS = frozenset({"components", "connections", "topology", "stages"})
 
-    A record is identified by manufacturerInfo.reference OR
-    datasheetInfo.part.partNumber — the phase2-5 generators wrote partNumber
-    ONLY, which is precisely how 17,183 fabricated records slipped past the
-    reference-keyed version of this guard (found in the ABT #256 audit).
+
+def part_ids(info):
+    """The identities a manufacturerInfo can be keyed on, most reliable first.
+
+    [partNumber, reference] with empties dropped -- so ids[0] is the label to
+    report and ``any(rule(i) for i in ids)`` is how a rule screens a row. An empty
+    list means the record cannot be identified.
     """
+    datasheet = info.get("datasheetInfo") if isinstance(info.get("datasheetInfo"), dict) else {}
+    part = datasheet.get("part") if isinstance(datasheet.get("part"), dict) else {}
+    return [str(i) for i in (part.get("partNumber"), info.get("reference")) if i]
+
+
+def iter_parts(record, _nested=False):
+    """Yield every (manufacturerInfo, electrical-dict, nested) in a record.
+
+    Yields EVERY manufacturerInfo dict, identified or not -- deciding what to do
+    about a missing identity is check_file's job, and doing it here is exactly
+    the silent skip this guard exists to refuse. The outermost manufacturerInfo
+    (``nested`` False) is the part's own and MUST be identifiable; deeper ones
+    (a core's or wire's manufacturer inside a MAS magnetic, an inline PEAS
+    document inside a CIAS brick's component) are building-block references
+    and are screened when they carry an identity.
+    """
+    if isinstance(record, list):
+        for value in record:
+            yield from iter_parts(value, _nested)
+        return
     if not isinstance(record, dict):
         return
     info = record.get("manufacturerInfo")
     if isinstance(info, dict):
-        datasheet = info.get("datasheetInfo") or {}
-        part_number = (datasheet.get("part") or {}).get("partNumber")
-        if info.get("reference") or part_number:
-            electrical = datasheet.get("electrical")
-            if isinstance(electrical, list):
-                electrical = electrical[0] if electrical else {}
-            yield info, (electrical if isinstance(electrical, dict) else {})
-    for value in record.values():
-        if isinstance(value, dict):
-            yield from iter_parts(value)
+        datasheet = info.get("datasheetInfo") if isinstance(info.get("datasheetInfo"), dict) else {}
+        electrical = datasheet.get("electrical")
+        if isinstance(electrical, list):
+            electrical = electrical[0] if electrical else {}
+        yield info, (electrical if isinstance(electrical, dict) else {}), _nested
+        _nested = True
+    for key, value in record.items():
+        if key != "manufacturerInfo" and isinstance(value, (dict, list)):
+            yield from iter_parts(value, _nested)
 
 
 # ── physically impossible ratings ────────────────────────────────────────────
@@ -346,7 +401,12 @@ def load_quarantined_fabricated(data_dir):
     per-catalogue quarantine files were consolidated into a single
     ``data/quarantine.ndjson`` whose records carry ``_quarantineSource`` — the
     list of files they came from — so the fabricated subset is the records whose
-    source names contain ``quarantine_fabricated``. Any surviving
+    source names say ``fabricated`` -- the file name
+    (``magnetics.quarantine_fabricated.ndjson``) or the in-line tag of a batch
+    condemned straight out of a live catalogue (``magnetics.ndjson (fabricated
+    cohort 13, ...)``, 2026-09-04). Matching only the literal
+    ``quarantine_fabricated`` left the 448 TDK partNumbers and the 339 diodes
+    quarantined that day OUT of the denylist. Any surviving
     ``*.quarantine_fabricated.ndjson`` is still read, for older checkouts.
     Zero false-positive risk (each entry was individually evidence-checked when
     it was quarantined) and exact recall against re-imports of the same
@@ -355,10 +415,8 @@ def load_quarantined_fabricated(data_dir):
     refs = set()
 
     def harvest(record):
-        for info, _ in iter_parts(record):
-            refs.add(str(info.get("reference", "")))
-            refs.add(str((((info.get("datasheetInfo") or {}).get("part")) or {})
-                         .get("partNumber", "")))
+        for info, _electrical, _nested in iter_parts(record):
+            refs.update(part_ids(info))
 
     consolidated = data_dir / "quarantine.ndjson"
     if consolidated.is_file():
@@ -371,7 +429,7 @@ def load_quarantined_fabricated(data_dir):
                 sources = record.get("_quarantineSource") or []
                 if isinstance(sources, str):
                     sources = [sources]
-                if any("quarantine_fabricated" in s for s in sources):
+                if any("fabricated" in s.lower() for s in sources):
                     harvest(record)
 
     for qpath in data_dir.glob("*.quarantine_fabricated.ndjson"):
@@ -383,12 +441,24 @@ def load_quarantined_fabricated(data_dir):
                     continue
                 harvest(record)
 
-    refs.discard("")
     return refs
 
 
-def check_file(path, quarantined_refs=frozenset()):
+def new_stats():
+    return {"rows": 0, "screened": 0, "nestedScreened": 0, "unidentifiable": 0,
+            "nonComponentRows": 0, "nestedUnidentified": 0}
+
+
+def check_file(path, quarantined_refs=frozenset(), stats=None):
+    """Findings [(lineno, label, why)] for one catalogue.
+
+    ``stats`` (optional dict, see new_stats) is filled with what the guard SAW:
+    rows read, parts screened, and -- the number this guard used to hide --
+    rows it could not identify. Those rows are also findings: a record with no
+    identity is a failure, not a skip.
+    """
     findings = []
+    stats = stats if stats is not None else new_stats()
     cohorts = {}          # (manufacturer, stem) -> [(index, lineno, pn, fields)]
     with path.open(encoding="utf-8", errors="replace") as fh:
         first = fh.readline()
@@ -402,50 +472,67 @@ def check_file(path, quarantined_refs=frozenset()):
                 record = json.loads(line)
             except json.JSONDecodeError:
                 continue
-            for info, electrical in iter_parts(record):
-                reference = str(info.get("reference", ""))
-                part_number = str((((info.get("datasheetInfo") or {}).get("part")) or {})
-                                  .get("partNumber", ""))
-                ids = [i for i in (reference, part_number) if i]
+            stats["rows"] += 1
+            parts = list(iter_parts(record))
+            if not parts:
+                if isinstance(record, dict) and NON_COMPONENT_KEYS.isdisjoint(record):
+                    stats["unidentifiable"] += 1
+                    findings.append((lineno, "<no identity>", NO_MANUFACTURER_INFO))
+                else:
+                    stats["nonComponentRows"] += 1   # a CIAS brick or a TAS document
+                continue
+            for info, electrical, nested in parts:
+                ids = part_ids(info)
+                if not ids:
+                    if nested:
+                        stats["nestedUnidentified"] += 1   # a building block, not the part
+                    else:
+                        stats["unidentifiable"] += 1
+                        findings.append((lineno, "<no identity>", UNIDENTIFIABLE))
+                    continue
+                stats["nestedScreened" if nested else "screened"] += 1
+                label = ids[0]
                 hit = next((why for pattern, why in KNOWN_TEMPLATES
                             for i in ids if pattern.match(i)), None)
                 if hit:
-                    findings.append((lineno, ids[0], f"MPN matches the {hit} generator template"))
+                    findings.append((lineno, label, f"MPN matches the {hit} generator template"))
                     continue
                 if any(i in quarantined_refs for i in ids):
-                    findings.append((lineno, ids[0],
-                                     "reference was previously quarantined as fabricated "
-                                     "(*.quarantine_fabricated.ndjson) and must not reappear live"))
+                    findings.append((lineno, label,
+                                     "part was previously quarantined as fabricated "
+                                     "and must not reappear live"))
                     continue
                 bad_url = fake_provenance(info)
                 if bad_url:
-                    findings.append((lineno, ids[0] if ids else reference,
+                    findings.append((lineno, label,
                                      f"sole provenance URL is not a product page: {bad_url}"))
                     continue
                 inductance = (electrical.get("inductance") or {}).get("nominal")
                 dcr = (electrical.get("dcResistance") or {}).get("maximum")
                 if formula_dcr(inductance, dcr) and is_bare_stub(info, electrical):
-                    findings.append((lineno, reference,
+                    findings.append((lineno, label,
                                      "DCR reproduces a generator formula on a record with no "
                                      "datasheet, description, Isat, SRF or dimensions"))
                     continue
                 impossible = impossible_ratings(info, electrical)
                 if impossible:
-                    findings.append((lineno, reference, impossible))
+                    findings.append((lineno, label, impossible))
                     continue
                 # cohort accumulation for rule (3); per-record rules above have
-                # already had their say, so only survivors are grouped.
-                match = LADDER_STEM.match(part_number or reference)
+                # already had their say, so only survivors are grouped. Keyed on
+                # the same label every other rule reports: partNumber, else
+                # reference -- a generator that writes one field only must land
+                # in the same cohort as one that writes both.
+                match = LADDER_STEM.match(label)
                 if match and match.group("stem"):
                     fields = _ladder_numeric_fields(electrical)
                     if fields:
                         key = (str(info.get("name") or ""), match.group("stem"))
                         cohorts.setdefault(key, []).append(
-                            (int(match.group("index")), lineno,
-                             part_number or reference, fields))
+                            (int(match.group("index")), lineno, label, fields))
     for members, why in find_arithmetic_ladders(cohorts):
-        for _index, lineno, part_number, _fields in members:
-            findings.append((lineno, part_number, why))
+        for _index, lineno, label, _fields in members:
+            findings.append((lineno, label, why))
     return findings
 
 
@@ -454,32 +541,43 @@ def main():
     parser.add_argument("--data", type=Path, default=DEFAULT_DATA)
     args = parser.parse_args()
 
-    total = 0
+    total = unidentifiable = 0
     quarantined_refs = load_quarantined_fabricated(args.data)
     for path in sorted(args.data.glob("*.ndjson")):
         name = path.name
         # quarantine files are where fabricated parts are SUPPOSED to live
         if "quarantine" in name or "pending" in name or name.endswith(".bak"):
             continue
-        findings = check_file(path, quarantined_refs)
+        stats = new_stats()
+        findings = check_file(path, quarantined_refs, stats)
+        seen = (f"{name}: {stats['rows']} rows, {stats['screened']} part(s) screened"
+                + (f", {stats['nestedScreened']} nested" if stats["nestedScreened"] else "")
+                + (f", {stats['nonComponentRows']} non-component row(s)" if stats["nonComponentRows"] else "")
+                + (f", {stats['unidentifiable']} UNIDENTIFIABLE" if stats["unidentifiable"] else ""))
+        print(seen)
+        unidentifiable += stats["unidentifiable"]
         if findings:
             total += len(findings)
-            print(f"\n{name}: {len(findings)} fabricated part(s)")
-            for lineno, reference, why in findings[:10]:
-                print(f"  line {lineno}: {reference} -- {why}")
+            print(f"  {len(findings)} finding(s)")
+            for lineno, label, why in findings[:10]:
+                print(f"  line {lineno}: {label} -- {why}")
             if len(findings) > 10:
                 print(f"  ... and {len(findings) - 10} more")
 
     if total:
         print(
-            f"\nFAIL: {total} fabricated or physically impossible part(s) in live catalogues.\n"
-            "Neither must ship. Quarantine them (quarantine_fabricated_magnetics.py and "
-            "quarantine_impossible_diodes.py are the templates), or if a flagged part is "
-            "genuinely real, correct it from its datasheet with real values and provenance.",
+            f"\nFAIL: {total} finding(s) in live catalogues"
+            + (f", of which {unidentifiable} row(s) the guard CANNOT IDENTIFY (neither "
+               "partNumber nor reference) -- give them an identity or quarantine them; "
+               "a row the guard cannot name is not passed" if unidentifiable else "")
+            + ".\nFabricated and physically impossible parts must not ship. Quarantine them "
+            "(quarantine_fabricated_magnetics.py and quarantine_impossible_diodes.py are "
+            "the templates), or if a flagged part is genuinely real, correct it from its "
+            "datasheet with real values and provenance.",
             file=sys.stderr,
         )
         return 1
-    print("OK: no fabricated or physically impossible parts in live catalogues")
+    print("OK: no fabricated, physically impossible or unidentifiable parts in live catalogues")
     return 0
 
 

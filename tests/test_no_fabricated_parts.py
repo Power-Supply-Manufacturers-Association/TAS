@@ -236,3 +236,209 @@ def test_identical_cohort_is_not_a_ladder(tmp_path):
     rows = [ladder_record(f"ABC{i}", forwardVoltage=0.4, reverseVoltage=200.0)
             for i in range(20)]
     assert ladder_findings(tmp_path, rows) == []
+
+
+# ── identity: partNumber first, reference as fallback, NEITHER is a failure ──
+# Two fabricated batches reached production because every screen in the corpus
+# keyed on manufacturerInfo.reference, which is optional: 35,966 live capacitors
+# and (until 2026-09-04) the 448 fabricated TDK magnetics had no such field, and
+# a screen keyed on it reported them clean by never looking. The other identity
+# is not universal either -- 51,741 live magnetics carry reference and no
+# partNumber -- so the guard keys on both, partNumber first, and a row carrying
+# neither is a loud failure rather than a silent skip.
+
+TEMPLATE_MPN = "7443HCF-1000-0100"           # a KNOWN_TEMPLATES shape, always flagged
+
+
+def identified(manufacturer_info, family="magnetic"):
+    return {family: {"manufacturerInfo": manufacturer_info}}
+
+
+def stats_and_findings(tmp_path, *records, name="magnetics.ndjson"):
+    path = tmp_path / name
+    path.write_text("".join(json.dumps(r) + "\n" for r in records))
+    stats = guard.new_stats()
+    return stats, guard.check_file(path, stats=stats)
+
+
+def test_partnumber_only_row_is_screened(tmp_path):
+    """The TDK shape: partNumber, no reference. Every rule must still see it."""
+    stats, found = stats_and_findings(tmp_path, identified({
+        "name": "Wuerth", "datasheetInfo": {"part": {"partNumber": TEMPLATE_MPN}}}))
+    assert stats["screened"] == 1 and stats["unidentifiable"] == 0
+    assert [f[1] for f in found] == [TEMPLATE_MPN], found
+    assert "generator template" in found[0][2]
+
+
+def test_reference_only_row_is_screened(tmp_path):
+    """The other population: 51,741 live magnetics have reference and no partNumber."""
+    stats, found = stats_and_findings(tmp_path, identified({
+        "name": "Wuerth", "reference": TEMPLATE_MPN, "datasheetInfo": {}}))
+    assert stats["screened"] == 1
+    assert [f[1] for f in found] == [TEMPLATE_MPN], found
+
+
+def test_partnumber_is_the_label_and_reference_the_fallback():
+    assert guard.part_ids({"reference": "REF-1",
+                           "datasheetInfo": {"part": {"partNumber": "PN-1"}}}) == ["PN-1", "REF-1"]
+    assert guard.part_ids({"reference": "REF-1"}) == ["REF-1"]
+    assert guard.part_ids({"datasheetInfo": {"part": {"partNumber": "PN-1"}}}) == ["PN-1"]
+    assert guard.part_ids({"name": "TDK", "reference": None,
+                           "datasheetInfo": {"part": {"partNumber": ""}}}) == []
+
+
+def test_template_on_the_reference_is_caught_when_partnumber_is_clean(tmp_path):
+    """Both identities are screened, not just the first one found."""
+    stats, found = stats_and_findings(tmp_path, identified({
+        "name": "Wuerth", "reference": TEMPLATE_MPN,
+        "datasheetInfo": {"part": {"partNumber": "744314100"}}}))
+    assert len(found) == 1 and found[0][1] == "744314100", found
+
+
+def test_row_with_neither_identity_fails_loudly(tmp_path):
+    """A record nothing can key on is a FAILURE. It used to be skipped in silence."""
+    stats, found = stats_and_findings(tmp_path, identified({
+        "name": "TDK", "datasheetInfo": {"part": {"description": "1 mH power inductor"},
+                                          "electrical": [{"inductance": {"nominal": 1e-3}}]}}))
+    assert stats["unidentifiable"] == 1 and stats["screened"] == 0
+    assert len(found) == 1, found
+    assert found[0][1] == "<no identity>"
+    assert found[0][2].startswith("UNIDENTIFIABLE")
+
+
+def test_component_row_without_manufacturer_info_fails_loudly(tmp_path):
+    """An empty seed in a LIVE catalogue has nothing to screen -- so it fails."""
+    stats, found = stats_and_findings(tmp_path, {"capacitor": {}}, name="capacitors.ndjson")
+    assert stats["unidentifiable"] == 1
+    assert len(found) == 1 and found[0][2].startswith("UNIDENTIFIABLE"), found
+
+
+def test_bricks_and_converters_are_not_unidentified_parts(tmp_path):
+    """circuits.ndjson and converters.ndjson carry no manufacturerInfo by design."""
+    brick = {"name": "half-bridge", "ports": [{"name": "sw"}],
+             "components": [{"name": "Qh", "data": "TAS/data/mosfets.ndjson?partNumber=X"}],
+             "connections": []}
+    converter = {"inputs": {"designRequirements": {}}, "topology": {"stages": []}}
+    stats, found = stats_and_findings(tmp_path, brick, converter, name="circuits.ndjson")
+    assert found == []
+    assert stats["nonComponentRows"] == 2 and stats["unidentifiable"] == 0
+
+
+def test_nested_building_block_without_identity_is_not_the_part(tmp_path):
+    """A core's or wire's manufacturerInfo naming only the vendor is not a missing MPN.
+
+    The part's OWN manufacturerInfo is what identifies the record; a building
+    block inside it is counted, not condemned -- otherwise the first MAS magnetic
+    with a bare core manufacturer would block every shard build.
+    """
+    stats, found = stats_and_findings(tmp_path, {"magnetic": {
+        "manufacturerInfo": {"name": "Wuerth", "datasheetInfo": {"part": {"partNumber": "744314100"}}},
+        "core": {"manufacturerInfo": {"name": "TDK"}}}})
+    assert found == []
+    assert stats["screened"] == 1 and stats["nestedUnidentified"] == 1
+
+
+def test_nested_building_block_with_a_template_mpn_is_screened(tmp_path):
+    stats, found = stats_and_findings(tmp_path, {"magnetic": {
+        "manufacturerInfo": {"name": "Wuerth", "datasheetInfo": {"part": {"partNumber": "744314100"}}},
+        "core": {"manufacturerInfo": {"name": "Wuerth", "reference": TEMPLATE_MPN}}}})
+    assert stats["nestedScreened"] == 1
+    assert [f[1] for f in found] == [TEMPLATE_MPN], found
+
+
+def test_inline_part_inside_a_brick_component_list_is_screened(tmp_path):
+    """A CIAS brick may inline a PEAS document under components[].data -- a list."""
+    brick = {"name": "b", "ports": [], "connections": [], "components": [
+        {"name": "L1", "data": identified({"name": "Wuerth", "reference": TEMPLATE_MPN})}]}
+    stats, found = stats_and_findings(tmp_path, brick, name="circuits.ndjson")
+    assert [f[1] for f in found] == [TEMPLATE_MPN], found
+
+
+def test_provenance_rule_screens_partnumber_only_rows(tmp_path):
+    """The ABT #351 signature on a row shaped like the TDK batch (no reference)."""
+    r = record("EPL2010-100ML", [{"source": "scrape", "sourceUrl": FAKE_URL}])
+    del r["magnetic"]["manufacturerInfo"]["reference"]
+    found = findings_for(tmp_path, r)
+    assert len(found) == 1 and found[0][1] == "EPL2010-100ML", found
+
+
+def test_formula_dcr_rule_labels_a_partnumber_only_row(tmp_path):
+    """The bare-stub DCR rule used to report reference, i.e. '' for this shape."""
+    stats, found = stats_and_findings(tmp_path, identified({
+        "name": "Wuerth", "datasheetInfo": {
+            "part": {"partNumber": "WE-FAKE-1"},
+            "electrical": [{"inductance": {"nominal": 1e-6}, "dcResistance": {"maximum": 0.0062}}]}}))
+    assert len(found) == 1 and found[0][1] == "WE-FAKE-1", found
+    assert "generator formula" in found[0][2]
+
+
+def test_arithmetic_ladder_screens_partnumber_only_rows(tmp_path):
+    """The rule added the same day builds cohorts on the reported label -- so a
+    generator that wrote partNumber only lands in the same cohort."""
+    rows = []
+    for i in range(25):
+        r = ladder_record(f"RSR012E{i}", forwardVoltage=0.20 + 0.01 * i,
+                          powerDissipation=10 * (0.20 + 0.01 * i), reverseVoltage=200.0)
+        del r["semiconductor"]["diode"]["manufacturerInfo"]["reference"]
+        rows.append(r)
+    found = ladder_findings(tmp_path, rows)
+    assert len(found) == 25, found
+    assert {f[1] for f in found} == {f"RSR012E{i}" for i in range(25)}
+
+
+def test_stats_report_what_the_guard_saw(tmp_path):
+    stats, _ = stats_and_findings(
+        tmp_path,
+        identified({"name": "A", "reference": "R1"}),
+        identified({"name": "A", "datasheetInfo": {"part": {"partNumber": "P1"}}}),
+        identified({"name": "A"}))
+    assert stats["rows"] == 3 and stats["screened"] == 2 and stats["unidentifiable"] == 1
+
+
+def test_denylist_includes_batches_condemned_inline(tmp_path):
+    """The 448 TDK rows were tagged 'magnetics.ndjson (fabricated cohort 13, ...)'.
+
+    The denylist used to select on the literal 'quarantine_fabricated' and so did
+    not contain them -- the old guard passed all 448 when replayed as live rows.
+    Duplicates and incomplete rows are still NOT fabricated and stay out.
+    """
+    (tmp_path / "quarantine.ndjson").write_text("".join(json.dumps(r) + "\n" for r in [
+        dict(identified({"name": "TDK", "datasheetInfo": {"part": {"partNumber": "TDK001m08051065_50"}}}),
+             _quarantineSource=["magnetics.ndjson (fabricated cohort 13, TDK Meister provenance refuted, 2026-09-04)"]),
+        dict(identified({"name": "X", "reference": "OLDFAB"}),
+             _quarantineSource=["magnetics.quarantine_fabricated.ndjson"]),
+        dict(identified({"name": "X", "reference": "REALDUP"}),
+             _quarantineSource=["magnetics.quarantine_duplicates.ndjson"]),
+        dict(identified({"name": "X", "reference": "REALINC"}),
+             _quarantineSource="connectors.quarantine_incomplete.ndjson"),
+    ]))
+    assert guard.load_quarantined_fabricated(tmp_path) == {"TDK001m08051065_50", "OLDFAB"}
+
+
+def test_cli_fails_on_an_unidentifiable_row(tmp_path):
+    """End to end: the shard build calls the CLI and trusts its exit code."""
+    import subprocess, sys
+    (tmp_path / "magnetics.ndjson").write_text(json.dumps(identified({"name": "TDK"})) + "\n")
+    proc = subprocess.run([sys.executable, str(REPO / "scripts" / "check_no_fabricated_parts.py"),
+                           "--data", str(tmp_path)], capture_output=True, text=True)
+    assert proc.returncode == 1, proc.stdout + proc.stderr
+    assert "CANNOT IDENTIFY" in proc.stderr
+    assert "1 UNIDENTIFIABLE" in proc.stdout
+
+
+def test_cli_passes_and_reports_what_it_screened(tmp_path):
+    import subprocess, sys
+    (tmp_path / "magnetics.ndjson").write_text(
+        json.dumps(identified({"name": "Wuerth", "reference": "744314100"})) + "\n")
+    proc = subprocess.run([sys.executable, str(REPO / "scripts" / "check_no_fabricated_parts.py"),
+                           "--data", str(tmp_path)], capture_output=True, text=True)
+    assert proc.returncode == 0, proc.stdout + proc.stderr
+    assert "magnetics.ndjson: 1 rows, 1 part(s) screened" in proc.stdout
+
+
+def test_phase5_template_knows_every_unit_letter():
+    """Cohort 13 was the phase5 generator writing 'm' where the template knew 'u'."""
+    for mpn in ("TDK001m08051065_50", "Coi010u0603_1", "Bou100n1210_3"):
+        assert any(p.match(mpn) for p, _ in guard.KNOWN_TEMPLATES), mpn
+    for mpn in ("TDK001k08051065_50", "SLF7032T-331MR22-2PF", "B82559A0472A033"):
+        assert not any(p.match(mpn) for p, _ in guard.KNOWN_TEMPLATES), mpn
