@@ -42,6 +42,30 @@ document actually names the part.
 Kept in-tree as the forensic record of how five fabrication batches passed for real.
 The maps below are preserved because relabel_url_inferred_provenance.py imports them
 to IDENTIFY this script's output — they are a fingerprint now, not a tool.
+
+2026-09-04 HARDENING (ABT #391 item 4). Retiring main() left classify() — the
+function that actually computes a source/sourceName/retrievedDate stamp from a bare
+URL host or manufacturer name — importable and callable on its own. It already had
+zero live callers (main() is retired; nothing else in this repo calls classify()
+directly), so it is now refused too: calling it raises unconditionally, in the
+execution/write path, the same way main() does. This is belt-and-braces, not a
+behaviour change — nothing that ran before still runs.
+
+DOMAIN_MAP and MANUF_MAP are UNCHANGED, still exactly these names, still plain
+readable data: relabel_url_inferred_provenance.py imports them by these exact names
+to build the (sourceName, retrievedDate) fingerprint that finds this script's own
+contaminated rows, and tests/test_no_fabricated_parts.py pins that contract. Making
+them unreachable would blind the corpus's ability to find its own contamination,
+which is worse than the defect this hardening exists to close — so the refusal is
+in the code path that WRITES a stamp (main, classify), never on the data itself.
+
+A residual risk was found and is recorded here rather than silently patched around:
+scripts/quarantine_unverified.py (commit 14d9ea8, a completed one-off migration, not
+called by anything today) does `import backfill_provenance as B` and reimplements
+classify()'s exact rule in its own local resolve() function, reading B.DOMAIN_MAP /
+B.MANUF_MAP directly rather than calling B.classify() — so it does not go through
+either refusal above. That script is outside this file's ownership; it is flagged
+to the maintainers of this ticket rather than edited here.
 """
 import sys as _sys
 
@@ -68,6 +92,11 @@ PATHS = {
     "analog_ics": ("operationalAmplifier",),
 }
 
+# FINGERPRINT ONLY — this data must stay exactly as-is, under exactly this name.
+# relabel_url_inferred_provenance.py imports DOMAIN_MAP by this name to identify
+# this script's own contaminated output; do not repurpose it to build NEW
+# provenance (that is what classify() used to do, and it now refuses instead).
+#
 # host-substring -> (source enum, sourceName, retrievedDate). First match wins.
 # source enum: manufacturerDatasheet|manufacturerParametric|manufacturerDatabase|distributor|librarianEnrichment|scrape|manual
 DOMAIN_MAP = [
@@ -143,6 +172,7 @@ DOMAIN_MAP = [
 # placeholder / synthetic-fingerprint hosts -> generated data, not sourced
 SYNTHETIC_HOSTS = ("example.com", "example.org", "example.net")
 
+# FINGERPRINT ONLY — same rule as above. Not for building new provenance.
 # fallback when datasheetUrl is missing/uninformative: manufacturer name -> entry
 MANUF_MAP = {
     "Infineon": ("manufacturerParametric", "Infineon parametric finder (xlsx export)", "2026-06-24"),
@@ -194,7 +224,28 @@ def host_of(url):
 
 
 def classify(manufacturer, url):
-    """Return (source, sourceName, retrievedDate, sourceUrl) or None if untraceable."""
+    """RETIRED 2026-09-04 (ABT #391 item 4) — refuses unconditionally. Do not un-retire.
+
+    This used to return (source, sourceName, retrievedDate, sourceUrl) inferred purely
+    from a URL's host or a manufacturer's name, with no fetch behind either — the exact
+    anti-pattern this whole module is retired for. It already had zero live callers
+    (main() is retired; nothing else in this repo calls classify() — the one script
+    that reused this logic, scripts/quarantine_unverified.py, copied the maps into its
+    own local function instead), so refusing here changes no running behaviour. It is
+    a second lock on a door main()'s refusal already blocked, for whatever calls this
+    directly instead of going through main().
+
+    The original body is kept below, unreachable, as the forensic record of exactly
+    what it computed — same reason main()'s original body is kept.
+    """
+    raise RuntimeError(
+        "backfill_provenance.classify() is retired and will not run.\n"
+        "It infers a source, sourceName and retrievedDate from a record's own URL "
+        "host or manufacturer name, without ever fetching anything — the anti-pattern "
+        "behind ABT #247, #256, #351 and #391.\n"
+        "Fetch the source for real: scripts/verify_provenance_urls.py, then let "
+        "scripts/promote_verified_provenance.py write the verdict."
+    )
     h = host_of(url)
     if h:
         if any(s in h for s in SYNTHETIC_HOSTS):
