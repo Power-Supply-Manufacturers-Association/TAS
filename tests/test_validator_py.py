@@ -84,15 +84,29 @@ def test_every_emitted_code_is_declared():
 
 
 def test_known_good_inductor_is_valid():
-    """The real WE-MAPI 744383560R33 part must validate."""
+    """The real WE-MAPI 74438356010 part must validate.
+
+    NOTE: this test previously referenced 744383560R33, which was found to be
+    fabricated (absent from Würth's own REDEXPERT catalogue and its datasheet
+    endpoint 404s) and quarantined 2026-07-31 (see data/quarantine.ndjson,
+    _validatorQuarantine.reason). A "known good" reference whose part turned
+    out not to exist must not silently `pytest.skip` when it can no longer be
+    found — that hides the exact regression it exists to catch. So this now
+    hard-fails (not skips) if the reference part disappears from the catalog
+    again, and points at a part independently citation-verified 2026-08-01.
+    """
     target = None
     for _, rec in iter_records("magnetics", 5000):
         ref = rec.get("magnetic", {}).get("manufacturerInfo", {}).get("reference")
-        if ref == "744383560R33":
+        if ref == "74438356010":
             target = rec
             break
     if target is None:
-        pytest.skip("reference part 744383560R33 not found in sample")
+        pytest.fail(
+            "reference part 74438356010 not found in the first 5000 magnetics "
+            "records — the known-good fixture has moved or been removed; this "
+            "must be investigated, not silently skipped"
+        )
     v = tas_validator.validate(target)
     assert v.valid, [(f.code, f.message) for f in v.findings]
 

@@ -69,7 +69,7 @@
           "name": "single-diode-rectifier",
           "ports": [ { "name": "ac_in" }, { "name": "dc_out" } ],
           "components": [
-            { "name": "D1", "data": "TAS/data/diodes.ndjson?partNumber=STPS20H100C" }
+            { "name": "D1", "data": "TAS/data/diodes.ndjson?partNumber=STPS20H100CT" }
           ],
           "connections": [
             { "name": "anode",   "endpoints": [ { "component": "D1", "pin": "A" }, { "port": "ac_in" } ] },
