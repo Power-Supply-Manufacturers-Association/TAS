@@ -7,6 +7,9 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include <algorithm>
+#include <cstdio>
+#include <set>
+#include <sstream>
 #include <string>
 
 using namespace tas;
@@ -963,6 +966,76 @@ TEST_CASE("Framework: MalformedScalarThrows", "[framework]") {
 
 TEST_CASE("Framework: CheckCodesNonEmpty", "[framework]") {
     CHECK(PartValidator::check_codes().size() > 20);
+}
+
+// ABT #549: check_codes()/circuit_check_codes() are generated at build time
+// (tools/gen_check_codes.py, wired into CMakeLists.txt) from the emit() call
+// sites, instead of being hand-typed literals -- a hand-typed list had already
+// drifted from the real emitting sites twice (GEN_PACKAGE_ENVELOPE,
+// GEN_FABRICATED_MPN) and a third addition (DIO_LEAKAGE_VS_IF) was mid-flight
+// when the drift was found. This test independently re-invokes the SAME
+// generator at TEST time and asserts its output still equals the compiled-in
+// inventory, so a stale generated .inc (the custom command didn't re-run, or
+// someone hand-edited the .inc) fails the suite instead of only drifting the
+// documentation again silently.
+namespace {
+std::string run_capture(const std::string& cmd) {
+    std::string out;
+    FILE* pipe = popen(cmd.c_str(), "r");
+    REQUIRE(pipe != nullptr);
+    char buf[4096];
+    size_t n;
+    while ((n = fread(buf, 1, sizeof(buf), pipe)) > 0) out.append(buf, n);
+    int rc = pclose(pipe);
+    INFO("command: " << cmd);
+    INFO("output: " << out);
+    REQUIRE(rc == 0);
+    return out;
+}
+
+std::set<std::string> lines_to_set(const std::string& text) {
+    std::set<std::string> out;
+    std::istringstream iss(text);
+    std::string line;
+    while (std::getline(iss, line)) {
+        while (!line.empty() && (line.back() == '\r' || line.back() == '\n')) line.pop_back();
+        if (!line.empty()) out.insert(line);
+    }
+    return out;
+}
+
+std::set<std::string> as_set(const std::vector<std::string>& v) {
+    return std::set<std::string>(v.begin(), v.end());
+}
+}  // namespace
+
+TEST_CASE("Framework: check_codes matches emit() call sites", "[framework]") {
+    const std::string script = TAS_VALIDATOR_GEN_SCRIPT;
+    const std::string src_dir = TAS_VALIDATOR_SRC_DIR;
+
+    SECTION("PartValidator::check_codes()") {
+        std::string cmd = "python3 \"" + script + "\" --src-dir \"" + src_dir +
+                           "\" --exclude circuits.cpp --aggregate push_back:1";
+        std::set<std::string> derived = lines_to_set(run_capture(cmd));
+        std::set<std::string> compiled = as_set(PartValidator::check_codes());
+        INFO("derived-but-not-compiled (a real check the inventory is missing): "
+             << [&] { std::ostringstream o; for (auto& c : derived)
+                          if (!compiled.count(c)) o << c << ' ';
+                       return o.str(); }());
+        INFO("compiled-but-not-derived (a dead entry, or the scraper missed a shape): "
+             << [&] { std::ostringstream o; for (auto& c : compiled)
+                          if (!derived.count(c)) o << c << ' ';
+                       return o.str(); }());
+        CHECK(derived == compiled);
+    }
+
+    SECTION("circuit_check_codes()") {
+        std::string cmd = "python3 \"" + script + "\" --src-dir \"" + src_dir +
+                           "\" --file circuits.cpp";
+        std::set<std::string> derived = lines_to_set(run_capture(cmd));
+        std::set<std::string> compiled = as_set(circuit_check_codes());
+        CHECK(derived == compiled);
+    }
 }
 
 // ---- Thermistors (THERM_*) -------------------------------------------------

@@ -542,73 +542,20 @@ Verdict PartValidator::validate_json(const std::string& text) const {
     return validate(json::parse(text));
 }
 
+// ABT #549: this list used to be hand-typed here and drifted from the actual
+// emit() call sites twice (GEN_PACKAGE_ENVELOPE, GEN_FABRICATED_MPN; then
+// DIO_LEAKAGE_VS_IF was mid-flight when the drift was found a third time).
+// tools/gen_check_codes.py derives this .inc from every emit()/forwarded-code/
+// CorpusFinding call site under src/ (everything except circuits.cpp, which has
+// its own circuit_check_codes() inventory below) at BUILD time, via the CMake
+// custom command in CMakeLists.txt -- nobody edits this list by hand anymore.
+// tests/test_validator.cpp re-derives it again at TEST time and asserts it
+// still matches, so a stale generated file (this command not re-run, or the
+// .inc hand-edited) fails the suite instead of silently drifting again.
 std::vector<std::string> PartValidator::check_codes() {
-    return {
-        "GEN_TEMP_ORDER", "GEN_PROVENANCE_MISSING", "GEN_FAMILY_MISMATCH", "GEN_MULTI_DISCRIMINATOR",
-        "GEN_OVERPRECISION", "GEN_SPARSE", "GEN_COHORT_OUTLIER", "GEN_COHORT_CEILING",
-        "GEN_PACKAGE_MOUNT", "GEN_PACKAGE_ENVELOPE", "GEN_FABRICATED_MPN",
-        "GEN_SERIES_IS_MANUFACTURER",
-        // magnetics
-        "MAG_DCR_GEOM", "MAG_DCR_PER_H", "MAG_ISAT_POWER", "MAG_SRF_L", "MAG_SRF_SANE",
-        "MAG_ENERGY_DENSITY", "MAG_L_TOLERANCE", "MAG_L_MAGNITUDE", "MAG_RATED_LE_SAT",
-        "MAG_DIM_NONPOSITIVE", "MAG_E_SERIES", "MAG_DISS_DENSITY",
-        "MAG_WINDING_DATA_INCOMPLETE", "MAG_SUBTYPE_MISMATCH",
-        // capacitors
-        "CAP_POSITIVITY", "CAP_MAGNITUDE", "CAP_TOLERANCE", "CAP_DF_BOUNDS", "CAP_ESR_C",
-        "CAP_ENERGY_DENSITY", "CAP_LEAKAGE_CV", "CAP_INSULATION_RC", "CAP_E_SERIES",
-        // resistors
-        "RES_R_RANGE", "RES_POWER_SIZE", "RES_MAXV_SIZE", "RES_TEMPCO",
-        "RES_TOLERANCE", "RES_E_SERIES",
-        // mosfets
-        "MOS_CAP_HIERARCHY", "MOS_CHARGE_HIERARCHY", "MOS_VTH_WINDOW", "MOS_VGS_VS_VTH",
-        "MOS_BODY_DIODE_VF", "MOS_POWER_THERMAL", "MOS_RON_FLOOR", "MOS_IPULSE_VS_IDC",
-        "MOS_QG_VS_RON", "MOS_IDC_VS_THERMAL", "MOS_PD_VS_IDC", "MOS_VGS_MAX_RATING",
-        // diodes
-        "DIO_POSITIVITY", "DIO_VF_RANGE", "DIO_SURGE_VS_IF", "DIO_VF_POWER", "DIO_QRR_SCHOTTKY",
-        "DIO_CJ_VR", "DIO_TVS_ORDERING", "DIO_LEAKAGE_VS_IF",
-        // igbts
-        "IGBT_POSITIVITY", "IGBT_VCESAT_RANGE", "IGBT_VCESAT_VS_VCES", "IGBT_IC_RANGE",
-        "IGBT_VCES_RANGE", "IGBT_VCESAT_RATIO",
-        // bjts
-        "BJT_POSITIVITY", "BJT_VCESAT_RANGE", "BJT_VCESAT_VS_VCEO", "BJT_HFE_RANGE",
-        "BJT_VCBO_VS_VCEO", "BJT_FT_RANGE",
-        // varistors
-        "VAR_POSITIVITY", "VAR_MCOV_VS_VNOM", "VAR_CLAMP_VS_VNOM", "VAR_CLAMP_RATIO",
-        "VAR_NONLINEARITY", "VAR_SURGE_RANGE", "VAR_CAPACITANCE", "VAR_CLAMP_CURRENT",
-        "VAR_ENERGY_RANGE",
-        // connectors
-        "CONN_POSITIVITY", "CONN_CURRENT_RANGE", "CONN_VOLTAGE_RANGE", "CONN_CONTACT_RESISTANCE",
-        "CONN_INSULATION_R", "CONN_CLEARANCE_BREAKDOWN", "CONN_CREEPAGE_CLEARANCE",
-        "CONN_DWV_VS_RATED", "CONN_DWV_VS_CLEARANCE", "CONN_CONTACT_VOLTAGE", "CONN_UNIT_SCALE",
-        "CONN_CURRENT_DENSITY", "CONN_ROWS_POSITIONS", "CONN_TEMPERATURE_RANGE",
-        "CONN_TEMPERATURE_UNIT", "CONN_DURABILITY", "CONN_RF_BAND", "CONN_MATED_HEIGHT",
-        "CONN_CURRENT_VS_PITCH",
-        // controllers (CTAS)
-        "CTL_POSITIVITY", "CTL_PHASE_COUNT", "CTL_SUPPLY_ORDER", "CTL_SUPPLY_ABSMAX",
-        "CTL_FREQ_ORDER", "CTL_UVLO_ORDER", "CTL_ISO_ORDER", "CTL_ISO_CREEP", "CTL_SHUNT_CATHODE",
-        "CTL_SR_THRESHOLD", "CTL_DUTY_RANGE", "CTL_THERMAL_ORDER", "CTL_SUPPLY_RANGE",
-        "CTL_FREQ_RANGE", "CTL_REF_RANGE", "CTL_CS_THRESHOLD", "CTL_GATE_DRIVE", "CTL_ISO_RANGE",
-        "CTL_TJMAX", "CTL_DEADTIME",
-        // analog ICs (AAS)
-        "ANA_CHANNELS", "ANA_VOS", "ANA_IBIAS", "ANA_SUPPLY", "ANA_CMRR", "ANA_PSRR",
-        "ANA_OL_GAIN", "ANA_SLEW", "ANA_VNOISE", "ANA_GBW", "ANA_GAIN_ORDER", "ANA_SLEW_GBW",
-        "CMP_TPD", "CMP_HYST",
-        "CONV_RES", "CONV_RATE", "CONV_VREF", "CONV_SNR", "SW_RON", "SW_LEAK",
-        "MULT_SCALE", "MULT_ERROR", "MULT_BW",
-        // time bases (TDAS)
-        "TB_OSC_POSITIVITY", "TB_OSC_FREQ_TECH", "TB_OSC_MODE_FREQ", "TB_OSC_STABILITY",
-        "TB_OSC_AGING", "TB_OSC_JITTER", "TB_OSC_STARTUP", "TB_OSC_SUPPLY",
-        "TB_OSC_RESONATOR_SUPPLY", "TB_OSC_PULL_RANGE", "TB_OSC_OUTPUT_TYPE",
-        "TB_OSC_TOLERANCE", "TB_OSC_WATCH_TOL",
-        "TB_TMR_FREQ", "TB_TMR_SUPPLY", "TB_TMR_ACCURACY", "TB_TMR_CHANNELS",
-        "TB_LATCH_TPD", "TB_LATCH_SUPPLY",
-        "TB_BEHAVIORAL",
-        // thermistors (RAS)
-        "THERM_POSITIVITY", "THERM_R25_RANGE", "THERM_BETA_RANGE", "THERM_PTC_HAS_BETA",
-        "THERM_TOLERANCE", "THERM_DISSIPATION", "THERM_TIME_CONSTANT", "THERM_HEAT_CAPACITY",
-        "THERM_MAX_CURRENT", "THERM_PTC_TSWITCH", "THERM_NTC_HAS_TSWITCH", "THERM_ABS_ZERO",
-        "THERM_TEMP_RANGE", "THERM_TEMP_ORDER",
-    };
+    return
+#include "tas_validator/check_codes.inc"
+        ;
 }
 
 }  // namespace tas

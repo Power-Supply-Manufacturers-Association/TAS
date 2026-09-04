@@ -41,7 +41,7 @@
 
 # ── validator/ — the C++ Blade Runner sources, not its campaign drivers ───────
 /validator/*.py
-/validator/build/
+/validator/build*/
 
 # ── local-only trees ──────────────────────────────────────────────────────────
 /staging/

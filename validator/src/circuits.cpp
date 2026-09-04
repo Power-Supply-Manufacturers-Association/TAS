@@ -157,10 +157,13 @@ std::vector<Element> elements_of(const json& brick) {
 
 }  // namespace
 
+// ABT #549: generated from this file's own emit() call sites at build time
+// (tools/gen_check_codes.py, wired in CMakeLists.txt) instead of hand-typed --
+// see the longer note on PartValidator::check_codes() in validator.cpp.
 std::vector<std::string> circuit_check_codes() {
-    return {"CIR_L_NOT_SQUARE", "CIR_L_ASYMMETRIC", "CIR_L_NONPOS_DIAG", "CIR_L_NOT_PD",
-            "CIR_L_R_LENGTH",   "CIR_NONPOSITIVE",  "CIR_SENTINEL_VALUE", "CIR_VALUE_RANGE",
-            "CIR_FLOATING_NODE"};
+    return
+#include "tas_validator/circuit_check_codes.inc"
+        ;
 }
 
 Verdict validate_circuit(const json& brick) {
