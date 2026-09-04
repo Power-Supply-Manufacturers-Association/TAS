@@ -154,3 +154,85 @@ def test_the_retired_maps_survive_for_fingerprinting():
     assert len(mod.MANUF_MAP) > 20
     relabel = _load("relabel_url_inferred_provenance")
     assert len(relabel.BACKFILL_STAMPS) > 10
+
+
+# ── ABT #1014: arithmetic ladders ────────────────────────────────────────────
+# Two fabricated batches were found on 2026-09-04 that every other rule in the
+# guard passed, because their fields VARY — by formula. The ROHM batch of ABT
+# #1011 is the specimen these tests are built from: forwardVoltage = 0.20 +
+# 0.01*i and powerDissipation = 10*forwardVoltage held exactly across 25 parts
+# while every other field held one identical value.
+#
+# The negatives matter as much as the positive. This rule looks at a whole
+# cohort rather than a row, so a careless version condemns real product families
+# that legitimately step one parameter — and quarantining a real part is the
+# more expensive mistake.
+
+def ladder_record(part_number, manufacturer="ROHM", **electrical):
+    """A part shaped the way the corpus stores one, with given scalar electricals."""
+    return {"semiconductor": {"diode": {"manufacturerInfo": {
+        "name": manufacturer, "reference": part_number,
+        "datasheetInfo": {
+            "part": {"partNumber": part_number},
+            "electrical": dict(electrical),
+            "provenance": [{"source": "scrape", "sourceUrl": REAL_URL}]}}}}}
+
+
+def ladder_findings(tmp_path, records, name="diodes.ndjson"):
+    path = tmp_path / name
+    path.write_text("".join(json.dumps(r) + "\n" for r in records))
+    return guard.check_file(path)
+
+
+def test_arithmetic_ladder_is_caught(tmp_path):
+    """The ABT #1011 shape: one field walks in exact steps, the rest are identical."""
+    rows = [ladder_record(
+        f"RSR012E{i}",
+        forwardVoltage=0.20 + 0.01 * i,
+        powerDissipation=10 * (0.20 + 0.01 * i),
+        reverseVoltage=200.0, forwardCurrent=1.0, surgeCurrent=8.0,
+    ) for i in range(25)]
+    found = ladder_findings(tmp_path, rows)
+    assert len(found) == 25, found
+    assert "exact linear function of the part index" in found[0][2]
+
+
+def test_real_family_that_steps_one_parameter_is_not_flagged(tmp_path):
+    """A genuine voltage ladder: the OTHER parameters move too, so it is a family.
+
+    This is the false positive that would make the rule unusable — real
+    catalogues are full of families whose part numbers step a rating.
+    """
+    rows = [ladder_record(
+        f"MBR{i}",
+        reverseVoltage=20.0 + 10 * i,          # steps exactly, like a real ladder
+        forwardVoltage=0.35 + 0.004 * i * i,   # but the rest are not affine in i
+        forwardCurrent=1.0 + (i % 3),
+        surgeCurrent=25.0 + (i % 5) * 3,
+    ) for i in range(20)]
+    assert ladder_findings(tmp_path, rows) == []
+
+
+def test_short_run_is_not_flagged(tmp_path):
+    """Below the minimum length a coincidence is likely; the rule must not fire."""
+    rows = [ladder_record(f"ABC{i}", forwardVoltage=0.2 + 0.01 * i,
+                          reverseVoltage=200.0) for i in range(guard.LADDER_MIN - 1)]
+    assert ladder_findings(tmp_path, rows) == []
+
+
+def test_non_contiguous_indices_are_not_flagged(tmp_path):
+    """Real families skip numbers; a generator's for-loop does not."""
+    rows = [ladder_record(f"ABC{i}", forwardVoltage=0.2 + 0.01 * i,
+                          reverseVoltage=200.0) for i in (0, 1, 2, 5, 8, 13, 21, 34, 55, 89)]
+    assert ladder_findings(tmp_path, rows) == []
+
+
+def test_identical_cohort_is_not_a_ladder(tmp_path):
+    """Every field constant is a duplicate problem, not this rule's business.
+
+    Reporting it here would put the wrong reason on the row, and 'fabricated' is
+    not a label to apply loosely.
+    """
+    rows = [ladder_record(f"ABC{i}", forwardVoltage=0.4, reverseVoltage=200.0)
+            for i in range(20)]
+    assert ladder_findings(tmp_path, rows) == []

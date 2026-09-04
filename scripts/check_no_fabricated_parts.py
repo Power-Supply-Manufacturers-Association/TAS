@@ -174,6 +174,121 @@ def is_bare_stub(info, electrical):
     return True
 
 
+# ── (3) arithmetic ladders ───────────────────────────────────────────────────
+# ABT #1014. The two batches found on 2026-09-04 both sailed past every rule
+# above, and past screen_fabrication_signatures.py, for the same structural
+# reason: their fields VARY. A degenerate-field screen looks for one value
+# repeated across a cohort; these vary by FORMULA instead.
+#
+# The ROHM batch (ABT #1011, 25 rows) is the clean specimen. RSR012E00..E024 is
+# one contiguous ladder in which
+#
+#     forwardVoltage   = 0.20 + 0.01 * i     exact, 25/25
+#     powerDissipation = 10 * forwardVoltage exact, 25/25
+#
+# while every other electrical field holds ONE identical value across all 25
+# parts. 2.0-4.4 W in a TO-220 is entirely plausible, so no impossible-value
+# rule fires either. It was found by a regex coincidence, which is not a
+# detection strategy.
+#
+# THE CORROBORATION, in the spirit of the rules above -- an exact linear fit
+# alone is NOT enough to condemn a cohort. Real product families walk in regular
+# steps all the time (voltage ladders, E-series values, pin counts), so this rule
+# demands all four of:
+#   * a contiguous numeric-suffix ladder of at least LADDER_MIN parts sharing a
+#     stem and a manufacturer -- a real family is rarely a perfect run,
+#   * at least one field that is an EXACT affine function of the ladder index
+#     (relative residual at float noise, not merely a good fit),
+#   * the surrounding cohort being degenerate: most other numeric fields carry a
+#     single identical value across every member, which is what says nothing was
+#     read per part,
+#   * and more than one member, obviously.
+# A real family that steps one parameter also varies the others -- package,
+# current, dissipation, capacitance move together. A generator moves one.
+LADDER_MIN = 8
+LADDER_STEM = re.compile(r"^(?P<stem>.*?)(?P<index>\d+)$")
+LADDER_DEGENERATE_FRACTION = 0.7
+LADDER_TOL = 1e-9
+
+
+def _affine_exact(indices, values):
+    """True when values[i] == a * indices[i] + b holds at float noise for all i.
+
+    Fitted from the two extreme points rather than by least squares: an exact
+    ladder passes through them, and a cohort that is NOT one fails immediately
+    instead of being smoothed into a plausible-looking fit.
+    """
+    if len(set(values)) < 2:
+        return False                      # constant is degeneracy, not a ladder
+    i0, i1 = indices[0], indices[-1]
+    if i1 == i0:
+        return False
+    slope = (values[-1] - values[0]) / (i1 - i0)
+    if slope == 0:
+        return False
+    intercept = values[0] - slope * i0
+    for i, v in zip(indices, values):
+        expected = slope * i + intercept
+        if abs(v - expected) > LADDER_TOL * max(abs(v), abs(expected), 1e-30):
+            return False
+    return True
+
+
+def find_arithmetic_ladders(cohorts):
+    """Yield (members, why) for each cohort that is a generator's output.
+
+    `cohorts` maps (manufacturer, stem) -> list of (index, lineno, part_number,
+    {field: value}). Only numeric fields present on EVERY member are considered:
+    a field missing from some rows says the rows were populated separately.
+    """
+    for (manufacturer, stem), members in sorted(cohorts.items()):
+        if len(members) < LADDER_MIN:
+            continue
+        members = sorted(members)
+        indices = [m[0] for m in members]
+        if indices != list(range(indices[0], indices[0] + len(indices))):
+            continue                      # not a contiguous run
+        shared = set(members[0][3])
+        for m in members[1:]:
+            shared &= set(m[3])
+        if not shared:
+            continue
+        ladder_fields, degenerate = [], 0
+        for field in sorted(shared):
+            values = [m[3][field] for m in members]
+            if len(set(values)) == 1:
+                degenerate += 1
+            elif _affine_exact(indices, values):
+                ladder_fields.append(field)
+        if not ladder_fields:
+            continue
+        others = len(shared) - len(ladder_fields)
+        if others and degenerate / others < LADDER_DEGENERATE_FRACTION:
+            continue                      # the rest of the cohort varies: a real family
+        why = (f"cohort of {len(members)} parts {stem}{indices[0]}..{stem}{indices[-1]} "
+               f"({manufacturer or 'unknown manufacturer'}): "
+               + ", ".join(f"{f} is an exact linear function of the part index"
+                           for f in ladder_fields)
+               + f", while {degenerate} of the other {others} shared numeric field(s) "
+               "hold one identical value across every member")
+        yield members, why
+
+
+def _ladder_numeric_fields(electrical):
+    """Flat {field: float} of a record's own scalar electricals, for cohort tests."""
+    out = {}
+    for key, value in (electrical or {}).items():
+        if isinstance(value, bool):
+            continue
+        if isinstance(value, (int, float)):
+            out[key] = float(value)
+        elif isinstance(value, dict):
+            for bound in ("nominal", "maximum", "minimum"):
+                if isinstance(value.get(bound), (int, float)) and not isinstance(value.get(bound), bool):
+                    out[f"{key}.{bound}"] = float(value[bound])
+    return out
+
+
 def iter_parts(record):
     """Yield every (manufacturerInfo, electrical-dict) in a catalogue record.
 
@@ -274,6 +389,7 @@ def load_quarantined_fabricated(data_dir):
 
 def check_file(path, quarantined_refs=frozenset()):
     findings = []
+    cohorts = {}          # (manufacturer, stem) -> [(index, lineno, pn, fields)]
     with path.open(encoding="utf-8", errors="replace") as fh:
         first = fh.readline()
         if first.startswith("version https://git-lfs"):
@@ -316,6 +432,20 @@ def check_file(path, quarantined_refs=frozenset()):
                 impossible = impossible_ratings(info, electrical)
                 if impossible:
                     findings.append((lineno, reference, impossible))
+                    continue
+                # cohort accumulation for rule (3); per-record rules above have
+                # already had their say, so only survivors are grouped.
+                match = LADDER_STEM.match(part_number or reference)
+                if match and match.group("stem"):
+                    fields = _ladder_numeric_fields(electrical)
+                    if fields:
+                        key = (str(info.get("name") or ""), match.group("stem"))
+                        cohorts.setdefault(key, []).append(
+                            (int(match.group("index")), lineno,
+                             part_number or reference, fields))
+    for members, why in find_arithmetic_ladders(cohorts):
+        for _index, lineno, part_number, _fields in members:
+            findings.append((lineno, part_number, why))
     return findings
 
 
