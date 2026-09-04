@@ -71,6 +71,10 @@ TAS
 | `holdUpTimeMinimum` | `number` | s |
 | `outputs[]` | array | Per-rail `{name, voltage, regulation, ratio?}`; `regulation` ∈ `voltage \| current \| both \| constantPower \| fixedRatio \| unregulated`; `ratio` (Vout/Vin) required for `fixedRatio`, optional for `unregulated`, forbidden otherwise |
 
+`inputType: "dc"` **forbids** `lineFrequency`, `powerFactorMinimum` and
+`holdUpTimeMinimum`; any AC `inputType` (`acSinglePhase`/`acThreePhase`)
+**requires** `lineFrequency`.
+
 ### operatingPoints — `minItems: 1`, each `required: [name, inputVoltage, ambientTemperature, outputs]`
 
 | Field | Type | Notes |
@@ -78,7 +82,7 @@ TAS
 | `name` | `string` | e.g. "full_load_Vin_min" |
 | `inputVoltage` | `number` | Volts at this point |
 | `ambientTemperature` | `number` | °C |
-| `outputs[]` | array | Per-rail `{name, power|current}` |
+| `outputs[]` | array | Per-rail `operatingPointOutput`, `required: [name]`: `{name, voltage?, current|power (exactly one, required), loadType?}` — `voltage` overrides the nominal setpoint for this OP; `loadType` ∈ `resistive \| constantCurrent \| constantPower` (default `resistive`) |
 
 ---
 
@@ -123,15 +127,23 @@ magnetic coupling lives inside a single multi-winding PEAS component, never acro
 
 ## CIAS.json — the brick (separate repo)
 
-`{ name, ports[], components[], connections[] }`, all required, `additionalProperties: false`.
+`{ name, ports[], components[], connections[], provenance? }`, `additionalProperties: false`.
+`name`/`ports`/`components`/`connections` are required; `provenance` is optional.
 Names (port / component / connection) are **local to the brick**.
 
 | Field | Shape |
 |-------|-------|
 | `name` | brick type name (the lookup key for `?name=…` references) |
-| `ports[]` | `{name, description?}` — external terminals (the studs) |
+| `ports[]` | `{name, description?}` — external terminals (the studs), `minItems: 1` |
 | `components[]` | `{name, data: oneOf[ PEAS doc | URI ]}` |
 | `connections[]` | `{name, endpoints[≥2]}` — one electrical net |
+| `provenance` | *(optional, added 2026-08, ABT #479)* — PEAS `provenance` structure for the brick as a whole; a DERIVED brick (generated from a model rather than transcribed from a schematic, e.g. connector pin-field parasitic bricks) records its origin here |
+
+The `data` URI grammar is `<catalogue>.ndjson?<key>=<value>` with exactly one
+`key=value` pair and exactly three legal keys: `partNumber` (a part-library
+lookup, e.g. `mosfets.ndjson?partNumber=C3M0032120K`), `name` (a brick-valued
+reference, e.g. `circuits.ndjson?name=half-bridge`), and `placeholder` (a
+deliberately unresolvable pre-sourcing slot).
 
 `endpoint` = `oneOf[ pinEndpoint{component,pin} | portEndpoint{port} ]`. A net that
 includes a `portEndpoint` is **exposed** at that brick terminal. CIAS has no `kind`
@@ -164,8 +176,20 @@ A TAS may carry **both** a `virtualControl` stage (closed loop) and `simulation.
 
 ## outputs.json
 
-`{ metrics, operatingPoints[] }` — design-level metrics plus per-operating-point
-losses / stresses / waveforms. See the schema for field detail.
+`{ metrics?, operatingPoints[]? }`, both optional, `additionalProperties: false`.
+
+| Field | Shape |
+|-------|-------|
+| `metrics` | `{volume?, mass?, footprint?}` — per-design figures independent of operating point (m³, kg, m²) |
+| `operatingPoints[]` | `operatingPointResult`, `required: [name]`: `{name, efficiency?, switchingFrequency?, inputCurrent?, achievedPowerFactor?, achievedHoldUpTime?, outputResults[]?, stageResults[]?}` |
+| `inputCurrentResult` | `{rms?, peak?, ripplePkPk?}`, A |
+| `outputResult` | `required: [name]`: `{name, voltageMean?, voltageRipplePkPk?, currentMean?}` |
+| `stageResult` | `required: [stage, loss]`: `{stage, loss, dutyCycle?, componentResults[]?}` |
+| `componentResult` | `required: [component]`: `{component, loss?, temperature?}` |
+
+There is no `waveforms` field — time-domain results are not modelled here, only
+scalar per-OP/per-stage/per-component figures (loss, temperature, duty cycle,
+current/voltage statistics).
 
 ---
 
@@ -183,5 +207,5 @@ that a `portBinding` names a port the brick declares, that every `{stage, …}` 
 resolves, that no brick port is left unwired, and that names are unique. Bricks
 referenced by URI are opaque to the integrity pass (reported as a note).
 
-Full `$ref` resolution requires the sibling repos (PEAS, CIAS, MAS, CAS, SAS, RAS)
-checked out alongside TAS in the `PSMA/` layout.
+Full `$ref` resolution requires the sibling repos (PEAS, CIAS, MAS, CAS, SAS, RAS,
+CTAS, AAS, CONAS, TDAS) checked out alongside TAS in the `PSMA/` layout.

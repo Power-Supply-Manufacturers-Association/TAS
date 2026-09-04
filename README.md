@@ -2,29 +2,33 @@
 
 > The universal data format for complete power converter designs — and the component catalog that powers them.
 
-TAS is a JSON schema standard for describing power converter designs end-to-end: requirements, components, circuit connections, and computed results. It also hosts a curated component database of **660,000+ real parts** used by the Proteus AI design system.
+TAS is a JSON schema standard for describing power converter designs end-to-end: requirements, components, circuit connections, and computed results. It also hosts a curated component database of **960,000+ real parts** used by the Proteus AI design system.
 
-## Quick Stats (July 2026)
+## Quick Stats (measured 2026-09-04)
 
-Counts are `wc -l` of the active `data/*.ndjson` files (one record per line).
+Counts are `wc -l` of the active `data/*.ndjson` files (one record per line). This
+is a shared, continuously-updated tree — treat these as a point-in-time snapshot,
+not a fixed constant.
 
 | Category | Records | Largest Manufacturer | Share |
 |----------|---------|----------------------|-------|
-| Capacitors | 230,576 | WIMA | 28.0% |
-| Resistors | 160,831 | Panasonic | 51.7% |
-| Connectors | 138,300 | Molex | 68.2% |
-| Magnetics | 92,368 | TDK | 15.8% |
-| Diodes | 13,309 | Nexperia | 35.3% |
-| MOSFETs | 9,941 | Infineon | 27.0% |
+| Connectors | 391,073 | Molex | 24.1% |
+| Capacitors | 253,831 | WIMA | 25.4% |
+| Resistors | 149,255 | Panasonic | 55.7% |
+| Magnetics | 82,467 | Vanguard Electronics | 16.0% |
+| Timing devices | 23,634 | Abracon | 70.1% |
+| Diodes | 17,789 | Vishay | 28.5% |
+| MOSFETs | 9,800 | Infineon | 27.0% |
 | BJTs | 3,668 | Nexperia | 52.5% |
-| Analog ICs | 3,418 | Texas Instruments | 99.9% |
+| Analog ICs | 3,607 | Texas Instruments | 95.4% |
 | Varistors | 3,198 | Bourns | 43.4% |
-| IGBTs | 2,271 | STMicroelectronics | 20.9% |
+| IGBTs | 2,278 | STMicroelectronics | 20.8% |
 | Controllers | 2,133 | Monolithic Power Systems | 29.3% |
-| Circuit bricks (CIAS) | 11,979 | — | — |
+| Thermistors | 535 | Vishay | 100.0% |
+| Circuit bricks (CIAS) | 25,243 | — | — |
 | Converters (full TAS docs) | 47 | — | — |
-| **Active total** | **672,039** | — | — |
-| Quarantine (all `*quarantine*` files) | ~169,000 | — | — |
+| **Active total** | **968,558** | — | — |
+| Quarantine (single consolidated `data/quarantine.ndjson`) | 234,709 | — | — |
 
 ---
 
@@ -54,13 +58,17 @@ A real power converter design involves dozens of interrelated decisions scattere
 │      switchingCell → half-bridge brick                           │
 │        Qh,Ql: IPD65R420CFD MOSFETs ← SAS/PEAS via brick component│
 │      isolation    → transformer brick                            │
-│        T1: E25/13/7 N87            ← MAS/PEAS via brick component │
+│        T1: E25/13/7 N87            ← MAS/PEAS via brick component│
 │      outputFilter → rectifier+cap brick (D1 SAS, Cout CAS)       │
 │    interStageConnections[]: wire the stage ports together        │
 │                                                                  │
 │  OUTPUTS — what you computed                                     │
-│    losses: { core: 0.4W, winding: 0.6W, switch: 1.1W, ... }    │
-│    kpis: { efficiency: 0.921, outputRipple: 0.045 }             │
+│    metrics: { volume: 12e-6, mass: 0.05 }                        │
+│    operatingPoints: [{ name: "full_load_Vin_min",                │
+│      efficiency: 0.921,                                          │
+│      stageResults: [{ stage: "inverter", loss: 1.1 }],           │
+│      outputResults: [{ name: "out1",                             │
+│        voltageRipplePkPk: 0.045 }] }]                            │
 │                                                                  │
 │  SIMULATION (optional) — stimulus + analyses, simulator-agnostic │
 └──────────────────────────────────────────────────────────────────┘
@@ -89,23 +97,27 @@ Each record is a single-line JSON object wrapped in its PEAS discriminator, and 
 
 | File | Records | Wrap | Validated against |
 |------|---------|------|-------------------|
-| `mosfets.ndjson` | 9,941 | `{"semiconductor": {"mosfet": …}}` | SAS `mosfet.json` |
-| `diodes.ndjson` | 13,309 | `{"semiconductor": {"diode": …}}` | SAS `diode.json` |
-| `igbts.ndjson` | 2,271 | `{"semiconductor": {"igbt": …}}` | SAS `igbt.json` |
+| `mosfets.ndjson` | 9,800 | `{"semiconductor": {"mosfet": …}}` | SAS `mosfet.json` |
+| `diodes.ndjson` | 17,789 | `{"semiconductor": {"diode": …}}` | SAS `diode.json` |
+| `igbts.ndjson` | 2,278 | `{"semiconductor": {"igbt": …}}` | SAS `igbt.json` |
 | `bjts.ndjson` | 3,668 | `{"semiconductor": {"bjt": …}}` | SAS `bjt.json` |
-| `capacitors.ndjson` | 230,576 | `{"capacitor": …}` | CAS `capacitor.json` |
-| `resistors.ndjson` | 160,831 | `{"resistor": …}` | RAS `resistor.json` |
+| `capacitors.ndjson` | 253,831 | `{"capacitor": …}` | CAS `capacitor.json` |
+| `resistors.ndjson` | 149,255 | `{"resistor": …}` | RAS `resistor.json` |
 | `varistors.ndjson` | 3,198 | `{"varistor": …}` | RAS `varistor.json` |
-| `magnetics.ndjson` | 92,368 | `{"magnetic": …}` | MAS `magnetic.json` |
+| `magnetics.ndjson` | 82,467 | `{"magnetic": …}` | MAS `magnetic.json` |
 | `controllers.ndjson` | 2,133 | `{"controller": …}` | CTAS `controller.json` |
-| `analog_ics.ndjson` | 3,418 | `{"analog": …}` (e.g. `{"analog": {"operationalAmplifier": …}}`) | AAS `AAS.json` |
-| `connectors.ndjson` | 138,300 | `{"connector": …}` | CONAS `connector.json` |
-| `circuits.ndjson` | 11,979 | CIAS brick `{name, ports, components, connections}` | CIAS `CIAS.json` |
+| `analog_ics.ndjson` | 3,607 | `{"analog": …}` (e.g. `{"analog": {"operationalAmplifier": …}}`) | AAS `AAS.json` |
+| `connectors.ndjson` | 391,073 | `{"connector": …}` | CONAS `connector.json` |
+| `thermistors.ndjson` | 535 | `{"thermistor": …}` | RAS `thermistor.json` |
+| `timing_devices.ndjson` | 23,634 | `{"timeBase": …}` (e.g. `{"timeBase": {"oscillator": …}}`) | TDAS `tdas.json` |
+| `circuits.ndjson` | 25,243 | CIAS brick `{name, ports, components, connections}` | CIAS `CIAS.json` |
 | `converters.ndjson` | 47 | full TAS documents (reference designs) | TAS `TAS.json` |
 
-The `*.quarantine_*.ndjson` siblings (plus the legacy `quarantine.ndjson`) hold records with verified data errors or incomplete data, excluded from queries — see [Quarantine](#quarantine).
+Records with verified data errors or incomplete data are excluded from queries by
+moving them to the single consolidated `data/quarantine.ndjson` (234,709 records
+as of this measurement) — see [Quarantine](#quarantine).
 
-To search the database, grep/parse the NDJSON directly (never load a whole file — `capacitors.ndjson` is ~263 MB):
+To search the database, grep/parse the NDJSON directly (never load a whole file — `capacitors.ndjson` is ~673 MB, `circuits.ndjson` ~1.2 GB):
 
 ```bash
 grep -m5 '"partNumber": "C3M0' data/mosfets.ndjson | python3 -m json.tool
@@ -160,7 +172,9 @@ TAS   ← complete converter designs + finished component catalog
       └── RAS   ← resistors, varistors
 ```
 
-(Sibling catalogs also draw on CTAS — controllers, AAS — analog ICs, CONAS — connectors, and CIAS — circuit bricks.)
+(Sibling catalogs also draw on CTAS — controllers, AAS — analog ICs, CONAS — connectors,
+TDAS — timing devices (oscillators/timers/latches), and CIAS — circuit bricks; RAS also
+covers thermistors alongside resistors/varistors.)
 
 **Rule:** Finished, orderable components (with part numbers) belong in `TAS/data/`. Manufacturing building blocks (raw cores, wire, die) belong in MAS/SAS/CAS/RAS.
 
@@ -186,9 +200,13 @@ schemas/        JSON Schema files — the normative spec.
 
 data/           NDJSON component databases. One JSON object per line.
                 Scripts append here; never load the whole file at once
-                (capacitors.ndjson is ~263 MB, magnetics.ndjson ~276 MB).
+                (capacitors.ndjson is ~673 MB, connectors.ndjson ~601 MB,
+                circuits.ndjson ~1.2 GB, magnetics.ndjson ~284 MB — measured
+                2026-09-04, this is a live, actively-growing tree).
 
 docs/           schema.md — human-readable schema reference.
+                topology-stages-research.md — historical literature-review
+                artifact that informed the stage design (not a live spec).
 
 scripts/        Utility scripts for database maintenance (one-off ETL/repair).
 
@@ -211,7 +229,7 @@ pytest tests/test_data.py -q      # every NDJSON record against its schema (slow
 
 Cross-repo `$ref`s resolve by absolute `$id` (`https://psma.com/<repo>/…`); the
 tests build the registry from the sibling repos checked out alongside TAS
-(PEAS, CIAS, MAS, CAS, RAS, SAS, CTAS, AAS, CONAS).
+(PEAS, CIAS, MAS, CAS, RAS, SAS, CTAS, AAS, CONAS, TDAS).
 
 ### Data Format Rules
 
@@ -266,10 +284,12 @@ value: `pwmController`, `multiphaseController`, `llcController`, `pfcController`
 `syncRectifierController`, `gateDriver`, `digitalController`, `shuntRegulator`, …). Category-specific
 electricals live in optional sub-objects under `electrical` (`gateDrive`, `isolation`, `currentMode`,
 `shuntReference`, `hotSwap`, …). The legacy freeform records were migrated by
-`scripts/port_controllers.py`; parts that are not control ICs (modules, EEPROMs, LDOs) went to
-`controllers.quarantine_nonctrl.ndjson`, controllers with no determinable category to
-`controllers.quarantine_sparse.ndjson`, and the verbatim original to
-`controllers.pre-ctas.backup.ndjson`.
+`scripts/port_controllers.py`; parts that are not control ICs (modules, EEPROMs, LDOs) and
+controllers with no determinable category were moved into the consolidated
+`data/quarantine.ndjson` (tagged `_quarantineSource: "controllers.quarantine_nonctrl.ndjson"` /
+`"controllers.quarantine_sparse.ndjson"` respectively — the standalone per-catalog quarantine
+files those names originally referred to no longer exist on disk, see
+[Quarantine](#quarantine)).
 
 **Magnetics structure (MAS path):** all magnetics — including Würth — now use the
 standard MAS shape: specs live in `manufacturerInfo.datasheetInfo` (`part`,
@@ -294,11 +314,15 @@ The librarian searches for datasheets, extracts parameters, and appends to the a
 
 ### Quarantine
 
-Parts with data errors are moved to a per-catalog quarantine sibling
-(`<catalog>.quarantine_<reason>.ndjson`, e.g.
-`capacitors.quarantine_duplicates.ndjson`, `mosfets.quarantine_incomplete.ndjson`;
-legacy records live in `quarantine.ndjson`) rather than deleted. This preserves
-traceability. Quarantined entries typically carry a `quarantineReason` field:
+Parts with data errors are moved to a single consolidated **`data/quarantine.ndjson`**
+(234,709 records as of this measurement) rather than deleted. This preserves
+traceability. Per-catalog `<catalog>.quarantine_<reason>.ndjson` sibling files
+(e.g. `capacitors.quarantine_duplicates.ndjson`, `mosfets.quarantine_incomplete.ndjson`)
+were historically how quarantined parts were split up, but those standalone files
+no longer exist — every quarantined record now lives in `data/quarantine.ndjson`
+and carries an `_quarantineSource` field naming the file/reason it was originally
+filed under (e.g. `"connectors.quarantine_incomplete.ndjson"`,
+`"magnetics.quarantine_fabricated.ndjson"`), plus typically a `quarantineReason` field:
 
 ```json
 { "quarantineReason": "Hallucinated part number — FCP021N60E does not exist on onsemi.com or any distributor" }
