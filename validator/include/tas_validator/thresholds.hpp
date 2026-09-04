@@ -196,6 +196,50 @@ inline constexpr double MOS_RON_VDS2_GAN_SUS = 0.1;    // GaN
 inline constexpr double MOS_QG_RON_FOM_SI_IMP = 1.5e-11;   // Si / SiC [ohm*C]
 inline constexpr double MOS_QG_RON_FOM_GAN_IMP = 5.0e-12;  // GaN [ohm*C]
 
+// The SAME figure of merit, but as a VOLTAGE-CLASS floor (adversarial physics
+// review, 2026-09-04). MOS_QG_RON_FOM_*_IMP above is one global floor for all
+// silicon, so it is set by the best 30 V logic-level die (24 pOhm*C) and is
+// therefore ~100x too permissive for a 600 V part: FDP22N50 stored 22 mohm with
+// 2.5 nC (55 mohm*nC) and sailed through, as did STL240N6F7 (a 60 V family
+// recorded at 650 V, where 6 mohm / 240 A is coherent at 60 V and impossible at
+// 650) and IXTX3N250L (a 2500 V part recorded at 8.3 mohm where IXYS's own
+// datasheet says under 10 OHMS -- a 1000x slip).
+//
+// Ron*Qg is die-area independent (Ron ~ 1/W, Qg ~ W), but it is NOT
+// voltage-independent: both the specific on-resistance and the gate charge per
+// unit width climb steeply with the blocking voltage, so a 600 V superjunction
+// die cannot reach a 30 V die's FOM however large it is. That makes a per-class
+// floor a strictly stronger, still die-area-free bound.
+//
+// CALIBRATED 2026-09-04 over all 8,563 live mosfet records carrying
+// Vds+Ron+Qg (mohm*nC = 1e-12 ohm*C):
+//   Si  200-399 V  n= 502  min    140  p1    400  p5    638  med   3,240
+//   Si  400-700 V  n=1709  min     55  p1  2,400  p5  2,923  med   6,450
+//   Si  701-1200V  n= 466  min  1,920  p1  4,500  p5  9,108  med  42,000
+//   Si  >1200 V    n=  56  min  1,909  next 215,000 (a 100x gap)
+//   SiC 400-700 V  n= 145  min  1,008        SiC 701-1200 n=230 min 880
+//   SiC >1200 V    n=  40  min  1,785
+//   GaN 200-399 V  n=  49  min    120        GaN 400-700  n=124 min 198
+// GaN gets its own (much lower) floor for the same reason it does above -- a
+// better FOM is the whole point of the technology -- and SiC its own because the
+// 4H-SiC channel reaches ~1 nOhm*C at 650 V where silicon needs ~2.4.
+//
+// Each floor sits BELOW the lowest datasheet-defensible part of its class, so
+// only an incoherent record can reach it. Corpus hit counts at these values
+// (2026-09-04): Si 400-700 -> 6 (FDP22N50, STL40NM60N, STL240N6F7 and the three
+// Navitas GaNFast parts whose technology field wrongly says "Si"); Si 701-1200
+// -> 1 (NV6015C-RA, same mislabel); Si >1200 -> 1 (IXTX3N250L); Si 200-399, SiC
+// and GaN -> 0 (forward guards). SUSPICIOUS, never Impossible: the bound is a
+// technology argument, not a conservation law, and three of the eight hits are
+// records whose ELECTRICALS are right and whose technology LABEL is wrong.
+inline constexpr double MOS_FOM_VCLASS_MIN_VDS = 200.0;   // below this the global floor governs
+inline constexpr double MOS_FOM_SI_200_SUS = 7.0e-11;     //     70 mohm*nC
+inline constexpr double MOS_FOM_SI_400_SUS = 1.2e-9;      //  1,200 mohm*nC
+inline constexpr double MOS_FOM_SI_700_SUS = 2.0e-9;      //  2,000 mohm*nC
+inline constexpr double MOS_FOM_SI_1200_SUS = 2.0e-8;     // 20,000 mohm*nC
+inline constexpr double MOS_FOM_SIC_SUS = 4.0e-10;        //    400 mohm*nC (all classes >=200 V)
+inline constexpr double MOS_FOM_GAN_SUS = 1.0e-10;        //    100 mohm*nC (all classes >=200 V)
+
 // ---- Diodes -----------------------------------------------------------------
 // Snapback ESD parts guard-band the 1 mA breakdown LIMIT below the working
 // voltage (Toshiba DF2B26M4SL: VRWM 24 V, VBR min 21.0 V = 0.875x, with leakage
@@ -233,6 +277,91 @@ inline constexpr double DIO_VFIF_RATIO_SUS = 2.0;
 // be wrong about 3.74% of the corpus, which is its own argument for the softer
 // grade. Promote only once ABT #550 lands and a real failure is traced here.
 inline constexpr double DIO_LEAK_IF_SUS = 0.02;
+
+// 4H-SiC Schottky forward voltage vs the metal-semiconductor BARRIER (adversarial
+// physics review, 2026-09-04). The Ni/Ti-on-4H-SiC barrier height is 1.0-1.35 eV,
+// so a SiC Schottky cannot conduct its rated current at a drop below the barrier
+// itself; every traced SiC Schottky in this corpus lands at 1.2-2.0 V.
+//
+// THE TRAP, stated so nobody removes the subType gate later: a SILICON Schottky
+// legitimately drops 0.3-0.5 V (its barrier is ~0.7 eV, and low-barrier parts go
+// lower still). This bound keys on the SiC technology, never on "is a Schottky".
+//
+// CALIBRATED 2026-09-04 over all 1,099 live SiC diodes carrying forwardVoltage:
+//   min 0.60  p1 0.65  p5 0.70  p25 0.84  med 1.30  p95 1.80  max 3.00
+//   below 0.70: 42   below 0.80: 198   below 0.90: 325   below 1.00: 397
+// 0.80 V is chosen as a STRICT lower bound so the 127-row cluster sitting exactly
+// at 0.80 (Wolfspeed C4D17065, ROHM SCS2635KG, ST STPSC9006 ...) is untouched --
+// 0.80 is a real published minimum-Vf figure for a low-current SiC part, and the
+// bound only condemns values that are BELOW the barrier height. Corpus hit count
+// at 0.80: 198 rows (ROHM 88, ST 78, Wolfspeed 16, onsemi 14, Infineon 2).
+// SUSPICIOUS: a Vf quoted at microamps really can sit near the barrier, so this
+// is a strong smell, not a conservation law. The pre-existing DIO_VF_RANGE SiC
+// band (0.5-3.5 V) does not see any of them.
+//
+// STATE OF THE LIVE CORPUS, stated plainly rather than as a clean-sweep boast:
+// a parallel session repaired the entire sub-barrier block a few hours after the
+// calibration above, so as of the last measurement on 2026-09-04 this rule fires
+// on ZERO live records -- the lowest SiC forwardVoltage in the catalogue is now
+// 1.1 V (Wolfspeed SCS220KEC, onsemi FFSH16) and nothing sits below 1.2 V except
+// two rows. That makes it a REGRESSION GUARD against the same import reappearing,
+// not a detector proven against today's data. The 198-row measurement is what it
+// was calibrated on and is preserved above for exactly that reason.
+inline constexpr double DIO_VF_SIC_BARRIER_SUS = 0.8;
+// Surge-to-average current ratio Ifsm/If. Real rectifiers run 10-40x: the
+// single-cycle surge is set by the die's thermal mass over one half-cycle while
+// the average rating is set by steady-state cooling, and that ratio is bounded by
+// package physics no matter the die size. BAS70VY read 71,000 because its
+// forwardCurrent was stored 1000x low (ABT #550's Nexperia block).
+//
+// CALIBRATED TWICE on 2026-09-04, because the corpus moved underneath the first
+// measurement -- another session's ABT #550 repair landed mid-calibration and
+// fixed the 489-row Nexperia block. Both readings are recorded because the second
+// alone would understate what the rule is for:
+//   BEFORE the repair (5,053 rows with both fields):
+//     p5 5.0  p25 10  med 22.4  p75 30  p90 120  p95 13,000  max 71,429
+//     ratio > 100 -> 513 rows: 489 Nexperia (If 1000x low) + 24 others.
+//   AFTER  the repair (4,914 rows):
+//     p5 4.5  p25 10  med 20.0  p75 29.6  p90 36  p95 50  p99 80  max 240
+//     ratio > 100 ->  24 rows, every one of them a record whose forwardCurrent is
+//     the constant 2.0 A of a wrong grid column (Vishay VS-80CPU02-N3 is an 80 A
+//     part; onsemi MBRA210LT3G a 2 A part with a real 50 A IFSM, stored as 230).
+//
+// The margin is thinner than it looks and must be stated honestly: the highest
+// DATASHEET-VERIFIED real ratio is 71.4 (Nexperia BAS70VY, 70 mA average / 5 A
+// non-repetitive -- the very part the review cited, now repaired), and the highest
+// observed non-firing row is 90.9 (BAS16DY). 100 is 2.5x the top of the physical
+// 10-40x band but only ~1.1x above that nearest real neighbour, which is exactly
+// why this is SUSPICIOUS and not Impossible. The comparison is strictly-greater,
+// so the 16-row cluster sitting at exactly 100.0 does not fire either.
+//
+// TVS/Zener/ESD are excluded -- their surgeCurrent is a peak pulse current
+// against a standoff rating, a different pair entirely.
+inline constexpr double DIO_SURGE_IF_RATIO_SUS = 100.0;
+// powerDissipation against the record's OWN thermal path, for diodes -- the
+// analogue of MOS_PTHERMAL_RATIO_SUS. See thermal_power_ceiling() in helpers.hpp
+// for the reference-mixing trap this is built around.
+//
+// CALIBRATED 2026-09-04 over the 2,510 live mosfet+diode records carrying
+// powerDissipation, junctionTemperatureMax AND thermalResistanceJunctionCase:
+//   ratio p50 0.83  p75 1.09  p90 4.35  p95 10.45  p99 30  max 124
+// The highest datasheet-defensible ratio found is 2.0 (Infineon IMW120R050M1H,
+// 357 W against 178 W implied) and the next 1.78 (IPP65R070CFD7); everything past
+// 3 is a wrong Rth or a wrong Pd (Wolfspeed C3D02060F stores 12 K/W for a 4.4 K/W
+// part; onsemi FFSH20 stores 2.0 for 0.55). 4.0 is 2x above the highest defensible
+// value.
+//
+// Diode-only corpus hit count at 4.0, with TVS/Zener/ESD excluded: 2 rows
+// (Wolfspeed CSD06060A stores 360 W behind a 75 W path; CSHD060065D 390 W) --
+// and those two were themselves repaired by a parallel session later the same
+// day, so the last live measurement is 0. Regression guard, not a live detector;
+// the mosfet half of the same invariant (MOS_POWER_THERMAL) still fires on 285.
+// The exclusion is load-bearing and was found by MEASURING, not by reasoning: an
+// un-gated version of this rule fired on 10 rows, and 8 of them -- Vishay
+// P6KE200A, Littelfuse SMBJ400A and six SMAJ48 variants -- are real parts whose
+// powerDissipation field is the PEAK PULSE power (600 W over 10/1000 us against a
+// 5 W steady-state rating). That is a factor of ~100 by design, not a defect.
+inline constexpr double DIO_PTHERMAL_RATIO_SUS = 4.0;
 
 // ---- IGBTs ------------------------------------------------------------------
 // Collector-emitter saturation voltage [V].

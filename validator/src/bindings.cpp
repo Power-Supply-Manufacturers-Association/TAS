@@ -81,6 +81,8 @@ PYBIND11_MODULE(tas_validator, m) {
     py::class_<CorpusFinding>(m, "CorpusFinding")
         .def_readonly("index", &CorpusFinding::index)
         .def_readonly("code", &CorpusFinding::code)
+        .def_property_readonly("severity",
+                               [](const CorpusFinding& f) { return to_string(f.severity); })
         .def_readonly("reference", &CorpusFinding::reference)
         .def_readonly("message", &CorpusFinding::message)
         .def_readonly("value", &CorpusFinding::value)

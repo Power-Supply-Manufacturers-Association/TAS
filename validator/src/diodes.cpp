@@ -85,6 +85,29 @@ void check_diodes(const json& datasheet, const Ctx& ctx, std::vector<Finding>& o
         skipped.push_back("DIO_VF_RANGE");
     }
 
+    // CHECK (NEW, adversarial physics review 2026-09-04): the 4H-SiC Schottky
+    // BARRIER floor. The Ni/Ti-on-4H-SiC barrier height is 1.0-1.35 eV, so the
+    // device cannot conduct its rated current at a drop below the barrier itself;
+    // every traced SiC Schottky in this corpus lands at 1.2-2.0 V, and 198 rows
+    // sit below 0.8 V. DIO_VF_RANGE's SiC band starts at 0.5 V and sees none of
+    // them.
+    //
+    // THE TRAP, and the reason this keys on the TECHNOLOGY and not on "is a
+    // Schottky": a SILICON Schottky legitimately drops 0.3-0.5 V, because its
+    // barrier is ~0.7 eV. Widening this rule to all Schottkys would condemn every
+    // correct silicon Schottky in the catalogue. Do not remove the sic gate.
+    //
+    // SUSPICIOUS: a Vf quoted at microamps genuinely can approach the barrier, so
+    // this is a strong smell rather than a conservation law.
+    if (Vf && !tvs && tech_has(tech, "sic") && tech_has(tech, "schottky")) {
+        if (*Vf > 0 && *Vf < thr::DIO_VF_SIC_BARRIER_SUS)
+            emit(out, ctx, "DIO_VF_SIC_BARRIER", Severity::Suspicious, *Vf,
+                 thr::DIO_VF_SIC_BARRIER_SUS,
+                 fmt("SiC Schottky forwardVoltage below the 4H-SiC Ni/Ti barrier "
+                     "height (1.0-1.35 eV) the junction cannot conduct below [V]",
+                     *Vf, thr::DIO_VF_SIC_BARRIER_SUS));
+    }
+
     // CHECK (NEW, cross-parameter): TVS voltage ordering. The working (standoff)
     // voltage sits below the 1 mA breakdown, which sits below the surge clamp.
     if (tvs) {
@@ -130,6 +153,31 @@ void check_diodes(const json& datasheet, const Ctx& ctx, std::vector<Finding>& o
         if (If && *surge < *If)
             emit(out, ctx, "DIO_SURGE_VS_IF", Severity::Impossible, *surge, *If,
                  fmt("surgeCurrent < forwardCurrent", *surge, *If));
+
+        // CHECK (NEW, adversarial physics review 2026-09-04): the RATIO, not just
+        // the ordering. Ifsm is set by the die's thermal mass over one half-cycle
+        // and If by steady-state cooling, so their ratio is bounded by package
+        // physics at 10-40x regardless of die size. BAS70VY reads 71,000 because
+        // its forwardCurrent is stored 1000x low -- the ordering check above is
+        // perfectly happy with that, which is why the whole 501-row Nexperia scale
+        // block was invisible.
+        //
+        // TVS/Zener/ESD are excluded: their surgeCurrent is a peak PULSE current
+        // (Ipp at 8/20 us) rated against a standoff voltage, a different pair
+        // entirely, and their "forwardCurrent" is not an average rectified current.
+        //
+        // SUSPICIOUS: the ratio proves the two numbers disagree, not which one is
+        // wrong.
+        if (If && !tvs && *If > 0 && *surge > 0 &&
+            *surge / *If > thr::DIO_SURGE_IF_RATIO_SUS)
+            emit(out, ctx, "DIO_SURGE_RATIO", Severity::Suspicious, *surge / *If,
+                 thr::DIO_SURGE_IF_RATIO_SUS,
+                 fmt("surgeCurrent/forwardCurrent far above the 10-40x any real "
+                     "rectifier reaches (one of the two current ratings is off by a "
+                     "decimal scale factor)",
+                     *surge / *If, thr::DIO_SURGE_IF_RATIO_SUS));
+    } else {
+        skipped.push_back("DIO_SURGE_RATIO");
     }
 
     // CHECK (NEW): Vf*If conduction loss vs power-dissipation rating (not
@@ -152,6 +200,40 @@ void check_diodes(const json& datasheet, const Ctx& ctx, std::vector<Finding>& o
                      fmt("non-zero Qrr for majority-carrier (Schottky/GaN) device [C]", *qrr,
                          thr::DIO_QRR_MAJORITY_SUS));
         }
+    }
+
+    // CHECK (NEW, adversarial physics review 2026-09-04): powerDissipation
+    // against the record's OWN thermal path -- the diode analogue of
+    // MOS_POWER_THERMAL, which had no counterpart here at all. Wolfspeed
+    // CSD06060A stores 360 W behind a thermal path good for 75 W.
+    //
+    // The ceiling comes from thermal_power_ceiling(), which requires a
+    // junction-to-CASE resistance and takes the most generous reference the
+    // record carries. See its comment: powerDissipation in this corpus mixes
+    // case- and ambient-referenced values with no discriminator, and measuring a
+    // case-referenced Pd against an ambient path is exactly how a correct record
+    // gets accused.
+    //
+    // TVS/Zener/ESD are EXCLUDED, and this is not a convenience: their
+    // powerDissipation field carries the PEAK PULSE power (Ppp over 10/1000 us),
+    // which is three orders of magnitude above any steady-state rating by design.
+    // Vishay P6KE200A really is a 600 W part with a 5 W steady-state rating, and
+    // an un-gated version of this check accused it, Littelfuse SMBJ400A and six
+    // SMAJ48 variants -- eight real parts out of ten hits. The surviving two are
+    // Wolfspeed SiC rectifiers whose own thermal block contradicts their Pd.
+    if (auto pd = scalar_at(*elec, {"powerDissipation"}); pd && !tvs) {
+        if (*pd > 0) {
+            auto ceiling = thermal_power_ceiling(datasheet);
+            if (!ceiling) {
+                skipped.push_back("DIO_POWER_THERMAL");
+            } else if (*pd > *ceiling * thr::DIO_PTHERMAL_RATIO_SUS) {
+                emit(out, ctx, "DIO_POWER_THERMAL", Severity::Suspicious, *pd, *ceiling,
+                     fmt("powerDissipation contradicts the record's own thermal path "
+                         "(Tjmax-25)/Rth [W]", *pd, *ceiling));
+            }
+        }
+    } else {
+        skipped.push_back("DIO_POWER_THERMAL");
     }
 
     // CHECK (NEW): junction capacitance positivity, and its test Vr <= rated Vr.

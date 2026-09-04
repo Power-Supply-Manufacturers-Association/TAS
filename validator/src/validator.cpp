@@ -276,6 +276,89 @@ void check_series_is_manufacturer(const json& ds, const Ctx& ctx, std::vector<Fi
     }
 }
 
+// GEN_CITATION_SEARCH_QUERY: the record's only citation is a search-engine query
+// ("...?q=...", ".../search?...", "...?search=..."), not a direct link to a
+// document. Cheap and general on purpose: in the 2026-09-04 fabrication sweep it
+// co-occurred with nearly every batch found that day (the letter-suffix diode/
+// IGBT clones, the mosfet capacitance-formula cohort) because a generator that
+// invents a part number invents its "citation" the same way, by pasting the part
+// number into a search box, rather than by finding a real document. SUSPICIOUS
+// only, never IMPOSSIBLE: measured live, 659 records across mosfets/diodes/igbts
+// still carry this shape and most are real-but-unverified parts awaiting a proper
+// citation, not fabrications — this is an advisory flag for review, one signal
+// among several, not a verdict on its own.
+//
+// ABT (adversarial review, 2026-09-04): the regex alone does not distinguish a
+// THIRD-PARTY aggregator (datasheetpdf.com — the actual target this check was
+// written for) from a MANUFACTURER'S OWN product-finder/search page. 276 of 872
+// matches were first-party (213 sitime.com/products?search=, 63
+// vishay.com/search?searchText=, including real, iconic parts — IRF530NPBF,
+// IRFP250NPBF, SIR158DP). The old wording ("not verified against a source") is a
+// FALSE STATEMENT for those: the citation IS the manufacturer, just not a direct
+// PDF link. Detect the first-party case (host label matches the record's own
+// manufacturer name) and use accurate wording for it instead — still SUSPICIOUS
+// (a search-style URL is still not a citation to the specific document either
+// way), but no longer claiming the record is unverified when it plainly names its
+// own maker.
+std::string url_host_label(const std::string& url) {
+    static const std::regex RE(R"(^[a-zA-Z][a-zA-Z0-9+.-]*://(?:www\.)?([^/:?#]+))");
+    std::smatch m;
+    if (!std::regex_search(url, m, RE)) return "";
+    std::string host = m[1].str();
+    std::string label = host.substr(0, host.find('.'));
+    std::string out;
+    for (char c : label) out += static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
+    return out;
+}
+
+bool is_first_party_url(const std::string& url, const std::string& mfr_norm) {
+    if (mfr_norm.empty()) return false;
+    std::string host_label = url_host_label(url);
+    // A label under 3 chars ("st", "ti"...) is too short to trust as a match on
+    // its own merit -- it would be a substring of dozens of unrelated words.
+    if (host_label.size() < 3) return false;
+    return mfr_norm.find(host_label) != std::string::npos ||
+           host_label.find(mfr_norm) != std::string::npos;
+}
+
+void check_citation_search_query(const json& ds, const Ctx& ctx, std::vector<Finding>& out) {
+    std::string mfr_norm;
+    if (ctx.component_obj != nullptr) {
+        const json* mi = at(*ctx.component_obj, "manufacturerInfo");
+        if (mi != nullptr) mfr_norm = norm_tech(at(*mi, "name"));
+        if (mi != nullptr && mi->contains("datasheetUrl") && (*mi)["datasheetUrl"].is_string()) {
+            const std::string url = (*mi)["datasheetUrl"].get<std::string>();
+            if (is_search_query_url(url)) {
+                std::string msg = is_first_party_url(url, mfr_norm)
+                    ? "manufacturerInfo.datasheetUrl is a product-finder/search query on the "
+                      "manufacturer's OWN site ('" + url + "'), not a direct link to the "
+                      "datasheet PDF"
+                    : "manufacturerInfo.datasheetUrl is a search-query link ('" + url +
+                      "'), not a document — the record was not verified against a source";
+                emit(out, ctx, "GEN_CITATION_SEARCH_QUERY", Severity::Suspicious, 0, 0, msg);
+                return;
+            }
+        }
+    }
+    const json* prov = at(ds, "provenance");
+    if (prov != nullptr && prov->is_array())
+        for (const auto& p : *prov) {
+            if (!p.is_object() || !p.contains("sourceUrl") || !p["sourceUrl"].is_string())
+                continue;
+            const std::string url = p["sourceUrl"].get<std::string>();
+            if (is_search_query_url(url)) {
+                std::string msg = is_first_party_url(url, mfr_norm)
+                    ? "datasheetInfo.provenance cites a product-finder/search query on the "
+                      "manufacturer's OWN site ('" + url + "'), not a direct link to the "
+                      "datasheet PDF"
+                    : "datasheetInfo.provenance cites a search-query link ('" + url +
+                      "'), not a document — the record was not verified against a source";
+                emit(out, ctx, "GEN_CITATION_SEARCH_QUERY", Severity::Suspicious, 0, 0, msg);
+                return;
+            }
+        }
+}
+
 // Generic checks applicable to every family, run on the datasheetInfo object.
 void check_generic(const json& ds, const Ctx& ctx, std::vector<Finding>& out) {
     // GEN_TEMP_ORDER: a temperature min/max pair where min > max. Restricted to
@@ -310,6 +393,7 @@ void check_generic(const json& ds, const Ctx& ctx, std::vector<Finding>& out) {
     check_package_envelope(ds, ctx, out);
     check_family_coherence(ds, ctx, out);
     check_series_is_manufacturer(ds, ctx, out);
+    check_citation_search_query(ds, ctx, out);
 }
 
 // Resolve the datasheetInfo object and a part reference for a discriminator.

@@ -2,6 +2,7 @@
 // C++ unit tests for the TAS physics validator. One record that passes plus
 // records that trip representative IMPOSSIBLE and SUSPICIOUS branches per family.
 #include "tas_validator/helpers.hpp"
+#include "tas_validator/thresholds.hpp"
 #include "tas_validator/validator.hpp"
 
 #include <catch2/catch_test_macros.hpp>
@@ -989,6 +990,405 @@ TEST_CASE("Corpus: SmallCohortNotScreened", "[corpus]") {
     CHECK(validate_corpus(recs).empty());
 }
 
+// ---- 2026-09-04 fabrication-shape checks -------------------------------------
+
+// ABT #531 shape: outputCapacitance = onResistance^2*10^k EXACTLY and
+// reverseTransferCapacitance = outputCapacitance/10 EXACTLY, AND a search-query
+// citation (see the check's comment for why the citation is required). Real
+// specimen: Microsemi SJD45R1200 as quarantined (Ron=0.2, Coss=4e-8=0.2^2*1e-6,
+// Crss=4e-9, cited via datasheetpdf.com/search?q=...).
+TEST_CASE("Semiconductors: MosfetCapacitanceFormulaSuspicious", "[semiconductors]") {
+    json p = json::parse(R"json({"semiconductor": {"mosfet": {"manufacturerInfo": {
+      "reference": "SJD45R1200",
+      "datasheetUrl": "https://datasheetpdf.com/search?q=SJD45R1200",
+      "datasheetInfo": {"part": {"technology": "SiC"},
+      "electrical": {"onResistance": 0.2, "outputCapacitance": 4e-08,
+                     "reverseTransferCapacitance": 4e-09}}}}}})json");
+    Verdict v = V.validate(p);
+    CHECK(has(v, "MOS_CAP_FORMULA", Severity::Suspicious));
+    CHECK(v.valid);  // cohort-shaped signature, not a physics violation on its own
+
+    // Counter-check: a real part's messy ratio (Coss/Ron^2 = 5.101, not a power of
+    // ten) must NOT fire, even with the same citation shape.
+    json real = json::parse(R"json({"semiconductor": {"mosfet": {"manufacturerInfo": {
+      "reference": "REAL1",
+      "datasheetUrl": "https://datasheetpdf.com/search?q=REAL1",
+      "datasheetInfo": {"part": {"technology": "SiC"},
+      "electrical": {"onResistance": 0.2, "outputCapacitance": 2.0404e-07,
+                     "reverseTransferCapacitance": 3.1e-08}}}}}})json");
+    CHECK(!has(V.validate(real), "MOS_CAP_FORMULA", Severity::Suspicious));
+
+    // Counter-check: an exact Coss=Ron^2*10^k power-of-ten WITHOUT the matching
+    // Crss=Coss/10 must also not fire -- measured on the live 9,341-part mosfet
+    // corpus, this half-condition alone hits 12 real parts (GaN Systems, Infineon,
+    // onsemi, Nexperia); requiring both together is what makes this precise.
+    json half = json::parse(R"json({"semiconductor": {"mosfet": {"manufacturerInfo": {
+      "reference": "REAL2",
+      "datasheetUrl": "https://datasheetpdf.com/search?q=REAL2",
+      "datasheetInfo": {"part": {"technology": "GaN"},
+      "electrical": {"onResistance": 0.3, "outputCapacitance": 9e-12,
+                     "reverseTransferCapacitance": 4e-13}}}}}})json");
+    CHECK(!has(V.validate(half), "MOS_CAP_FORMULA", Severity::Suspicious));
+}
+
+// ABT (adversarial review, 2026-09-04): a false positive was CONSTRUCTED, not
+// hypothetical -- Ron=0.1 ohm, Coss=100 pF, Crss=10 pF are ordinary 1-sig-fig
+// datasheet typicals for a small 100 V/100 mOhm SMD part, and they satisfy the
+// formula EXACTLY. Nothing in the record's own Ron/Coss/Crss triplet can tell
+// this apart from a generator's output -- the citation requirement is what does,
+// and this pins that a REAL manufacturer citation clears it.
+TEST_CASE("Semiconductors: MosfetCapacitanceFormulaRealTypicalNotFlagged", "[semiconductors]") {
+    json p = json::parse(R"json({"semiconductor": {"mosfet": {"manufacturerInfo": {
+      "reference": "IRF530NPBF",
+      "datasheetUrl": "https://www.vishay.com/docs/91019/irf530n.pdf",
+      "datasheetInfo": {"part": {"technology": "Si"},
+      "electrical": {"onResistance": 0.1, "outputCapacitance": 1e-10,
+                     "reverseTransferCapacitance": 1e-11}}}}}})json");
+    Verdict v = V.validate(p);
+    CHECK(!has(v, "MOS_CAP_FORMULA", Severity::Suspicious));
+
+    // The exact same triplet WITH a search-query citation still fires -- the
+    // formula match alone was never the false positive; an unverified citation
+    // making it actionable is the point.
+    p["semiconductor"]["mosfet"]["manufacturerInfo"]["datasheetUrl"] =
+        "https://datasheetpdf.com/search?q=IRF530NPBF";
+    CHECK(has(V.validate(p), "MOS_CAP_FORMULA", Severity::Suspicious));
+}
+
+// The 2026-09-04 sweep found this shape co-occurring with nearly every fabricated
+// batch: a citation that is a search-engine query, not a document.
+TEST_CASE("Generic: CitationSearchQuerySuspicious", "[generic]") {
+    json p = json::parse(R"json({"semiconductor": {"diode": {"manufacturerInfo": {
+      "name": "onsemi", "reference": "FFSP2012T",
+      "datasheetUrl": "https://datasheetpdf.com/search?q=FFSP2012T",
+      "datasheetInfo": {"part": {}, "electrical": {"forwardVoltage": 1.45}}}}}})json");
+    Verdict v = V.validate(p);
+    CHECK(has(v, "GEN_CITATION_SEARCH_QUERY", Severity::Suspicious));
+    CHECK(v.valid);
+
+    // Counter-check: a real per-part manufacturer URL must not fire.
+    json real = json::parse(R"json({"semiconductor": {"diode": {"manufacturerInfo": {
+      "name": "onsemi", "reference": "FFSP2012A",
+      "datasheetUrl": "https://www.onsemi.com/pdf/datasheet/ffsp2012a-d.pdf",
+      "datasheetInfo": {"part": {}, "electrical": {"forwardVoltage": 1.7}}}}}})json");
+    CHECK(!has(V.validate(real), "GEN_CITATION_SEARCH_QUERY", Severity::Suspicious));
+}
+
+// ABT (adversarial review, 2026-09-04): 276 of 872 live matches cite the
+// MANUFACTURER'S OWN domain (213 sitime.com/products?search=, 63
+// vishay.com/search?searchText=, including IRF530NPBF/IRFP250NPBF/SIR158DP).
+// The old wording ("not verified against a source") was a false statement for a
+// real Vishay part cited by Vishay. This pins the fix: still SUSPICIOUS, but the
+// message must no longer claim the record is unverified when it plainly names
+// its own maker, and must instead read as a product-finder query.
+TEST_CASE("Generic: CitationSearchQueryFirstPartyWordingIsAccurate", "[generic]") {
+    json p = json::parse(R"json({"semiconductor": {"mosfet": {"manufacturerInfo": {
+      "name": "Vishay", "reference": "IRF530NPBF",
+      "datasheetUrl": "https://www.vishay.com/search?searchText=IRF530NPBF",
+      "datasheetInfo": {"part": {}, "electrical": {"onResistance": 0.1}}}}}})json");
+    Verdict v = V.validate(p);
+    auto it = std::find_if(v.findings.begin(), v.findings.end(),
+                           [](const Finding& f) { return f.code == "GEN_CITATION_SEARCH_QUERY"; });
+    REQUIRE(it != v.findings.end());
+    CHECK(it->severity == Severity::Suspicious);
+    CHECK(it->message.find("not verified against a source") == std::string::npos);
+    CHECK(it->message.find("product-finder") != std::string::npos);
+
+    // A genuine third-party aggregator on the SAME part keeps the old wording.
+    json third_party = p;
+    third_party["semiconductor"]["mosfet"]["manufacturerInfo"]["datasheetUrl"] =
+        "https://datasheetpdf.com/search?q=IRF530NPBF";
+    Verdict v2 = V.validate(third_party);
+    auto it2 = std::find_if(v2.findings.begin(), v2.findings.end(),
+                            [](const Finding& f) { return f.code == "GEN_CITATION_SEARCH_QUERY"; });
+    REQUIRE(it2 != v2.findings.end());
+    CHECK(it2->message.find("not verified against a source") != std::string::npos);
+}
+
+// ABT #1014/#1011-class letter-suffix cohort: a part-number stem + a run of
+// trailing letters, byte-identical on EVERY member of the family, forming a
+// contiguous alphabet run that includes 'I' or 'O'. Real specimen shape: onsemi
+// FFSP2012B..T (19 rows, all cloned from one spec) vs. the real FFSP2012A
+// sibling.
+namespace {
+json letter_suffix_diode(const std::string& ref) {
+    json p = json::parse(R"json({"semiconductor": {"diode": {"manufacturerInfo": {
+      "name": "onsemi",
+      "datasheetInfo": {"part": {"technology": "SiC"},
+      "electrical": {"reverseVoltage": 1200, "forwardVoltage": 1.45,
+                     "junctionCapacitanceVr": 5}}}}}})json");
+    auto& mi = p["semiconductor"]["diode"]["manufacturerInfo"];
+    mi["reference"] = ref;
+    mi["datasheetUrl"] = "https://datasheetpdf.com/search?q=" + ref;
+    return p;
+}
+}  // namespace
+
+TEST_CASE("Corpus: LetterSuffixCloneDetected", "[corpus]") {
+    std::vector<json> recs;
+    // G..K: contiguous, includes 'I'.
+    for (char c : {'G', 'H', 'I', 'J', 'K'}) recs.push_back(letter_suffix_diode("FFSP2012" + std::string(1, c)));
+    auto f = validate_corpus(recs);
+    CHECK(f.size() == recs.size());
+    for (auto& c : f) {
+        CHECK(c.code == "GEN_COHORT_LETTER_SUFFIX");
+        CHECK(c.severity == Severity::Suspicious);
+    }
+}
+
+TEST_CASE("Corpus: LetterSuffixNotClonedNotFlagged", "[corpus]") {
+    // Real vendor letter grades legitimately differ electrically -- vary one field.
+    std::vector<json> recs;
+    double vf = 1.0;
+    for (char c : {'G', 'H', 'I', 'J', 'K'}) {
+        json r = letter_suffix_diode("FFSP2012" + std::string(1, c));
+        r["semiconductor"]["diode"]["manufacturerInfo"]["datasheetInfo"]["electrical"]
+         ["forwardVoltage"] = vf;
+        vf += 0.01;
+        recs.push_back(r);
+    }
+    CHECK(validate_corpus(recs).empty());
+}
+
+TEST_CASE("Corpus: LetterSuffixNonContiguousRunNotFlagged", "[corpus]") {
+    // Vishay PLZ10A..D: real, byte-identical Zener tolerance-grade cohort -- but
+    // A..D never reaches 'I' or 'O', so it must NOT be flagged regardless of
+    // citation shape (this is the live TLZ39A..G-class trap this check exists to
+    // avoid).
+    std::vector<json> recs;
+    for (char c : {'A', 'B', 'C', 'D'}) {
+        json r = letter_suffix_diode("PLZ10" + std::string(1, c));
+        r["semiconductor"]["diode"]["manufacturerInfo"].erase("datasheetUrl");
+        recs.push_back(r);
+    }
+    CHECK(validate_corpus(recs).empty());
+}
+
+// ABT (adversarial review, 2026-09-04): the false positive that mattered most --
+// KEMET T222A105K020+{CS,BS,PS,SS} (real packaging-code cohort, 4,315 rows total
+// across the catalogue) is byte-identical AND, unlike the fixture above, DOES
+// carry a real manufacturer citation (yageogroup.com), so this pins the
+// realistic case rather than one with the citation erased. The varying
+// character (C/B/P/S) is non-contiguous, so this must not fire.
+TEST_CASE("Corpus: LetterSuffixTwoLetterArbitraryCodeNotFlagged", "[corpus]") {
+    std::vector<json> recs;
+    for (const char* suffix : {"CS", "BS", "PS", "SS"}) {
+        json r = letter_suffix_diode(std::string("T222A105K020") + suffix);
+        r["semiconductor"]["diode"]["manufacturerInfo"]["datasheetUrl"] =
+            "https://yageogroup.com/content/datasheet/asset/file/KEM_T2033_T222_AXIAL";
+        recs.push_back(r);
+    }
+    CHECK(validate_corpus(recs).empty());
+}
+
+// ABT (adversarial review, 2026-09-04): the check was screening the rows that
+// happen to have data, not the family -- a real cohort where one sibling has no
+// electrical data yet must not be judged on the remaining subset.
+TEST_CASE("Corpus: LetterSuffixPartialFamilyCoverageNotFlagged", "[corpus]") {
+    std::vector<json> recs;
+    for (char c : {'G', 'H', 'I', 'J', 'K'}) recs.push_back(letter_suffix_diode("FFSP2012" + std::string(1, c)));
+    // A 6th sibling, same stem, contiguous letter -- but not yet sourced.
+    json unsourced = json::parse(R"json({"semiconductor": {"diode": {"manufacturerInfo": {
+      "name": "onsemi", "reference": "FFSP2012L"}}}})json");
+    recs.push_back(unsourced);
+    CHECK(validate_corpus(recs).empty());
+}
+
+// ABT #560 shape: onResistance*continuousDrainCurrent EXACTLY one constant per
+// voltage class. Real specimen: ROHM SCT60125AL/SCT60xxxAL cohort, Ron*Id=0.75
+// ohm*A across every 650 V member.
+TEST_CASE("Corpus: MosfetRonIdcCollapseDetected", "[corpus]") {
+    std::vector<json> recs;
+    double ron = 0.1;
+    for (int i = 0; i < 8; ++i) {
+        json p = json::parse(R"json({"semiconductor": {"mosfet": {"manufacturerInfo": {
+          "name": "ROHM", "datasheetInfo": {"electrical": {"drainSourceVoltage": 650}}}}}})json");
+        auto& elec = p["semiconductor"]["mosfet"]["manufacturerInfo"]["datasheetInfo"]["electrical"];
+        elec["onResistance"] = ron;
+        elec["continuousDrainCurrent"] = 0.75 / ron;  // constant product 0.75 ohm*A
+        p["semiconductor"]["mosfet"]["manufacturerInfo"]["reference"] = "SCT" + std::to_string(i);
+        recs.push_back(p);
+        ron += 0.05;
+    }
+    auto f = validate_corpus(recs);
+    CHECK(f.size() == recs.size());
+    for (auto& c : f) {
+        CHECK(c.code == "MOS_RON_IDC_COLLAPSE");
+        CHECK(c.severity == Severity::Suspicious);
+    }
+}
+
+// ABT (adversarial review, 2026-09-04): the check fired for the wrong reason on
+// every live hit at the time -- distinctRon=1 AND distinctIdc=1, i.e. a
+// duplicate-row / same-die-many-references artifact, not a derived quantity
+// collapsing while its operands vary. The failure mode never tested: package
+// variants of ONE real die (TO-220/D2PAK/TO-263 listings of the same part)
+// legitimately share identical Ron AND Idc too -- this must NOT fire.
+TEST_CASE("Corpus: MosfetRonIdcDuplicateDieNotFlagged", "[corpus]") {
+    std::vector<json> recs;
+    const char* packages[] = {"TO-220", "D2PAK", "TO-263", "TO-220F",
+                              "TO-220-A", "D2PAK-B", "TO-263-C", "TO-220-D"};
+    for (const char* pkg : packages) {
+        json p = json::parse(R"json({"semiconductor": {"mosfet": {"manufacturerInfo": {
+          "name": "Infineon", "datasheetInfo": {"electrical": {"drainSourceVoltage": 650}}}}}})json");
+        auto& elec = p["semiconductor"]["mosfet"]["manufacturerInfo"]["datasheetInfo"]["electrical"];
+        elec["onResistance"] = 0.18;             // SAME die every time
+        elec["continuousDrainCurrent"] = 20.0;   // SAME die every time
+        p["semiconductor"]["mosfet"]["manufacturerInfo"]["reference"] = std::string("IPP60R180") + pkg;
+        recs.push_back(p);
+    }
+    auto f = validate_corpus(recs);
+    CHECK(!std::any_of(f.begin(), f.end(),
+                       [](const CorpusFinding& c) { return c.code == "MOS_RON_IDC_COLLAPSE"; }));
+}
+
+// ABT (adversarial review, 2026-09-04): continuousDrainCurrent is signed on
+// P-channel parts. A guard on the raw sign (*idc <= 0) silently drops those 746
+// live records (~8% of the catalogue) from ever being screened; this pins that a
+// negative-Idc cohort collapses on magnitude just like a positive one.
+TEST_CASE("Corpus: MosfetRonIdcCollapsePChannelNegativeCurrentDetected", "[corpus]") {
+    std::vector<json> recs;
+    double ron = 0.1;
+    for (int i = 0; i < 8; ++i) {
+        json p = json::parse(R"json({"semiconductor": {"mosfet": {"manufacturerInfo": {
+          "name": "Vishay", "datasheetInfo": {"electrical": {"drainSourceVoltage": -30}}}}}})json");
+        auto& elec = p["semiconductor"]["mosfet"]["manufacturerInfo"]["datasheetInfo"]["electrical"];
+        elec["onResistance"] = ron;
+        elec["continuousDrainCurrent"] = -0.75 / ron;  // P-channel: negative, magnitude 0.75/ron
+        p["semiconductor"]["mosfet"]["manufacturerInfo"]["reference"] = "SIP" + std::to_string(i);
+        recs.push_back(p);
+        ron += 0.05;
+    }
+    auto f = validate_corpus(recs);
+    CHECK(f.size() == recs.size());
+    for (auto& c : f) CHECK(c.code == "MOS_RON_IDC_COLLAPSE");
+}
+
+// ABT (adversarial review, 2026-09-04): two mutations kept the OLD suite green --
+// relaxing "every member in ONE bucket" to two buckets, and relaxing the 100%
+// bar to a 60% majority -- because the only negative fixture (GaN Systems, 56%)
+// sits below even that relaxed bar. This fixture sits at 95% (19/20), well above
+// any "majority" bar, and must still NOT fire: pins that the rule is 100% or
+// nothing, not a threshold.
+TEST_CASE("Corpus: MosfetRonIdcNinetyFivePercentCollapseNotFlagged", "[corpus]") {
+    std::vector<json> recs;
+    double ron = 0.1;
+    for (int i = 0; i < 19; ++i) {
+        json p = json::parse(R"json({"semiconductor": {"mosfet": {"manufacturerInfo": {
+          "name": "ROHM", "datasheetInfo": {"electrical": {"drainSourceVoltage": 650}}}}}})json");
+        auto& elec = p["semiconductor"]["mosfet"]["manufacturerInfo"]["datasheetInfo"]["electrical"];
+        elec["onResistance"] = ron;
+        elec["continuousDrainCurrent"] = 0.75 / ron;  // 19 of 20 share product 0.75
+        p["semiconductor"]["mosfet"]["manufacturerInfo"]["reference"] = "SCT95_" + std::to_string(i);
+        recs.push_back(p);
+        ron += 0.03;
+    }
+    // The 20th member: same voltage class, a genuinely different product.
+    json odd = json::parse(R"json({"semiconductor": {"mosfet": {"manufacturerInfo": {
+      "name": "ROHM", "reference": "SCT95_ODD",
+      "datasheetInfo": {"electrical": {"drainSourceVoltage": 650, "onResistance": 1.0,
+                                       "continuousDrainCurrent": 0.80}}}}}})json");
+    recs.push_back(odd);
+    auto f = validate_corpus(recs);
+    CHECK(!std::any_of(f.begin(), f.end(),
+                       [](const CorpusFinding& c) { return c.code == "MOS_RON_IDC_COLLAPSE"; }));
+}
+
+TEST_CASE("Corpus: MosfetRonIdcRealSpreadNotFlagged", "[corpus]") {
+    // GaN Systems' real 650 V die-sharing family: several members DO hit the
+    // family's design constant (1.5 ohm*A) but not ALL of them -- a real spread
+    // (1.35-1.8 ohm*A) sits alongside the repeats. Requiring 100% collapse, not a
+    // majority, is what keeps this cohort clear.
+    struct { double ron, idc; } dice[] = {
+        {0.1, 15}, {0.067, 22.5}, {0.05, 30}, {0.025, 60}, {0.15, 11},
+        {0.05, 30}, {0.067, 22.5}, {0.05, 30}, {0.05, 30}, {0.025, 60},
+        {0.15, 12}, {0.2, 7.5}, {0.4, 3.5}, {0.2, 8}, {0.3, 4.5}, {0.6, 2.5},
+    };
+    std::vector<json> recs;
+    int i = 0;
+    for (auto& d : dice) {
+        json p = json::parse(R"json({"semiconductor": {"mosfet": {"manufacturerInfo": {
+          "name": "GaN Systems", "datasheetInfo": {"electrical": {"drainSourceVoltage": 650}}}}}})json");
+        auto& elec = p["semiconductor"]["mosfet"]["manufacturerInfo"]["datasheetInfo"]["electrical"];
+        elec["onResistance"] = d.ron;
+        elec["continuousDrainCurrent"] = d.idc;
+        p["semiconductor"]["mosfet"]["manufacturerInfo"]["reference"] = "GS" + std::to_string(i++);
+        recs.push_back(p);
+    }
+    auto f = validate_corpus(recs);
+    CHECK(!std::any_of(f.begin(), f.end(),
+                       [](const CorpusFinding& c) { return c.code == "MOS_RON_IDC_COLLAPSE"; }));
+}
+
+// ABT #390/#391-class ESR clamp: esr*capacitance EXACTLY one constant across a
+// cohort because esr was generated as min(DF/(2*pi*f*C), a ceiling), not measured.
+TEST_CASE("Corpus: CapacitorEsrCapacitanceCollapseDetected", "[corpus]") {
+    std::vector<json> recs;
+    double cap = 1e-9;
+    for (int i = 0; i < 8; ++i) {
+        json p = json::parse(R"json({"capacitor": {"manufacturerInfo": {"name": "TDK",
+          "datasheetInfo": {"part": {"technology": "ceramic-class-2"},
+                            "electrical": {}}}}})json");
+        auto& elec = p["capacitor"]["manufacturerInfo"]["datasheetInfo"]["electrical"];
+        elec["capacitance"] = cap;
+        elec["esr"] = 1.0e-6 / cap;  // constant esr*C product = 1e-6
+        p["capacitor"]["manufacturerInfo"]["reference"] = "C" + std::to_string(i);
+        recs.push_back(p);
+        cap *= 2.0;
+    }
+    auto f = validate_corpus(recs);
+    CHECK(f.size() == recs.size());
+    for (auto& c : f) CHECK(c.code == "CAP_ESR_CAPACITANCE_COLLAPSE");
+}
+
+// ABT (adversarial review, 2026-09-04): the real KEMET T495D107M010ATE0..49 hit
+// has NO manufacturerInfo.reference at all (only datasheetInfo.part.partNumber)
+// -- unlike letter_suffix_screen, this rule had no empty-ref guard, so its only
+// live findings were unactionable by part number. describe() now falls back to
+// partNumber; this pins that the CorpusFinding.reference is populated from it,
+// not left blank.
+TEST_CASE("Corpus: CapacitorEsrCapacitanceCollapseUsesPartNumberFallback", "[corpus]") {
+    std::vector<json> recs;
+    double cap = 1e-9;
+    for (int i = 0; i < 8; ++i) {
+        json p = json::parse(R"json({"capacitor": {"manufacturerInfo": {"name": "KEMET",
+          "datasheetInfo": {"part": {"technology": "aluminum-electrolytic-wet"},
+                            "electrical": {}}}}})json");
+        auto& elec = p["capacitor"]["manufacturerInfo"]["datasheetInfo"]["electrical"];
+        elec["capacitance"] = cap;
+        elec["esr"] = 1.0e-6 / cap;
+        p["capacitor"]["manufacturerInfo"]["datasheetInfo"]["part"]["partNumber"] =
+            "T495D107M010ATE" + std::to_string(i);
+        recs.push_back(p);
+        cap *= 2.0;
+    }
+    auto f = validate_corpus(recs);
+    CHECK(f.size() == recs.size());
+    for (auto& c : f) CHECK(c.reference.rfind("T495D107M010ATE", 0) == 0);  // not empty/blank
+}
+
+TEST_CASE("Corpus: CapacitorEsrCapacitanceRealSpreadNotFlagged", "[corpus]") {
+    std::vector<json> recs;
+    double cap = 1e-9;
+    double esr = 0.5;
+    for (int i = 0; i < 8; ++i) {
+        json p = json::parse(R"json({"capacitor": {"manufacturerInfo": {"name": "TDK",
+          "datasheetInfo": {"part": {"technology": "ceramic-class-2"},
+                            "electrical": {}}}}})json");
+        auto& elec = p["capacitor"]["manufacturerInfo"]["datasheetInfo"]["electrical"];
+        elec["capacitance"] = cap;
+        elec["esr"] = esr;  // independently varying, no shared product
+        p["capacitor"]["manufacturerInfo"]["reference"] = "C" + std::to_string(i);
+        recs.push_back(p);
+        cap *= 2.0;
+        esr *= 0.7;
+    }
+    auto f = validate_corpus(recs);
+    CHECK(!std::any_of(f.begin(), f.end(), [](const CorpusFinding& c) {
+        return c.code == "CAP_ESR_CAPACITANCE_COLLAPSE";
+    }));
+}
+
 TEST_CASE("Framework: UnknownDiscriminatorThrows", "[framework]") {
     CHECK_THROWS_AS(V.validate(json::parse(R"json({"widget": {}})json")), std::invalid_argument);
 }
@@ -1508,6 +1908,285 @@ TEST_CASE("CONN: a connector with no electrical block skips rather than passes",
     CHECK(std::find(v.skipped.begin(), v.skipped.end(), "CONN_ELECTRICAL_*") != v.skipped.end());
 }
 
+
+// ---------------------------------------------------------------------------
+// Adversarial physics review, 2026-09-04: four blocks of impossible
+// semiconductor rows that Blade Runner had no check for. Every one of these
+// checks is SUSPICIOUS -- see each rule's own comment for why -- so each test
+// asserts the SEVERITY too: a later "promotion" to Impossible would silently
+// start withholding real parts from a shard build, and must fail here.
+//
+// Each block gets (a) the record from the review that must fire and (b) a
+// negative fixture built from a REAL part, sitting as close to the threshold as
+// the live population actually gets. The negatives are the point: they are what
+// turns "the rule exists" into "the rule is calibrated", and they FAIL if the
+// threshold is mutated in the tightening direction.
+// ---------------------------------------------------------------------------
+
+namespace {
+json mosfet_fom(const char* ref, const char* tech, double vds, double ron, double qg) {
+    json p = json::parse(R"json({"semiconductor": {"mosfet": {"manufacturerInfo": {
+      "reference": "", "datasheetInfo": {"part": {"technology": ""},
+      "electrical": {}}}}}})json");
+    auto& mi = p["semiconductor"]["mosfet"]["manufacturerInfo"];
+    mi["reference"] = ref;
+    mi["datasheetInfo"]["part"]["technology"] = tech;
+    auto& e = mi["datasheetInfo"]["electrical"];
+    e["drainSourceVoltage"] = vds;
+    e["onResistance"] = ron;
+    e["totalGateCharge"] = qg;
+    return p;
+}
+
+json sic_schottky(const char* ref, const char* tech, const char* sub, double vf) {
+    json p = json::parse(R"json({"semiconductor": {"diode": {"manufacturerInfo": {
+      "reference": "", "datasheetInfo": {"part": {"technology": "", "subType": ""},
+      "electrical": {"reverseVoltage": 650}}}}}})json");
+    auto& mi = p["semiconductor"]["diode"]["manufacturerInfo"];
+    mi["reference"] = ref;
+    mi["datasheetInfo"]["part"]["technology"] = tech;
+    mi["datasheetInfo"]["part"]["subType"] = sub;
+    mi["datasheetInfo"]["electrical"]["forwardVoltage"] = vf;
+    return p;
+}
+}  // namespace
+
+// --- 1. Figure-of-merit floor per voltage class ----------------------------
+
+// FDP22N50: a 500 V onsemi part recorded at 22 mohm with 2.5 nC -- 55 mohm*nC,
+// where the whole 400-700 V silicon population starts at 2,400 (p1). The
+// pre-existing global MOS_QG_VS_RON floor (15 mohm*nC, set by the best 30 V
+// logic-level die) cleared it, which is exactly the gap this class floor closes.
+TEST_CASE("FOM: a 500 V silicon part at 55 mohm*nC is flagged", "[semiconductors][fom]") {
+    Verdict v = V.validate(mosfet_fom("FDP22N50", "Si", 500, 0.022, 2.5e-9));
+    CHECK(has(v, "MOS_FOM_VCLASS", Severity::Suspicious));
+    CHECK(!has(v, "MOS_FOM_VCLASS", Severity::Impossible));
+    CHECK(v.valid);                                   // SUSPICIOUS must not invalidate
+    CHECK(!has_code(v, "MOS_QG_VS_RON"));             // the old global floor is blind to it
+}
+
+// STL240N6F7 -- a 60 V family recorded at 650 V. 6 mohm / 40 nC is coherent
+// silicon at 60 V and impossible at 650, and only the class floor can tell those
+// apart, because the FOM itself is identical in both records.
+TEST_CASE("FOM: the same Ron*Qg passes at 60 V and fails at 650 V", "[semiconductors][fom]") {
+    CHECK(has(V.validate(mosfet_fom("STL240N6F7", "Si", 650, 0.006, 4e-8)),
+              "MOS_FOM_VCLASS", Severity::Suspicious));
+    // The same die at the voltage its family actually blocks: below
+    // MOS_FOM_VCLASS_MIN_VDS the global floor governs and this must be silent.
+    Verdict lo = V.validate(mosfet_fom("STL240N6F7", "Si", 60, 0.006, 4e-8));
+    CHECK(!has_code(lo, "MOS_FOM_VCLASS"));
+    CHECK(lo.valid);
+}
+
+// IXTX3N250L: a 2500 V IXYS part whose datasheet says "under 10 OHMS", recorded
+// at 8.3 mohm -- a 1000x slip. The >1200 V silicon population's next-lowest FOM
+// is 215,000 mohm*nC, a hundredfold gap above this row's 1,909.
+TEST_CASE("FOM: a 2500 V part recorded at 8.3 mohm is flagged", "[semiconductors][fom]") {
+    CHECK(has(V.validate(mosfet_fom("IXTX3N250L", "Si", 2500, 0.0083, 2.3e-7)),
+              "MOS_FOM_VCLASS", Severity::Suspicious));
+}
+
+// NEGATIVE FIXTURES, all real parts, each the closest live approach to its
+// class floor. If any of these starts firing, the floor has been tightened past
+// the population and the rule has become worse than no rule.
+TEST_CASE("FOM: the best real part in each class does not fire", "[semiconductors][fom]") {
+    // Infineon IPW60R017G7 -- the lowest FOM of the 1,709 live 400-700 V silicon
+    // records at 1,649 mohm*nC, 1.37x above the 1,200 floor.
+    CHECK(!has_code(V.validate(mosfet_fom("IPW60R017G7", "Si", 600, 0.017, 9.7e-8)),
+                    "MOS_FOM_VCLASS"));
+    // ST STD10N80K5 -- lowest defensible 701-1200 V silicon, 4,080 vs a 2,000 floor.
+    CHECK(!has_code(V.validate(mosfet_fom("STD10N80K5", "Si", 800, 0.34, 1.2e-8)),
+                    "MOS_FOM_VCLASS"));
+    // Littelfuse IXTK20N150 -- lowest real >1200 V silicon, 215,000 vs 20,000.
+    CHECK(!has_code(V.validate(mosfet_fom("IXTK20N150", "Si", 1500, 1.0, 2.15e-7)),
+                    "MOS_FOM_VCLASS"));
+    // ST SCT4040DR -- lowest SiC in the corpus, 880 mohm*nC vs a 400 SiC floor.
+    // A SILICON floor would condemn it, which is why SiC has its own.
+    CHECK(!has_code(V.validate(mosfet_fom("SCT4040DR", "SiC", 1200, 0.04, 2.2e-8)),
+                    "MOS_FOM_VCLASS"));
+    // TI GAN032-650WSB -- lowest GaN at 650 V, 198 mohm*nC. A better FOM is the
+    // entire point of GaN; the silicon floor is 6x above this real part.
+    CHECK(!has_code(V.validate(mosfet_fom("GAN032-650WSB", "GaN", 650, 0.033, 6e-9)),
+                    "MOS_FOM_VCLASS"));
+    // ... and the same numbers labelled silicon DO fire -- proof the technology
+    // gate is what separates them, not the voltage.
+    CHECK(has(V.validate(mosfet_fom("GAN032-650WSB", "Si", 650, 0.033, 6e-9)),
+              "MOS_FOM_VCLASS", Severity::Suspicious));
+}
+
+// --- 2. SiC Schottky barrier floor -----------------------------------------
+
+// ST STPSC0206: 0.62 V on a 600 V SiC Schottky, below the 1.0-1.35 eV Ni/Ti
+// barrier the junction cannot conduct below. The pre-existing DIO_VF_RANGE SiC
+// band starts at 0.5 V and never sees it.
+TEST_CASE("SiC barrier: 0.62 V on a SiC Schottky is flagged", "[semiconductors][sicvf]") {
+    Verdict v = V.validate(sic_schottky("STPSC0206", "SiC", "schottky", 0.62));
+    CHECK(has(v, "DIO_VF_SIC_BARRIER", Severity::Suspicious));
+    CHECK(v.valid);
+    CHECK(!has_code(v, "DIO_VF_RANGE"));
+}
+
+// THE TRAP. A silicon Schottky's barrier is ~0.7 eV, so 0.3-0.5 V is its correct
+// forward drop -- onsemi MBR0520L is 0.385 V at 0.5 A. Keying this rule on "is a
+// Schottky" instead of on the SiC technology would condemn every one of them.
+TEST_CASE("SiC barrier: a real silicon Schottky at 0.385 V is untouched",
+          "[semiconductors][sicvf]") {
+    Verdict v = V.validate(sic_schottky("MBR0520L", "Si", "schottky", 0.385));
+    CHECK(!has_code(v, "DIO_VF_SIC_BARRIER"));
+    CHECK(v.valid);
+}
+
+TEST_CASE("SiC barrier: real SiC parts at and above the bound do not fire",
+          "[semiconductors][sicvf]") {
+    // Wolfspeed C4D17065 sat at exactly 0.80 V at calibration time -- the largest
+    // cluster in the corpus then (127 rows), and a real published minimum-Vf
+    // figure. The bound is strictly-less-than, so the cluster is untouched. (Those
+    // rows have since been re-sourced upward by a parallel session; the boundary
+    // behaviour this pins is what matters, not that value's current presence.)
+    CHECK(!has_code(V.validate(sic_schottky("C4D17065", "SiC", "sicSchottky", 0.80)),
+                    "DIO_VF_SIC_BARRIER"));
+    // Wolfspeed C4D20120A, an ordinary traced SiC Schottky at 1.5 V.
+    CHECK(!has_code(V.validate(sic_schottky("C4D20120A", "SiC", "sicSchottky", 1.5)),
+                    "DIO_VF_SIC_BARRIER"));
+}
+
+// --- 3. powerDissipation vs the record's own thermal path ------------------
+
+namespace {
+json thermal_diode(const char* ref, double pd, double rjc, double rja, double tj,
+                   bool tvs) {
+    json p = json::parse(R"json({"semiconductor": {"diode": {"manufacturerInfo": {
+      "reference": "", "datasheetInfo": {"part": {"technology": "Si"},
+      "electrical": {"reverseVoltage": 600},
+      "thermal": {}}}}}})json");
+    auto& di = p["semiconductor"]["diode"]["manufacturerInfo"];
+    di["reference"] = ref;
+    auto& e = di["datasheetInfo"]["electrical"];
+    e["powerDissipation"] = pd;
+    if (tvs) e["standoffVoltage"] = 200.0;
+    auto& t = di["datasheetInfo"]["thermal"];
+    if (rjc > 0) t["thermalResistanceJunctionCase"] = rjc;
+    if (rja > 0) t["thermalResistanceJunctionAmbient"] = rja;
+    t["junctionTemperatureMax"] = tj;
+    return p;
+}
+}  // namespace
+
+// Wolfspeed CSD06060A stores 360 W behind a path good for 75 W -- a 4.8x
+// self-contradiction inside one record.
+TEST_CASE("Pd vs Rth: a diode contradicting its own thermal path is flagged",
+          "[semiconductors][pdrth]") {
+    Verdict v = V.validate(thermal_diode("CSD06060A", 360.0, 2.0, 0, 175.0, false));
+    CHECK(has(v, "DIO_POWER_THERMAL", Severity::Suspicious));
+    CHECK(v.valid);
+}
+
+// THE TRAP, first half. A TVS's powerDissipation is the PEAK PULSE power over
+// 10/1000 us, ~100x its steady-state rating by design. Vishay P6KE200A really is
+// a 600 W part. An un-gated version of this rule accused it and seven siblings --
+// eight real parts out of ten hits.
+TEST_CASE("Pd vs Rth: a real TVS peak-pulse rating is not accused",
+          "[semiconductors][pdrth]") {
+    Verdict v = V.validate(thermal_diode("P6KE200A", 600.0, 10.0, 0, 175.0, true));
+    CHECK(!has_code(v, "DIO_POWER_THERMAL"));
+    CHECK(v.valid);
+}
+
+// THE TRAP, second half, and the review's own near-miss false accusation:
+// powerDissipation mixes case- and ambient-referenced values with no
+// discriminator field. Vishay SIHP065N60E-GE3 stores a real 250 W Ptot (Tc=25 C)
+// with only a 62 K/W junction-to-AMBIENT path, i.e. 124x the 2.0 W that reference
+// implies. Judging it by the ambient path condemns a correct record, so a record
+// with no junction-to-case reference must SKIP, not fire.
+TEST_CASE("Pd vs Rth: an ambient-only record skips instead of firing",
+          "[semiconductors][pdrth]") {
+    json p = json::parse(R"json({"semiconductor": {"mosfet": {"manufacturerInfo": {
+      "reference": "SIHP065N60E-GE3", "datasheetInfo": {"part": {"technology": "Si"},
+      "electrical": {"drainSourceVoltage": 600, "powerDissipation": 250},
+      "thermal": {"thermalResistanceJunctionAmbient": 62, "junctionTemperatureMax": 150}
+      }}}}})json");
+    Verdict v = V.validate(p);
+    CHECK(!has_code(v, "MOS_POWER_THERMAL"));
+    CHECK(std::find(v.skipped.begin(), v.skipped.end(), "MOS_POWER_THERMAL") !=
+          v.skipped.end());
+    CHECK(v.valid);
+    // And a record whose j-c and j-a values were written into each other's fields
+    // is judged by the SMALLER resistance -- the most generous reference -- rather
+    // than accused: 250 W against a swapped-in 0.5 K/W path is 250 W of headroom.
+    p["semiconductor"]["mosfet"]["manufacturerInfo"]["datasheetInfo"]["thermal"]
+     ["thermalResistanceJunctionCase"] = 62.0;
+    p["semiconductor"]["mosfet"]["manufacturerInfo"]["datasheetInfo"]["thermal"]
+     ["thermalResistanceJunctionAmbient"] = 0.5;
+    CHECK(!has_code(V.validate(p), "MOS_POWER_THERMAL"));
+}
+
+// A real diode at the top of the defensible band: ST STPS30L60CW, 126 W against
+// the 75 W its own 2.0 K/W path implies -- 1.68x, and it must stay silent.
+TEST_CASE("Pd vs Rth: the highest defensible real ratio does not fire",
+          "[semiconductors][pdrth]") {
+    CHECK(!has_code(V.validate(thermal_diode("STPS30L60CW", 126.0, 2.0, 0, 175.0, false)),
+                    "DIO_POWER_THERMAL"));
+}
+
+// --- 4. Surge-to-average ratio ---------------------------------------------
+
+namespace {
+json surge_diode(const char* ref, double iff, double ifsm, bool tvs) {
+    json p = json::parse(R"json({"semiconductor": {"diode": {"manufacturerInfo": {
+      "reference": "", "datasheetInfo": {"part": {"technology": "Si",
+      "subType": "rectifier"}, "electrical": {"reverseVoltage": 600}}}}}})json");
+    auto& di = p["semiconductor"]["diode"]["manufacturerInfo"];
+    di["reference"] = ref;
+    auto& e = di["datasheetInfo"]["electrical"];
+    e["forwardCurrent"] = iff;
+    e["surgeCurrent"] = ifsm;
+    if (tvs) {
+        e["standoffVoltage"] = 24.0;
+        di["datasheetInfo"]["part"]["subType"] = "tvs";
+    }
+    return p;
+}
+}  // namespace
+
+// Vishay VS-80CPU02-N3 is an 80 A part whose forwardCurrent is the constant 2.0 A
+// of a wrong grid column: 330 A / 2 A = 165, where real rectifiers run 10-40.
+// DIO_SURGE_VS_IF (surge < forward) is perfectly happy with this pair, which is
+// why the whole scale block was invisible.
+TEST_CASE("Surge ratio: a 165x surge-to-average ratio is flagged",
+          "[semiconductors][surge]") {
+    Verdict v = V.validate(surge_diode("VS-80CPU02-N3", 2.0, 330.0, false));
+    CHECK(has(v, "DIO_SURGE_RATIO", Severity::Suspicious));
+    CHECK(!has_code(v, "DIO_SURGE_VS_IF"));
+    CHECK(v.valid);
+}
+
+// NEGATIVE FIXTURE, and the tightest margin in this whole change: Nexperia
+// BAS70VY -- the very part the review cited at 71,000 -- is, with its
+// forwardCurrent repaired, a REAL 70 mA / 5 A small-signal Schottky at 71.4x.
+// It is the highest datasheet-verified ratio in the corpus and must not fire.
+TEST_CASE("Surge ratio: the repaired BAS70VY at 71x is a real part",
+          "[semiconductors][surge]") {
+    CHECK(!has_code(V.validate(surge_diode("BAS70VY", 0.07, 5.0, false)),
+                    "DIO_SURGE_RATIO"));
+    // Vishay 1N5400: 3 A average, 200 A single-cycle surge = 66.7x, straight off
+    // the datasheet.
+    CHECK(!has_code(V.validate(surge_diode("1N5400", 3.0, 200.0, false)),
+                    "DIO_SURGE_RATIO"));
+    // Nexperia BAS16DY at 90.9x is the closest live non-firing row of all.
+    CHECK(!has_code(V.validate(surge_diode("BAS16DY", 0.11, 10.0, false)),
+                    "DIO_SURGE_RATIO"));
+}
+
+// A TVS's surgeCurrent is a peak PULSE current against a standoff voltage, not a
+// single-cycle rectifier surge: Littelfuse SMAJ24A clamps 8/20 us pulses at tens
+// of amps while its steady forward rating is well under an amp. Different pair,
+// excluded by construction.
+TEST_CASE("Surge ratio: a TVS peak pulse current is excluded",
+          "[semiconductors][surge]") {
+    CHECK(!has_code(V.validate(surge_diode("SMAJ24A", 0.05, 40.0, true)),
+                    "DIO_SURGE_RATIO"));
+}
+
 // ---------------------------------------------------------------------------
 // CIAS circuit bricks — validate_circuit (the "Blade Runner for circuits").
 // A brick is not a part: no discriminator, no manufacturerInfo, own entry point.
@@ -1684,4 +2363,64 @@ TEST_CASE("circuit: check codes are unique and non-empty", "[circuits]") {
     CHECK_FALSE(codes.empty());
     std::sort(codes.begin(), codes.end());
     CHECK(std::adjacent_find(codes.begin(), codes.end()) == codes.end());
+}
+
+// ---------------------------------------------------------------------------
+// Threshold-boundary and normalisation regressions (2026-09-04 audit)
+// ---------------------------------------------------------------------------
+
+// Amphenol 88980-002LF carried 20 A x 0.055 ohm = EXACTLY 1.100 V, the melting
+// voltage of tungsten and the plating-agnostic ceiling, and returned NO findings
+// because the comparison was a strict >. Placeholder resistances are round
+// numbers, so a round threshold is one they land on precisely, not above.
+TEST_CASE("CONN: contact voltage EXACTLY on the melting-voltage ceiling fires", "[connector]") {
+    json p = good_connector();
+    auto& d = p["connector"]["manufacturerInfo"]["datasheetInfo"];
+    d["mechanical"]["pitch"] = 0.00508;
+    d["electrical"]["ratedCurrentPerContact"] = 20.0;
+    d["electrical"]["contactResistance"] = 0.055;   // 20 * 0.055 == 1.100 V exactly
+    if (d.contains("material") && d["material"].contains("contactPlating"))
+        d["material"]["contactPlating"].erase("matingAreaMaterialRef");
+    REQUIRE(20.0 * 0.055 == thr::CONN_UMELT_MAX_ANY);   // the boundary, not above it
+    Verdict v = V.validate(p);
+    CHECK(has(v, "CONN_CONTACT_VOLTAGE", Severity::Suspicious));
+}
+
+// Same boundary against a TABULATED plating: tin melts at exactly 0.13 V.
+// Same boundary against a TABULATED plating. Tin's SOFTENING voltage (0.07 V) is
+// the lowest rung: a value sitting exactly on it escaped the check entirely under
+// a strict >, because the melting rung above it did not fire either.
+TEST_CASE("CONN: contact voltage EXACTLY on a plating's softening voltage fires", "[connector]") {
+    json p = good_connector();
+    auto& d = p["connector"]["manufacturerInfo"]["datasheetInfo"];
+    d["electrical"]["ratedCurrentPerContact"] = 1.0;
+    d["electrical"]["contactResistance"] = 0.07;    // 1 * 0.07 == 0.07 V, tin's softening
+    d["material"]["contactPlating"]["matingAreaMaterialRef"] = "sn-tin";
+    REQUIRE(1.0 * 0.07 == 0.07);   // exactly ON the tabulated threshold, not above it
+    Verdict v = V.validate(p);
+    CHECK(has(v, "CONN_CONTACT_VOLTAGE", Severity::Suspicious));
+}
+
+// norm_tech deleted non-ASCII bytes, so an accented brand name and the
+// ASCII-folded twin a vendor feed produces normalised to different strings and
+// every equality test built on it lost the pair.
+TEST_CASE("norm_tech transliterates accents instead of deleting them", "[helpers]") {
+    auto n = [](const char* s) { json j = s; return norm_tech(&j); };
+    CHECK(n("Würth Elektronik") == n("Wurth Elektronik"));
+    CHECK(n("Würth Elektronik") == "wurthelektronik");
+    CHECK(n("Weidmüller") == n("Weidmuller"));
+    CHECK(n("Weidmüller") == "weidmuller");
+    CHECK(n("Schaffner Élektronik") == n("Schaffner Elektronik"));
+    CHECK(n("Bourns Ångström") == n("Bourns Angstrom"));
+    CHECK(n("Groß") == "gross");
+    CHECK(n("Łódź") == "lodz");           // Latin Extended-A
+    CHECK(n("TE Connectivity") == "teconnectivity");   // ASCII path unchanged
+}
+
+// The check the transliteration exists to protect.
+TEST_CASE("GEN_SERIES_IS_MANUFACTURER sees an ASCII-folded brand name", "[general]") {
+    json p = good_connector();
+    p["connector"]["manufacturerInfo"]["name"] = "Würth Elektronik";
+    p["connector"]["manufacturerInfo"]["datasheetInfo"]["part"]["series"] = "Wurth Elektronik";
+    CHECK(has(V.validate(p), "GEN_SERIES_IS_MANUFACTURER", Severity::Suspicious));
 }

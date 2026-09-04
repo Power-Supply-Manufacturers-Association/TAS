@@ -115,10 +115,17 @@ Verdict validate_circuit(const json& brick);
 std::vector<std::string> circuit_check_codes();
 
 // A corpus-level finding: produced by validate_corpus, which screens a whole batch
-// of records for anomalies invisible to per-record validation.
+// of records for anomalies invisible to per-record validation. Every corpus rule
+// is a STATISTICAL/cohort-shaped signature, never a physics violation on its own
+// (see corpus.cpp) -- `severity` must be set explicitly at each emission site
+// (never left to a silent default) so a downstream consumer (a corpus-driven
+// quarantine campaign, the way earlier fabrication batches were actually handled)
+// has an in-band signal to stop on, instead of treating every corpus finding as
+// equally actionable.
 struct CorpusFinding {
     std::size_t index = 0;    // index into the input records vector
     std::string code;         // e.g. "GEN_COHORT_OUTLIER"
+    Severity severity = Severity::Suspicious;  // set explicitly at every emission site
     std::string reference;    // the offending part's reference
     std::string message;
     double value = 0.0;       // the outlier value

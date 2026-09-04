@@ -76,4 +76,48 @@ std::string norm_tech(const json* field);
 // True if `haystack` (already norm_tech'd or raw string) contains `needle`.
 bool tech_has(const std::string& normalised, const char* needle);
 
+// True if `url` is shaped like a search-engine query (?q=, /search?, ?search=)
+// rather than a direct link to a document. The ONE definition: this used to be
+// duplicated independently in corpus.cpp and validator.cpp -- exactly the trap
+// ABT #397 is named for, applied to a predicate instead of a build: tightening
+// one copy (e.g. to exempt a manufacturer's own product-finder) silently leaves
+// the other one condemning under the old, looser rule.
+bool is_search_query_url(const std::string& url);
+
+// True if `component_obj`'s manufacturerInfo.datasheetUrl OR any
+// datasheetInfo.provenance[].sourceUrl matches is_search_query_url. Used to
+// corroborate a per-record statistical signature (e.g. MOS_CAP_FORMULA) with the
+// citation shape most confirmed fabricated batches share -- NOT a standalone
+// verdict (see GEN_CITATION_SEARCH_QUERY for that), and not load-bearing on its
+// own for any cohort-shaped rule (citation practice is a property of a sourcing
+// BATCH, not of the part -- see GEN_COHORT_LETTER_SUFFIX's own comment).
+bool has_search_query_citation(const json& datasheet, const json* component_obj);
+
+// The most GENEROUS steady-state power ceiling the record's own thermal block
+// implies, in watts: max over the references it carries of (Tjmax - 25) / Rth,
+// with the case held at 25 C. `datasheet` is a family datasheetInfo object; the
+// thermal block is read from datasheet.thermal.
+//
+// Returns nullopt -- so the calling check SKIPS -- unless
+// thermalResistanceJunctionCase is present and positive and
+// junctionTemperatureMax exceeds 25 C.
+//
+// THE TRAP this exists for (adversarial physics review, 2026-09-04, and it
+// produced that review's only near-miss false accusation): powerDissipation in
+// this corpus mixes two incompatible references with NO discriminator field --
+// some rows are the datasheet's Ptot at Tcase = 25 C, others the ambient-
+// referenced P_D of a minimum-pad application. A case-referenced Pd measured
+// against an ambient-referenced Rth(j-a) is off by the ratio of the two
+// resistances (30x is ordinary), which condemns perfectly good records:
+// Vishay SIHP065N60E-GE3 stores a real 250 W Ptot with only Rth(j-a) = 62 K/W,
+// i.e. 124x the 2.0 W that reference implies. So:
+//   * the j-c reference is REQUIRED -- an ambient-only record is skipped, never
+//     accused;
+//   * the ceiling is the MAXIMUM over the available references, which also
+//     absorbs a record whose j-c and j-a values were written into each other's
+//     fields (then the smaller resistance, whichever field it sits in, wins).
+// Only a Pd that contradicts the record's own j-c path by a wide margin can then
+// fire.
+std::optional<double> thermal_power_ceiling(const json& datasheet);
+
 }  // namespace tas

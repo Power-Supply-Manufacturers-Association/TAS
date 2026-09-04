@@ -287,20 +287,25 @@ void check_connectors(const json& datasheet, const Ctx& ctx, std::vector<Finding
                 norm_tech(matl == nullptr ? nullptr
                                           : at(*matl, "contactPlating", "matingAreaMaterialRef"));
             if (holm_voltages(plating, hv)) {
-                if (u_contact > hv.melting)
+                // >=, not >: the Holm voltages are round two-decimal constants
+                // (tin 0.13, gold 0.43, tungsten 1.10) and placeholder contact
+                // resistances are round numbers, so the product lands EXACTLY on
+                // the threshold rather than above it. Amphenol 88980-002LF was
+                // 20 A x 0.055 ohm = 1.100 V and escaped a strict > entirely.
+                if (u_contact >= hv.melting)
                     emit(out, ctx, "CONN_CONTACT_VOLTAGE", Severity::Suspicious, u_contact,
                          hv.melting,
                          fmt("ratedCurrentPerContact * contactResistance exceeds the Holm MELTING "
                              "voltage of the stated plating — at the rated current this contact "
                              "would weld [V]",
                              u_contact, hv.melting));
-                else if (u_contact > hv.softening)
+                else if (u_contact >= hv.softening)
                     emit(out, ctx, "CONN_CONTACT_VOLTAGE", Severity::Suspicious, u_contact,
                          hv.softening,
                          fmt("ratedCurrentPerContact * contactResistance exceeds the Holm SOFTENING "
                              "voltage of the stated plating [V]",
                              u_contact, hv.softening));
-            } else if (u_contact > u_any) {
+            } else if (u_contact >= u_any) {
                 emit(out, ctx, "CONN_CONTACT_VOLTAGE", Severity::Suspicious, u_contact, u_any,
                      fmt("ratedCurrentPerContact * contactResistance exceeds the melting voltage of "
                          "every contact metal, and no plating is stated [V]",
