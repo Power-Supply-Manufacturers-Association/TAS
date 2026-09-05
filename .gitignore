@@ -40,6 +40,14 @@
 # A guard since it grew --check: provenance in a live catalogue is a reference, not
 # an essay, and a one-shot cleanup nobody can run again does not hold that.
 !/scripts/strip_provenance_narrative.py
+# ABT #1082: a stored family must agree with the vendor's own Series for the
+# exact order code. The one-shot repair of the 404 wrong WE-MAPI rows cannot
+# hold that invariant against the next import; this can, repeatedly.
+!/scripts/check_wurth_family_matches_series.py
+# ABT #1090 (and #286, #431): an importer with no value for a field must omit
+# it, never mint a constant. Catches a cohort sharing a byte-identical value
+# that the parts' own descriptions refute.
+!/scripts/check_no_constant_cohorts.py
 # Retired on purpose: tests/test_no_fabricated_parts.py asserts it refuses to run.
 !/scripts/backfill_provenance.py
 
