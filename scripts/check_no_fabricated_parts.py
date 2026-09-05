@@ -549,6 +549,11 @@ def main():
         # quarantine files are where fabricated parts are SUPPOSED to live
         if "quarantine" in name or "pending" in name or name.endswith(".bak"):
             continue
+        # the denylist is the guard's own memory -- a list of condemned IDENTITIES,
+        # not component records. Screening it reports every one of its lines as
+        # UNIDENTIFIABLE, which buries the real findings under its own bookkeeping.
+        if name == "fabricated_denylist.ndjson":
+            continue
         stats = new_stats()
         findings = check_file(path, quarantined_refs, stats)
         seen = (f"{name}: {stats['rows']} rows, {stats['screened']} part(s) screened"
