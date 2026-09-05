@@ -18,6 +18,16 @@ namespace tas {
 
 void check_controllers(const json& datasheet, const Ctx& ctx, std::vector<Finding>& out,
                        std::vector<std::string>& skipped) {
+    // Both magnitude bounds below are keyed on the CTAS function.category
+    // discriminator -- one global bound judged a gate driver and a PWM controller
+    // identically and its entire live output was false positives (see
+    // CTL_CATEGORY_LIMITS in thresholds.hpp). An absent/non-string category falls
+    // to the widest row, never to a narrow one.
+    std::string category;
+    if (const json* fnc = at(datasheet, "function", "category"))
+        if (fnc->is_string()) category = fnc->get<std::string>();
+    const thr::CtlCategoryLimit& lim = thr::ctl_category_limit(category.c_str());
+
     // --- function-level invariant: maxPhaseCount >= channelCount ---
     if (const json* fn = at(datasheet, "function")) {
         auto ch = scalar_at(*fn, {"channelCount"});
@@ -132,23 +142,27 @@ void check_controllers(const json& datasheet, const Ctx& ctx, std::vector<Findin
                              1.0 / *fmax));
 
         // --- magnitude bounds (wide; catch unit-error / fabricated values) ---
+        const std::string for_cat =
+            std::string(" for category ") + (category.empty() ? "<unset>" : category);
         if (svabs && *svabs > 0) {
             if (*svabs > thr::CTL_VABSMAX_IMP)
                 emit(out, ctx, "CTL_SUPPLY_RANGE", Severity::Impossible, *svabs,
-                     thr::CTL_VABSMAX_IMP, fmt("supplyVoltageAbsoluteMax implausibly high [V]",
-                                               *svabs, thr::CTL_VABSMAX_IMP));
-            else if (*svabs > thr::CTL_VABSMAX_SUS)
-                emit(out, ctx, "CTL_SUPPLY_RANGE", Severity::Suspicious, *svabs,
-                     thr::CTL_VABSMAX_SUS, fmt("supplyVoltageAbsoluteMax high for a controller [V]",
-                                               *svabs, thr::CTL_VABSMAX_SUS));
+                     thr::CTL_VABSMAX_IMP,
+                     fmt("supplyVoltageAbsoluteMax beyond any IC breakdown class -- unit error [V]",
+                         *svabs, thr::CTL_VABSMAX_IMP));
+            else if (*svabs > lim.vabsmax_sus)
+                emit(out, ctx, "CTL_SUPPLY_RANGE", Severity::Suspicious, *svabs, lim.vabsmax_sus,
+                     fmt("supplyVoltageAbsoluteMax high" + for_cat + " [V]", *svabs,
+                         lim.vabsmax_sus));
         }
         if (fmax && *fmax > 0) {
             if (*fmax > thr::CTL_FREQ_IMP)
                 emit(out, ctx, "CTL_FREQ_RANGE", Severity::Impossible, *fmax, thr::CTL_FREQ_IMP,
-                     fmt("switchingFrequencyMax implausibly high [Hz]", *fmax, thr::CTL_FREQ_IMP));
-            else if (*fmax > thr::CTL_FREQ_SUS)
-                emit(out, ctx, "CTL_FREQ_RANGE", Severity::Suspicious, *fmax, thr::CTL_FREQ_SUS,
-                     fmt("switchingFrequencyMax very high [Hz]", *fmax, thr::CTL_FREQ_SUS));
+                     fmt("switchingFrequencyMax beyond any switching silicon -- unit error [Hz]",
+                         *fmax, thr::CTL_FREQ_IMP));
+            else if (*fmax > lim.freq_sus)
+                emit(out, ctx, "CTL_FREQ_RANGE", Severity::Suspicious, *fmax, lim.freq_sus,
+                     fmt("switchingFrequencyMax high" + for_cat + " [Hz]", *fmax, lim.freq_sus));
         }
         if (auto vref = scalar_at(*elec, {"referenceVoltage"})) {
             if (*vref <= 0 || *vref > thr::CTL_VREF_IMP)

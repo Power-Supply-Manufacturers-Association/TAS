@@ -561,10 +561,94 @@ inline constexpr double SW_LEAK_IMP = 1.0e-2;   // |I_leak(off)| > 10 mA is impo
 // onsemi NCP12xx, Infineon EiceDRIVER, ST L6599, Power Integrations.
 // Bounds below are datasheet-calibrated (TI/ADI/onsemi/Infineon/ST/Renesas/Skyworks
 // survey) and cross-checked against the live controller catalog's populated fields.
-// VCC absolute-max [V]: logic parts ≤38 V; hot-swap/eFuse bus parts to ~120 V.
-inline constexpr double CTL_VABSMAX_SUS = 120.0, CTL_VABSMAX_IMP = 400.0;
-// Switching frequency [Hz]: real max ~2 MHz (IR35201/UCD3138 DPWM).
-inline constexpr double CTL_FREQ_SUS = 3.0e6, CTL_FREQ_IMP = 1.0e7;
+// --- Per-category magnitude bounds (ABT: keyed on function.category) ---------
+// A single global bound for "a controller" judges a gate driver and a PWM
+// controller identically, and the CTAS controllerCategory vocabulary spans
+// devices with genuinely different physics. The corpus proved it: three
+// correct, datasheet-read extractions were flagged by the one-size bounds --
+//   1EDN7136U   15 MHz  gateDriver   (datasheet: "Operating FSW - - 15 MHz")
+//   UC1901-SP    5 MHz  pwmController (isolated-feedback carrier oscillator)
+//   IRS25751L   625 V   gateDriver   (HV start-up IC sitting on the bulk rail)
+// -- and they were the ONLY rows either bound flagged, i.e. the checks' entire
+// live output was false positives. Both bounds are now per-category.
+//
+// The SUSPICIOUS column is the calibrated one: ~2x the live category maximum,
+// or the physical class ceiling where the catalog is thin (only 157 rows carry
+// switchingFrequencyMax and 131 carry supplyVoltageAbsoluteMax today, so the
+// population alone cannot set a ceiling). A unit error is a factor of 1e3+, so
+// a 2x headroom still catches the failure mode these bounds exist for.
+//
+// The IMPOSSIBLE column is deliberately category-INDEPENDENT and far above every
+// class: neither an oscillator frequency nor a pin's absolute-max rating is a
+// physics impossibility at any plausible IC value, so the impossible tier is a
+// pure unit-error backstop (Hz reported as a raw count of something else; a
+// volts field carrying millivolts-as-volts). Everything a real part can reach
+// stays SUSPICIOUS -- a false IMPOSSIBLE withholds a real part from design.
+//   freq   1 GHz: no silicon control loop or power gate switches at microwave.
+//   VabsMax 2 kV: above every junction-isolated/SOI HVIC class (600/1200/1700 V).
+struct CtlCategoryLimit {
+    const char* category;   // CTAS controllerCategory token; "" = default row
+    double freq_sus;        // switchingFrequencyMax SUSPICIOUS above this [Hz]
+    double vabsmax_sus;     // supplyVoltageAbsoluteMax SUSPICIOUS above this [V]
+};
+
+// Category-independent unit-error backstops (see rationale above).
+inline constexpr double CTL_FREQ_IMP = 1.0e9;
+inline constexpr double CTL_VABSMAX_IMP = 2.0e3;
+
+// Live maxima at calibration time are quoted per row; a blank means the field is
+// unpopulated for that category and the bound comes from the device class.
+inline constexpr CtlCategoryLimit CTL_CATEGORY_LIMITS[] = {
+    // Power-train controllers: the switching node is the power stage, so f_sw is
+    // bounded by the magnetics/FET, and VCC is a logic rail -- except for offline
+    // parts whose HV start-up pin (NCP1063 700 V, NCP1399, UCC28880) is what the
+    // extractor finds for "absolute maximum supply".
+    {"pwmController", 1.0e7, 800.0},              // live max 5 MHz (UC1901-SP), 105 V (LM5039)
+    {"dualPwmController", 1.0e7, 800.0},          // same class as pwmController
+    {"llcController", 5.0e6, 800.0},              // live max 1.06 MHz (UCC25800-Q1), 25 V
+    {"pfcController", 2.0e6, 800.0},              // live max 290 kHz (UCC28070A), 26 V
+    {"phaseShiftController", 5.0e6, 250.0},       // no live f_sw/VCC rows
+    {"syncRectifierController", 5.0e6, 250.0},    // no live f_sw/VCC rows
+    {"multiphaseController", 5.0e6, 250.0},       // VR13/VR14 core rails, low voltage
+    {"digitalController", 1.0e7, 250.0},          // DPWM clocks run above analog f_sw
+    // Gate drivers do not set a power-stage frequency: their ceiling is the
+    // propagation delay / minimum pulse width, which is why 15 MHz is a real
+    // datasheet number (1EDN7136U). Level-shift HVICs and HV start-up ICs sit
+    // ON the rectified mains bulk rail, so their absolute-max is kV-class.
+    {"gateDriver", 3.0e7, 1300.0},                // live max 15 MHz, 625 V (IRS25751L)
+    // Feedback / sense / reference parts: a carrier or bandwidth, not a f_sw.
+    {"secondaryFeedbackController", 1.0e7, 250.0},
+    {"optocouplerFeedback", 1.0e7, 250.0},
+    {"currentSenseAmplifier", 1.0e7, 250.0},
+    {"isolatedAmplifier", 1.0e7, 250.0},
+    // DC parts: any f_sw at all is already unusual, so the bound is tight.
+    {"voltageReference", 1.0e6, 250.0},
+    {"shuntRegulator", 1.0e6, 250.0},
+    {"linearRegulator", 5.0e6, 250.0},
+    {"hotSwapController", 1.0e6, 250.0},
+    {"eFuse", 1.0e6, 250.0},
+    {"loadSwitch", 1.0e6, 250.0},
+    {"supervisor", 5.0e6, 250.0},                 // live max 2.5 MHz (TLF35584: SBC w/ buck), 60 V
+};
+
+// Default row for an absent or unrecognised category: the WIDEST envelope in the
+// table. An unknown category is missing information, not evidence of a defect --
+// judging it by a narrow bound is exactly how a correct part gets flagged.
+inline constexpr CtlCategoryLimit CTL_CATEGORY_DEFAULT = {"", 3.0e7, 1300.0};
+
+inline constexpr const CtlCategoryLimit& ctl_category_limit(const char* category) {
+    if (category != nullptr)
+        for (const CtlCategoryLimit& row : CTL_CATEGORY_LIMITS) {
+            const char* a = row.category;
+            const char* b = category;
+            while (*a != '\0' && *a == *b) {
+                ++a;
+                ++b;
+            }
+            if (*a == '\0' && *b == '\0') return row;
+        }
+    return CTL_CATEGORY_DEFAULT;
+}
 // Gate-drive peak source/sink current [A]: real max 30 A (IXYS-class); UCC5390 17 A.
 inline constexpr double CTL_GATE_I_SUS = 30.0, CTL_GATE_I_IMP = 60.0;
 // Gate-drive rail voltage [V]: 4.2-35 V rec, 40 V abs (ADuM4120).

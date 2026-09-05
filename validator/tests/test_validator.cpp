@@ -792,6 +792,139 @@ TEST_CASE("Controllers: PhaseCountImpossible", "[controllers]") {
     CHECK(has(V.validate(p), "CTL_PHASE_COUNT", Severity::Impossible));
 }
 
+// ---------------------------------------------------------------------------
+// CTL_FREQ_RANGE / CTL_SUPPLY_RANGE are keyed on function.category.
+//
+// Before the fix a single global bound (f_sw SUS 3 MHz / IMP 10 MHz, VabsMax
+// SUS 120 V / IMP 400 V) judged every control IC identically. Its ENTIRE live
+// output on data/controllers.ndjson was three rows, and all three were correct
+// datasheet extractions: 1EDN7136U (IMPOSSIBLE), IRS25751L (IMPOSSIBLE) and
+// UC1901-SP (SUSPICIOUS). The three are used verbatim as negative fixtures.
+//
+// Each threshold is pinned from BOTH sides (just under -> silent, just over ->
+// fires), so moving a number in CTL_CATEGORY_LIMITS fails a test rather than
+// quietly re-calibrating the check.
+namespace {
+json controller_row(const char* reference, const char* category, const char* field,
+                    double value) {
+    json p = json::parse(R"json({"controller":{"manufacturerInfo":{"reference":"",
+      "datasheetInfo":{"function":{"category":""},"electrical":{}}}}})json");
+    json& ds = p["controller"]["manufacturerInfo"]["datasheetInfo"];
+    p["controller"]["manufacturerInfo"]["reference"] = reference;
+    ds["function"]["category"] = category;
+    ds["electrical"][field] = value;
+    return p;
+}
+}  // namespace
+
+TEST_CASE("Controllers: category-keyed frequency bound clears the real gate driver",
+          "[controllers][ctl_category]") {
+    // Infineon 1EDN7136U, EiceDRIVER 1EDN single-channel low-side driver.
+    // Datasheet AC characteristics: "Operating switching frequency FSW - - 15 MHz".
+    // A driver's ceiling is its propagation delay, not a power-stage f_sw, so
+    // 15 MHz is real -- and the old global 10 MHz IMPOSSIBLE bound withheld it.
+    Verdict v = V.validate(controller_row("1EDN7136U", "gateDriver", "switchingFrequencyMax", 15e6));
+    CHECK(!has_code(v, "CTL_FREQ_RANGE"));
+    CHECK(v.valid);
+}
+
+TEST_CASE("Controllers: category-keyed frequency bound clears the real feedback carrier",
+          "[controllers][ctl_category]") {
+    // TI UC1901-SP isolated-feedback generator: a 5 MHz carrier-amplifier
+    // oscillator, not a power-stage switching frequency.
+    Verdict v = V.validate(controller_row("UC1901-SP", "pwmController", "switchingFrequencyMax", 5e6));
+    CHECK(!has_code(v, "CTL_FREQ_RANGE"));
+    CHECK(v.valid);
+}
+
+TEST_CASE("Controllers: category-keyed supply bound clears the real HV start-up IC",
+          "[controllers][ctl_category]") {
+    // Infineon IRS25751L HV start-up IC: it sits on the rectified-mains bulk
+    // rail, so a 625 V absolute-max supply is the part working as designed.
+    Verdict v =
+        V.validate(controller_row("IRS25751L", "gateDriver", "supplyVoltageAbsoluteMax", 625.0));
+    CHECK(!has_code(v, "CTL_SUPPLY_RANGE"));
+    CHECK(v.valid);
+}
+
+TEST_CASE("Controllers: the SAME value fires or not depending on the category",
+          "[controllers][ctl_category]") {
+    // This is the defect itself: 5 MHz is routine for a gate driver's carrier
+    // and impossible-looking for a PFC boost stage. One bound cannot say both.
+    CHECK(!has_code(V.validate(controller_row("X", "gateDriver", "switchingFrequencyMax", 5e6)),
+                    "CTL_FREQ_RANGE"));
+    CHECK(has(V.validate(controller_row("X", "pfcController", "switchingFrequencyMax", 5e6)),
+              "CTL_FREQ_RANGE", Severity::Suspicious));
+    // ...and 625 V is a bulk-rail HVIC or a broken supervisor extraction.
+    CHECK(!has_code(V.validate(controller_row("X", "gateDriver", "supplyVoltageAbsoluteMax", 625.0)),
+                    "CTL_SUPPLY_RANGE"));
+    CHECK(has(V.validate(controller_row("X", "supervisor", "supplyVoltageAbsoluteMax", 625.0)),
+              "CTL_SUPPLY_RANGE", Severity::Suspicious));
+}
+
+TEST_CASE("Controllers: per-category thresholds are pinned from both sides",
+          "[controllers][ctl_category]") {
+    // gateDriver f_sw SUSPICIOUS at 30 MHz.
+    CHECK(!has_code(V.validate(controller_row("X", "gateDriver", "switchingFrequencyMax", 29.9e6)),
+                    "CTL_FREQ_RANGE"));
+    CHECK(has(V.validate(controller_row("X", "gateDriver", "switchingFrequencyMax", 30.1e6)),
+              "CTL_FREQ_RANGE", Severity::Suspicious));
+    // pwmController f_sw SUSPICIOUS at 10 MHz.
+    CHECK(!has_code(V.validate(controller_row("X", "pwmController", "switchingFrequencyMax", 9.9e6)),
+                    "CTL_FREQ_RANGE"));
+    CHECK(has(V.validate(controller_row("X", "pwmController", "switchingFrequencyMax", 10.1e6)),
+              "CTL_FREQ_RANGE", Severity::Suspicious));
+    // pfcController f_sw SUSPICIOUS at 2 MHz.
+    CHECK(!has_code(V.validate(controller_row("X", "pfcController", "switchingFrequencyMax", 1.9e6)),
+                    "CTL_FREQ_RANGE"));
+    CHECK(has(V.validate(controller_row("X", "pfcController", "switchingFrequencyMax", 2.1e6)),
+              "CTL_FREQ_RANGE", Severity::Suspicious));
+    // gateDriver VabsMax SUSPICIOUS at 1300 V (above every HVIC class).
+    CHECK(!has_code(V.validate(controller_row("X", "gateDriver", "supplyVoltageAbsoluteMax", 1290.0)),
+                    "CTL_SUPPLY_RANGE"));
+    CHECK(has(V.validate(controller_row("X", "gateDriver", "supplyVoltageAbsoluteMax", 1310.0)),
+              "CTL_SUPPLY_RANGE", Severity::Suspicious));
+    // supervisor VabsMax SUSPICIOUS at 250 V.
+    CHECK(!has_code(V.validate(controller_row("X", "supervisor", "supplyVoltageAbsoluteMax", 240.0)),
+                    "CTL_SUPPLY_RANGE"));
+    CHECK(has(V.validate(controller_row("X", "supervisor", "supplyVoltageAbsoluteMax", 260.0)),
+              "CTL_SUPPLY_RANGE", Severity::Suspicious));
+}
+
+TEST_CASE("Controllers: an unknown or absent category falls to the widest row",
+          "[controllers][ctl_category]") {
+    // Missing information is not evidence of a defect: an unrecognised category
+    // must not be judged by a narrow bound.
+    CHECK(!has_code(
+        V.validate(controller_row("X", "isolatedGateDriver", "switchingFrequencyMax", 15e6)),
+        "CTL_FREQ_RANGE"));
+    json p = json::parse(R"json({"controller":{"manufacturerInfo":{"reference":"X",
+      "datasheetInfo":{"electrical":{"switchingFrequencyMax":15e6,
+      "supplyVoltageAbsoluteMax":625}}}}})json");
+    Verdict v = V.validate(p);
+    CHECK(!has_code(v, "CTL_FREQ_RANGE"));
+    CHECK(!has_code(v, "CTL_SUPPLY_RANGE"));
+}
+
+TEST_CASE("Controllers: the IMPOSSIBLE tier is a category-independent unit-error backstop",
+          "[controllers][ctl_category]") {
+    // Nothing a real control IC can reach is IMPOSSIBLE -- only a unit error is.
+    // Pinned from both sides so the backstop cannot be moved silently either.
+    CHECK(!has(V.validate(controller_row("X", "gateDriver", "switchingFrequencyMax", 0.9e9)),
+               "CTL_FREQ_RANGE", Severity::Impossible));  // SUSPICIOUS below 1 GHz, not withheld
+    CHECK(V.validate(controller_row("X", "gateDriver", "switchingFrequencyMax", 0.9e9)).valid);
+    CHECK(has(V.validate(controller_row("X", "gateDriver", "switchingFrequencyMax", 1.1e9)),
+              "CTL_FREQ_RANGE", Severity::Impossible));
+    CHECK(has(V.validate(controller_row("X", "pfcController", "switchingFrequencyMax", 1.1e9)),
+              "CTL_FREQ_RANGE", Severity::Impossible));  // same bound for every category
+    CHECK(!has(V.validate(controller_row("X", "supervisor", "supplyVoltageAbsoluteMax", 1900.0)),
+               "CTL_SUPPLY_RANGE", Severity::Impossible));
+    CHECK(has(V.validate(controller_row("X", "supervisor", "supplyVoltageAbsoluteMax", 2100.0)),
+              "CTL_SUPPLY_RANGE", Severity::Impossible));
+    CHECK(has(V.validate(controller_row("X", "gateDriver", "supplyVoltageAbsoluteMax", 2100.0)),
+              "CTL_SUPPLY_RANGE", Severity::Impossible));
+}
+
 TEST_CASE("Controllers: GoodControllerValid", "[controllers]") {
     json p = json::parse(R"json({"controller":{"manufacturerInfo":{"reference":"UCC28730",
       "datasheetInfo":{"function":{"category":"pwmController"},
