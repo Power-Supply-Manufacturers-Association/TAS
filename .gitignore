@@ -63,6 +63,14 @@
 !/scripts/we_transformers_import.py
 !/scripts/tdk_meister_import.py
 
+# ── the standing integrity watchdog (cron 02:00) ─────────────────────────────
+# Runs every guard nightly and reports only what is NEW. Costs zero model tokens:
+# the expensive judgement was spent once, when each guard was written and
+# counter-checked; running them is arithmetic.
+!/scripts/integrity_scan.py
+!/scripts/quarantine_recover.py
+!/scripts/run_integrity_nightly.sh
+
 # ── validator/ — the C++ Blade Runner sources, not its campaign drivers ───────
 /validator/*.py
 /validator/build*/
