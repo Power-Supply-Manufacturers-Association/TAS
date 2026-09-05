@@ -51,6 +51,18 @@
 # Retired on purpose: tests/test_no_fabricated_parts.py asserts it refuses to run.
 !/scripts/backfill_provenance.py
 
+# ── importers that write the catalogue ────────────────────────────────────────
+# Tracked as of 2026-09-05. These are not one-off ETL: they are the code that
+# PRODUCES catalogue rows, and every large defect cohort found in the 2026-09-05
+# audit came from an importer, not from a thousand independently bad rows --
+# 549 TDK chip beads minted an identical 1e-09 H, 404 Wuerth rows took a
+# "WE-MAPI" default, 716 onsemi diodes were all called "rectifier". Their fixes
+# living only on one machine is the same failure that left
+# strip_provenance_narrative.py unrunnable by the next campaign.
+!/scripts/we_inductors_import.py
+!/scripts/we_transformers_import.py
+!/scripts/tdk_meister_import.py
+
 # ── validator/ — the C++ Blade Runner sources, not its campaign drivers ───────
 /validator/*.py
 /validator/build*/
