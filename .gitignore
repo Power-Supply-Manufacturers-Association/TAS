@@ -37,6 +37,9 @@
 !/scripts/verify_provenance_content.py
 !/scripts/changed_records_gate.py
 !/scripts/blade_gate.py
+# A guard since it grew --check: provenance in a live catalogue is a reference, not
+# an essay, and a one-shot cleanup nobody can run again does not hold that.
+!/scripts/strip_provenance_narrative.py
 # Retired on purpose: tests/test_no_fabricated_parts.py asserts it refuses to run.
 !/scripts/backfill_provenance.py
 
