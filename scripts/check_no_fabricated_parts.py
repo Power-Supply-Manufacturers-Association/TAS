@@ -395,28 +395,38 @@ def impossible_ratings(info, electrical):
 
 
 def load_quarantined_fabricated(data_dir):
-    """References already condemned as fabricated must never reappear live.
+    """Identities already condemned as fabricated must never reappear live.
 
-    Self-maintaining denylist: every record quarantined as fabricated. The
-    per-catalogue quarantine files were consolidated into a single
-    ``data/quarantine.ndjson`` whose records carry ``_quarantineSource`` — the
-    list of files they came from — so the fabricated subset is the records whose
-    source names say ``fabricated`` -- the file name
-    (``magnetics.quarantine_fabricated.ndjson``) or the in-line tag of a batch
-    condemned straight out of a live catalogue (``magnetics.ndjson (fabricated
-    cohort 13, ...)``, 2026-09-04). Matching only the literal
-    ``quarantine_fabricated`` left the 448 TDK partNumbers and the 339 diodes
-    quarantined that day OUT of the denylist. Any surviving
-    ``*.quarantine_fabricated.ndjson`` is still read, for older checkouts.
-    Zero false-positive risk (each entry was individually evidence-checked when
-    it was quarantined) and exact recall against re-imports of the same
-    invented parts.
+    Reads ``data/fabricated_denylist.ndjson`` -- one line per condemned identity,
+    ``{"id": ..., "source": ..., "date": ...}``.
+
+    The fabricated RECORDS themselves are gone. An invented part is not a record with
+    a problem, it is not a record, so it is deleted outright rather than kept in the
+    quarantine beside genuinely broken real parts (2026-09-04: 37,102 obliterated,
+    207,653 real ones kept). What survives is the blocklist, because the guard has to
+    recognise a re-import: identity, where it was condemned, and when. 36,852 entries,
+    3.7 MB, against the 88 MB of complete invented objects it replaces. The full rows
+    remain in git-LFS history if anyone ever has to prove what was there.
+
+    The older quarantine harvest is kept as a fallback so an old checkout still works.
     """
     refs = set()
 
+    deny = data_dir / "fabricated_denylist.ndjson"
+    if deny.is_file():
+        with deny.open(encoding="utf-8", errors="replace") as fh:
+            for line in fh:
+                try:
+                    refs.add(str(json.loads(line)["id"]))
+                except Exception:
+                    continue
+        refs.discard("")
+        return refs
+
     def harvest(record):
-        for info, _electrical, _nested in iter_parts(record):
-            refs.update(part_ids(info))
+        for info, _elec, _nested in iter_parts(record):
+            for i in part_ids(info):
+                refs.add(i)
 
     consolidated = data_dir / "quarantine.ndjson"
     if consolidated.is_file():
@@ -429,20 +439,11 @@ def load_quarantined_fabricated(data_dir):
                 sources = record.get("_quarantineSource") or []
                 if isinstance(sources, str):
                     sources = [sources]
-                if any("fabricated" in s.lower() for s in sources):
+                if any("fabricated" in s for s in sources):
                     harvest(record)
 
-    for qpath in data_dir.glob("*.quarantine_fabricated.ndjson"):
-        with qpath.open(encoding="utf-8", errors="replace") as fh:
-            for line in fh:
-                try:
-                    record = json.loads(line)
-                except json.JSONDecodeError:
-                    continue
-                harvest(record)
-
+    refs.discard("")
     return refs
-
 
 def new_stats():
     return {"rows": 0, "screened": 0, "nestedScreened": 0, "unidentifiable": 0,
