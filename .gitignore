@@ -6,6 +6,7 @@
 
 # ── data/ — only the live catalogues, plus exactly ONE quarantine file ─────────
 /data/*
+!/data/fabricated_denylist.ndjson
 !/data/analog_ics.ndjson
 !/data/bjts.ndjson
 !/data/capacitors.ndjson
