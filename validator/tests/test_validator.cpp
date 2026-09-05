@@ -793,6 +793,53 @@ TEST_CASE("Controllers: PhaseCountImpossible", "[controllers]") {
 }
 
 // ---------------------------------------------------------------------------
+// CTL_CS_THRESHOLD is a MAGNITUDE bound on a SIGNED datasheet value.
+//
+// currentMode.maxThresholdVoltage is a comparator threshold, not a magnitude:
+// positive when the sense element sits in the source/series path (UC384x +1.0 V),
+// negative when it sits in the return path so the CS pin swings down with current
+// (UCC28060/28061/28065 and ICE3PCS01G all print -0.2 V). The old rule tested
+// `cs <= 0` and therefore called every return-path PFC controller IMPOSSIBLE.
+// Only |cs| is bounded now; zero remains impossible (a comparator that trips at
+// no current is not a comparator).
+// ---------------------------------------------------------------------------
+static json cs_part(double cs) {
+    json p = json::parse(R"json({"controller":{"manufacturerInfo":{"reference":"X",
+      "datasheetInfo":{"function":{"category":"pfcController"},
+      "electrical":{"currentMode":{"maxThresholdVoltage":0}}}}}})json");
+    p["controller"]["manufacturerInfo"]["datasheetInfo"]["electrical"]["currentMode"]
+     ["maxThresholdVoltage"] = cs;
+    return p;
+}
+
+TEST_CASE("Controllers: CsThresholdNegativeIsReal", "[controllers][cs_threshold]") {
+    // The four real parts the old sign test rejected or forced a sign-flip on.
+    for (double cs : {-0.2, -0.166, -0.015, -1.0}) {
+        Verdict v = V.validate(cs_part(cs));
+        CHECK(!has(v, "CTL_CS_THRESHOLD", Severity::Impossible));
+        CHECK(!has(v, "CTL_CS_THRESHOLD", Severity::Suspicious));
+        CHECK(v.valid);
+    }
+    // ... and the positive side still passes unchanged (UC384x 1.0 V).
+    CHECK(!has(V.validate(cs_part(1.0)), "CTL_CS_THRESHOLD", Severity::Impossible));
+}
+
+TEST_CASE("Controllers: CsThresholdMagnitudeBounds", "[controllers][cs_threshold]") {
+    // Zero is still impossible in either sign convention.
+    CHECK(has(V.validate(cs_part(0.0)), "CTL_CS_THRESHOLD", Severity::Impossible));
+    // The magnitude bound fires symmetrically: a mV/V unit error either way.
+    CHECK(has(V.validate(cs_part(200.0)), "CTL_CS_THRESHOLD", Severity::Impossible));
+    CHECK(has(V.validate(cs_part(-200.0)), "CTL_CS_THRESHOLD", Severity::Impossible));
+    CHECK(!V.validate(cs_part(-200.0)).valid);
+    // Suspicious band (2.5 < |cs| <= 5.0), also symmetric.
+    CHECK(has(V.validate(cs_part(3.0)), "CTL_CS_THRESHOLD", Severity::Suspicious));
+    CHECK(has(V.validate(cs_part(-3.0)), "CTL_CS_THRESHOLD", Severity::Suspicious));
+    // Just inside each bound stays clean.
+    CHECK(!has(V.validate(cs_part(-2.4)), "CTL_CS_THRESHOLD", Severity::Suspicious));
+    CHECK(!has(V.validate(cs_part(2.4)), "CTL_CS_THRESHOLD", Severity::Suspicious));
+}
+
+// ---------------------------------------------------------------------------
 // CTL_FREQ_RANGE / CTL_SUPPLY_RANGE are keyed on function.category.
 //
 // Before the fix a single global bound (f_sw SUS 3 MHz / IMP 10 MHz, VabsMax

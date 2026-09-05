@@ -12,6 +12,7 @@
 #include "tas_validator/thresholds.hpp"
 #include "tas_validator/validator.hpp"
 
+#include <cmath>
 #include <string>
 
 namespace tas {
@@ -174,15 +175,20 @@ void check_controllers(const json& datasheet, const Ctx& ctx, std::vector<Findin
         }
         if (const json* cm = at(*elec, "currentMode"))
             if (auto cs = scalar_at(*cm, {"maxThresholdVoltage"})) {
-                if (*cs <= 0 || *cs > thr::CTL_CS_THRESH_IMP)
+                // maxThresholdVoltage is a SIGNED comparator threshold: positive for
+                // source/series sensing (UC384x +1.0 V), negative for return-path
+                // sensing (UCC2806x, ICE3PCS01G at -0.2 V). Only the MAGNITUDE is
+                // bounded; the sign carries real datasheet information.
+                const double cs_mag = std::fabs(*cs);
+                if (cs_mag == 0.0 || cs_mag > thr::CTL_CS_THRESH_IMP)
                     emit(out, ctx, "CTL_CS_THRESHOLD", Severity::Impossible, *cs,
                          thr::CTL_CS_THRESH_IMP,
-                         fmt("current-mode maxThresholdVoltage out of range [V]", *cs,
+                         fmt("current-mode |maxThresholdVoltage| out of range [V]", cs_mag,
                              thr::CTL_CS_THRESH_IMP));
-                else if (*cs > thr::CTL_CS_THRESH_SUS)
+                else if (cs_mag > thr::CTL_CS_THRESH_SUS)
                     emit(out, ctx, "CTL_CS_THRESHOLD", Severity::Suspicious, *cs,
                          thr::CTL_CS_THRESH_SUS,
-                         fmt("current-mode maxThresholdVoltage high [V]", *cs,
+                         fmt("current-mode |maxThresholdVoltage| high [V]", cs_mag,
                              thr::CTL_CS_THRESH_SUS));
             }
 

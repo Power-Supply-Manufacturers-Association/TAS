@@ -657,7 +657,9 @@ inline constexpr double CTL_DRIVE_V_SUS = 45.0, CTL_DRIVE_V_IMP = 60.0;
 inline constexpr double CTL_PROP_DELAY_SUS = 1.0e-5, CTL_PROP_DELAY_IMP = 1.0e-3;
 // Internal reference (bandgap) [V]: 1.024 V (REF35) to ~10 V series refs; buried-Zener 7.2 V.
 inline constexpr double CTL_VREF_SUS_LO = 0.4, CTL_VREF_SUS_HI = 12.0, CTL_VREF_IMP = 20.0;
-// Current-mode CS comparator clamp [V]: 0.25 V (NCP12700) to 2.0 V (UCC28950).
+// Current-mode CS comparator clamp, MAGNITUDE [V]: 0.2 V (UCC2806x / ICE3PCS01G, which
+// sense on the return and so print -0.2 V) to 2.0 V (UCC28950). The stored value is
+// SIGNED; these bounds apply to |value| only.
 inline constexpr double CTL_CS_THRESH_SUS = 2.5, CTL_CS_THRESH_IMP = 5.0;
 // Isolation withstand (VISO, RMS) [V]: 2500 (Si827x) to 7000 (AMC1301).
 inline constexpr double CTL_ISO_VISO_SUS = 1.0e4, CTL_ISO_VISO_IMP = 2.5e4;
