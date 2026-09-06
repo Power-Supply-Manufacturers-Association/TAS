@@ -40,6 +40,14 @@ Two signatures, both evidence-backed:
     datasheet entry has (no datasheet URL, no description, no saturation current,
     no SRF, no mechanical dimensions). The formula alone is not enough; the
     emptiness around it is what proves nothing was ever read from a datasheet.
+
+ 3. TWO-SEED EXPANSION IN ONE ROW -- a MOSFET whose powerDissipation is exactly
+    0.3 * Vds * Id, corroborated by the derived constants written beside it
+    (Id@100C = 0.65*Id, onResistanceId = Id/2, capacitanceMeasurementVds =
+    Vds/2, Coss = Ciss/5, Crss = Ciss/50). Unlike (4) this needs no cohort: it
+    is an arithmetic identity WITHIN a single row, which is how it reaches the
+    generated families whose part numbers ladder mid-string and therefore look
+    exactly like a real vendor's value-coded numbering.
 """
 import argparse
 import json
@@ -186,7 +194,134 @@ def is_bare_stub(info, electrical):
     return True
 
 
-# ── (3) arithmetic ladders ───────────────────────────────────────────────────
+# ── (3) the two-seed MOSFET generator ────────────────────────────────────────
+# ABT: found 2026-09-06, after the two MOSFET batches of 2026-09-04/06 had
+# already been condemned by hand. Both batches were found by cohort reasoning --
+# a numeric ladder in the part number -- and both were nearly missed, because
+# the cohort rules cannot see them:
+#
+#   * the trailing-run ladder key never grouped NTH2312P6..NTH2452P12 (the run
+#     is mid-string, with a package token after it), and
+#   * the mid-string key deliberately demands TWO quantities laddering, because
+#     a single-quantity mid-string ladder is indistinguishable from a Murata
+#     value code -- 13,142 real rows have that shape.
+#
+# But those rows do not need a cohort at all. Every single one of them stores,
+# EXACTLY in double precision, a relation between three fields of the SAME ROW:
+#
+#     powerDissipation = 0.3 * drainSourceVoltage * |continuousDrainCurrent|
+#
+# 0.3x100x80 = 2400, 0.3x650x23 = 4485, 0.3x1200x40 = 14400. There is no such
+# quantity in semiconductor physics: dissipation is set by the package and the
+# heatsink (Tj-Tc)/RthJC, and has nothing to do with the product of the two
+# absolute maximum ratings, which is the DC power the part is guaranteed never
+# to see. A row that states it was not read from a datasheet; it was expanded
+# from two seeds, Vds and Id, by arithmetic. That is a statement about ONE ROW,
+# so it needs no cohort, no contiguous run and no shared stem -- which is
+# exactly why it reaches the rows the ladder rules cannot.
+#
+# The same expansion writes a family of derived constants beside it, and those
+# are what CORROBORATE, in the spirit of every other rule here. A lone
+# arithmetic coincidence is not evidence: measured over the live catalogue,
+# 0.3*Vds*Id lands exactly on the stored powerDissipation of NDT3055 -- a REAL
+# onsemi SOT-223 part (0.3 x 60 V x 4 A = 72.0 W, stored 72.0), whose row came
+# from the onsemi parametric CSV with a mis-mapped dissipation column and shares
+# that defect with its neighbours NDT014 (43 W) and NDT014L (115 W). It is a
+# broken real part, not an invented one, and condemning it as fabricated would
+# delete a part onsemi ships. So the rule requires the identity AND at least
+# SEED_MIN_RATIOS of the derived constants below.
+#
+# CALIBRATION, measured on data/mosfets.ndjson (9,283 live rows, 2026-09-06):
+#   * 283 rows satisfy the Pd identity at float noise;
+#   * 282 of them also carry ALL FIVE derived ratios exactly -- and they are the
+#     suspect block (EPC 89, ST 63, onsemi 56, Power Integrations 47, Infineon
+#     27, Microsemi 1), 281 of which cite nothing but a datasheetpdf.com search
+#     query built from their own part number;
+#   * exactly ONE row (NDT3055) has the identity and NONE of the ratios;
+#   * no row anywhere in the file has the identity plus one ratio, so the
+#     >= 2 bar and a >= 1 bar select the same 282 rows today. The bar is 2
+#     because two independent corroborations is what the other rules here
+#     demand, not because one row forced it.
+#   * the nearest MISS is NDT014 at 11.5% (43.0 W stored against 48.6), so
+#     there is no cluster of real parts hovering near the identity: it is
+#     satisfied exactly or not at all.
+#   * igbts.ndjson (2,251 rows) and bjts.ndjson (3,666) were checked for the
+#     analogous Vce x Ic identity: 0 hits. The generator was MOSFET-only.
+#
+# COST, stated plainly: a generator that expands Pd from the same two seeds but
+# writes real capacitances and a real Id@100C is not caught here. That is the
+# price of refusing to delete NDT3055 on one arithmetic coincidence.
+SEED_PD_FACTOR = 0.3
+SEED_TOL = 1e-9
+SEED_MIN_RATIOS = 2
+# (derived field, seed field, factor) -- the constants the same expansion writes.
+SEED_RATIOS = (
+    ("continuousDrainCurrentAt100C", "continuousDrainCurrent", 0.65),
+    ("onResistanceId", "continuousDrainCurrent", 0.5),
+    ("capacitanceMeasurementVds", "drainSourceVoltage", 0.5),
+    ("outputCapacitance", "inputCapacitance", 0.2),
+    ("reverseTransferCapacitance", "inputCapacitance", 0.02),
+)
+
+
+def _seed_scalar(value):
+    """A field's scalar, whether it is stored bare or as a dimensionWithTolerance."""
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, (int, float)):
+        return float(value)
+    if isinstance(value, dict):
+        for bound in ("nominal", "maximum", "minimum"):
+            v = value.get(bound)
+            if isinstance(v, (int, float)) and not isinstance(v, bool):
+                return float(v)
+    return None
+
+
+def _seed_equal(a, b):
+    """Equal at double-precision noise -- the generator's arithmetic is exact,
+    but the decimal that was written back is not always the same double."""
+    return abs(a - b) <= SEED_TOL * max(abs(a), abs(b), 1e-30)
+
+
+def seed_expanded_mosfet(electrical):
+    """Why-string when a MOSFET row's electricals were expanded from two seeds.
+
+    None when the row is silent on any of the three identity fields, when the
+    identity does not hold exactly, or when fewer than SEED_MIN_RATIOS of the
+    derived constants corroborate it.
+    """
+    vds = _seed_scalar((electrical or {}).get("drainSourceVoltage"))
+    idc = _seed_scalar((electrical or {}).get("continuousDrainCurrent"))
+    pdis = _seed_scalar((electrical or {}).get("powerDissipation"))
+    if vds is None or idc is None or pdis is None:
+        return None
+    # P-channel parts store both ratings negative; the generator multiplied
+    # magnitudes. Zero or negative dissipation is a different defect entirely.
+    if vds == 0 or idc == 0 or pdis <= 0:
+        return None
+    if not _seed_equal(pdis, SEED_PD_FACTOR * abs(vds) * abs(idc)):
+        return None
+    corroboration = []
+    for derived, seed, factor in SEED_RATIOS:
+        a = _seed_scalar((electrical or {}).get(derived))
+        b = _seed_scalar((electrical or {}).get(seed))
+        if a is None or b is None or b == 0:
+            continue
+        if _seed_equal(a, factor * b):
+            corroboration.append(f"{derived} = {factor:g} * {seed}")
+    if len(corroboration) < SEED_MIN_RATIOS:
+        return None
+    return ("powerDissipation = %g * drainSourceVoltage * continuousDrainCurrent "
+            "holds exactly (%g W = %g * %g V * %g A), which is not a physical "
+            "relation -- dissipation follows from the package, not from the "
+            "product of two absolute maximum ratings; corroborated by %d derived "
+            "constant(s) from the same two seeds: %s"
+            % (SEED_PD_FACTOR, pdis, SEED_PD_FACTOR, vds, idc,
+               len(corroboration), ", ".join(corroboration)))
+
+
+# ── (4) arithmetic ladders ───────────────────────────────────────────────────
 # ABT #1014. The two batches found on 2026-09-04 both sailed past every rule
 # above, and past screen_fabrication_signatures.py, for the same structural
 # reason: their fields VARY. A degenerate-field screen looks for one value
@@ -597,6 +732,10 @@ def check_file(path, quarantined_refs=frozenset(), stats=None):
                     findings.append((lineno, label,
                                      "DCR reproduces a generator formula on a record with no "
                                      "datasheet, description, Isat, SRF or dimensions"))
+                    continue
+                seeded = seed_expanded_mosfet(electrical)
+                if seeded:
+                    findings.append((lineno, label, seeded))
                     continue
                 impossible = impossible_ratings(info, electrical)
                 if impossible:

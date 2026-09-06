@@ -31,7 +31,7 @@ Repairing output is losing: the campaign that writes the rows is faster than the
 campaign that fixes them. So the gate sits at the INPUT, and an importer that
 cannot satisfy it must abort, not degrade.
 
-THE SIX RULES (each one is a defect that actually shipped)
+THE SEVEN RULES (each one is a defect that actually shipped)
 
  1. IDENTITY IS REAL -- not a grid-row description. Refuses an identity longer
     than 40 characters, one that duplicates another row of the same
@@ -53,6 +53,11 @@ THE SIX RULES (each one is a defect that actually shipped)
     capacitors out of 300.
  6. IT VALIDATES against its family schema, with required-but-vacuous ({} / [])
     counted as MISSING (Draft 2020-12 happily accepts an empty object).
+ 7. NO TWO-SEED EXPANSION -- a MOSFET row whose powerDissipation is exactly
+    0.3 x Vds x Id, corroborated by the derived constants the same generator
+    writes beside it. Unlike rule 4 this is an identity WITHIN ONE ROW, so it
+    does not need a cohort, a shared stem or a contiguous run -- which is
+    precisely how it catches the generated families rule 4 cannot see.
 
 WHAT EACH RULE DELIBERATELY DOES *NOT* DO -- a gate that refuses everything is
 as useless as one that refuses nothing, so every rule carries its counter-example:
@@ -63,6 +68,10 @@ as useless as one that refuses nothing, so every rule carries its counter-exampl
   * Rule 3 does NOT refuse a shared value on its own. Wuerth really does sell
     a lot of 10 uH inductors and 51 TDK parts genuinely share 1 nH. The
     DESCRIPTION CONTRADICTION is what makes a shared value a minted one.
+  * Rule 7 does NOT fire on the identity alone. 0.3 x 60 V x 4 A = 72.0 W is
+    exactly what the live catalogue stores for onsemi's NDT3055 -- a real
+    SOT-223 part whose dissipation column was mis-mapped on import. Two of the
+    derived constants must corroborate before a row is called generated.
   * Rule 4 does NOT refuse a single-field ladder. Real vendor numbering encodes
     a quantity in the part number -- IPP60R080P7 states its 80 mOhm Rds(on),
     744043100 states its 10 uH -- so ONE field tracking a numeric run is
@@ -93,6 +102,10 @@ from check_no_constant_cohorts import (  # noqa: E402
     parse_quantity,
     walk,
 )
+# Rule 7's arithmetic is defined ONCE, in the standing guard, and imported here
+# so the gate at the door and the nightly sweep cannot drift apart -- same
+# constants, same tolerance, same corroboration bar.
+from check_no_fabricated_parts import seed_expanded_mosfet  # noqa: E402
 
 MIN_COHORT = 5            # rows sharing a value before rule 3 looks at it
 MIN_LADDER = 5            # rows before rule 4 will fit a line
@@ -464,6 +477,27 @@ def check_units(body, fields):
     return out
 
 
+# ---------------------------------------------------------------------------
+# rule 7 -- no two-seed expansion (per record)
+# ---------------------------------------------------------------------------
+
+def _electrical_of(body):
+    """The record's own electrical dict; the first variant when it is a list."""
+    e = ((body.get("manufacturerInfo") or {}).get("datasheetInfo") or {}).get("electrical")
+    if isinstance(e, list):
+        e = e[0] if e else {}
+    return e if isinstance(e, dict) else {}
+
+
+def check_seed_identity(body):
+    why = seed_expanded_mosfet(_electrical_of(body))
+    if not why:
+        return []
+    return [Refusal(7, identity_of(body) or "<no identity>",
+                    "row was expanded from two seeds, not read from a datasheet: "
+                    + why)]
+
+
 def _median(vals):
     s = sorted(vals)
     n = len(s)
@@ -612,6 +646,7 @@ class IngestGate:
         refusals += check_identity(body)
         refusals += check_citation(body)
         refusals += check_units(body, self.cat.fields)
+        refusals += check_seed_identity(body)
         if self._validator is not None:
             refusals += self._check_schema(body)
         if refusals:
@@ -1046,6 +1081,41 @@ def selftest():
              for i, c in enumerate(codes)]
     results.append(_run("4b  IPP60R080P7-style onResistance-only ladder", "ACCEPTED",
                         mos, rdson))
+
+    # -- rule 7: two-seed expansion ------------------------------------------
+    # 7a is the real FDMU8100L row as it stood in data/mosfets.ndjson before it
+    # was deleted on 2026-09-06 (recovered from the git-LFS object of 4f7de90).
+    # onsemi has no FDMU prefix, the record claims TI's "NexFET" trademark, and
+    # 2400 W = 0.3 x 100 V x 80 A exactly.
+    fdmu = _mos("FDMU8100L", drainSourceVoltage=100, gateSourceVoltageMax=20,
+                continuousDrainCurrent=80, continuousDrainCurrentAt100C=52.0,
+                powerDissipation=2400.0, onResistance=0.013, onResistanceVgs=10,
+                onResistanceId=40.0, inputCapacitance=5.2e-08,
+                outputCapacitance=1.04e-08,
+                reverseTransferCapacitance=1.0400000000000001e-09,
+                capacitanceMeasurementVds=50.0, totalGateCharge=4e-06,
+                bodyDiodeForwardVoltage=0.85, bodyDiodeContinuousCurrent=80)
+    results.append(_run("7a  the deleted FDMU8100L row (Pd = 0.3 x Vds x Id exactly)",
+                        "REFUSED", mos, [fdmu]))
+
+    # 7b is a REAL part whose dissipation sits NEAR the identity and must pass:
+    # onsemi NDT014, 60 V / 2.7 A / 43 W, against 0.3 x 60 x 2.7 = 48.6 (11.5%
+    # off). "Near" is not the signature; exact-in-double is.
+    ndt014 = _mos("NDT014", drainSourceVoltage=60.0, continuousDrainCurrent=2.7,
+                  powerDissipation=43.0, onResistance=0.2, onResistanceVgs=10,
+                  totalGateCharge=5e-09)
+    results.append(_run("7b  onsemi NDT014, Pd 11.5% off the identity", "ACCEPTED",
+                        mos, [ndt014]))
+
+    # 7c is the identity landing on a real part by COINCIDENCE, with none of the
+    # derived constants beside it: onsemi NDT3055, 0.3 x 60 x 4 = 72.0 exactly.
+    # It is a mis-mapped dissipation column on a part onsemi ships, and the gate
+    # must not call it generated.
+    ndt3055 = _mos("NDT3055", drainSourceVoltage=60.0, continuousDrainCurrent=4.0,
+                   powerDissipation=72.0, onResistance=0.1, onResistanceVgs=10,
+                   totalGateCharge=9e-09)
+    results.append(_run("7c  onsemi NDT3055, identity by coincidence, no derived "
+                        "constants", "ACCEPTED", mos, [ndt3055]))
 
     # -- rule 5: units --------------------------------------------------------
     negcap = {"capacitor": {"manufacturerInfo": {

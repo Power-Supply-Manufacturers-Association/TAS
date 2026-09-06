@@ -335,6 +335,137 @@ def test_identical_cohort_is_not_a_ladder(tmp_path):
     assert ladder_findings(tmp_path, rows) == []
 
 
+# ── the two-seed MOSFET generator ────────────────────────────────────────────
+# 2026-09-06. Both MOSFET batches condemned this week were found by cohort
+# reasoning and both nearly escaped it: the trailing-run key cannot see a
+# mid-string ladder (NTH2312P6..NTH2452P12), and the mid-string key demands two
+# laddering quantities because one is indistinguishable from a Murata value code.
+# Neither of those weaknesses matters here, because the generator's real
+# signature is an identity WITHIN ONE ROW:
+#
+#     powerDissipation == 0.3 * drainSourceVoltage * |continuousDrainCurrent|
+#
+# with Id@100C = 0.65*Id, onResistanceId = Id/2, capacitanceMeasurementVds =
+# Vds/2, Coss = Ciss/5 and Crss = Ciss/50 written beside it.
+#
+# The negative half is the whole calibration. The identity ALONE has a measured
+# false positive in the live corpus -- onsemi's NDT3055 stores 72.0 W against
+# 0.3 x 60 V x 4 A = 72.0 exactly, and it is a real SOT-223 part with a
+# mis-mapped dissipation column -- so the derived constants must corroborate.
+
+SEED_MOS_MARK = "powerDissipation = 0.3 * drainSourceVoltage * continuousDrainCurrent"
+
+
+def mosfet_record(part_number, manufacturer="onsemi", **electrical):
+    return {"semiconductor": {"mosfet": {"manufacturerInfo": {
+        "name": manufacturer, "reference": part_number,
+        "datasheetInfo": {
+            "part": {"partNumber": part_number},
+            "electrical": dict(electrical),
+            "provenance": [{"source": "scrape", "sourceUrl": REAL_URL}]}}}}}
+
+
+# The row exactly as data/mosfets.ndjson held it before 2026-09-06, recovered
+# from the git-LFS object of commit 4f7de90. Kept verbatim so the fixture cannot
+# quietly become a synthetic ideal case that the real data would not match.
+FDMU8100L = dict(
+    drainSourceVoltage=100, gateSourceVoltageMax=20, continuousDrainCurrent=80,
+    continuousDrainCurrentAt100C=52.0, powerDissipation=2400.0,
+    onResistance=0.013, onResistanceVgs=10, onResistanceId=40.0,
+    inputCapacitance=5.2e-08, outputCapacitance=1.04e-08,
+    reverseTransferCapacitance=1.0400000000000001e-09,
+    capacitanceMeasurementVds=50.0, totalGateCharge=4e-06,
+    bodyDiodeForwardVoltage=0.85, bodyDiodeContinuousCurrent=80,
+    figureOfMerit=6.499999999999999e-10,
+)
+
+
+def seed_findings(tmp_path, *records):
+    path = tmp_path / "mosfets.ndjson"
+    path.write_text("".join(json.dumps(r) + "\n" for r in records))
+    return guard.check_file(path)
+
+
+def test_the_real_deleted_fdmu81000_row_is_refused(tmp_path):
+    """A fixture built from the genuine FDMU8100L record must be condemned."""
+    found = seed_findings(tmp_path, mosfet_record("FDMU8100L", **FDMU8100L))
+    assert len(found) == 1, found
+    assert SEED_MOS_MARK in found[0][2]
+    assert "corroborated by 5 derived constant(s)" in found[0][2]
+
+
+def test_a_real_mosfet_near_the_identity_is_accepted(tmp_path):
+    """onsemi NDT014: 43.0 W stored against 0.3 x 60 x 2.7 = 48.6, 11.5% off.
+
+    'Near' is not the signature -- the generator's arithmetic is exact -- and the
+    nearest live miss in the whole catalogue is this part, so a tolerance loose
+    enough to catch it would have no calibration behind it at all.
+    """
+    assert seed_findings(tmp_path, mosfet_record(
+        "NDT014", drainSourceVoltage=60.0, continuousDrainCurrent=2.7,
+        powerDissipation=43.0, onResistance=0.2, onResistanceVgs=10,
+        totalGateCharge=5e-09)) == []
+
+
+def test_the_identity_alone_is_not_enough(tmp_path):
+    """onsemi NDT3055 lands on the identity by coincidence and is a real part.
+
+    0.3 x 60 V x 4 A = 72.0 and the row stores 72.0. It came from the onsemi
+    parametric CSV whose dissipation column was mis-mapped -- its neighbours
+    NDT014 (43 W) and NDT014L (115 W in a SOT-223) carry the same defect -- so
+    it is a broken real part, not an invented one. Condemning it would delete a
+    part onsemi ships, which is the SQJQ141EL mistake with a different name.
+    """
+    assert seed_findings(tmp_path, mosfet_record(
+        "NDT3055", drainSourceVoltage=60.0, continuousDrainCurrent=4.0,
+        powerDissipation=72.0, onResistance=0.1, onResistanceVgs=10,
+        totalGateCharge=9e-09)) == []
+
+
+def test_one_corroborating_ratio_is_below_the_bar(tmp_path):
+    """The bar is two independent derived constants, not one."""
+    row = dict(FDMU8100L)
+    for key in ("continuousDrainCurrentAt100C", "capacitanceMeasurementVds",
+                "outputCapacitance", "reverseTransferCapacitance"):
+        row.pop(key)
+    assert seed_findings(tmp_path, mosfet_record("FDMU8100L", **row)) == []
+    row["capacitanceMeasurementVds"] = 50.0          # the second corroboration
+    assert len(seed_findings(tmp_path, mosfet_record("FDMU8100L", **row))) == 1
+
+
+def test_p_channel_ratings_are_compared_as_magnitudes(tmp_path):
+    """A P-channel row stores Vds and Id negative; the generator multiplied
+    magnitudes, so the identity must be read on magnitudes too."""
+    found = seed_findings(tmp_path, mosfet_record(
+        "PCH1", drainSourceVoltage=-100.0, continuousDrainCurrent=-80.0,
+        powerDissipation=2400.0, onResistanceId=-40.0,
+        capacitanceMeasurementVds=-50.0))
+    assert len(found) == 1, found
+
+
+def test_a_single_generated_row_needs_no_cohort(tmp_path):
+    """The gap this rule closes: one row, no siblings, no ladder to fit."""
+    assert len(seed_findings(tmp_path, mosfet_record("FDMU8100L", **FDMU8100L))) == 1
+
+
+def test_seed_rule_is_silent_on_a_row_that_omits_the_ratings(tmp_path):
+    assert seed_findings(tmp_path, mosfet_record(
+        "SILENT1", onResistance=0.02, totalGateCharge=3e-08)) == []
+
+
+def test_live_mosfet_catalogue_has_no_seed_expanded_rows():
+    """The live file must carry none of them once the block is adjudicated.
+
+    Skipped only when the data file is an unfetched git-LFS pointer -- a gate
+    that cannot run must say so, not report clean.
+    """
+    path = REPO / "data" / "mosfets.ndjson"
+    if not path.is_file() or path.read_bytes()[:20].startswith(b"version https"):
+        pytest.skip("data/mosfets.ndjson is not checked out (git-LFS pointer)")
+    seeded = [f for f in guard.check_file(path) if SEED_MOS_MARK in f[2]]
+    assert seeded == [], f"{len(seeded)} seed-expanded MOSFET row(s) still live"
+
+
 # ── identity: partNumber first, reference as fallback, NEITHER is a failure ──
 # Two fabricated batches reached production because every screen in the corpus
 # keyed on manufacturerInfo.reference, which is optional: 35,966 live capacitors

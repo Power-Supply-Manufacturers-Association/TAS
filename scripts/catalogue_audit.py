@@ -110,7 +110,13 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[1]
 DEFAULT_DATA = REPO / "data"
 
-CHECKS = ("identity", "units", "cohort", "citation", "verification", "coverage")
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+# Check 7's arithmetic is defined ONCE, in the standing guard, and imported here
+# and by the ingest gate, so the three cannot drift apart.
+from check_no_fabricated_parts import seed_expanded_mosfet  # noqa: E402
+
+CHECKS = ("identity", "units", "cohort", "citation", "verification", "coverage",
+          "generator")
 
 # ---------------------------------------------------------------------------
 # catalogue -> (discriminator path, sibling repo, schema file)
@@ -545,6 +551,24 @@ def audit_file(path: Path, checks, limit=None, sibling_root: Path = None,
                                 f"IMPOSSIBLE_VALUE {fpath} = {v!r} ({why})"))
                             break
 
+            # ---- 7 generator -----------------------------------------------
+            # An arithmetic identity WITHIN one row: powerDissipation exactly
+            # 0.3 x Vds x Id, with the derived constants the same expansion
+            # writes beside it. Needs no cohort, so it sees the generated
+            # families the cohort check cannot -- see the long note in
+            # check_no_fabricated_parts.py for the calibration and its one
+            # measured coincidence (onsemi NDT3055).
+            if "generator" in checks and isinstance(comp, dict):
+                elec = ((comp.get("manufacturerInfo") or {}).get("datasheetInfo")
+                        or {}).get("electrical")
+                if isinstance(elec, list):
+                    elec = elec[0] if elec else {}
+                if isinstance(elec, dict):
+                    why = seed_expanded_mosfet(elec)
+                    if why:
+                        findings.append(F("generator", lineno, ident,
+                                          f"GENERATOR_SEED_EXPANSION {why}"))
+
             # ---- 3/4/5 provenance-driven -----------------------------------
             prov = provenance_entries(rec) if (
                 {"cohort", "citation", "verification"} & set(checks)) else []
@@ -951,6 +975,34 @@ def selftest(tmpdir: Path) -> int:
     res = audit_file(p, ("citation",), sibling_root=REPO.parent)
     (ok := ok + 1) if not res["findings"] else bad.append(
         f"citation: per-SKU detail page must be silent, got {res['findings']}")
+
+    # 7 generator seed expansion: the deleted FDMU8100L row fires; two real
+    # onsemi parts must not -- NDT014 sits 11.5% off the identity, NDT3055 lands
+    # on it exactly by coincidence but carries none of the derived constants.
+    def mos(pn, **e):
+        return {"semiconductor": {"mosfet": {"manufacturerInfo": {
+            "name": "onsemi", "reference": pn,
+            "datasheetInfo": {"part": {"partNumber": pn}, "electrical": e}}}}}
+    p.write_text(json.dumps(mos(
+        "FDMU8100L", drainSourceVoltage=100, continuousDrainCurrent=80,
+        continuousDrainCurrentAt100C=52.0, powerDissipation=2400.0,
+        onResistance=0.013, onResistanceId=40.0, inputCapacitance=5.2e-08,
+        outputCapacitance=1.04e-08,
+        reverseTransferCapacitance=1.0400000000000001e-09,
+        capacitanceMeasurementVds=50.0)) + "\n")
+    res = audit_file(p, ("generator",), sibling_root=REPO.parent)
+    (ok := ok + 1) if any("GENERATOR_SEED_EXPANSION" in f["why"]
+                          for f in res["findings"]) else bad.append(
+        "generator/GENERATOR_SEED_EXPANSION: expected fire=True, got False")
+    p.write_text("\n".join(json.dumps(r) for r in [
+        mos("NDT014", drainSourceVoltage=60.0, continuousDrainCurrent=2.7,
+            powerDissipation=43.0, onResistance=0.2, totalGateCharge=5e-09),
+        mos("NDT3055", drainSourceVoltage=60.0, continuousDrainCurrent=4.0,
+            powerDissipation=72.0, onResistance=0.1, totalGateCharge=9e-09),
+    ]) + "\n")
+    res = audit_file(p, ("generator",), sibling_root=REPO.parent)
+    (ok := ok + 1) if not res["findings"] else bad.append(
+        f"generator: real onsemi NDT014/NDT3055 must be silent, got {res['findings']}")
 
     # 6 vacuous required key vs a populated one.
     rows = [{"capacitor": {"manufacturerInfo": {"name": "ACME",
