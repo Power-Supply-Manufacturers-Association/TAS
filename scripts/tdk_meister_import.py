@@ -15,13 +15,24 @@ No fabricated values: a field is emitted only when the source provides it.
 Parts that cannot supply a schema-required field are quarantined and reported.
 """
 from __future__ import annotations
-import json, re, sys
+import json, os, re, sys
 from pathlib import Path
 from collections import Counter, defaultdict
 
 REPO = Path('/home/alf/PSMA/TAS')
 PROTEUS = REPO.parent
-RAW = Path('/tmp/tdk_raw.jsonl')
+# TDK_RAW lets a sample be run through the same code path as the full extract.
+RAW = Path(os.environ.get('TDK_RAW', '/tmp/tdk_raw.jsonl'))
+OUT_DIR = Path(os.environ.get('TDK_OUT', '/tmp'))
+
+sys.path.insert(0, str(REPO / 'scripts'))
+# THE GATE (2026-09-06). This importer used to validate each candidate against
+# its schema and SKIP the ones that failed, counting them in a stats line. A
+# skipped row is invisible the moment nobody reads stderr, and schema validity
+# was never the property that failed here anyway: 549 of this importer's chip
+# beads validated perfectly while all carrying an identical minted 1e-09 H.
+# ingest_gate carries that check and five more, and a refusal ABORTS.
+from ingest_gate import IngestGate, IngestRefused   # noqa: E402
 
 # ---------------------------------------------------------------------------
 # spec helpers
@@ -442,67 +453,22 @@ def existing_tdk_refs():
     return refs
 
 # ---------------------------------------------------------------------------
-# validation registry (mirrors tests/test_data.py)
-# ---------------------------------------------------------------------------
-
-def build_validators():
-    from jsonschema import Draft202012Validator
-    from referencing import Registry, Resource
-    from referencing.jsonschema import DRAFT202012
-
-    by_id, by_path = {}, {}
-    for repo_name in ('PEAS', 'SAS', 'CAS', 'RAS', 'MAS'):
-        d = PROTEUS / repo_name / 'schemas'
-        if not d.is_dir():
-            continue
-        for p in d.rglob('*.json'):
-            try:
-                s = json.loads(p.read_text())
-            except json.JSONDecodeError:
-                continue
-            p = p.resolve()
-            by_path[p] = s
-            if s.get('$id'):
-                by_id[s['$id']] = s
-    META = {'$schema', '$id', 'title', 'description', '$comment'}
-    for sid, s in list(by_id.items()):
-        if set(s) - META != {'$ref'}:
-            continue
-        path = next((p for p, v in by_path.items() if v is s), None)
-        if path is None:
-            continue
-        tgt = by_path.get((path.parent / s['$ref']).resolve())
-        if tgt is None:
-            continue
-        inl = {k: v for k, v in tgt.items() if k not in ('$id', '$schema')}
-        inl['$id'] = sid
-        inl['$schema'] = s.get('$schema', 'https://json-schema.org/draft/2020-12/schema')
-        by_id[sid] = inl
-    reg = Registry().with_resources(
-        [(sid, Resource(contents=s, specification=DRAFT202012)) for sid, s in by_id.items()]
-    )
-    mas = json.loads((PROTEUS / 'MAS' / 'schemas' / 'magnetic.json').read_text())
-    cas = json.loads((PROTEUS / 'CAS' / 'schemas' / 'capacitor.json').read_text())
-    ras = json.loads((PROTEUS / 'RAS' / 'schemas' / 'varistor.json').read_text())
-    return (Draft202012Validator(mas, registry=reg),
-            Draft202012Validator(cas, registry=reg),
-            Draft202012Validator(ras, registry=reg))
-
-# ---------------------------------------------------------------------------
 # main
 # ---------------------------------------------------------------------------
 
 def main():
     existing = existing_tdk_refs()
     print(f"existing TDK refs in TAS: {len(existing)}", file=sys.stderr)
-    mas_v, cas_v, var_v = build_validators()
-
-    mag_out = open('/tmp/tdk_new_magnetics.ndjson', 'w')
-    cap_out = open('/tmp/tdk_new_capacitors.ndjson', 'w')
-    var_out = open('/tmp/tdk_new_varistors.ndjson', 'w')
+    gates = {'mas': IngestGate('magnetics.ndjson'),
+             'cap': IngestGate('capacitors.ndjson'),
+             'var': IngestGate('varistors.ndjson')}
+    # Rows are BUFFERED, never streamed: the cohort rules (minted constant,
+    # arithmetic ladder, duplicate identity, one document cited for many parts)
+    # are properties of the batch, so nothing may be written until the whole
+    # batch has been judged.
+    buffered = {'mas': [], 'cap': [], 'var': []}
     stats = Counter()
     quarantine = defaultdict(list)
-    fail_samples = defaultdict(list)
     eol_stubs = []   # (part_no, category, replacement)
 
     # dedupe by part_no, keeping the entry with the most specs (TDK lists a few
@@ -524,14 +490,8 @@ def main():
                 stats['mas_eol_stub'] += 1
                 eol_stubs.append((rec['part_no'], cat, disp(rec['specs'], '100000080')))
                 continue
-            errs = list(mas_v.iter_errors(doc['magnetic']))
-            if errs:
-                stats['mas_invalid'] += 1
-                if len(fail_samples['mas']) < 8:
-                    fail_samples['mas'].append(
-                        f"{rec['part_no']} ({cat}): {errs[0].message} @ {list(errs[0].absolute_path)}")
-                continue
-            mag_out.write(json.dumps(doc, ensure_ascii=False) + '\n')
+            gates['mas'].admit(doc)      # raises IngestRefused; import stops
+            buffered['mas'].append(doc)
             stats['mas_ok'] += 1
             stats[f'mas_ok::{cat}'] += 1
         elif cat in CAS_CATS:
@@ -545,14 +505,8 @@ def main():
                     stats['cap_quarantine'] += 1
                     quarantine[why].append(rec['part_no'])
                 continue
-            errs = list(cas_v.iter_errors(doc['capacitor']))
-            if errs:
-                stats['cap_invalid'] += 1
-                if len(fail_samples['cap']) < 8:
-                    fail_samples['cap'].append(
-                        f"{rec['part_no']} ({cat}): {errs[0].message} @ {list(errs[0].absolute_path)}")
-                continue
-            cap_out.write(json.dumps(doc, ensure_ascii=False) + '\n')
+            gates['cap'].admit(doc)      # raises IngestRefused; import stops
+            buffered['cap'].append(doc)
             stats['cap_ok'] += 1
             stats[f'cap_ok::{cat}'] += 1
         elif cat in VARISTOR_CATS:
@@ -561,21 +515,22 @@ def main():
                 stats['var_quarantine'] += 1
                 quarantine[why].append(rec['part_no'])
                 continue
-            errs = list(var_v.iter_errors(doc['varistor']))
-            if errs:
-                stats['var_invalid'] += 1
-                if len(fail_samples['var']) < 8:
-                    fail_samples['var'].append(
-                        f"{rec['part_no']}: {errs[0].message} @ {list(errs[0].absolute_path)}")
-                continue
-            var_out.write(json.dumps(doc, ensure_ascii=False) + '\n')
+            gates['var'].admit(doc)      # raises IngestRefused; import stops
+            buffered['var'].append(doc)
             stats['var_ok'] += 1
         else:
             stats[f'unrouted::{cat}'] += 1
 
-    mag_out.close(); cap_out.close(); var_out.close()
+    for kind in ('mas', 'cap', 'var'):
+        gates[kind].close()      # cohort rules; raises before anything is written
+    for kind, fname in (('mas', 'tdk_new_magnetics.ndjson'),
+                        ('cap', 'tdk_new_capacitors.ndjson'),
+                        ('var', 'tdk_new_varistors.ndjson')):
+        with (OUT_DIR / fname).open('w') as fo:
+            for doc in buffered[kind]:
+                fo.write(json.dumps(doc, ensure_ascii=False) + '\n')
     # write the EOL-stub report so nothing is silently dropped
-    with open('/tmp/tdk_eol_stubs.csv', 'w') as f:
+    with (OUT_DIR / 'tdk_eol_stubs.csv').open('w') as f:
         f.write('part_no,category,replacement\n')
         for pn, cat, repl in eol_stubs:
             f.write(f"{pn},{cat},{repl or ''}\n")
@@ -583,18 +538,12 @@ def main():
     for k in sorted(stats):
         print(f"  {k}: {stats[k]}", file=sys.stderr)
     print(f"\nEOL stubs (no datasheet data, redirect only): {len(eol_stubs)} "
-          f"-> /tmp/tdk_eol_stubs.csv", file=sys.stderr)
+          f"-> {OUT_DIR / 'tdk_eol_stubs.csv'}", file=sys.stderr)
     with_repl = sum(1 for _, _, r in eol_stubs if r)
     print(f"  of which {with_repl} name a replacement part", file=sys.stderr)
     if quarantine:
         print("\n=== CAP QUARANTINE ===", file=sys.stderr)
         for why, items in quarantine.items():
             print(f"  {why}: {len(items)} (e.g. {items[:3]})", file=sys.stderr)
-    for kind, samples in fail_samples.items():
-        if samples:
-            print(f"\n=== {kind} VALIDATION FAILURES (sample) ===", file=sys.stderr)
-            for s in samples:
-                print(f"  {s}", file=sys.stderr)
-
 if __name__ == '__main__':
     main()

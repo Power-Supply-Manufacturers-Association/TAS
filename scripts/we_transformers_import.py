@@ -70,6 +70,9 @@ def turns_ratios(s):
 # The resolver lives in the tracked guard so importer and guard cannot drift.
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from check_wurth_family_matches_series import load_ground_truth, DEFAULT_SNAPSHOT, verdict
+# THE GATE (2026-09-06): a candidate row is checked BEFORE it can enter the
+# catalogue, and a refusal aborts the import instead of degrading the row.
+from ingest_gate import IngestGate, IngestRefused
 
 _SERIES = None
 
@@ -126,6 +129,7 @@ def convert(row):
     return {"magnetic":{"manufacturerInfo":mi,"core":CORE,"coil":COIL}}
 
 def main():
+    gate = IngestGate("magnetics.ndjson")
     have=set()
     for l in open("/home/alf/PSMA/TAS/data/magnetics.ndjson"):
         try: mi=json.loads(l).get("magnetic",{}).get("manufacturerInfo",{})
@@ -136,7 +140,11 @@ def main():
         pn=(row.get("Manufacturer Part Number","") or "").strip()
         if not pn or pn in have or pn in seen: continue
         seen.add(pn); rec=convert(row)
-        if rec: out.append(rec)
+        if rec:
+            gate.admit(rec)     # raises IngestRefused; the import stops here
+            out.append(rec)
+    # batch rules over the whole candidate set, before a byte is written
+    gate.close()
     with open(f"{OUT}/transformers.ndjson","w") as fo:
         for r in out: fo.write(json.dumps(r,ensure_ascii=False)+"\n")
     fb=sum(1 for r in out if r["magnetic"]["manufacturerInfo"]["datasheetInfo"]["electrical"][0]["subtype"]=="coupledInductor")

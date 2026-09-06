@@ -37,6 +37,12 @@
 !/scripts/verify_provenance_content.py
 !/scripts/changed_records_gate.py
 !/scripts/blade_gate.py
+# The six per-catalogue audits (identity, units, cohorts, citations,
+# verification, coverage) as arithmetic. It is a standing guard wired into
+# integrity_scan.py, and a guard that is not in a fresh clone does not exist --
+# which is exactly why the provenance cleanup could not be re-run.
+!/scripts/catalogue_audit.py
+!/scripts/integrity_scan.py
 # A guard since it grew --check: provenance in a live catalogue is a reference, not
 # an essay, and a one-shot cleanup nobody can run again does not hold that.
 !/scripts/strip_provenance_narrative.py
@@ -59,6 +65,11 @@
 # "WE-MAPI" default, 716 onsemi diodes were all called "rectifier". Their fixes
 # living only on one machine is the same failure that left
 # strip_provenance_narrative.py unrunnable by the next campaign.
+# The gate those importers now call BEFORE a row may enter a catalogue: identity,
+# citation, minted constant, arithmetic ladder, SI/possible units, schema (with
+# required-but-vacuous counted as missing). An importer that imports it must find
+# it in a fresh clone, and a gate nobody can run is not a gate.
+!/scripts/ingest_gate.py
 !/scripts/we_inductors_import.py
 !/scripts/we_transformers_import.py
 !/scripts/tdk_meister_import.py

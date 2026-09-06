@@ -94,6 +94,10 @@ def metres(s):
 # drift apart; the guard is also what re-checks the corpus afterwards.
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from check_wurth_family_matches_series import load_ground_truth, DEFAULT_SNAPSHOT, verdict
+# THE GATE (2026-09-06). Every large defect cohort in this corpus came from an
+# importer, so the check belongs at the INPUT: a row that cannot satisfy it does
+# not enter and the import stops. No degraded row, no default, no silent skip.
+from ingest_gate import IngestGate, IngestRefused
 
 _SERIES = None
 
@@ -171,6 +175,7 @@ def convert(row):
     return {"magnetic":{"manufacturerInfo":mi,"core":CORE,"coil":COIL}}
 
 def main():
+    gate = IngestGate("magnetics.ndjson")
     # existing magnetics refs (only emit NEW)
     have=set()
     for l in open("/home/alf/PSMA/TAS/data/magnetics.ndjson"):
@@ -184,7 +189,13 @@ def main():
         if not pn or pn in have or pn in seen: continue
         seen.add(pn)
         rec=convert(row)
-        if rec: out.append(rec)
+        if rec:
+            gate.admit(rec)     # raises IngestRefused; the import stops here
+            out.append(rec)
+    # cohort rules (duplicate identities, minted constants, arithmetic ladders,
+    # a family document standing in for many parts) can only be judged over the
+    # whole batch, so they run BEFORE anything is written.
+    gate.close()
     with open(f"{OUT}/inductors.ndjson","w") as fo:
         for r in out: fo.write(json.dumps(r,ensure_ascii=False)+"\n")
     print(f"new WE inductors: {len(out)}")
