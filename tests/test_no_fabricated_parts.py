@@ -227,6 +227,103 @@ def test_non_contiguous_indices_are_not_flagged(tmp_path):
     assert ladder_findings(tmp_path, rows) == []
 
 
+# ── 2026-09-06: mid-string ladders ───────────────────────────────────────────
+# The cohort key was ``^(stem)(index)$`` -- a TRAILING numeric run only. Real
+# vendor numbering puts the varying digits in the MIDDLE (IPW60R080P7,
+# C3M0075120K, FDMU81000), so a generator imitating a real family produced a
+# different stem per member and the rule was inert against exactly the shape it
+# was written to catch. These tests pin the widened key: revert ladder_keys() to
+# a trailing-run-only key and the first one fails with an empty finding list.
+
+def test_mid_string_arithmetic_ladder_is_caught(tmp_path):
+    """ACME100N65..ACME124N65: the index is mid-string, the package token trails."""
+    rows = [ladder_record(
+        f"ACME{100 + i}N65",
+        forwardVoltage=0.20 + 0.01 * i,
+        powerDissipation=10 * (0.20 + 0.01 * i),
+        reverseVoltage=650.0, forwardCurrent=1.0, surgeCurrent=8.0,
+    ) for i in range(25)]
+    found = ladder_findings(tmp_path, rows)
+    assert len(found) == 25, found
+    assert "exact linear function of the part index" in found[0][2]
+
+
+def test_mid_string_cohort_is_reported_once_per_row(tmp_path):
+    """A label has several numeric runs, so it joins several candidate cohorts.
+
+    Two of them (the mid-string index and the trailing '65') can both look like a
+    ladder; the row must still be reported exactly once, or a human reading the
+    guard's output cannot count the damage.
+    """
+    rows = [ladder_record(
+        f"ACME{100 + i}N65",
+        forwardVoltage=0.20 + 0.01 * i,
+        powerDissipation=10 * (0.20 + 0.01 * i),
+        reverseVoltage=650.0,
+    ) for i in range(12)]
+    found = ladder_findings(tmp_path, rows)
+    assert len(found) == 12, found
+    assert len({(lineno, label) for lineno, label, _ in found}) == 12
+
+
+def test_value_coded_mid_string_family_is_not_flagged(tmp_path):
+    """THE calibration case: Bourns CE0603G-2N0C..2N9C and Murata GCQ..6R0..6R9.
+
+    A value-coded MPN spells its own quantity, so that ONE quantity is affine in
+    the index by construction and the rest of the row is legitimately identical.
+    Without the >= LADDER_MIN_MIDSTRING_FIELDS condition this shape condemns
+    13,142 real live records (11,473 capacitors, 1,669 magnetics). Its three
+    tolerance bounds are ONE measurement, not three independent ladders.
+    """
+    rows = [ladder_record(
+        f"CE0603G-2N{i}C", manufacturer="Bourns",
+        inductance={"nominal": 2.0e-9 + 1.0e-10 * i,
+                    "minimum": 1.8e-9 + 1.0e-10 * i,
+                    "maximum": 2.2e-9 + 1.0e-10 * i},
+        selfResonantFrequency=6.0e9,
+    ) for i in range(10)]
+    assert ladder_findings(tmp_path, rows, name="magnetics.ndjson") == []
+
+
+def test_mid_string_single_quantity_ladder_is_the_stated_gap(tmp_path):
+    """Pins the COST the rule accepts, so a future relaxation is a deliberate act.
+
+    One affine quantity mid-string is not condemned -- it is the Murata/Bourns
+    shape above. If this ever starts failing, the value-coded families are being
+    condemned again; check the live counts before 'fixing' it.
+    """
+    rows = [ladder_record(
+        f"ACME{100 + i}N65",
+        forwardVoltage=0.20 + 0.01 * i,
+        reverseVoltage=650.0,
+    ) for i in range(12)]
+    assert ladder_findings(tmp_path, rows) == []
+
+
+def test_mid_string_real_family_is_not_flagged(tmp_path):
+    """The widened key must not start condemning families the old key never saw.
+
+    Same mid-string shape as above, but the other parameters move too -- which is
+    what a real family looks like and what the corroboration exists to require.
+    """
+    rows = [ladder_record(
+        f"ACME{100 + i}N65",
+        reverseVoltage=650.0 + 10 * i,
+        forwardVoltage=0.35 + 0.004 * i * i,
+        forwardCurrent=1.0 + (i % 3),
+        surgeCurrent=25.0 + (i % 5) * 3,
+    ) for i in range(20)]
+    assert ladder_findings(tmp_path, rows) == []
+
+
+def test_ladder_keys_enumerates_every_numeric_run():
+    """The trailing run is still produced (suffix ''), plus the mid-string ones."""
+    assert set(guard.ladder_keys("ACME100N65")) == {
+        ("ACME", "N65", 100), ("ACME100N", "", 65)}
+    # A part number that STARTS with its digits has no stem for that run.
+    assert set(guard.ladder_keys("1N4001")) == {("1N", "", 4001)}
+
+
 def test_identical_cohort_is_not_a_ladder(tmp_path):
     """Every field constant is a duplicate problem, not this rule's business.
 

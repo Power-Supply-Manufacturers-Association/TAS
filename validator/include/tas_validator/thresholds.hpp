@@ -405,6 +405,22 @@ inline constexpr double VAR_ENERGY_SUS = 1.0e4, VAR_ENERGY_IMP = 1.0e5;
 inline constexpr double CONN_CURRENT_SUS = 250.0, CONN_CURRENT_IMP = 2000.0;
 // Rated voltage [V]: HV connectors reach tens of kV.
 inline constexpr double CONN_VOLTAGE_SUS = 5.0e4, CONN_VOLTAGE_IMP = 1.0e5;
+// Rated IMPULSE withstand voltage [V] of one insulation path
+// (electrical.insulationPaths[].ratedImpulseVoltage). Calibrated 2026-09-06 on
+// the whole live connectors catalogue: 39,797 stated values across 17,832
+// records. Median 4 kV, p99 8 kV, p99.99 25 kV; the IEC 60664-1 table itself
+// stops at 12 kV (the WAGO terminal blocks that dominate the tail sit exactly
+// there), and the largest genuine value in the corpus is 30 kV -- Weidmueller's
+// HV4000-series M12 high-voltage connectors, which are sold as such. Exactly ONE
+// value in the corpus lies above that: 11,111,000 V (Weidmueller SL2C 16 BL, a
+// repdigit typo on an 800 V terminal block). The ceiling is set at 100 kV: 3.3x
+// above the largest real reading, so every HV connector in the catalogue clears
+// it by a wide margin, while remaining far below anything a pluggable connector
+// could survive -- 100 kV impulse needs >30 mm of clearance in an IDEAL uniform
+// field (Paschen at ~3 kV/mm) and several times that in a real non-uniform
+// connector geometry, which exceeds the entire body of every connector here.
+// Above this you are describing a substation bushing, not a connector.
+inline constexpr double CONN_IMPULSE_IMP = 1.0e5;
 // Mated-pair contact resistance [Ohm]: power ~0.15 mOhm, signal up to ~0.1 Ohm.
 inline constexpr double CONN_RCONTACT_SUS_LO = 1.0e-5, CONN_RCONTACT_SUS_HI = 1.0;
 inline constexpr double CONN_RCONTACT_IMP_HI = 100.0;  // not a conducting contact above this

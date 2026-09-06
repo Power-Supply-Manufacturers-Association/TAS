@@ -184,6 +184,48 @@ TEST_CASE("Capacitors: ToleranceOrderingImpossible", "[capacitors]") {
     CHECK(!v.valid);
 }
 
+// 2026-09-06. The live corpus holds 16 Taiyo Yuden rows whose capacitance block is
+// {nominal: 2e-13, minimum: -4.999999999999999e-14, maximum: 4.5e-13} -- a 0.2 pF
+// part whose +-0.25 pF absolute tolerance was subtracted straight past zero.
+// scalar_at() resolves the block to its NOMINAL, so the pre-existing positivity
+// check saw only the healthy +2e-13 and passed the record. A negative capacitance
+// is not a suspicious value, it is not a value at all.
+TEST_CASE("Capacitors: NegativeCapacitanceMinimumImpossible", "[capacitors]") {
+    json p = good_cap();
+    p["capacitor"]["manufacturerInfo"]["datasheetInfo"]["electrical"]["capacitance"] =
+        json::parse(R"json({"nominal": 2.0e-13, "minimum": -4.999999999999999e-14,
+                            "maximum": 4.5e-13})json");
+    Verdict v = V.validate(p);
+    CHECK(has(v, "CAP_POSITIVITY", Severity::Impossible));
+    CHECK(!v.valid);
+    // The ordering check is NOT what caught it: minimum < nominal < maximum here, so
+    // CAP_TOLERANCE is silent and this record was clean before the rule existed.
+    CHECK(!has_code(v, "CAP_TOLERANCE"));
+}
+
+// The maximum bound, with a HEALTHY nominal beside it so scalar_at() resolves to
+// the nominal and the pre-existing positivity check stays silent -- otherwise this
+// case would pass with the rule deleted and prove nothing.
+TEST_CASE("Capacitors: NegativeCapacitanceMaximumImpossible", "[capacitors]") {
+    json p = good_cap();
+    p["capacitor"]["manufacturerInfo"]["datasheetInfo"]["electrical"]["capacitance"] =
+        json::parse(R"json({"nominal": 1.0e-10, "maximum": -1.0e-12})json");
+    Verdict v = V.validate(p);
+    CHECK(has(v, "CAP_POSITIVITY", Severity::Impossible));
+}
+
+// The rule must not widen into a positivity rule for BOUNDS: a stated 0 F bound is
+// degenerate but expressible, and a real +-tolerance block must stay clean.
+TEST_CASE("Capacitors: NonNegativeCapacitanceBoundsStayClean", "[capacitors]") {
+    json p = good_cap();
+    p["capacitor"]["manufacturerInfo"]["datasheetInfo"]["electrical"]["capacitance"] =
+        json::parse(R"json({"nominal": 1.0e-10, "minimum": 9.0e-11, "maximum": 1.1e-10})json");
+    CHECK(!has_code(V.validate(p), "CAP_POSITIVITY"));
+    p["capacitor"]["manufacturerInfo"]["datasheetInfo"]["electrical"]["capacitance"]["minimum"] =
+        0.0;
+    CHECK(!has_code(V.validate(p), "CAP_POSITIVITY"));
+}
+
 TEST_CASE("Capacitors: EnergyDensityImpossible", "[capacitors]") {
     json p = good_cap();
     // 1 F at 1000 V in 5 mm^3 -> astronomically high density.
@@ -1170,6 +1212,80 @@ TEST_CASE("Corpus: SmallCohortNotScreened", "[corpus]") {
     CHECK(validate_corpus(recs).empty());
 }
 
+// ---- 2026-09-06: dispatcher coverage for the four previously-dark catalogues --
+//
+// GEN_COHORT_* are the only checks that can see cohort-level fabrication, and they
+// are reachable ONLY through validate_corpus(), whose find_component() dispatcher
+// (src/corpus.cpp) decides which discriminators exist at all. Until 2026-09-06 it
+// knew nothing of `controller`, `thermistor` or `timeBase`, and looked for the AAS
+// analog subtypes only at the TOP level while TAS/data/analog_ics.ndjson stores
+// every row PEAS-wrapped under `analog`. All four catalogues therefore reported a
+// perfectly clean zero, which is indistinguishable from "screened and found
+// nothing" -- the exact failure mode this file exists to prevent.
+//
+// Each case below plants the SAME shape the resistor test above uses (a cohort of
+// ten sane parts plus one wild outlier) inside one of those four wrappers. Delete
+// the corresponding dispatcher entry and find_component() returns nullptr for every
+// record, no cohort forms, and the case fails on an empty finding list.
+
+namespace {
+// Build a cohort of `vals` records plus one BAD outlier, all sharing manufacturer
+// ACME and series S, with the component object placed at `path` inside the record.
+// `path` is the chain of wrapper keys, e.g. {"analog", "operationalAmplifier"}.
+std::vector<json> cohort_at(const std::vector<std::string>& path, const char* field,
+                            double bad_value) {
+    const double vals[] = {1000, 1100, 1200, 1300, 1500, 1600, 1800, 2000, 2200, 2400};
+    std::vector<json> recs;
+    auto make = [&](const std::string& ref, double v) {
+        json comp = json::parse(R"json({"manufacturerInfo":{"name":"ACME","reference":"R",
+          "datasheetInfo":{"part":{"series":"S"},"electrical":{}}}})json");
+        comp["manufacturerInfo"]["reference"] = ref;
+        comp["manufacturerInfo"]["datasheetInfo"]["electrical"][field] = v;
+        json rec = comp;
+        for (auto it = path.rbegin(); it != path.rend(); ++it) {
+            json wrap = json::object();
+            wrap[*it] = rec;
+            rec = wrap;
+        }
+        return rec;
+    };
+    for (double v : vals) recs.push_back(make("R", v));
+    recs.push_back(make("BAD", bad_value));
+    return recs;
+}
+
+bool found_outlier_on_bad(const std::vector<json>& recs) {
+    auto f = validate_corpus(recs);
+    return std::any_of(f.begin(), f.end(), [](const CorpusFinding& c) {
+        return c.reference == "BAD" && c.code == "GEN_COHORT_OUTLIER";
+    });
+}
+}  // namespace
+
+TEST_CASE("Corpus: ControllerCatalogueIsScreened", "[corpus][dispatcher]") {
+    CHECK(found_outlier_on_bad(cohort_at({"controller"}, "switchingFrequencyMax", 1.0e12)));
+}
+
+TEST_CASE("Corpus: ThermistorCatalogueIsScreened", "[corpus][dispatcher]") {
+    CHECK(found_outlier_on_bad(cohort_at({"thermistor"}, "resistanceAt25C", 1.0e9)));
+}
+
+// TAS/data/timing_devices.ndjson is {"timeBase": {"oscillator"|"timer"|"latch": ...}}.
+TEST_CASE("Corpus: TimeBaseCatalogueIsScreened", "[corpus][dispatcher]") {
+    CHECK(found_outlier_on_bad(
+        cohort_at({"timeBase", "oscillator"}, "equivalentSeriesResistance", 1.0e9)));
+    CHECK(found_outlier_on_bad(cohort_at({"timeBase", "timer"}, "supplyVoltage", 1.0e9)));
+}
+
+// The subtle one: analog rows are stored PEAS-wrapped, and the old dispatcher only
+// looked at the top level. Both shapes must screen -- bare (the AAS schema examples)
+// and wrapped (what the catalogue actually holds).
+TEST_CASE("Corpus: AnalogCatalogueIsScreenedWrappedAndBare", "[corpus][dispatcher]") {
+    CHECK(found_outlier_on_bad(
+        cohort_at({"analog", "operationalAmplifier"}, "gainBandwidthProduct", 1.0e12)));
+    CHECK(found_outlier_on_bad(cohort_at({"adc"}, "sampleRate", 1.0e12)));
+}
+
 // ---- 2026-09-04 fabrication-shape checks -------------------------------------
 
 // ABT #531 shape: outputCapacitance = onResistance^2*10^k EXACTLY and
@@ -1845,6 +1961,56 @@ TEST_CASE("CONN: a real pin header fires no connector finding", "[connector]") {
     Verdict v = V.validate(good_connector());
     CHECK(v.valid);
     for (const auto& f : v.findings) CHECK(f.code.rfind("CONN_", 0) != 0);
+}
+
+// 2026-09-06. electrical.insulationPaths is an ARRAY of per-path objects, and no
+// check reached inside an array element before -- which is how a single 11,111,000 V
+// ratedImpulseVoltage (Weidmueller SL2C 16 BL, an 800 V terminal block) survived
+// every automated scan of the connector catalogue. Calibration for the 100 kV
+// ceiling is at thr::CONN_IMPULSE_IMP: 39,797 live values, median 4 kV, largest
+// genuine 30 kV (Weidmueller HV4000 M12 high-voltage connectors).
+TEST_CASE("CONN: an impulse rating beyond any insulation path is impossible", "[connector]") {
+    json p = good_connector();
+    p["connector"]["manufacturerInfo"]["datasheetInfo"]["electrical"]["insulationPaths"] =
+        json::parse(R"json([{"from": "contact1", "to": "contact2", "workingVoltage": 800.0,
+                             "ratedImpulseVoltage": 11111000.0}])json");
+    Verdict v = V.validate(p);
+    CHECK(has(v, "CONN_IMPULSE_VOLTAGE", Severity::Impossible));
+    CHECK(!v.valid);
+}
+
+// The field is only ever reachable through the array, so a defect in a LATER
+// element must fire too -- a rule that reads element [0] and stops would pass this.
+TEST_CASE("CONN: impulse rating is read from every insulation path, not just the first",
+          "[connector]") {
+    json p = good_connector();
+    p["connector"]["manufacturerInfo"]["datasheetInfo"]["electrical"]["insulationPaths"] =
+        json::parse(R"json([{"from": "a", "to": "b", "ratedImpulseVoltage": 6000.0},
+                            {"from": "b", "to": "shell", "ratedImpulseVoltage": 4000.0},
+                            {"from": "a", "to": "shell", "ratedImpulseVoltage": 11111000.0}])json");
+    Verdict v = V.validate(p);
+    CHECK(has(v, "CONN_IMPULSE_VOLTAGE", Severity::Impossible));
+    CHECK(v.findings.size() >= 1);
+}
+
+// The whole live tail must stay clean: 12 kV is the top of the IEC 60664-1 table
+// (hundreds of WAGO terminal blocks) and 30 kV is a real Weidmueller HV4000 M12.
+TEST_CASE("CONN: genuine high-voltage impulse ratings stay clean", "[connector]") {
+    for (double kv : {6000.0, 8000.0, 12000.0, 25000.0, 30000.0}) {
+        json p = good_connector();
+        p["connector"]["manufacturerInfo"]["datasheetInfo"]["electrical"]["insulationPaths"] =
+            json::parse(R"json([{"from": "a", "to": "b", "ratedImpulseVoltage": 0}])json");
+        p["connector"]["manufacturerInfo"]["datasheetInfo"]["electrical"]["insulationPaths"][0]
+         ["ratedImpulseVoltage"] = kv;
+        CHECK(!has_code(V.validate(p), "CONN_IMPULSE_VOLTAGE"));
+    }
+}
+
+TEST_CASE("CONN: a non-positive impulse rating is impossible", "[connector]") {
+    json p = good_connector();
+    p["connector"]["manufacturerInfo"]["datasheetInfo"]["electrical"]["insulationPaths"] =
+        json::parse(R"json([{"from": "a", "to": "b", "ratedImpulseVoltage": 0.0}])json");
+    CHECK(has(V.validate(p), "CONN_POSITIVITY", Severity::Impossible));
 }
 
 // Holm voltage-temperature relation. 20 A through a stated 20 mOhm is 0.400 V,

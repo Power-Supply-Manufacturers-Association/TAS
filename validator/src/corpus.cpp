@@ -101,8 +101,21 @@ std::optional<double> field_scalar(const json& v) {
 }
 
 // Locate the component discriminator and its object.
+//
+// This dispatcher decides which catalogues the cohort screens can see AT ALL: a
+// record it does not recognise contributes no Rec, so it forms no cohort and can
+// never produce a GEN_COHORT_* finding. Three catalogues were structurally dark
+// here until 2026-09-06 -- controllers (2,134 rows), thermistors (535) and
+// timing_devices (22,473, stored as {"timeBase": {"oscillator"|"timer"|"latch"}})
+// -- and analog_ics (3,607) was silently dark for a subtler reason: the AAS
+// subtype loop below only looked at the TOP level, but TAS/data/analog_ics.ndjson
+// stores every row PEAS-wrapped as {"analog": {"<subtype>": {...}}}. Every analog
+// row therefore returned nullptr and the catalogue reported a clean 0/3,607, which
+// reads exactly like "no defects found". validator.cpp's per-record dispatcher had
+// already learned to accept both shapes; this one had not. Keep the two in sync.
 const json* find_component(const json& part, std::string& comp) {
-    static const char* SIMPLE[] = {"magnetic", "capacitor", "resistor", "varistor", "connector"};
+    static const char* SIMPLE[] = {"magnetic",    "capacitor",  "resistor", "varistor",
+                                   "connector",   "thermistor", "controller"};
     for (const char* k : SIMPLE)
         if (part.contains(k)) { comp = k; return &part[k]; }
     if (part.contains("semiconductor") && part["semiconductor"].is_object()) {
@@ -110,12 +123,19 @@ const json* find_component(const json& part, std::string& comp) {
         for (const char* k : {"mosfet", "diode", "igbt", "bjt"})
             if (s.contains(k)) { comp = k; return &s[k]; }
     }
+    if (part.contains("timeBase") && part["timeBase"].is_object()) {
+        const json& tb = part["timeBase"];
+        for (const char* k : {"oscillator", "timer", "latch"})
+            if (tb.contains(k)) { comp = k; return &tb[k]; }
+    }
     static const char* AAS[] = {"operationalAmplifier", "comparator", "instrumentationAmplifier",
                                 "differenceAmplifier", "programmableGainAmplifier", "buffer",
                                 "sampleHold", "analogSwitch", "multiplexer", "adc", "dac",
                                 "multiplier", "integrator", "summer"};
+    const json& aas =
+        part.contains("analog") && part["analog"].is_object() ? part["analog"] : part;
     for (const char* k : AAS)
-        if (part.contains(k)) { comp = k; return &part[k]; }
+        if (aas.contains(k)) { comp = k; return &aas[k]; }
     return nullptr;
 }
 

@@ -20,8 +20,9 @@
 // component that does not exist. Those are graph integrity and belong to
 // validate_cias_structure. This file does physics only.
 //
-// SEVERITIES ARE CALIBRATED, NOT ASSUMED. Every rule below was run against all 19,533
-// bricks in TAS/data/circuits.ndjson before being given a severity, because a rule that
+// SEVERITIES ARE CALIBRATED, NOT ASSUMED. Every rule below was run against the whole of
+// TAS/data/circuits.ndjson (19,533 bricks when these rules were written; 25,234 as of the
+// 2026-09-06 re-measurement recorded below) before being given a severity, because a rule that
 // fires on correct physics retroactively invalidates good data. Two of the first three
 // draft rules were wrong and were fixed rather than shipped:
 //   - a floating-node rule that ignored PORTS fired on 38.84% of the corpus, including
@@ -193,7 +194,8 @@ void check_circuit(const json& brick, const Ctx& ctx, std::vector<Finding>& out,
     }
 
     // ---- coupled-inductor matrices ------------------------------------------
-    // Fire rate on the live corpus: 0 of 19,533. A pure FORWARD guard — it invalidates
+    // Fire rate on the live corpus: 0 of 25,234 (re-measured 2026-09-06; also 0 on the
+    // earlier 19,533-brick snapshot). A pure FORWARD guard — it invalidates
     // nothing that exists today, which is exactly what an IMPOSSIBLE severity is for.
     for (const json& c : *comps) {
         const json* beh = at(c, "data", "behavioral");
@@ -300,9 +302,20 @@ void check_circuit(const json& brick, const Ctx& ctx, std::vector<Finding>& out,
     }
 
     // ---- element values -----------------------------------------------------
-    // Fire rates on the live corpus: CIR_NONPOSITIVE 9 bricks (0.05%, every one a genuine
-    // defect — 0 F capacitors and 0 H inductors); CIR_SENTINEL_VALUE 78 bricks (0.40%, all
-    // 1e100 ohm "open" idioms); CIR_VALUE_RANGE 0 after the supercapacitor recalibration.
+    // Fire rates, RE-MEASURED 2026-09-06 over all 25,234 bricks of
+    // TAS/data/circuits.ndjson (the numbers this comment used to quote were from an
+    // older 19,533-brick snapshot and had gone stale, which is worse than no number:
+    // a reader budgets attention against a defect count that no longer exists):
+    //   CIR_NONPOSITIVE     2 bricks (0.008%) — the only IMPOSSIBLE findings anywhere
+    //                       in the live corpus. Was 9; seven were repaired.
+    //   CIR_SENTINEL_VALUE  0 bricks. Was 78 (0.40%), all 1e100 ohm "open" idioms;
+    //                       that defect class was repaired at the source and the
+    //                       comment was never updated. Across 64,300 resistor
+    //                       elements that carry a value, the LARGEST is 5e12 ohm —
+    //                       seventeen orders of magnitude below kROpenSentinel, so
+    //                       the check is now a pure forward guard against the idiom
+    //                       coming back, not a description of live data.
+    //   CIR_VALUE_RANGE     0, unchanged since the supercapacitor recalibration.
     const std::vector<Element> els = elements_of(brick);
     for (const Element& e : els) {
         if (e.kind == '?' || !e.has_value) continue;

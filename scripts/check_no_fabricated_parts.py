@@ -217,10 +217,85 @@ def is_bare_stub(info, electrical):
 #   * and more than one member, obviously.
 # A real family that steps one parameter also varies the others -- package,
 # current, dissipation, capacitance move together. A generator moves one.
+#
+# MID-STRING LADDERS (2026-09-06). The cohort key above used to be
+# ``^(stem)(index)$`` -- a TRAILING numeric run and nothing else. That is not
+# where real vendors put the varying digits: IPW60R080P7, C3M0075120K,
+# FDMU81000, IRFB4110PbF all carry the family's varying number in the MIDDLE of
+# the part number, with a package/grade token after it. A cohort indexed
+# mid-string therefore produced a DIFFERENT stem for every member
+# (ACME100N65 -> "ACME100N", ACME101N65 -> "ACME101N"), so every cohort had
+# exactly one member and the whole rule was inert against it. That is precisely
+# the shape a generator imitating a real vendor family emits, and it is how the
+# 14 fabricated FDMU81000 MOSFETs escaped this guard.
+#
+# So the key is now derived from EVERY numeric run in the label, not just a
+# trailing one: a label yields one candidate (prefix, suffix, index) per run, and
+# ACME100N65/ACME101N65 group on prefix "ACME", suffix "N65". The trailing-run
+# behaviour is preserved exactly -- it is simply the run whose suffix is empty.
+#
+# Nothing else about the rule changes. All four corroboration conditions
+# (contiguous run of >= LADDER_MIN, an EXACT affine field, a degenerate
+# surrounding cohort, > 1 member) still have to hold, which is what keeps the
+# widened key from condemning real families: a member now appears in several
+# candidate cohorts instead of one, and a real family fails the corroboration in
+# every one of them.
+#
+# ONE EXTRA CONDITION IS REQUIRED, AND IT WAS MEASURED, NOT ASSUMED. Run with the
+# widened key alone, the rule fires on 13,142 LIVE records -- 11,473 capacitors
+# and 1,669 magnetics -- and every one of them is a real part:
+#     Murata  GCQ0335C1H6R0DB01..6R9DB01   capacitance.nominal = 6.0..6.9 pF
+#     Bourns  CE0603G-2N0C..2N9C           inductance          = 2.0..2.9 nH
+#     Murata  LQP02TQ10NH02..22NH02        inductance          = 1.0..2.2 nH
+# These are not ladders that slipped through; they are what a VALUE-CODED part
+# number IS. When the vendor spells the value in the MPN, the encoded quantity is
+# affine in the index BY CONSTRUCTION, and the rest of the row (one tolerance, one
+# rated voltage) is legitimately identical across the decade. The trailing-run key
+# never met this because a value code is almost always followed by a tolerance or
+# packaging token -- which is exactly why widening the key walks straight into it.
+#
+# The discriminator, taken from what separates those 13,142 from the ABT #1011
+# specimen: count DISTINCT BASE quantities that are affine in the index, treating
+# .nominal/.minimum/.maximum of one field as ONE quantity. Every single false
+# positive above has exactly ONE (the quantity the part number spells; its three
+# tolerance bounds are not three independent measurements). The ROHM specimen has
+# TWO independent ones -- forwardVoltage AND powerDissipation. A vendor's part
+# number encodes one quantity; a generator's loop index drives several. So a
+# MID-STRING cohort must show >= LADDER_MIN_MIDSTRING_FIELDS independent affine
+# quantities. Measured with that condition in place: 0 findings across all 13
+# live component catalogues (1.06M records), while a planted mid-string ladder is
+# caught.
+#
+# The condition is applied ONLY to mid-string cohorts. The trailing-run key is
+# already calibrated and already clean, and narrowing it here would silently
+# weaken a rule that is not the one being changed.
+#
+# COST, stated plainly: a fabricated mid-string cohort that ladders exactly ONE
+# quantity is not caught by this rule. From the fields alone it is
+# indistinguishable from a Murata value code -- and condemning 13,142 real parts
+# to reach it is not a trade this guard makes. That gap needs a different signal
+# (provenance, the cohort's own citations), not a looser bar here.
 LADDER_MIN = 8
-LADDER_STEM = re.compile(r"^(?P<stem>.*?)(?P<index>\d+)$")
+LADDER_MIN_MIDSTRING_FIELDS = 2
+# Every maximal digit run, with what surrounds it.
+LADDER_RUN = re.compile(r"\d+")
 LADDER_DEGENERATE_FRACTION = 0.7
 LADDER_TOL = 1e-9
+
+
+def ladder_keys(label):
+    """Yield (prefix, suffix, index) for every maximal numeric run in `label`.
+
+    The trailing run yields suffix == "", which reproduces the old
+    ``^(stem)(index)$`` key exactly; the other runs are what that key could not
+    see. A prefix is required (an MPN that STARTS with its varying digits has no
+    stem to group on, same as before).
+    """
+    for m in LADDER_RUN.finditer(label):
+        prefix, digits, suffix = label[:m.start()], m.group(0), label[m.end():]
+        if not prefix:
+            continue
+        yield prefix, suffix, int(digits)
 
 
 def _affine_exact(indices, values):
@@ -249,11 +324,13 @@ def _affine_exact(indices, values):
 def find_arithmetic_ladders(cohorts):
     """Yield (members, why) for each cohort that is a generator's output.
 
-    `cohorts` maps (manufacturer, stem) -> list of (index, lineno, part_number,
-    {field: value}). Only numeric fields present on EVERY member are considered:
-    a field missing from some rows says the rows were populated separately.
+    `cohorts` maps (manufacturer, prefix, suffix) -> list of (index, lineno,
+    part_number, {field: value}); `suffix` is "" for a trailing-index cohort and
+    the tail token (e.g. "N65") for a mid-string one. Only numeric fields present
+    on EVERY member are considered: a field missing from some rows says the rows
+    were populated separately.
     """
-    for (manufacturer, stem), members in sorted(cohorts.items()):
+    for (manufacturer, stem, suffix), members in sorted(cohorts.items()):
         if len(members) < LADDER_MIN:
             continue
         members = sorted(members)
@@ -274,10 +351,16 @@ def find_arithmetic_ladders(cohorts):
                 ladder_fields.append(field)
         if not ladder_fields:
             continue
+        # Distinct BASE quantities: inductance.minimum/.nominal/.maximum are three
+        # bounds of ONE measurement, not three independent ladders.
+        base_quantities = {f.split(".", 1)[0] for f in ladder_fields}
+        if suffix and len(base_quantities) < LADDER_MIN_MIDSTRING_FIELDS:
+            continue                      # a value-coded MPN, not a generated cohort
         others = len(shared) - len(ladder_fields)
         if others and degenerate / others < LADDER_DEGENERATE_FRACTION:
             continue                      # the rest of the cohort varies: a real family
-        why = (f"cohort of {len(members)} parts {stem}{indices[0]}..{stem}{indices[-1]} "
+        why = (f"cohort of {len(members)} parts {stem}{indices[0]}{suffix}.."
+               f"{stem}{indices[-1]}{suffix} "
                f"({manufacturer or 'unknown manufacturer'}): "
                + ", ".join(f"{f} is an exact linear function of the part index"
                            for f in ladder_fields)
@@ -460,7 +543,7 @@ def check_file(path, quarantined_refs=frozenset(), stats=None):
     """
     findings = []
     stats = stats if stats is not None else new_stats()
-    cohorts = {}          # (manufacturer, stem) -> [(index, lineno, pn, fields)]
+    cohorts = {}          # (manufacturer, prefix, suffix) -> [(index, lineno, pn, fields)]
     with path.open(encoding="utf-8", errors="replace") as fh:
         first = fh.readline()
         if first.startswith("version https://git-lfs"):
@@ -524,15 +607,19 @@ def check_file(path, quarantined_refs=frozenset(), stats=None):
                 # the same label every other rule reports: partNumber, else
                 # reference -- a generator that writes one field only must land
                 # in the same cohort as one that writes both.
-                match = LADDER_STEM.match(label)
-                if match and match.group("stem"):
-                    fields = _ladder_numeric_fields(electrical)
-                    if fields:
-                        key = (str(info.get("name") or ""), match.group("stem"))
-                        cohorts.setdefault(key, []).append(
-                            (int(match.group("index")), lineno, label, fields))
+                fields = _ladder_numeric_fields(electrical)
+                if fields:
+                    for prefix, suffix, index in ladder_keys(label):
+                        key = (str(info.get("name") or ""), prefix, suffix)
+                        cohorts.setdefault(key, []).append((index, lineno, label, fields))
+    # A label now belongs to one candidate cohort per numeric run, so the same
+    # record can be condemned by more than one of them. Report it once.
+    seen = set()
     for members, why in find_arithmetic_ladders(cohorts):
         for _index, lineno, label, _fields in members:
+            if (lineno, label) in seen:
+                continue
+            seen.add((lineno, label))
             findings.append((lineno, label, why))
     return findings
 

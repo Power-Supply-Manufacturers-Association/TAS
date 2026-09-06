@@ -68,6 +68,29 @@ void check_capacitors(const json& datasheet, const Ctx& ctx, std::vector<Finding
     if (V && *V <= 0)
         emit(out, ctx, "CAP_POSITIVITY", Severity::Impossible, *V, 0, "ratedVoltage <= 0");
 
+    // CHECK: no BOUND of the capacitance may be negative (2026-09-06).
+    // scalar_at() above resolves a {nominal,minimum,maximum} block to its
+    // NOMINAL, so a negative minimum sitting beside a positive nominal is
+    // invisible to the positivity check above -- which is exactly the shape the
+    // live corpus carries: 16 Taiyo Yuden rows store
+    //   capacitance = {nominal: 2e-13, minimum: -4.999999999999999e-14,
+    //                  maximum: 4.5e-13}
+    // i.e. a 0.2 pF part whose +-0.25 pF absolute tolerance was subtracted
+    // arithmetically straight past zero by the importer. A negative capacitance
+    // is not a suspicious value, it is not a value: no dielectric stores
+    // negative charge per volt, and C < 0 makes the part an active element.
+    // There is no threshold to calibrate and no reading under which it is
+    // legitimate, hence IMPOSSIBLE. `< 0` and not `<= 0`: a stated bound of
+    // exactly 0 F is degenerate but expressible (an unpopulated position), and
+    // a non-positive NOMINAL is already covered by the check above.
+    if (const json* cbounds = at(*elec, "capacitance"))
+        if (cbounds->is_object())
+            for (const char* k : {"nominal", "minimum", "maximum"})
+                if (auto b = scalar_at(*cbounds, {k}))
+                    if (*b < 0)
+                        emit(out, ctx, "CAP_POSITIVITY", Severity::Impossible, *b, 0,
+                             fmt(std::string("capacitance ") + k + " < 0 [F]", *b));
+
     // CHECK: capacitance magnitude — dimension-free unit-error guard. Only
     // supercapacitors exceed ~1 F, so a 100 F MLCC/electrolytic is a uF/F slip.
     if (C && *C > 0) {

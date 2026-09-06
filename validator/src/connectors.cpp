@@ -264,6 +264,42 @@ void check_connectors(const json& datasheet, const Ctx& ctx, std::vector<Finding
                  fmt("dielectricWithstandingVoltage below ratedVoltage [V]", *dwv, *V));
     }
 
+    // CHECK: rated impulse withstand voltage, per insulation path (2026-09-06).
+    // electrical.insulationPaths is an ARRAY of per-path objects
+    // ({from,to,workingVoltage,ratedImpulseVoltage,pollutionDegree,...}), and
+    // NOTHING here reached inside it before -- which is why the corpus's single
+    // 11,111,000 V reading (Weidmueller SL2C 16 BL) survived every automated
+    // scan: a field one level down inside an array element is invisible to any
+    // check that only walks the electrical object's own scalars. See
+    // thr::CONN_IMPULSE_IMP for the calibration against all 39,797 live values.
+    // Non-positive is impossible for the same reason as everywhere else here:
+    // an insulation path with a zero or negative impulse rating withstands
+    // nothing, which is not a rating.
+    if (elec != nullptr) {
+        if (const json* paths = at(*elec, "insulationPaths")) {
+            if (paths->is_array()) {
+                for (std::size_t i = 0; i < paths->size(); ++i) {
+                    const json& path = (*paths)[i];
+                    if (!path.is_object()) continue;
+                    auto riv = scalar_at(path, {"ratedImpulseVoltage"});
+                    if (!riv) continue;
+                    std::ostringstream where;
+                    where << "electrical.insulationPaths[" << i << "].ratedImpulseVoltage";
+                    if (*riv <= 0)
+                        emit(out, ctx, "CONN_POSITIVITY", Severity::Impossible, *riv, 0,
+                             where.str() + " <= 0");
+                    else if (*riv > thr::CONN_IMPULSE_IMP)
+                        emit(out, ctx, "CONN_IMPULSE_VOLTAGE", Severity::Impossible, *riv,
+                             thr::CONN_IMPULSE_IMP,
+                             fmt(where.str() + " beyond any connector insulation path [V]", *riv,
+                                 thr::CONN_IMPULSE_IMP));
+                }
+            }
+        } else {
+            skipped.push_back("CONN_IMPULSE_VOLTAGE");
+        }
+    }
+
     // ---- Holm contact voltage ----------------------------------------------
     // A closed metallic contact's constriction supertemperature is set by the
     // voltage across it alone. If the part's own rated current driven through
