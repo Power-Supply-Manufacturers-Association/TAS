@@ -42,7 +42,6 @@
 # integrity_scan.py, and a guard that is not in a fresh clone does not exist --
 # which is exactly why the provenance cleanup could not be re-run.
 !/scripts/catalogue_audit.py
-!/scripts/integrity_scan.py
 # A guard since it grew --check: provenance in a live catalogue is a reference, not
 # an essay, and a one-shot cleanup nobody can run again does not hold that.
 !/scripts/strip_provenance_narrative.py

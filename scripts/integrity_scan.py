@@ -51,7 +51,13 @@ LINE_FINDING = re.compile(r"^\s*line \d+:\s*(?P<id>.+?)\s+--\s+(?P<why>.+)$")
 # A summary line is not a finding. Counting it as one makes the report grow a phantom
 # entry every time a real count changes.
 SUMMARY = re.compile(r"^\s*(?:FAIL|OK|WARN)[:.]|^\s*\d[\d,]* rows? trimmed|"
-                     r"^\s*zero dangling|^\s*--check:|^\s*\.\.\. and \d+ more")
+                     r"^\s*zero dangling|^\s*--check:|^\s*\.\.\. and \d+ more|"
+                     # catalogue_audit's own headers: "capacitors.ndjson: 230,000
+                     # rows, 12 finding(s)" and "  [units] 47". Neither is a
+                     # finding, and counting them adds a phantom entry to the
+                     # diff every time a real count moves.
+                     r"^\S+\.ndjson: [\d,]+ rows|^\s*\[\w+\] [\d,]+$|"
+                     r"^[\d,]+ live rows over|^report written to|^=+$")
 
 GUARDS = [
     ("fabricated", ["python3", "scripts/check_no_fabricated_parts.py"], LINE_FINDING),
@@ -62,6 +68,10 @@ GUARDS = [
      ["python3", "scripts/strip_provenance_narrative.py", "--check"], LINE_FINDING),
     ("component_uris", ["python3", "scripts/check_component_uris.py"], LINE_FINDING),
     ("topology", ["python3", "scripts/validate_topology.py"], LINE_FINDING),
+    # The six per-catalogue audits that were being done by hand at ~900k tokens a
+    # night. Aggregate findings (one line per cohort/field/reason) keep the diff
+    # readable where the row counts run to six figures.
+    ("catalogue_audit", ["python3", "scripts/catalogue_audit.py"], LINE_FINDING),
 ]
 
 # How each guard says "I ran and found nothing". Absence of this on a zero-finding
