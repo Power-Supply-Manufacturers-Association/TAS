@@ -71,9 +71,11 @@ NDJSON, one JSON object per line. Files are **huge** (`capacitors.ndjson` ~263 M
 `resistors.ndjson` ~123 MB / 161k, `circuits.ndjson` ~95 MB / 12k CIAS bricks). Active
 catalogs: `mosfets`, `diodes`, `igbts`, `bjts`, `capacitors`, `resistors`, `varistors`,
 `magnetics`, `controllers`, `analog_ics`, `connectors`, plus `circuits` (CIAS bricks)
-and `converters` (47 full TAS documents). Per-catalog `*.quarantine_*.ndjson` siblings
-(and the legacy `quarantine.ndjson`) hold parts with verified data errors or incomplete
-data — excluded from queries, typically carrying a `quarantineReason`. `*.bak` /
+and `converters` (47 full TAS documents). A single `quarantine.ndjson` (202k rows) holds
+parts with verified data errors or incomplete data — excluded from queries, typically
+carrying a `quarantineReason`. The per-catalog `*.quarantine_*.ndjson` siblings this
+file used to describe do NOT exist on disk; two separate audits went looking for them
+and found only the one file. `*.bak` /
 `*.backup` files are historical artifacts — leave them alone.
 
 Hard rules when touching data:
@@ -88,8 +90,8 @@ Hard rules when touching data:
   Magnetics (including Würth) use the standard MAS shape — specs under
   `manufacturerInfo.datasheetInfo` (`electrical[]` variant array, `provenance[]`); the
   old Würth `commercialSpecs` shape and the `dataCompleteness` field are gone.
-- **Quarantine, don't delete.** Bad records move to the matching
-  `*.quarantine_*.ndjson` file with a reason — traceability is preserved.
+- **Quarantine, don't delete.** Bad records move to
+  `quarantine.ndjson` with a reason — traceability is preserved.
 
 ## Commands
 
