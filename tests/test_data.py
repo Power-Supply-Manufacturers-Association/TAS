@@ -44,7 +44,7 @@ def _build_full_registry() -> Registry:
     pure $ref schemas (e.g. CAS/utils.json -> PEAS/utils.json)."""
     by_id: dict[str, dict] = {}
     by_path: dict[Path, dict] = {}
-    for repo_name in ("PEAS", "SAS", "CAS", "RAS", "MAS", "CTAS", "CONAS", "AAS", "TDAS"):
+    for repo_name in ("PEAS", "SAS", "CAS", "RAS", "MAS", "CTAS", "CONAS", "AAS", "TDAS", "EMAS"):
         repo_dir = PROTEUS / repo_name / "schemas"
         if not repo_dir.is_dir():
             continue
@@ -94,7 +94,7 @@ def _build_tas_registry() -> Registry:
         schemas[s["$id"]] = s
     # peas.json's oneOf reaches every component family: load ALL siblings so bricks
     # with inline PEAS atoms (resistor/capacitor/magnetic/...) resolve.
-    for repo in ("PEAS", "MAS", "CAS", "SAS", "RAS", "AAS", "CTAS", "CONAS", "TDAS", "COAS"):
+    for repo in ("PEAS", "MAS", "CAS", "SAS", "RAS", "AAS", "CTAS", "CONAS", "TDAS", "EMAS", "COAS"):
         sdir = REPO.parent / repo / "schemas"
         assert sdir.is_dir(), f"sibling repo {repo} missing — PSMA workspace layout required"
         for path in sdir.rglob("*.json"):
