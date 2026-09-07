@@ -363,6 +363,75 @@ def all_leaves(obj, path="", depth=0, budget=None):
 # ---------------------------------------------------------------------------
 # per-field numeric accumulator
 # ---------------------------------------------------------------------------
+# CROSS-FIELD CORROBORATION (2026-09-07). A population median is the wrong ruler
+# for a field whose population is genuinely mixed. capacitor.modelParams.cs has a
+# median of 2.2 uF because most rows are MLCCs; a 350 F supercapacitor is then
+# "1.59e+08x the median" and a 0.2 pF RF part is "1.1e+07x below" it. Both are
+# real parts, faithfully transcribed.
+#
+# The record already carries the answer. modelParams is an equivalent circuit
+# FITTED to the part's own datasheet values, so cs must equal electrical
+# capacitance, rs the ESR, riso the insulation resistance. Measured over the live
+# catalogue: cs agrees with the record's own capacitance on 34,107 of 34,107
+# testable rows. A value corroborated by an independent field on the same record
+# is not an outlier whatever the population median says, so it is exempt -- and a
+# modelParams value that CONTRADICTS its own record is a real defect the median
+# test would never have found, which is the better check anyway.
+MIRRORED_MODEL_PARAMS = {"cs": "capacitance", "rs": "esr",
+                         "riso": "insulationResistance"}
+MIRROR_TOLERANCE = 0.10
+
+
+def _scalar(v):
+    """A dimensionWithTolerance or a bare number, collapsed to one float."""
+    if isinstance(v, bool):
+        return None
+    if isinstance(v, (int, float)):
+        return float(v)
+    if isinstance(v, dict):
+        for bound in ("nominal", "maximum", "minimum"):
+            b = v.get(bound)
+            if isinstance(b, (int, float)) and not isinstance(b, bool):
+                return float(b)
+    return None
+
+
+def mirror_agreements(rec):
+    """{modelParams key: True} for each key matching its own electrical sibling.
+
+    Walks every datasheetInfo in the record, so a nested building block is judged
+    against its OWN electrical block rather than the outer part's.
+    """
+    agreed = {}
+
+    def walk(node):
+        if isinstance(node, list):
+            for item in node:
+                walk(item)
+            return
+        if not isinstance(node, dict):
+            return
+        ds = node.get("datasheetInfo")
+        if isinstance(ds, dict):
+            elec = ds.get("electrical")
+            if isinstance(elec, list):
+                elec = elec[0] if elec else {}
+            mp = ds.get("modelParams")
+            if isinstance(mp, dict) and isinstance(elec, dict):
+                for key, mirror in MIRRORED_MODEL_PARAMS.items():
+                    a, b = _scalar(mp.get(key)), _scalar(elec.get(mirror))
+                    if a is None or b is None or a <= 0 or b <= 0:
+                        continue
+                    if abs(a / b - 1) <= MIRROR_TOLERANCE:
+                        agreed[key] = True
+        for value in node.values():
+            if isinstance(value, (dict, list)):
+                walk(value)
+
+    walk(rec)
+    return agreed
+
+
 class FieldStats:
     __slots__ = ("n", "lo", "hi", "sample", "seen", "distinct", "top", "bot", "rng")
 
@@ -475,6 +544,8 @@ def audit_file(path: Path, checks, limit=None, sibling_root: Path = None,
     ident_seen = {}                      # (mfr, series, ident) -> first line
     # 2
     stats = defaultdict(lambda: FieldStats(0xC0FFEE))
+    # (fpath, lineno) whose value is confirmed by another field on the same record
+    corroborated = set()
     impossible = []
     # 3
     cohort_rows = Counter()
@@ -536,10 +607,14 @@ def audit_file(path: Path, checks, limit=None, sibling_root: Path = None,
 
             # ---- 2 units ---------------------------------------------------
             if "units" in checks:
+                agreed = mirror_agreements(rec)
                 for fpath, v in numeric_leaves(rec):
                     if UNITS_EXCLUDE.search(fpath):
                         continue
                     stats[fpath].add(v, lineno, ident)
+                    leafname = fpath.split(".")[-1].replace("[]", "")
+                    if ".modelParams." in fpath and agreed.get(leafname):
+                        corroborated.add((fpath, lineno))
                     segs = [x.replace("[]", "") for x in fpath.split(".")]
                     qty = segs[-1]
                     if qty in BOUND_LEAVES and len(segs) > 1:
@@ -673,6 +748,8 @@ def audit_file(path: Path, checks, limit=None, sibling_root: Path = None,
             if amed > 0:
                 for v, ln, idt in st.top:
                     if abs(v) > amed * EXTREME_RATIO:
+                        if (fpath, ln) in corroborated:
+                            continue      # its own record's electrical block agrees
                         findings.append(F(
                             "units", ln, idt,
                             f"UNIT_EXTREME {fpath} = {v!r} is "
@@ -681,6 +758,8 @@ def audit_file(path: Path, checks, limit=None, sibling_root: Path = None,
                         break
                 for v, ln, idt in st.bot:
                     if v != 0 and abs(v) * EXTREME_RATIO < amed:
+                        if (fpath, ln) in corroborated:
+                            continue
                         findings.append(F(
                             "units", ln, idt,
                             f"UNIT_EXTREME_LOW {fpath} = {v!r} is "
@@ -930,6 +1009,29 @@ def selftest(tmpdir: Path) -> int:
     (ok := ok + 1) if not any("UNIT_EXTREME" in f["why"]
                               for f in res["findings"]) else bad.append(
         "units/UNIT_EXTREME nested-array: expected fire=False, got True")
+
+    # 2b cross-field corroboration. A supercapacitor is 8 orders of magnitude off
+    # an MLCC median and entirely real. When the record's OWN electrical block
+    # states the same value the median must not condemn it -- but when the two
+    # disagree the row is a genuine defect and must still fire.
+    def mp(i, cs, cap_value):
+        return {"capacitor": mi({"partNumber": f"M{i}"},
+                                extra={"electrical": {"capacitance": {"nominal": cap_value}},
+                                       "modelParams": {"cs": cs}})}
+    rows = [mp(i, 2.2e-6, 2.2e-6) for i in range(60)]
+    rows[7] = mp(7, 350.0, 350.0)          # a real supercap: cs agrees with its own record
+    p3 = tmp / "capacitors.ndjson"
+    p3.write_text("\n".join(json.dumps(r) for r in rows) + "\n")
+    res = audit_file(p3, ("units",), sibling_root=REPO.parent)
+    (ok := ok + 1) if not any("UNIT_EXTREME" in f["why"] and "modelParams" in f["why"]
+                              for f in res["findings"]) else bad.append(
+        "units/corroborated modelParams: expected fire=False, got True")
+    rows[7] = mp(7, 350.0, 2.2e-6)         # same outlier, now contradicting its own record
+    p3.write_text("\n".join(json.dumps(r) for r in rows) + "\n")
+    res = audit_file(p3, ("units",), sibling_root=REPO.parent)
+    (ok := ok + 1) if any("UNIT_EXTREME" in f["why"] and "modelParams" in f["why"]
+                          for f in res["findings"]) else bad.append(
+        "units/contradicted modelParams: expected fire=True, got False")
 
     # 3 cohort uniformity: a minted value fires; the SAME shape with the field
     # null everywhere must NOT (that is uniform absence, not a minted value).
