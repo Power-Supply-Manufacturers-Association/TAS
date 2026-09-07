@@ -456,11 +456,70 @@ def _affine_exact(indices, values):
     return True
 
 
+# VENDOR CORROBORATION (2026-09-07). The four conditions above still condemn a real
+# family when the vendor's own catalogue walks a parameter in fine steps and holds
+# everything else constant. TE's Neohm CPF precision resistors are the specimen:
+# 1614895-2..-9 step 9.18k -> 9.32k in exact 20 ohm increments at a fixed 0.1 %,
+# 0.1 W, 25 ppm, 0805 -- an exact affine fit on a contiguous run with a degenerate
+# cohort, which is the generator signature exactly. They are real, orderable parts.
+#
+# What separates them from a generator is a WITNESS. A generated number exists only
+# in the field it was written into; a real one is restated in the vendor's own
+# description text ("9.18K ohm, Thin Film, Precision Resistor, .1 %, 0805, .1 W").
+# The ROHM RSR012E00 batch and the two-seed MOSFET rows carry no such restatement --
+# that is precisely what made them stubs.
+#
+# So a cohort is exonerated only when EVERY member's own description independently
+# states EVERY laddered value. One coincidental number match is plausible; eight
+# members agreeing on eight different values is the vendor telling us the ladder is
+# real. A fabricator that also writes a matching description for every member has
+# forged the corroboration, which no field-shape rule can detect -- that is the
+# stated residual gap, and it is narrower than condemning real catalogue families.
+_SI_PREFIXES = (("", 1.0), ("k", 1e3), ("K", 1e3), ("M", 1e6), ("G", 1e9),
+                ("m", 1e-3), ("u", 1e-6), ("\u00b5", 1e-6), ("n", 1e-9), ("p", 1e-12))
+
+
+def _states_value(value, text):
+    """True when `text` states `value`, in any SI prefix spelling the vendor may use."""
+    if not text or not isinstance(value, float):
+        return False
+    for prefix, mult in _SI_PREFIXES:
+        scaled = value / mult
+        if not (0.001 <= abs(scaled) < 100000):
+            continue
+        # ".1 %" and "9.18K" -- vendors drop the leading zero and the trailing one.
+        for rendered in {f"{scaled:g}", f"{scaled:.10g}".rstrip("0").rstrip(".")}:
+            if rendered.startswith("0."):
+                rendered_alt = rendered[1:]
+            else:
+                rendered_alt = rendered
+            for form in {rendered, rendered_alt}:
+                if not form or form in ("0", "."):
+                    continue
+                # A digit or dot on either side means we matched part of a longer
+                # number: "9.18" inside "19.185" is not a statement of 9.18.
+                if re.search(r"(?<![\d.])" + re.escape(form) + r"\s*" + re.escape(prefix)
+                             + r"(?![\d])", text):
+                    return True
+    return False
+
+
+def _vendor_corroborates(members, ladder_fields):
+    """True when every member's own description states every laddered value."""
+    for _index, _lineno, _label, fields, description in members:
+        if not description:
+            return False
+        for field in ladder_fields:
+            if not _states_value(fields.get(field), description):
+                return False
+    return True
+
+
 def find_arithmetic_ladders(cohorts):
     """Yield (members, why) for each cohort that is a generator's output.
 
     `cohorts` maps (manufacturer, prefix, suffix) -> list of (index, lineno,
-    part_number, {field: value}); `suffix` is "" for a trailing-index cohort and
+    part_number, {field: value}, description); `suffix` is "" for a trailing-index cohort and
     the tail token (e.g. "N65") for a mid-string one. Only numeric fields present
     on EVERY member are considered: a field missing from some rows says the rows
     were populated separately.
@@ -494,6 +553,8 @@ def find_arithmetic_ladders(cohorts):
         others = len(shared) - len(ladder_fields)
         if others and degenerate / others < LADDER_DEGENERATE_FRACTION:
             continue                      # the rest of the cohort varies: a real family
+        if _vendor_corroborates(members, ladder_fields):
+            continue                      # the vendor's own text states every step
         why = (f"cohort of {len(members)} parts {stem}{indices[0]}{suffix}.."
                f"{stem}{indices[-1]}{suffix} "
                f"({manufacturer or 'unknown manufacturer'}): "
@@ -554,6 +615,14 @@ def part_ids(info):
     datasheet = info.get("datasheetInfo") if isinstance(info.get("datasheetInfo"), dict) else {}
     part = datasheet.get("part") if isinstance(datasheet.get("part"), dict) else {}
     return [str(i) for i in (part.get("partNumber"), info.get("reference")) if i]
+
+
+def _part_description(info):
+    """The vendor's own description string for this part, or ""."""
+    datasheet = info.get("datasheetInfo") if isinstance(info.get("datasheetInfo"), dict) else {}
+    part = datasheet.get("part") if isinstance(datasheet.get("part"), dict) else {}
+    description = part.get("description")
+    return description if isinstance(description, str) else ""
 
 
 def iter_parts(record, _nested=False):
@@ -750,12 +819,13 @@ def check_file(path, quarantined_refs=frozenset(), stats=None):
                 if fields:
                     for prefix, suffix, index in ladder_keys(label):
                         key = (str(info.get("name") or ""), prefix, suffix)
-                        cohorts.setdefault(key, []).append((index, lineno, label, fields))
+                        cohorts.setdefault(key, []).append(
+                            (index, lineno, label, fields, _part_description(info)))
     # A label now belongs to one candidate cohort per numeric run, so the same
     # record can be condemned by more than one of them. Report it once.
     seen = set()
     for members, why in find_arithmetic_ladders(cohorts):
-        for _index, lineno, label, _fields in members:
+        for _index, lineno, label, _fields, _description in members:
             if (lineno, label) in seen:
                 continue
             seen.add((lineno, label))
