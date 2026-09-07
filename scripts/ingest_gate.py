@@ -218,6 +218,74 @@ _CATALOGUES = [
         Field("reverseVoltage", _di("electrical", "reverseVoltage")),
         Field("forwardCurrent", _di("electrical", "forwardCurrent")),
     ]),
+    # ---- catalogues added 2026-09-07 ---------------------------------------
+    # The gate covered 7 of 15 catalogues, so 8 could not be guarded at all --
+    # including connectors.ndjson, the LARGEST in the corpus at 392,308 rows. An
+    # unknown catalogue makes IngestGate raise, which reads as "no gate" to a
+    # caller that does not check, so this was a silent hole rather than a loud one.
+    # Fields are the quantities whose UNITS can be checked and whose magnitude has
+    # a physical ceiling; fields with no meaningful bound (enums, counts, ratios)
+    # are deliberately absent rather than given an invented one.
+    Catalogue("connectors.ndjson", ["connector"], "CONAS", "connector.json", [
+        Field("ratedCurrentPerContact", _di("electrical", "ratedCurrentPerContact"),
+              bound=1e4),
+        Field("ratedVoltage", _di("electrical", "ratedVoltage"), bound=1e6),
+        Field("contactResistance", _di("electrical", "contactResistance", "maximum"),
+              "OHM", bound=1e6),
+        Field("insulationResistance", _di("electrical", "insulationResistance"),
+              "OHM", bound=1e16),
+        # insulationPaths[] is an ARRAY of paths, each with its own rating -- the
+        # 11.1 megavolt Weidmueller placeholder lived in here, not on the top level
+        Field("ratedImpulseVoltage",
+              _di("electrical", "insulationPaths", "*", "ratedImpulseVoltage"),
+              bound=1e6),
+    ]),
+    Catalogue("igbts.ndjson", ["semiconductor", "igbt"], "SAS", "igbt.json", [
+        Field("collectorEmitterVoltage", _di("electrical", "collectorEmitterVoltage"),
+              bound=1e5),
+        Field("continuousCollectorCurrent",
+              _di("electrical", "continuousCollectorCurrent"), bound=1e5),
+        Field("collectorEmitterSaturation",
+              _di("electrical", "collectorEmitterSaturation"), bound=1e3),
+        Field("powerDissipation", _di("thermal", "powerDissipation"), bound=1e7),
+    ]),
+    Catalogue("bjts.ndjson", ["semiconductor", "bjt"], "SAS", "bjt.json", [
+        Field("collectorEmitterVoltage", _di("electrical", "collectorEmitterVoltage"),
+              bound=1e5),
+        Field("collectorCurrent", _di("electrical", "collectorCurrent"), bound=1e5),
+        Field("transitionFrequency", _di("electrical", "transitionFrequency"),
+              bound=1e13),
+        Field("powerDissipation", _di("electrical", "powerDissipation"), bound=1e7),
+    ]),
+    Catalogue("controllers.ndjson", ["controller"], "CTAS", "controller.json", [
+        Field("referenceVoltage", _di("electrical", "referenceVoltage", "nominal"),
+              bound=1e4),
+        Field("supplyVoltageMax", _di("electrical", "supplyVoltage", "maximum"),
+              bound=1e4),
+        Field("switchingFrequencyMax",
+              _di("electrical", "switchingFrequency", "maximum"), bound=1e10),
+    ]),
+    Catalogue("analog_ics.ndjson", ["analog", "*"], "AAS", "*", [
+        Field("gainBandwidthProduct", _di("electrical", "gainBandwidthProduct"),
+              bound=1e12),
+        Field("slewRate", _di("electrical", "slewRate"), bound=1e12),
+        Field("inputOffsetVoltage", _di("electrical", "inputOffsetVoltage"), bound=1e2),
+        Field("inputBiasCurrent", _di("electrical", "inputBiasCurrent"), bound=1e2),
+    ]),
+    Catalogue("timing_devices.ndjson", ["timeBase", "*"], "TDAS", "*", [
+        # no description parser exists for hertz (RE_BY_UNIT covers F/H/OHM only),
+        # so this field is bound-checked but not cross-read from the description
+        Field("frequency", _di("electrical", "frequency"), bound=1e13),
+        Field("loadCapacitance", _di("electrical", "loadCapacitance"), "F", bound=1e0),
+        Field("supplyVoltageMax", _di("electrical", "supplyVoltage", "maximum"),
+              bound=1e4),
+    ]),
+    # NOT given specs, deliberately: circuits.ndjson holds CIAS bricks and
+    # converters.ndjson holds whole TAS documents. Neither is an orderable part, so
+    # identity, citation and cohort rules do not apply to them, and inventing a spec
+    # to make the count look complete would mean the gate reporting on something it
+    # is not measuring. They stay outside the gate and are covered by
+    # tests/test_data.py and scripts/validate_topology.py instead.
 ]
 
 CATALOGUES = {c.name: c for c in _CATALOGUES}
@@ -233,13 +301,35 @@ LADDER_EXEMPT = {"onResistance"}
 # small helpers
 # ---------------------------------------------------------------------------
 
-def unwrap(rec, disc):
-    body = rec
+def unwrap(rec, disc, want_kind=False):
+    """Peel the PEAS discriminator(s) off a catalogue row to reach the part body.
+
+    A "*" segment means the sub-kind is not fixed for this catalogue: analog_ics
+    wraps {"analog": {"operationalAmplifier": ...}} but also comparator, adc, dac,
+    voltageReference; timing_devices wraps {"timeBase": {"oscillator": ...}} and
+    also timer and latch. Naming one sub-kind would silently refuse every row of
+    the others, so "*" takes the single sub-object that actually carries the part
+    -- the one with a manufacturerInfo. If more than one candidate matches, the
+    shape is not what this spec describes and unwrapping FAILS rather than picking
+    one: guessing which sibling is the part is how a gate ends up measuring itself.
+    """
+    body, kind = rec, None
     for key in disc:
-        if not isinstance(body, dict) or key not in body:
+        if not isinstance(body, dict):
+            return None
+        if key == "*":
+            cands = [(k, v) for k, v in body.items()
+                     if isinstance(v, dict) and "manufacturerInfo" in v]
+            if len(cands) != 1:
+                return None
+            kind, body = cands[0]
+            continue
+        if key not in body:
             return None
         body = body[key]
-    return body if isinstance(body, dict) else None
+    if not isinstance(body, dict):
+        return None
+    return (body, kind) if want_kind else body
 
 
 def identity_of(body):
@@ -585,12 +675,25 @@ def _build_registry():
 _REGISTRY = None
 
 
-def validator_for(cat):
+def validator_for(cat, kind=None):
+    """A validator for this catalogue, or for one sub-kind of it.
+
+    schema_file "*" means the sub-kind names its own schema: an analog_ics row
+    wrapping {"analog": {"comparator": ...}} validates against AAS comparator.json,
+    not against AAS.json, because AAS.json describes the WRAPPER and the gate holds
+    the unwrapped body. A missing sub-schema is a refusal, never a skip -- TDAS
+    ships oscillator.json but no timer.json, so timer rows cannot be checked and
+    therefore cannot be admitted."""
     global _REGISTRY
     from jsonschema import Draft202012Validator
     if _REGISTRY is None:
         _REGISTRY = _build_registry()
-    schema_path = PROTEUS / cat.repo / "schemas" / cat.schema_file
+    schema_file = cat.schema_file
+    if schema_file == "*":
+        if not kind:
+            return None
+        schema_file = kind + ".json"
+    schema_path = PROTEUS / cat.repo / "schemas" / schema_file
     if not schema_path.is_file():
         raise IngestRefused(
             "cannot validate %s: %s is missing. The gate refuses to report a pass "
@@ -625,7 +728,11 @@ class IngestGate:
         # by default is Field.bound, which is physics, not statistics. Turn this
         # on for a batch you know to be one decade wide (one series, one size).
         self.median_outliers = median_outliers
-        self._validator = validator_for(self.cat) if validate else None
+        self._per_kind = self.cat.schema_file == "*"
+        self._validator = (None if (not validate or self._per_kind)
+                           else validator_for(self.cat))
+        self._kind_validators = {}
+        self._validate = validate
         self.rows = []          # (identity, manufacturer, series, description, body)
         self.cites = []         # (has_part_specific, {url accepted only by doc-id})
         self.values = []        # {field key: scalar}
@@ -636,7 +743,17 @@ class IngestGate:
         """Refusals for this row alone. The row is remembered for the batch pass
         only when it passes: a refused row never enters, so it must not colour
         the cohort statistics of the ones that do."""
-        body = unwrap(rec, self.cat.disc)
+        body, kind = unwrap(rec, self.cat.disc, want_kind=True)
+        validator = self._validator
+        if self._validate and self._per_kind and body is not None:
+            if kind not in self._kind_validators:
+                try:
+                    self._kind_validators[kind] = validator_for(self.cat, kind)
+                except IngestRefused as e:
+                    self._kind_validators[kind] = e
+            validator = self._kind_validators[kind]
+            if isinstance(validator, IngestRefused):
+                return [Refusal(6, identity_of(body) or "<no identity>", str(validator))]
         if body is None:
             return [Refusal(0, "<unwrappable>",
                             "row is not wrapped in its discriminator %s -- every "
@@ -647,8 +764,8 @@ class IngestGate:
         refusals += check_citation(body)
         refusals += check_units(body, self.cat.fields)
         refusals += check_seed_identity(body)
-        if self._validator is not None:
-            refusals += self._check_schema(body)
+        if validator is not None:
+            refusals += self._check_schema(body, validator)
         if refusals:
             return refusals
         self.rows.append((identity_of(body), manufacturer_of(body), series_of(body),
@@ -661,16 +778,17 @@ class IngestGate:
         self.accepted += 1
         return []
 
-    def _check_schema(self, body):
+    def _check_schema(self, body, validator=None):
+        validator = validator or self._validator
         ident = identity_of(body) or "<no identity>"
-        errs = sorted(self._validator.iter_errors(body), key=lambda e: e.path)
+        errs = sorted(validator.iter_errors(body), key=lambda e: e.path)
         if errs:
             e = errs[0]
             return [Refusal(6, ident, "does not validate against %s/%s: %s @ %s"
                             % (self.cat.repo, self.cat.schema_file, e.message,
                                list(e.absolute_path)))]
         pruned = prune_empty(body)
-        errs = sorted(self._validator.iter_errors(pruned), key=lambda e: e.path)
+        errs = sorted(validator.iter_errors(pruned), key=lambda e: e.path)
         if errs:
             e = errs[0]
             return [Refusal(6, ident,
