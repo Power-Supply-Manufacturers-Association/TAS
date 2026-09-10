@@ -140,6 +140,10 @@ def part_library_validators():
         ("timing_devices.ndjson", ["timeBase"],            "TDAS", "tdas.json"),
         ("thermistors.ndjson", ["thermistor"],             "RAS", "thermistor.json"),
         ("modules.ndjson",    ["semiconductor", "module"], "SAS", "module.json"),
+        ("connector_accessories.ndjson", ["connectorAccessory"], "CONAS", "connectorAccessory.json"),
+        ("relays.ndjson",     ["relay"],                   "EMAS", "relay.json"),
+        ("switches.ndjson",   ["switch"],                  "EMAS", "switch.json"),
+        ("potentiometers.ndjson", ["potentiometer"],       "RAS", "potentiometer.json"),
     ]:
         schema = json.loads((PROTEUS / repo / "schemas" / schema_file).read_text())
         out[fname] = (disc_path, Draft202012Validator(schema, registry=reg))
@@ -191,6 +195,8 @@ def _summarise_failures(fails: list[tuple[int, str]], cap: int = 5) -> str:
     "capacitors.ndjson", "resistors.ndjson", "varistors.ndjson",
     "magnetics.ndjson", "controllers.ndjson", "analog_ics.ndjson",
     "connectors.ndjson", "timing_devices.ndjson", "thermistors.ndjson", "modules.ndjson",
+    "connector_accessories.ndjson", "relays.ndjson", "switches.ndjson",
+    "potentiometers.ndjson",
 ])
 def test_part_library_records_validate(part_library_validators, fname):
     path = DATA / fname
@@ -247,6 +253,8 @@ def _manufacturer_ref(rec):
     "capacitors.ndjson", "resistors.ndjson", "varistors.ndjson",
     "magnetics.ndjson", "controllers.ndjson", "analog_ics.ndjson",
     "connectors.ndjson", "timing_devices.ndjson", "thermistors.ndjson", "modules.ndjson",
+    "connector_accessories.ndjson", "relays.ndjson", "switches.ndjson",
+    "potentiometers.ndjson",
 ])
 def test_part_library_references_unique(fname):
     """No (manufacturer, reference) may appear more than once in a part library.

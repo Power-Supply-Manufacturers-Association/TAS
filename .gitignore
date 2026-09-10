@@ -22,6 +22,12 @@
 !/data/thermistors.ndjson
 !/data/timing_devices.ndjson
 !/data/varistors.ndjson
+# Families added 2026-09-07/08 when PEAS gained their discriminators: parts that
+# previously had NO schema able to hold them and sat in quarantine unvalidatable.
+!/data/connector_accessories.ndjson
+!/data/relays.ndjson
+!/data/switches.ndjson
+!/data/potentiometers.ndjson
 # The single consolidated quarantine sink. Per-catalogue quarantine files
 # (*.quarantine_*.ndjson), backups, vendor dumps and staging live local-only.
 !/data/quarantine.ndjson

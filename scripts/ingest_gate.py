@@ -286,6 +286,51 @@ _CATALOGUES = [
     # to make the count look complete would mean the gate reporting on something it
     # is not measuring. They stay outside the gate and are covered by
     # tests/test_data.py and scripts/validate_topology.py instead.
+    # ---- catalogues added 2026-09-10 ---------------------------------------
+    # Four families whose parts spent months in quarantine because no schema could
+    # hold them. Their catalogues are new, so the gate had no spec and would have
+    # refused them outright -- which is the correct failure, but it means the
+    # migration could not be gated at all until these existed.
+    Catalogue("connector_accessories.ndjson", ["connectorAccessory"], "CONAS",
+              "connectorAccessory.json", [
+        Field("ratedCurrentPerContact", _di("electrical", "ratedCurrentPerContact"),
+              bound=1e4),
+        Field("ratedVoltage", _di("electrical", "ratedVoltage"), bound=1e6),
+        Field("contactResistance", _di("electrical", "contactResistance", "maximum"),
+              "OHM", bound=1e6),
+        Field("characteristicImpedance", _di("electrical", "characteristicImpedance"),
+              "OHM", bound=1e4),
+    ]),
+    Catalogue("relays.ndjson", ["relay"], "EMAS", "relay.json", [
+        # the ratings live on the shared contactSet, not on electrical directly
+        Field("contactRatedCurrent", _di("electrical", "contacts", "ratedCurrent"),
+              bound=1e5),
+        Field("contactRatedVoltage", _di("electrical", "contacts", "ratedVoltage"),
+              bound=1e6),
+        Field("contactResistance",
+              _di("electrical", "contacts", "contactResistance"), "OHM", bound=1e6),
+        Field("operateTime", _di("electrical", "operateTime"), bound=1e3),
+    ]),
+    Catalogue("switches.ndjson", ["switch"], "EMAS", "switch.json", [
+        Field("contactRatedCurrent", _di("electrical", "contacts", "ratedCurrent"),
+              bound=1e5),
+        Field("contactRatedVoltage", _di("electrical", "contacts", "ratedVoltage"),
+              bound=1e6),
+        Field("contactResistance",
+              _di("electrical", "contacts", "contactResistance"), "OHM", bound=1e6),
+    ]),
+    Catalogue("potentiometers.ndjson", ["potentiometer"], "RAS", "potentiometer.json", [
+        # totalResistance, NOT resistance: the potentiometer schema declares no bare
+        # `resistance` property, which is the structural guard that stops a fixed
+        # resistor validating here
+        Field("totalResistance", _di("electrical", "totalResistance", "nominal"),
+              "OHM", bound=1e15),
+        Field("powerRating", _di("electrical", "powerRating"), bound=1e5),
+        Field("maximumWorkingVoltage", _di("electrical", "maximumWorkingVoltage"),
+              bound=1e5),
+        Field("insulationResistance", _di("electrical", "insulationResistance"),
+              "OHM", bound=1e16),
+    ]),
 ]
 
 CATALOGUES = {c.name: c for c in _CATALOGUES}
@@ -639,7 +684,7 @@ def _build_registry():
 
     by_id, by_path = {}, {}
     for repo_name in ("PEAS", "SAS", "CAS", "RAS", "MAS", "CTAS", "CONAS", "AAS",
-                      "TDAS"):
+                      "TDAS", "EMAS"):
         d = PROTEUS / repo_name / "schemas"
         if not d.is_dir():
             continue
