@@ -884,6 +884,43 @@ class IngestGate:
         return out
 
     # rule 2, cross-row: the same document standing in for many different parts
+    IDENTITY_FIELDS = ("partnumber", "reference")
+
+    def _names_part_via_fields(self, row_index, url):
+        """True when the provenance entry citing `url` claims it supplied the identity."""
+        body = self.rows[row_index][4]
+        for entry in provenance_of(body):
+            if not isinstance(entry, dict):
+                continue
+            if str(entry.get("sourceUrl") or "") != url:
+                continue
+            fields = entry.get("fields")
+            if not isinstance(fields, list):
+                continue
+            for f in fields:
+                leaf = str(f).rsplit(".", 1)[-1].lower()
+                if leaf in self.IDENTITY_FIELDS:
+                    return True
+        return False
+
+    def _entry_says_series(self, row_index, url):
+        """True when the provenance entry citing `url` is stamped seriesConfirmed.
+
+        That stamp is the schema's word for "this document covers the part's
+        SERIES but does not print its individual order code" -- which is the
+        honest description of a family datasheet, and precisely what this rule
+        asks for. Honouring it is the difference between a gate and a wall.
+        """
+        body = self.rows[row_index][4]
+        for entry in provenance_of(body):
+            if not isinstance(entry, dict):
+                continue
+            if str(entry.get("sourceUrl") or "") != url:
+                continue
+            if entry.get("verification") == SERIES_VERIFICATION:
+                return True
+        return False
+
     def _reused_documents(self):
         """A document-by-id URL is accepted per row because it addresses a real
         document. Handed to N different parts, it is a FAMILY datasheet being
@@ -902,6 +939,36 @@ class IngestGate:
             if len(idx) < self.min_cohort:
                 continue
             for i in idx:
+                # A FAMILY DATASHEET THAT PRINTS A PARTS GRID DOES NAME THE PART.
+                # This rule reads URL shape plus reuse count, so it cannot tell a
+                # Vishay inductor datasheet -- whose STANDARD ELECTRICAL
+                # SPECIFICATIONS table has a PART NUMBER column -- from a landing
+                # page naming nobody. Both are one document cited by many rows.
+                #
+                # The record can say which, and falsifiably: if the provenance
+                # entry citing THIS url lists partNumber or reference among the
+                # `fields` it took from that document, it is asserting the
+                # document supplied this part's IDENTITY. A landing page cannot
+                # supply an identity; a parts grid can. That claim is checkable
+                # against the document, which is exactly what a stamp should be.
+                #
+                # Without this, the only escape offered was
+                # verification=seriesConfirmed -- and the schema defines that as
+                # "covers this part's SERIES but does not print this individual
+                # order code", which for 1,183 rows read straight out of a
+                # printed PART NUMBER column is simply false. A gate whose only
+                # green path is a false statement teaches importers to lie.
+                if self._names_part_via_fields(i, url):
+                    continue
+                # THE ESCAPE HATCH THIS RULE ADVERTISES MUST ACTUALLY WORK.
+                # The refusal text says "or stamp verification=seriesConfirmed",
+                # but until 2026-09-11 nothing here read the stamp -- the rule saw
+                # only URL shape and a reuse count. A row that did exactly what it
+                # was told was refused anyway, which is worse than no escape hatch:
+                # it teaches that complying is pointless. Found on 99 Vishay
+                # magnetics that had been restamped on the rule's own instruction.
+                if self._entry_says_series(i, url):
+                    continue
                 out.append(Refusal(2, self.rows[i][0],
                                    "its only citation %s is handed to %d different "
                                    "parts in this batch and names none of them. "
@@ -1200,6 +1267,51 @@ def selftest():
                "sourceUrl": "https://www.sullinscorp.com/products/"}])
     results.append(_run("2b  same row stamped inferredNotVerified", "ACCEPTED",
                         mag, [sullins_honest]))
+
+    # -- rule 2: a family datasheet that PRINTS the part number -------------
+    # Added 2026-09-11. The reuse rule reads URL shape and a reuse count, so it
+    # cannot distinguish a Vishay inductor datasheet whose STANDARD ELECTRICAL
+    # SPECIFICATIONS table has a PART NUMBER column from a landing page naming
+    # nobody. Both are one document cited by many rows. The record settles it by
+    # listing partNumber among the `fields` it took from that document -- a
+    # landing page cannot supply an identity, a parts grid can.
+    #
+    # BOTH cases are asserted, and the second is the one that matters: without
+    # it, a blanket exemption would pass this pair identically to a working rule.
+    def _shared_pdf(pn, fields, verification="valuesReadFromSource"):
+        return {"magnetic": {"manufacturerInfo": {
+            "name": "Vishay", "reference": pn,
+            "datasheetInfo": {
+                "part": {"partNumber": pn, "series": "IHLP-1008"},
+                "electrical": [{"inductance": {"nominal": 1e-6}}],
+                "provenance": [{
+                    "source": "manufacturerDatasheet",
+                    "sourceName": "Vishay IHLP-1008 datasheet",
+                    "sourceUrl": "https://www.vishay.com/docs/34609/ihlp1008.pdf",
+                    "retrievedDate": "2026-09-11",
+                    "verification": verification,
+                    "verificationDate": "2026-09-11",
+                    "fields": fields}]}}}}
+
+    names_part = [_shared_pdf("IHLP1008ABER%dR0M11" % i,
+                              ["part.partNumber", "electrical.inductance"])
+                  for i in range(MIN_COHORT + 2)]
+    results.append(_run("2f  family PDF whose grid prints the part number",
+                        "ACCEPTED", mag, names_part))
+
+    silent = [_shared_pdf("IHLP1008ABEZ%dR0M11" % i, ["electrical.inductance"])
+              for i in range(MIN_COHORT + 2)]
+    results.append(_run("2g  same PDF, provenance does NOT claim the identity",
+                        "REFUSED", mag, silent))
+
+    # The escape hatch this rule advertises must actually work. Until 2026-09-11
+    # the refusal said "or stamp verification=seriesConfirmed" and nothing read
+    # the stamp, so a row that complied was refused anyway.
+    stamped = [_shared_pdf("IHSM3825ER%dR0L" % i, ["electrical.inductance"],
+                           verification="seriesConfirmed")
+               for i in range(MIN_COHORT + 2)]
+    results.append(_run("2h  family PDF, entry stamped seriesConfirmed as instructed",
+                        "ACCEPTED", mag, stamped))
 
     # -- rule 3: minted constant ---------------------------------------------
     beads = [_mag("MPZ2012S%03dA" % (100 + 11 * i),
