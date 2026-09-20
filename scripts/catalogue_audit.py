@@ -814,8 +814,17 @@ def audit_file(path: Path, checks, limit=None, sibling_root: Path = None,
                         bare = (not LANDING_PAGE_EXT.search(url)
                                 and "?" not in url
                                 and len([s for s in url.split("/")[3:] if s]) <= 2)
+                        # A URL that SPELLS THE PART OUT leads a human to this
+                        # part, whatever the path segment before it is called.
+                        # All 547 findings here were TDK deep links of the shape
+                        # /en/search/compass/part_no/MMZ1005S800HT000 -- the
+                        # rule read "/search" and called a per-part address a
+                        # search box.
+                        idn = norm(ident) if ident else ""
+                        names_part = bool(idn) and len(idn) >= 4 and idn in norm(url)
                         if (SEARCH_URL.search(url_path(url))
-                                and not PER_SKU_URL.search(url)):
+                                and not PER_SKU_URL.search(url)
+                                and not names_part):
                             findings.append(F(
                                 "verification", lineno, ident,
                                 f"READ_FROM_SEARCH_PAGE {url[:120]}"))
@@ -1239,6 +1248,33 @@ def selftest(tmpdir: Path) -> int:
                           for f in res["findings"]) else bad.append(
         "verification/VERIFICATION_WITHOUT_DATE: an undated valuesReadFromSource "
         "must still fire")
+
+    # 2f a search-shaped URL that names the part is a deep link, not a search
+    # box. The look-alike -- a genuine query string naming nobody -- must still
+    # fire, or the rule stops catching the thing it was written for.
+    def _mag_url(pn, url):
+        return {"magnetic": {"manufacturerInfo": {
+            "name": "TDK", "reference": pn, "datasheetInfo": {
+                "part": {"partNumber": pn},
+                "provenance": [{"source": "manufacturerDatasheet",
+                                "sourceName": "TDK product page",
+                                "sourceUrl": url,
+                                "verification": "valuesReadFromSource",
+                                "verificationDate": "2026-09-05"}]}}}}
+    p.write_text(json.dumps(_mag_url(
+        "MMZ1005S800HT000",
+        "https://www.tdk.com/en/search/compass/part_no/MMZ1005S800HT000")) + "\n")
+    res = audit_file(p, ("verification",), sibling_root=REPO.parent)
+    (ok := ok + 1) if not any("READ_FROM_SEARCH_PAGE" in f["why"]
+                              for f in res["findings"]) else bad.append(
+        "verification/READ_FROM_SEARCH_PAGE: a URL naming the part must stay quiet")
+    p.write_text(json.dumps(_mag_url(
+        "MMZ1005S800HT000",
+        "https://www.tdk.com/en/search/list?q=ferrite+bead&sort=rank")) + "\n")
+    res = audit_file(p, ("verification",), sibling_root=REPO.parent)
+    (ok := ok + 1) if any("READ_FROM_SEARCH_PAGE" in f["why"]
+                          for f in res["findings"]) else bad.append(
+        "verification/READ_FROM_SEARCH_PAGE: a real search URL must still fire")
 
     # 2d curve date skew is a COHORT SUMMARY, not a per-row finding, so it is
     # checked against res["curve_date_skew"] and NOT against res["findings"].
