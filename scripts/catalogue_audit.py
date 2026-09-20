@@ -103,6 +103,7 @@ import math
 import os
 import random
 import re
+from datetime import date
 import sys
 from collections import Counter, defaultdict
 from pathlib import Path
@@ -529,6 +530,18 @@ def F(check, line, ident, why):
     return Finding(check=check, line=line, id=ident or "(no identity)", why=why)
 
 
+# A tool re-queried this many days after it supplied a sibling curve may have
+# changed its model underneath the pair. K-SIM's ESR moved measurably over 51.
+CURVE_DATE_SKEW_DAYS = 30
+CURVE_DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+CURVE_SOURCE = re.compile(
+    r"chart|characteristic|curve|\|Z\||\bESR\b|bias|impedance|vs\.?\s*freq", re.I)
+VENDOR_HOST = re.compile(r"^https?://(?:www\.)?([^/]+)", re.I)
+TOOL_API = re.compile(
+    r"^https?://(?:ksim\d*\.kemet\.com/api/|product\.tdk\.com/pdc_api/"
+    r"|ds\.yuden\.co\.jp/TYCOMPAS/|redexpert\.we-online\.com/(?:api|redexpert)/)", re.I)
+
+
 def audit_file(path: Path, checks, limit=None, sibling_root: Path = None,
                min_cohort=MIN_COHORT):
     name = path.name
@@ -694,7 +707,72 @@ def audit_file(path: Path, checks, limit=None, sibling_root: Path = None,
                     no_part_specific[sn] += 1
                     no_part_specific_line.setdefault(sn, lineno)
 
-            if "verification" in checks:
+            if "verification" in checks and prov:
+                # Two halves of ONE measurement, harvested weeks apart and
+                # stored side by side as though they came from one reading.
+                # 18,125 capacitor rows carried a 2026-07-31 ESR curve beside a
+                # 2026-09-20 impedance curve from the same K-SIM chart; on the
+                # 37 where the pair happened to cross, the stale ESR EXCEEDED
+                # the impedance magnitude, which |Z| = sqrt(ESR^2 + X^2)
+                # forbids. The other 18,088 were just as stale and nothing
+                # detected them, because staleness only becomes visible when it
+                # produces an impossibility.
+                #
+                # Grouped by sourceName on purpose: an impedance curve from one
+                # vendor beside a bias curve from another is two independent
+                # measurements and dating them differently is correct. It is the
+                # SAME instrument answering twice, weeks apart, that means the
+                # model moved underneath a stored pair.
+                # Most entries in this corpus leave `fields` unset, so keying
+                # on it alone made this check find nothing in a catalogue with
+                # 18,125 known instances -- it passed its fixture and measured
+                # the wrong thing. An entry counts as supplying a curve if it
+                # SAYS so in `fields`, or if its sourceName names a chart.
+                #
+                # Grouped by VENDOR, not by sourceName: the two halves of one
+                # K-SIM reading share a chart name, but a vendor's bias chart
+                # and its impedance chart are different strings and would never
+                # be compared. It is one vendor answering twice, far apart, that
+                # matters.
+                by_tool = {}
+                for e in prov:
+                    if e.get("retracted") is True:
+                        continue
+                    fields = e.get("fields")
+                    named = isinstance(fields, list) and any(
+                        str(f).endswith("Points") for f in fields)
+                    sname = e.get("sourceName") or ""
+                    if not named and not CURVE_SOURCE.search(sname):
+                        continue
+                    d = e.get("retrievedDate") or e.get("verificationDate")
+                    if not isinstance(d, str) or not CURVE_DATE.match(d):
+                        continue
+                    url = e.get("sourceUrl") if isinstance(e.get("sourceUrl"), str) else ""
+                    vendor = ""
+                    if url:
+                        m = VENDOR_HOST.match(url)
+                        if m:
+                            vendor = m.group(1).lower()
+                    if not vendor:
+                        vendor = re.split(r"[,(]", sname)[0].strip().lower()
+                    if not vendor:
+                        continue
+                    by_tool.setdefault(vendor, []).append(d)
+                for tool, dates in by_tool.items():
+                    if len(dates) < 2:
+                        continue
+                    lo, hi = min(dates), max(dates)
+                    if lo == hi:
+                        continue
+                    span = (date.fromisoformat(hi) - date.fromisoformat(lo)).days
+                    if span > CURVE_DATE_SKEW_DAYS:
+                        findings.append(F(
+                            "verification", lineno, ident,
+                            f"CURVE_DATE_SKEW {tool[:60]!r} supplied curves "
+                            f"{span} days apart ({lo} and {hi}); a model that "
+                            f"moved between them leaves the stored curves "
+                            f"describing different parts"))
+
                 for e in prov:
                     ver = e.get("verification")
                     url = e.get("sourceUrl") if isinstance(e.get("sourceUrl"), str) else ""
@@ -708,7 +786,14 @@ def audit_file(path: Path, checks, limit=None, sibling_root: Path = None,
                     if ver == "disproven" and e.get("retracted") is not True:
                         findings.append(F("verification", lineno, ident,
                                           "DISPROVEN_NOT_RETRACTED"))
-                    if ver == "valuesReadFromSource" and url:
+                    if ver == "valuesReadFromSource" and url and not TOOL_API.match(url):
+                        # A parametric TOOL endpoint is not a landing page. K-SIM,
+                        # TDK's pdc_api and Yuden's TYCOMPAS answer a POST keyed on
+                        # the part number; TDK and Yuden key it by an internal pid
+                        # the printed order code never contains. There is no
+                        # per-part URL to cite, so the endpoint IS the honest
+                        # citation, and reading its shape says nothing. 53,480 of
+                        # the 65,644 findings here were that misreading.
                         bare = (not LANDING_PAGE_EXT.search(url)
                                 and "?" not in url
                                 and len([s for s in url.split("/")[3:] if s]) <= 2)
@@ -904,6 +989,33 @@ def selftest(tmpdir: Path) -> int:
         ("identity", "IDENTITY_SERIES_PREFIX",
          cap(mi({"partNumber": "109D 82uF 50V Axial", "series": "109D"})),
          cap(mi({"partNumber": "CX90MW9-24P(002)", "series": "CX"}))),
+        # 2d curve date skew: two halves of one measurement, harvested weeks
+        # apart. The look-alike is the case that MUST stay quiet -- two
+        # different vendors' tools dated differently are two independent
+        # measurements, and flagging those would bury the real finding.
+        ("verification", "CURVE_DATE_SKEW",
+         cap(mi({"partNumber": "C0603C563K5RACTU"},
+                prov=[{"sourceName": "KEMET K-SIM 3 simulation, Impedance & ESR chart",
+                       "retrievedDate": "2026-07-31",
+                       "verification": "valuesReadFromSource",
+                       "verificationDate": "2026-07-31",
+                       "fields": ["electrical.esrPoints"]},
+                      {"sourceName": "KEMET K-SIM 3 simulation, Impedance & ESR chart",
+                       "retrievedDate": "2026-09-20",
+                       "verification": "valuesReadFromSource",
+                       "verificationDate": "2026-09-20",
+                       "fields": ["electrical.impedancePoints"]}])),
+         cap(mi({"partNumber": "C0603C563K5RACAUTO"},
+                prov=[{"sourceName": "KEMET K-SIM 3 simulation, Impedance & ESR chart",
+                       "retrievedDate": "2026-09-20",
+                       "verification": "valuesReadFromSource",
+                       "verificationDate": "2026-09-20",
+                       "fields": ["electrical.esrPoints"]},
+                      {"sourceName": "TDK characteristic viewer",
+                       "retrievedDate": "2026-07-31",
+                       "verification": "valuesReadFromSource",
+                       "verificationDate": "2026-07-31",
+                       "fields": ["electrical.capacitanceBiasPoints"]}]))),
         # 1b length
         ("identity", "IDENTITY_TOO_LONG",
          cap(mi({"partNumber": "X" * 41})),
