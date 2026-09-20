@@ -785,7 +785,15 @@ def audit_file(path: Path, checks, limit=None, sibling_root: Path = None,
                 for e in prov:
                     ver = e.get("verification")
                     url = e.get("sourceUrl") if isinstance(e.get("sourceUrl"), str) else ""
-                    if ver and not e.get("verificationDate"):
+                    # notAttempted is the stamp for verification that never
+                    # happened. Demanding a date for a non-event is asking when
+                    # nothing occurred: all 991 findings this produced were
+                    # honest rows saying plainly that nobody checked. The date
+                    # that means something on those rows is retrievedDate, which
+                    # they carry. Every OTHER stamp asserts an act that has a
+                    # date, and an undated assertion stays a finding.
+                    if (ver and ver != "notAttempted"
+                            and not e.get("verificationDate")):
                         findings.append(F("verification", lineno, ident,
                                           f"VERIFICATION_WITHOUT_DATE verification={ver!r}"))
                     if e.get("retracted") is True and not (
@@ -1204,6 +1212,33 @@ def selftest(tmpdir: Path) -> int:
     res = audit_file(p, ("generator",), sibling_root=REPO.parent)
     (ok := ok + 1) if not res["findings"] else bad.append(
         f"generator: real onsemi NDT014/NDT3055 must be silent, got {res['findings']}")
+
+    # 2e an undated stamp. notAttempted must stay quiet (verification that did
+    # not happen has no date); every other stamp must fire, or "unstated" and
+    # "asserted but undated" become indistinguishable.
+    p.write_text(json.dumps({"capacitor": {"manufacturerInfo": {
+        "name": "KEMET", "datasheetInfo": {
+            "part": {"partNumber": "P300PL154M275AC472"},
+            "provenance": [{"source": "scrape",
+                            "sourceName": "Yageo Group base-part API",
+                            "verification": "notAttempted",
+                            "retrievedDate": "2026-06-22"}]}}}}) + "\n")
+    res = audit_file(p, ("verification",), sibling_root=REPO.parent)
+    (ok := ok + 1) if not any("VERIFICATION_WITHOUT_DATE" in f["why"]
+                              for f in res["findings"]) else bad.append(
+        "verification/VERIFICATION_WITHOUT_DATE: notAttempted must stay quiet")
+    p.write_text(json.dumps({"capacitor": {"manufacturerInfo": {
+        "name": "KEMET", "datasheetInfo": {
+            "part": {"partNumber": "P300PL154M275AC222"},
+            "provenance": [{"source": "scrape",
+                            "sourceName": "Yageo Group base-part API",
+                            "verification": "valuesReadFromSource",
+                            "retrievedDate": "2026-06-22"}]}}}}) + "\n")
+    res = audit_file(p, ("verification",), sibling_root=REPO.parent)
+    (ok := ok + 1) if any("VERIFICATION_WITHOUT_DATE" in f["why"]
+                          for f in res["findings"]) else bad.append(
+        "verification/VERIFICATION_WITHOUT_DATE: an undated valuesReadFromSource "
+        "must still fire")
 
     # 2d curve date skew is a COHORT SUMMARY, not a per-row finding, so it is
     # checked against res["curve_date_skew"] and NOT against res["findings"].
