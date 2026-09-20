@@ -577,6 +577,9 @@ def audit_file(path: Path, checks, limit=None, sibling_root: Path = None,
     field_present = Counter()
     vacuous = Counter()
     vacuous_line = {}
+    # curve date skew: cohort-level, reported as a summary not as findings
+    skew_cohorts = Counter()
+    skew_line = {}
 
     with path.open("r", encoding="utf-8", errors="replace") as fh:
         for lineno, line in enumerate(fh, 1):
@@ -766,12 +769,18 @@ def audit_file(path: Path, checks, limit=None, sibling_root: Path = None,
                         continue
                     span = (date.fromisoformat(hi) - date.fromisoformat(lo)).days
                     if span > CURVE_DATE_SKEW_DAYS:
-                        findings.append(F(
-                            "verification", lineno, ident,
-                            f"CURVE_DATE_SKEW {tool[:60]!r} supplied curves "
-                            f"{span} days apart ({lo} and {hi}); a model that "
-                            f"moved between them leaves the stored curves "
-                            f"describing different parts"))
+                        # A COHORT COUNT, NOT A PER-ROW FINDING. Skew is a
+                        # reason to SAMPLE a cohort, not evidence that any row
+                        # is wrong: 800 rows drawn at random from the 18,125
+                        # K-SIM cohort came back 797 bit-for-bit identical to
+                        # the stored curve, so the dates were 51 days apart and
+                        # the model had not moved. Emitting 25,026 findings that
+                        # are ~99.99% benign would fail every nightly run and
+                        # bury the checks that are measuring real defects --
+                        # which is how a guard teaches people to ignore it.
+                        skew_cohorts[(tool[:60], lo, hi, span)] += 1
+                        skew_line.setdefault((tool[:60], lo, hi, span),
+                                             (lineno, ident))
 
                 for e in prov:
                     ver = e.get("verification")
@@ -953,6 +962,11 @@ def audit_file(path: Path, checks, limit=None, sibling_root: Path = None,
                     "uniformly_absent": cohort_report[:200]},
         "citation": citation_report,
         "coverage": coverage,
+        "curve_date_skew": [
+            {"vendor": v, "from": lo, "to": hi, "days": span, "rows": n,
+             "example_line": skew_line[(v, lo, hi, span)][0],
+             "example": skew_line[(v, lo, hi, span)][1]}
+            for (v, lo, hi, span), n in skew_cohorts.most_common()],
     }
 
 
@@ -989,33 +1003,6 @@ def selftest(tmpdir: Path) -> int:
         ("identity", "IDENTITY_SERIES_PREFIX",
          cap(mi({"partNumber": "109D 82uF 50V Axial", "series": "109D"})),
          cap(mi({"partNumber": "CX90MW9-24P(002)", "series": "CX"}))),
-        # 2d curve date skew: two halves of one measurement, harvested weeks
-        # apart. The look-alike is the case that MUST stay quiet -- two
-        # different vendors' tools dated differently are two independent
-        # measurements, and flagging those would bury the real finding.
-        ("verification", "CURVE_DATE_SKEW",
-         cap(mi({"partNumber": "C0603C563K5RACTU"},
-                prov=[{"sourceName": "KEMET K-SIM 3 simulation, Impedance & ESR chart",
-                       "retrievedDate": "2026-07-31",
-                       "verification": "valuesReadFromSource",
-                       "verificationDate": "2026-07-31",
-                       "fields": ["electrical.esrPoints"]},
-                      {"sourceName": "KEMET K-SIM 3 simulation, Impedance & ESR chart",
-                       "retrievedDate": "2026-09-20",
-                       "verification": "valuesReadFromSource",
-                       "verificationDate": "2026-09-20",
-                       "fields": ["electrical.impedancePoints"]}])),
-         cap(mi({"partNumber": "C0603C563K5RACAUTO"},
-                prov=[{"sourceName": "KEMET K-SIM 3 simulation, Impedance & ESR chart",
-                       "retrievedDate": "2026-09-20",
-                       "verification": "valuesReadFromSource",
-                       "verificationDate": "2026-09-20",
-                       "fields": ["electrical.esrPoints"]},
-                      {"sourceName": "TDK characteristic viewer",
-                       "retrievedDate": "2026-07-31",
-                       "verification": "valuesReadFromSource",
-                       "verificationDate": "2026-07-31",
-                       "fields": ["electrical.capacitanceBiasPoints"]}]))),
         # 1b length
         ("identity", "IDENTITY_TOO_LONG",
          cap(mi({"partNumber": "X" * 41})),
@@ -1218,6 +1205,54 @@ def selftest(tmpdir: Path) -> int:
     (ok := ok + 1) if not res["findings"] else bad.append(
         f"generator: real onsemi NDT014/NDT3055 must be silent, got {res['findings']}")
 
+    # 2d curve date skew is a COHORT SUMMARY, not a per-row finding, so it is
+    # checked against res["curve_date_skew"] and NOT against res["findings"].
+    # A control of 800 random rows from the 18,125-row K-SIM cohort came back
+    # 797 bit-for-bit identical, so skew means "sample this cohort", not "these
+    # rows are wrong" -- and a check that fails the nightly run on 25,026
+    # benign rows teaches people to ignore the auditor.
+    def _ksim_prov(pn, entries):
+        return {"capacitor": {"manufacturerInfo": {
+            "name": "KEMET", "datasheetInfo": {
+                "part": {"partNumber": pn}, "provenance": entries}}}}
+
+    same_tool = _ksim_prov("C0603C563K5RACTU", [
+        {"sourceName": "KEMET K-SIM 3 simulation, Impedance & ESR chart",
+         "sourceUrl": "https://ksim3.kemet.com/api/csv/",
+         "retrievedDate": "2026-07-31", "verification": "valuesReadFromSource",
+         "verificationDate": "2026-07-31", "fields": ["electrical.esrPoints"]},
+        {"sourceName": "KEMET K-SIM 3 simulation, Impedance & ESR chart",
+         "sourceUrl": "https://ksim3.kemet.com/api/csv/",
+         "retrievedDate": "2026-09-20", "verification": "valuesReadFromSource",
+         "verificationDate": "2026-09-20", "fields": ["electrical.impedancePoints"]}])
+    p.write_text(json.dumps(same_tool) + "\n")
+    res = audit_file(p, ("verification",), sibling_root=REPO.parent)
+    (ok := ok + 1) if res["curve_date_skew"] else bad.append(
+        "verification/CURVE_DATE_SKEW: one vendor, curves 51 days apart -- "
+        "expected a cohort entry, got none")
+    (ok := ok + 1) if not any("CURVE_DATE_SKEW" in f["why"]
+                              for f in res["findings"]) else bad.append(
+        "verification/CURVE_DATE_SKEW: must be a SUMMARY, not a per-row finding")
+
+    # The look-alike that must stay quiet: two DIFFERENT vendors' charts, dated
+    # just as far apart. Two independent measurements may honestly carry
+    # different dates; flagging those would bury the real signal.
+    two_vendors = _ksim_prov("C0603C563K5RACAUTO", [
+        {"sourceName": "KEMET K-SIM 3 simulation, Impedance & ESR chart",
+         "sourceUrl": "https://ksim3.kemet.com/api/csv/",
+         "retrievedDate": "2026-09-20", "verification": "valuesReadFromSource",
+         "verificationDate": "2026-09-20", "fields": ["electrical.esrPoints"]},
+        {"sourceName": "TDK characteristic viewer, DC bias chart",
+         "sourceUrl": "https://product.tdk.com/pdc_api/en/search/capacitor/info/graph",
+         "retrievedDate": "2026-07-31", "verification": "valuesReadFromSource",
+         "verificationDate": "2026-07-31",
+         "fields": ["electrical.capacitanceBiasPoints"]}])
+    p.write_text(json.dumps(two_vendors) + "\n")
+    res = audit_file(p, ("verification",), sibling_root=REPO.parent)
+    (ok := ok + 1) if not res["curve_date_skew"] else bad.append(
+        f"verification/CURVE_DATE_SKEW: two different vendors must stay quiet, "
+        f"got {res['curve_date_skew']}")
+
     # 6 vacuous required key vs a populated one.
     rows = [{"capacitor": {"manufacturerInfo": {"name": "ACME",
                                                 "datasheetInfo": {"part": {}}}}}]
@@ -1296,6 +1331,11 @@ def main(argv=None):
         total.update(by)
         print(f"\n{p.name}: {rep['rows']:,} rows, {len(rep['findings']):,} finding(s)"
               + (f", {rep['parse_errors']} unparseable" if rep["parse_errors"] else ""))
+        for c in rep.get("curve_date_skew", []):
+            print(f"  [curve-date-skew] {c['rows']:,} rows: {c['vendor']} supplied "
+                  f"curves {c['days']} days apart ({c['from']} and {c['to']}) -- "
+                  f"sample the cohort to confirm the model did not move "
+                  f"(e.g. line {c['example_line']} {c['example']})")
         for chk in ("parse",) + CHECKS:
             fs = [f for f in rep["findings"] if f["check"] == chk]
             if not fs:
