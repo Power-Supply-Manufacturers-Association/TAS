@@ -274,8 +274,46 @@ DIEL_IN_PN = re.compile(r'(C0G|NP0|NPO|X7R|X5R|X6S|X6T|X7S|X7T|X8R|X8L|Y5V|Y5U|Z
 FEEDTHRU_CHAR = re.compile(r'J([BCREF])[0-9][A-Z]')
 
 CAP_ID = ('301000000', '301000491')        # Capacitance / Nominal Capacitance
-VOLT_ID = ('301000030', '301000910', '301000050')  # Rated Voltage (DC); 050 = disc caps
+
+# CAS `electrical.ratedVoltage` is a DC rating, so ONLY TDK's DC voltage specs may
+# feed it. The AC specs are named here as an explicit DENYLIST rather than left out,
+# because they used to sit INSIDE this tuple: VOLT_ID was
+# ('301000030', '301000910', '301000050') under a comment reading "Rated Voltage
+# (DC)", ordering the AC spec AHEAD of the DC one. It was inert only because
+# 301000910 is text-only today and num() skips it - the moment TDK populates it
+# numerically, every disc capacitor's ratedVoltage silently becomes an AC rating.
+#
+#   301000030  numeric, 16,384 parts, "Rated Voltage(DC)"        -> DC
+#   301000050  numeric,    318 parts, disc caps, e.g. 400        -> DC
+#   301000910  text,     1,159 parts, "X1/440VAC, Y1/400VAC"     -> AC safety class
+#   301000350  text,       261 parts, "X1/440VAC, Y1/400VAC"     -> AC safety class
+#   301000900  text,       522 parts, "X1/440" / "Y1/400"        -> AC safety class
+VOLT_DC_ID = ('301000030', '301000050')                    # 050 = disc caps
+VOLT_AC_ID = ('301000910', '301000350', '301000900')       # never a DC source
 TC_ID = '301000070'                         # Temperature characteristic code
+
+
+class AcRatingAsDc(Exception):
+    """A DC field was about to be filled from an AC rating spec."""
+
+
+def dc_rated_voltage(specs, _dc_ids=None):
+    """TDK's DC rated voltage, or None. Refuses to return an AC rating.
+
+    The selection and the denylist are enforced in the SAME function, so a future
+    edit that widens the id tuple cannot re-create the ordering bug silently: an
+    AC id reaching this point raises rather than returning a number.
+    """
+    ids = VOLT_DC_ID if _dc_ids is None else _dc_ids
+    for sid in ids:
+        v = num(specs, sid)
+        if v is None:
+            continue
+        if sid in VOLT_AC_ID:
+            raise AcRatingAsDc(
+                "spec %s is an AC rating and cannot supply electrical.ratedVoltage" % sid)
+        return v
+    return None
 
 CAP_ASSEMBLY = {
     'mlcc': 'SMT', 'feedthrough': 'SMT', 'ceralink': 'SMT',
@@ -321,11 +359,43 @@ def cap_dimensions(specs):
     if F is not None: d['pitch'] = {'nominal': mm(F)}
     return d or None
 
+def is_eol_stub(rec):
+    """True when TDK keeps this part number only as a catalogue redirect.
+
+    map_magnetic's stub guard keys on "no electrical values and no mechanical
+    data". That test CANNOT work for capacitors: TDK's disc-capacitor stubs carry
+    a full 32-spec record - capacitance, tolerance, IR, dimensions - so they sail
+    through it and become live parts. 57 such rows did, and one of them acquired a
+    440 V rating that belongs to its REPLACEMENT part (10 mm stub vs 8 mm successor).
+
+    THE SIGNAL IS THE SENTINEL CLASS. TDK's `class` table carries negative class_ids
+    whose series_id points at the sentinel series -1 "dummy" / -2 "TBD"; the two
+    coincide exactly (0 mismatches over all 862 classes), so `rec['series']` - which
+    the extractor already carries - is an exact proxy for the class_id and no new
+    extractor field is needed. Over TDK's five capacitor categories:
+
+        sentinel class:      610 Obsolete, 1 In Development, 0 Production
+        non-sentinel class:  7,006 Production, 5,366 NRND, 3,719 Obsolete
+
+    So a sentinel-class capacitor is never a part TDK is selling.
+
+    THE REPLACEMENT SPEC (100000080) IS NOT THE SIGNAL, and this is the part worth
+    recording: 5,845 parts on REAL classes also name a replacement - 2,428 NRND and
+    1,591 Obsolete capacitors among them. Gating on it would refuse ~4,000 genuine,
+    published parts. Requiring BOTH would be worse still: 128 of the sentinel
+    capacitors name no replacement at all and would pass straight through, which is
+    exactly the hole being closed. Hence: sentinel class alone.
+    """
+    return (rec.get('series') or '').strip().lower() in SENTINEL_SERIES
+
+
 def map_capacitor(rec):
     specs = rec['specs']
     cat = rec['category2']
+    if is_eol_stub(rec):
+        return None, 'EOL redirect stub (sentinel class)'
     capf, _ = first_num(specs, CAP_ID)
-    volt, _ = first_num(specs, VOLT_ID)
+    volt = dc_rated_voltage(specs)
     if capf is None or volt is None:
         return None, 'missing capacitance or ratedVoltage'
     tech, diel = diel_class(disp(specs, TC_ID), rec['part_no'], cat)
@@ -498,7 +568,8 @@ def main():
             doc, why = map_capacitor(rec)
             if doc is None:
                 repl = disp(rec['specs'], '100000080')
-                if why.startswith('missing') and (repl or len(rec['specs']) <= 4):
+                if why.startswith('EOL redirect stub') or (
+                        why.startswith('missing') and (repl or len(rec['specs']) <= 4)):
                     stats['cap_eol_stub'] += 1
                     eol_stubs.append((rec['part_no'], cat, repl))
                 else:
@@ -545,5 +616,122 @@ def main():
         print("\n=== CAP QUARANTINE ===", file=sys.stderr)
         for why, items in quarantine.items():
             print(f"  {why}: {len(items)} (e.g. {items[:3]})", file=sys.stderr)
+# ---------------------------------------------------------------------------
+# --selftest: paired fixtures, each one a defect that actually shipped
+# ---------------------------------------------------------------------------
+# Every fixture below is a REAL TDK Meister record, transcribed from
+# TstDB.tmdb. Each guard is asserted in BOTH directions: a must-fire case and a
+# must-stay-quiet case. A guard proved only by its must-fire case is
+# indistinguishable from one that refuses everything, and the must-stay-quiet
+# cases here are the ones that would have caught a lazy fix:
+#   A3  a LIVE part that names a replacement  -> the replacement spec is not the signal
+#   A4  a STUB that names no replacement      -> nor is its absence
+#   B3  an MLCC with only the ordinary DC id  -> the DC path still works
+
+def _spec(pairs):
+    """{spec_id: [{'num'|'display': v}]} in the shape the raw extract produces."""
+    out = {}
+    for sid, val in pairs:
+        out.setdefault(sid, []).append(
+            {'num': val} if isinstance(val, (int, float)) else {'display': val})
+    return out
+
+
+# TDK CD10-E2GA152MYGS, part_id 100028881, class_id -123 (sentinel, series "TBD").
+# 32 specs - a complete record - plus a replacement pointer to CD45-E2GA152M-GKA.
+_STUB_SPECS = _spec([
+    ('100000080', 'CD45-E2GA152M-GKA'),
+    ('200000130', 7), ('200000170', 10), ('201000220', 10),
+    ('301000000', 1.5e-09), ('301000010', '\u00b120%'), ('301000050', 400),
+    ('301000070', 'E'), ('400000060', -25), ('400000070', 125),
+])
+# TDK CD45-E2GA152M-GKA, part_id 100028911, class_id 10707 (real class/series).
+# Same capacitance, 8 mm not 10 mm, and it is THIS part that carries X1/440VAC.
+_LIVE_SPECS = _spec([
+    ('200000130', 6), ('200000170', 8), ('201000220', 10),
+    ('301000000', 1.5e-09), ('301000010', '\u00b120%'), ('301000050', 400),
+    ('301000070', 'E'), ('301000350', 'X1/440VAC, Y1/400VAC'),
+    ('301000900', 'X1/440'), ('301000910', 'X1/440VAC, Y1/400VAC'),
+    ('400000060', -25), ('400000070', 125),
+])
+
+
+def _cap(part_no, series, specs, cat='lead-disc'):
+    return {'part_no': part_no, 'category2': cat, 'series': series,
+            'specs': specs, 'disabled': 0, 'url_substring': None}
+
+
+def _check(name, expect, fn):
+    try:
+        got = fn()
+    except Exception as exc:                      # noqa: BLE001 - a raise is a result
+        got = '%s: %s' % (type(exc).__name__, exc)
+    ok = (got == expect)
+    print('%-4s %-24s expected %-24s %s'
+          % ('PASS' if ok else 'FAIL', repr(got)[:24], repr(expect)[:24], name))
+    return ok
+
+
+def _mapped_voltage(rec):
+    doc, why = map_capacitor(rec)
+    if doc is None:
+        return 'REJECTED: %s' % why
+    return doc['capacitor']['manufacturerInfo']['datasheetInfo']['electrical']['ratedVoltage']
+
+
+def selftest():
+    r = []
+
+    # -- A: the EOL redirect-stub guard -------------------------------------
+    r.append(_check('A1  sentinel-class disc stub CD10-E2GA152MYGS (must fire)',
+                    'REJECTED: EOL redirect stub (sentinel class)',
+                    lambda: _mapped_voltage(_cap('CD10-E2GA152MYGS', 'TBD', _STUB_SPECS))))
+
+    r.append(_check('A2  its live replacement CD45-E2GA152M-GKA (must stay quiet)',
+                    400,
+                    lambda: _mapped_voltage(_cap('CD45-E2GA152M-GKA', 'CD', _LIVE_SPECS))))
+
+    # A live, published part that ALSO names a replacement. 5,845 TDK parts on real
+    # classes do - 2,428 NRND and 1,591 Obsolete capacitors among them. A guard keyed
+    # on the replacement spec would refuse every one of them.
+    _live_with_repl = dict(_LIVE_SPECS)
+    _live_with_repl['100000080'] = [{'display': 'C1210X7R2A105K085AC'}]
+    r.append(_check('A3  live part that names a replacement (must stay quiet)',
+                    400,
+                    lambda: _mapped_voltage(_cap('CD45-E2GA152M-GKA', 'CD', _live_with_repl))))
+
+    # A stub that names NO replacement. 128 of the 610 sentinel-class capacitors
+    # are like this; requiring a replacement pointer would let them all through.
+    _stub_no_repl = {k: v for k, v in _STUB_SPECS.items() if k != '100000080'}
+    r.append(_check('A4  sentinel-class stub with no replacement spec (must fire)',
+                    'REJECTED: EOL redirect stub (sentinel class)',
+                    lambda: _mapped_voltage(_cap('CD10-E2GA152MYNS', 'dummy', _stub_no_repl))))
+
+    # -- B: an AC rating may never fill the DC field ------------------------
+    # TDK publishes 301000910 as TEXT today, which is the only reason the old
+    # ordering never fired. This fixture is that field POPULATED NUMERICALLY -
+    # the one change upstream would need to make for the bug to become live.
+    _ac_numeric = dict(_LIVE_SPECS)
+    _ac_numeric['301000910'] = [{'num': 440}]
+    r.append(_check('B1  AC spec populated numerically, DC spec present (must stay quiet)',
+                    400,
+                    lambda: _mapped_voltage(_cap('CD45-E2GA152M-GKA', 'CD', _ac_numeric))))
+
+    r.append(_check('B2  an AC id handed to the DC reader (must fire)',
+                    "AcRatingAsDc: spec 301000910 is an AC rating and cannot "
+                    "supply electrical.ratedVoltage",
+                    lambda: dc_rated_voltage(_ac_numeric, _dc_ids=('301000910',))))
+
+    _mlcc = _spec([('301000000', 1e-07), ('301000030', 16), ('301000070', 'X7R')])
+    r.append(_check('B3  ordinary MLCC, DC id 301000030 (must stay quiet)',
+                    16,
+                    lambda: _mapped_voltage(_cap('C1608X7R1C104K080AC', 'C', _mlcc, 'mlcc'))))
+
+    print('\n%d/%d passed' % (sum(r), len(r)))
+    return 0 if all(r) else 1
+
+
 if __name__ == '__main__':
+    if '--selftest' in sys.argv:
+        sys.exit(selftest())
     main()
