@@ -1,0 +1,42 @@
+{
+  "_what": "Curve cohorts whose vendor was re-queried and whose stored curves were confirmed to still reproduce. catalogue_audit.py reads this so a cohort that HAS been checked stops asking to be checked. A cohort absent from this file is unverified, which is the loud case.",
+  "_how_to_add": "Only after an actual re-pull compared against stored values, with a comparator shown to report drift as well as agreement. Record what was measured, not what was believed. Always record rowsAtVerification: a cohort that grows after it was checked is STALE, not verified, and the new rows have been looked at by nobody.",
+  "curve_date_skew": [
+    {
+      "vendor": "ksim3.kemet.com",
+      "from": "2026-07-31",
+      "to": "2026-09-20",
+      "verifiedDate": "2026-09-20",
+      "method": "random sample, seeded, drawn with no defect signature",
+      "sampled": 800,
+      "identical": 797,
+      "drifted": 3,
+      "outcome": "drift traced to ONE re-evaluated vendor model record shared by 11 rows (220 pF / C0402 / X7R / commercial order codes), all 11 repaired; 1,009 of a 1,020-part boundary sweep were bit-for-bit identical",
+      "rowsAtVerification": 18125
+    },
+    {
+      "vendor": "product.tdk.com",
+      "from": "2026-07-30",
+      "to": "2026-09-20",
+      "verifiedDate": "2026-09-20",
+      "method": "random sample, seeded, drawn with no defect signature",
+      "sampled": 300,
+      "identical": 300,
+      "drifted": 0,
+      "outcome": "4,004 bias points and 101,266 ESR points compared by exact float equality, all identical; 95% upper bound of 66 drifted rows remains, and a full re-pull is queued to close it",
+      "rowsAtVerification": 6889
+    },
+    {
+      "vendor": "ds.yuden.co.jp",
+      "from": "2026-07-30",
+      "to": "2026-09-20",
+      "verifiedDate": "2026-09-20",
+      "method": "census, every row",
+      "sampled": 12,
+      "identical": 12,
+      "drifted": 0,
+      "outcome": "complete, no residual window",
+      "rowsAtVerification": 12
+    }
+  ]
+}

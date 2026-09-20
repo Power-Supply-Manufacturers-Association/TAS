@@ -542,6 +542,30 @@ TOOL_API = re.compile(
     r"|ds\.yuden\.co\.jp/TYCOMPAS/|redexpert\.we-online\.com/(?:api|redexpert)/)", re.I)
 
 
+VERIFIED_COHORTS = REPO / "scripts" / "verified_cohorts.json"
+
+
+def verified_skew_cohorts():
+    """(vendor, from, to) cohorts already re-queried and confirmed to reproduce.
+
+    A cohort that has actually been checked must stop asking to be checked, or
+    its line decays from "look at this" into furniture -- which is the same way
+    a block of known-honest refusals trains people to ignore a guard. Absent
+    from the ledger means unverified, and unverified is the loud case.
+
+    A ledger that cannot be read is NOT treated as an empty ledger: that would
+    silently turn every cohort loud and look like the check working.
+    """
+    if not VERIFIED_COHORTS.is_file():
+        return {}
+    with VERIFIED_COHORTS.open() as fh:
+        doc = json.load(fh)
+    out = {}
+    for c in doc.get("curve_date_skew", []):
+        out[(c["vendor"], c["from"], c["to"])] = c
+    return out
+
+
 def audit_file(path: Path, checks, limit=None, sibling_root: Path = None,
                min_cohort=MIN_COHORT):
     name = path.name
@@ -580,6 +604,7 @@ def audit_file(path: Path, checks, limit=None, sibling_root: Path = None,
     # curve date skew: cohort-level, reported as a summary not as findings
     skew_cohorts = Counter()
     skew_line = {}
+    _verified = verified_skew_cohorts()
 
     with path.open("r", encoding="utf-8", errors="replace") as fh:
         for lineno, line in enumerate(fh, 1):
@@ -980,9 +1005,15 @@ def audit_file(path: Path, checks, limit=None, sibling_root: Path = None,
         "citation": citation_report,
         "coverage": coverage,
         "curve_date_skew": [
-            {"vendor": v, "from": lo, "to": hi, "days": span, "rows": n,
-             "example_line": skew_line[(v, lo, hi, span)][0],
-             "example": skew_line[(v, lo, hi, span)][1]}
+            dict({"vendor": v, "from": lo, "to": hi, "days": span, "rows": n,
+                  "example_line": skew_line[(v, lo, hi, span)][0],
+                  "example": skew_line[(v, lo, hi, span)][1]},
+                 verified=_verified.get((v, lo, hi)),
+                 # Staleness belongs in the REPORT, not in a print-time branch.
+                 # As a print branch it was untestable: disabling it left every
+                 # fixture green, because the fixtures assert on this dict.
+                 stale=bool(_verified.get((v, lo, hi)))
+                 and n > _verified[(v, lo, hi)].get("rowsAtVerification", 0))
             for (v, lo, hi, span), n in skew_cohorts.most_common()],
     }
 
@@ -1249,6 +1280,84 @@ def selftest(tmpdir: Path) -> int:
         "verification/VERIFICATION_WITHOUT_DATE: an undated valuesReadFromSource "
         "must still fire")
 
+    # 2g the ledger: a cohort already re-queried is annotated as verified, one
+    # that has not been stays loud. Without the second half, a ledger that
+    # silently matched everything would look exactly like a working one.
+    def _skew_row(pn, host):
+        return {"capacitor": {"manufacturerInfo": {
+            "name": "X", "datasheetInfo": {
+                "part": {"partNumber": pn},
+                "provenance": [
+                    {"sourceName": "chart", "sourceUrl": f"https://{host}/api/x",
+                     "retrievedDate": "2026-07-31",
+                     "verification": "valuesReadFromSource",
+                     "verificationDate": "2026-07-31",
+                     "fields": ["electrical.esrPoints"]},
+                    {"sourceName": "chart", "sourceUrl": f"https://{host}/api/x",
+                     "retrievedDate": "2026-09-20",
+                     "verification": "valuesReadFromSource",
+                     "verificationDate": "2026-09-20",
+                     "fields": ["electrical.impedancePoints"]}]}}}}
+
+    p.write_text(json.dumps(_skew_row("A1", "ksim3.kemet.com")) + "\n")
+    res = audit_file(p, ("verification",), sibling_root=REPO.parent)
+    (ok := ok + 1) if (res["curve_date_skew"]
+                       and res["curve_date_skew"][0].get("verified")) else bad.append(
+        "verification/CURVE_DATE_SKEW: a cohort in the ledger must be annotated "
+        f"verified, got {res['curve_date_skew']}")
+    p.write_text(json.dumps(_skew_row("A2", "curves.example-vendor.com")) + "\n")
+    res = audit_file(p, ("verification",), sibling_root=REPO.parent)
+    (ok := ok + 1) if (res["curve_date_skew"]
+                       and not res["curve_date_skew"][0].get("verified")) else bad.append(
+        "verification/CURVE_DATE_SKEW: a cohort NOT in the ledger must stay "
+        f"unverified, got {res['curve_date_skew']}")
+
+    # 2h a cohort that GREW after it was checked reports STALE, not verified.
+    # The ledger carries rowsAtVerification for exactly this; the live ledger
+    # says ds.yuden.co.jp held 12 rows when it was censused, so two rows in that
+    # cohort must exceed it. A check that cannot go stale is a check that quietly
+    # stops being true.
+    def _yuden_row(pn):
+        return {"capacitor": {"manufacturerInfo": {
+            "name": "Taiyo Yuden", "datasheetInfo": {
+                "part": {"partNumber": pn},
+                "provenance": [
+                    {"sourceName": "bias chart",
+                     "sourceUrl": "https://ds.yuden.co.jp/TYCOMPAS/eu/graphRest",
+                     "retrievedDate": "2026-07-30",
+                     "verification": "valuesReadFromSource",
+                     "verificationDate": "2026-07-30",
+                     "fields": ["electrical.capacitanceBiasPoints"]},
+                    {"sourceName": "impedance chart",
+                     "sourceUrl": "https://ds.yuden.co.jp/TYCOMPAS/eu/graphRest",
+                     "retrievedDate": "2026-09-20",
+                     "verification": "valuesReadFromSource",
+                     "verificationDate": "2026-09-20",
+                     "fields": ["electrical.impedancePoints"]}]}}}}
+
+    led = verified_skew_cohorts().get(("ds.yuden.co.jp", "2026-07-30", "2026-09-20"))
+    # Bounded on purpose. An earlier version sized the fixture directly from the
+    # ledger, so a deliberately-crippled loader returning a huge
+    # rowsAtVerification made the FIXTURE try to write that many rows instead of
+    # failing the assertion. A test must not be steerable by the thing it tests.
+    n_at = min((led or {}).get("rowsAtVerification", 0), 40)
+    p.write_text("\n".join(json.dumps(_yuden_row("TY%04d" % i))
+                            for i in range(n_at + 2)) + "\n")
+    res = audit_file(p, ("verification",), sibling_root=REPO.parent)
+    c = res["curve_date_skew"][0] if res["curve_date_skew"] else {}
+    (ok := ok + 1) if c.get("stale") else bad.append(
+        "verification/CURVE_DATE_SKEW: a cohort larger than rowsAtVerification "
+        f"must be reported STALE, got stale={c.get('stale')} "
+        f"rows={c.get('rows')} at={n_at}")
+    p.write_text("\n".join(json.dumps(_yuden_row("TY%04d" % i))
+                            for i in range(max(1, n_at - 1))) + "\n")
+    res = audit_file(p, ("verification",), sibling_root=REPO.parent)
+    c = res["curve_date_skew"][0] if res["curve_date_skew"] else {}
+    (ok := ok + 1) if (c.get("verified") and not c.get("stale")) else bad.append(
+        "verification/CURVE_DATE_SKEW: a cohort no larger than it was at "
+        f"verification must stay verified, got stale={c.get('stale')} "
+        f"rows={c.get('rows')} at={n_at}")
+
     # 2f a search-shaped URL that names the part is a deep link, not a search
     # box. The look-alike -- a genuine query string naming nobody -- must still
     # fire, or the rule stops catching the thing it was written for.
@@ -1403,10 +1512,31 @@ def main(argv=None):
         print(f"\n{p.name}: {rep['rows']:,} rows, {len(rep['findings']):,} finding(s)"
               + (f", {rep['parse_errors']} unparseable" if rep["parse_errors"] else ""))
         for c in rep.get("curve_date_skew", []):
-            print(f"  [curve-date-skew] {c['rows']:,} rows: {c['vendor']} supplied "
-                  f"curves {c['days']} days apart ({c['from']} and {c['to']}) -- "
-                  f"sample the cohort to confirm the model did not move "
-                  f"(e.g. line {c['example_line']} {c['example']})")
+            ver = c.get("verified")
+            if c.get("stale"):
+                # THE COHORT GREW AFTER IT WAS CHECKED. A ledger entry describes
+                # the rows that existed when the vendor was re-queried; new rows
+                # joined the cohort since and nobody has looked at them. Saying
+                # "verified" here would let a check go stale silently, which is
+                # worse than never having recorded it -- this caught itself the
+                # hour it was written, when applying 18,016 impedance curves
+                # grew one cohort from 12 rows to 5,156.
+                print(f"  [curve-date-skew/STALE] {c['rows']:,} rows: "
+                      f"{c['vendor']}, {c['days']} days apart -- verified "
+                      f"{ver['verifiedDate']} when the cohort held "
+                      f"{ver.get('rowsAtVerification', 0):,} rows; "
+                      f"{c['rows'] - ver.get('rowsAtVerification', 0):,} rows "
+                      f"have joined since and are unchecked")
+            elif ver:
+                print(f"  [curve-date-skew/verified] {c['rows']:,} rows: "
+                      f"{c['vendor']}, {c['days']} days apart, re-queried "
+                      f"{ver['verifiedDate']}: {ver['identical']}/{ver['sampled']} "
+                      f"reproduce ({ver['method']})")
+            else:
+                print(f"  [curve-date-skew] {c['rows']:,} rows: {c['vendor']} "
+                      f"supplied curves {c['days']} days apart ({c['from']} and "
+                      f"{c['to']}) -- NOT YET CHECKED; re-query a random sample "
+                      f"(e.g. line {c['example_line']} {c['example']})")
         for chk in ("parse",) + CHECKS:
             fs = [f for f in rep["findings"] if f["check"] == chk]
             if not fs:

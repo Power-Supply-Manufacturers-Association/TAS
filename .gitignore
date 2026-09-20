@@ -48,6 +48,11 @@
 # integrity_scan.py, and a guard that is not in a fresh clone does not exist --
 # which is exactly why the provenance cleanup could not be re-run.
 !/scripts/catalogue_audit.py
+# The data catalogue_audit.py reads to know which curve cohorts have actually
+# been re-queried against their vendor. Without it in a fresh clone the auditor
+# asks for a check that was already done, every run, until the line means
+# nothing -- a guard's output is only useful while it is still worth reading.
+!/scripts/verified_cohorts.json
 # A guard since it grew --check: provenance in a live catalogue is a reference, not
 # an essay, and a one-shot cleanup nobody can run again does not hold that.
 !/scripts/strip_provenance_narrative.py
