@@ -1093,20 +1093,39 @@ class IngestGate:
             if f.unit is None:
                 continue
             cohorts = {}
+            idx_of = {}
             for i, (ident, mfr, _s, desc, _b) in enumerate(self.rows):
                 v = self.values[i].get(f.key)
                 if isinstance(v, (int, float)) and not isinstance(v, bool) and v:
                     cohorts.setdefault((mfr, float(v)), []).append((ident, desc))
+                    idx_of.setdefault((mfr, float(v)), []).append(i)
             for (mfr, value), members in cohorts.items():
                 if len(members) < self.min_cohort:
                     continue
+                members_idx = idx_of[(mfr, value)]
                 contradicted, mismatched, agreeing = [], [], 0
-                for ident, desc in members:
+                for i2, (ident, desc) in enumerate(members):
                     stated = parse_quantity(desc, f.unit)
                     if stated:
                         if any(abs(s - value) <= TOLERANCE * max(s, value)
                                for s in stated):
                             agreeing += 1
+                            continue
+                        # A QUANTITY THE RECORD ALREADY EXPLAINS IS NOT A
+                        # CONTRADICTION. An RF connector's description carries
+                        # its characteristic impedance -- "…RTK 031 50 Ohm A
+                        # Code" -- and this rule read that 50 as the part's own
+                        # statement of contactResistance, refusing 16 Amphenol
+                        # rows whose 0.024 ohm is correct and whose 50 ohm is
+                        # stored, correctly, in familyDetails.characteristicImpedance.
+                        #
+                        # So: an ohm figure in the description that EQUALS some
+                        # other stored field of that same record is accounted
+                        # for, and says nothing about this field. The test is
+                        # against the row's own values, not a vendor allowlist,
+                        # so it cannot excuse a number the record does not hold.
+                        if self._explained_elsewhere(members_idx[i2], stated,
+                                                     f.key):
                             continue
                         contradicted.append((ident, stated))
                     elif f.unit == "H" and RE_IMPEDANCE_CONTEXT.search(desc or ""):
@@ -1141,6 +1160,41 @@ class IngestGate:
                                            % (f.key, value, len(members),
                                               "/".join("%g" % s for s in stated))))
         return out
+
+
+    def _explained_elsewhere(self, row_index, stated, field_key):
+        """True when a quantity in the description is some OTHER field's value.
+
+        A description that quotes a number the record already stores under a
+        different name is describing that other field, not contradicting this
+        one. Checked against the row's own stored values, so it can never
+        excuse a figure the record does not actually hold.
+        """
+        body = self.rows[row_index][4]
+        mine = self.values[row_index].get(field_key)
+
+        def leaves(node, depth=0):
+            if depth > 8:
+                return
+            if isinstance(node, dict):
+                for v in node.values():
+                    yield from leaves(v, depth + 1)
+            elif isinstance(node, list):
+                for v in node[:64]:
+                    yield from leaves(v, depth + 1)
+            elif isinstance(node, (int, float)) and not isinstance(node, bool):
+                yield node
+
+        # The record's OWN numbers, wherever they sit -- characteristicImpedance
+        # lives under familyDetails, not among the tracked fields, which is why
+        # checking only those missed it.
+        for v in leaves(body):
+            if mine is not None and v == mine:
+                continue          # this field itself explains nothing
+            for st in stated:
+                if v and abs(st - v) <= TOLERANCE * max(abs(st), abs(v)):
+                    return True
+        return False
 
     # rule 4
     def _index_sources(self):
@@ -1318,6 +1372,7 @@ def selftest():
     mag = lambda: IngestGate("magnetics.ndjson", validate=False)      # noqa: E731
     mos = lambda: IngestGate("mosfets.ndjson", validate=False)        # noqa: E731
     cap = lambda: IngestGate("capacitors.ndjson", validate=False)     # noqa: E731
+    con = lambda: IngestGate("connectors.ndjson", validate=False)     # noqa: E731
     results = []
 
     # -- rule 1: identity -----------------------------------------------------
@@ -1485,6 +1540,43 @@ def selftest():
           for i in range(6)]
     results.append(_run("3c  6 genuine Wuerth 10 uH inductors sharing the value",
                         "ACCEPTED", mag, we))
+
+    # -- rule 3: a quantity the record already explains -----------------------
+    # Added 2026-09-21. An RF connector's description carries its characteristic
+    # impedance -- "...RTK 031 50 Ohm A Code" -- and rule 3 read that 50 as the
+    # part's own statement of contactResistance, refusing 16 Amphenol rows whose
+    # 0.024 ohm is correct and whose 50 ohm is stored, correctly, in
+    # familyDetails.characteristicImpedance.
+    #
+    # BOTH fixtures matter and the second is the one that keeps the rule alive:
+    # a description quoting a number the record does NOT hold anywhere is still
+    # a contradiction, and must still refuse.
+    def _rf(pn, impedance):
+        d = {"connector": {"manufacturerInfo": {
+            "name": "Amphenol RF", "reference": pn,
+            "datasheetInfo": {
+                "part": {"partNumber": pn,
+                         "description": "Mini-FAKRA Sealed Crimp Jack RTK 031 "
+                                        "50 Ohm A Code"},
+                "electrical": {"contactResistance": {"maximum": 0.024}},
+                "provenance": [{"source": "manufacturerDatasheet",
+                                "sourceName": "Amphenol RF series spec",
+                                "sourceUrl": "https://www.amphenolrf.com/docs/automate.pdf",
+                                "verification": "seriesConfirmed",
+                                "verificationDate": "2026-09-21",
+                                "fields": ["electrical.contactResistance"]}]}}}}
+        if impedance is not None:
+            d["connector"]["manufacturerInfo"]["datasheetInfo"]["familyDetails"] = {
+                "characteristicImpedance": impedance}
+        return d
+
+    explained = [_rf("FM1CN%dSJ-C30E0" % i, 50.0) for i in range(MIN_COHORT + 2)]
+    results.append(_run("3d  50 ohm in the text IS the stored characteristic impedance",
+                        "ACCEPTED", con, explained))
+
+    unexplained = [_rf("FM9CN%dSJ-C30E0" % i, None) for i in range(MIN_COHORT + 2)]
+    results.append(_run("3e  same text, but the record holds no 50 anywhere",
+                        "REFUSED", con, unexplained))
 
     # -- rule 4: arithmetic ladder -------------------------------------------
     ladder = [_mos("FDMU81%03d" % (100 + 50 * i),
