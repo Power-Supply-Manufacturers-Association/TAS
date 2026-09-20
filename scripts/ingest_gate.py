@@ -545,6 +545,8 @@ def classify_citation(url, ident, entry):
         return "PART_SPECIFIC"
     if entry is not None and entry.get("verification") == SERIES_VERIFICATION:
         return "SERIES_DATASHEET"
+    if _is_tool_citation(url, entry):
+        return "TOOL_QUERIED"
     if DOCID_RE.search(url):
         return "DOCUMENT_BY_ID"
     if SEARCH_RE.search(url):
@@ -552,7 +554,67 @@ def classify_citation(url, ident, entry):
     return "LANDING"
 
 
-ACCEPTABLE_CITATIONS = {"PART_SPECIFIC", "DOCUMENT_BY_ID", "SERIES_DATASHEET"}
+# A parametric TOOL is not a document. KEMET K-SIM, TDK's pdc_api and Taiyo
+# Yuden's TYCOMPAS answer a POST whose key IS the part number and return that
+# part's own curve; TDK and Yuden key it by an internal numeric pid the printed
+# order code never appears in. There is no per-part URL to cite and inventing
+# one would be fabrication, so the only honest sourceUrl is the endpoint --
+# which reads as a LANDING page to a rule that only looks at URL shape.
+#
+# Admitting them on the endpoint alone would be an assertion, so it is only half
+# the check. The other half is _tool_answers_per_part below: a tool that was
+# really queried per part returns DIFFERENT values per part, and a landing page
+# copied onto N rows returns the same ones. That half runs in the batch pass and
+# can fail, which is what makes this an exemption rather than a hole.
+TOOL_API_RE = re.compile(
+    r"^https?://(?:"
+    r"ksim\d*\.kemet\.com/api/"
+    r"|product\.tdk\.com/pdc_api/"
+    r"|ds\.yuden\.co\.jp/TYCOMPAS/"
+    r"|redexpert\.we-online\.com/(?:api|redexpert)/"
+    r")", re.I)
+TOOL_SOURCE = "manufacturerParametric"
+
+
+def _is_tool_citation(url, entry):
+    """The entry cites a parametric tool endpoint and says it read values there."""
+    if entry is None or not TOOL_API_RE.match(url or ""):
+        return False
+    if entry.get("source") != TOOL_SOURCE:
+        return False
+    fields = entry.get("fields")
+    return isinstance(fields, list) and bool(fields)
+
+
+ACCEPTABLE_CITATIONS = {"PART_SPECIFIC", "DOCUMENT_BY_ID", "SERIES_DATASHEET",
+                        "TOOL_QUERIED"}
+
+
+
+def _values_at(body, fields):
+    """Resolve a provenance entry's dotted `fields` against the record.
+
+    Paths are relative to manufacturerInfo.datasheetInfo, which is where every
+    entry in this corpus writes them ("electrical.impedancePoints"). A path that
+    does not resolve contributes a distinct marker rather than being skipped --
+    silently dropping it would make two rows look identical because neither has
+    the field, which is the opposite of what the caller is testing.
+    """
+    ds = {}
+    if isinstance(body, dict):
+        ds = (body.get("manufacturerInfo") or {}).get("datasheetInfo") or {}
+    out = []
+    for f in fields:
+        node = ds
+        for seg in str(f).split("."):
+            if isinstance(node, list):
+                node = node[0] if node else None
+            if not isinstance(node, dict):
+                node = None
+                break
+            node = node.get(seg)
+        out.append(("<unresolved:%s>" % f) if node is None else node)
+    return out
 
 
 def check_citation(body):
@@ -856,6 +918,7 @@ class IngestGate:
     # -- batch --------------------------------------------------------------
     def batch_refusals(self):
         return (self._dup_identities() + self._reused_documents()
+                + self._tool_answers_per_part()
                 + self._minted_constants() + self._ladders()
                 + self._outliers())   # _outliers is opt-in
 
@@ -868,6 +931,52 @@ class IngestGate:
                 % (len(refusals), len(self.rows),
                    "\n  ".join(str(r) for r in refusals)))
         return True
+
+
+    # rule 2, cross-row: the other half of the TOOL_QUERIED exemption
+    def _tool_answers_per_part(self):
+        """TOOL_QUERIED lets a row cite a bare tool endpoint, on the strength of
+        a claim the URL itself cannot carry: that the tool was asked about THIS
+        part. That claim is checkable against the cohort. A tool queried per part
+        returns per-part values; one response pasted across a cohort does not.
+
+        So: if every row citing one tool endpoint holds identical values at the
+        very fields it says it read there, the exemption is refused for all of
+        them. Without this pass, TOOL_QUERIED would be an assertion dressed as a
+        check -- the exact failure that let a landing page stand in for 134,949
+        rows in the first place.
+        """
+        cohorts = {}
+        for i, (ident, _mfr, _series, _desc, body) in enumerate(self.rows):
+            for url, entry in _citations(body):
+                if not _is_tool_citation(url, entry):
+                    continue
+                cohorts.setdefault(url, []).append(
+                    (ident, _values_at(body, entry.get("fields") or [])))
+        out = []
+        for url, members in cohorts.items():
+            if len(members) < self.min_cohort:
+                continue
+            distinct = set()
+            for _ident, vals in members:
+                try:
+                    distinct.add(json.dumps(vals, sort_keys=True, default=str))
+                except (TypeError, ValueError):
+                    distinct.add(repr(vals))
+                if len(distinct) > 1:
+                    break
+            if len(distinct) > 1:
+                continue
+            for ident, _vals in members:
+                out.append(Refusal(
+                    2, ident,
+                    "%d rows cite tool endpoint %s and every one holds the SAME "
+                    "values at the fields it claims to have read there. A tool "
+                    "queried per part answers per part -- identical values mean "
+                    "one response was copied across the cohort, so the endpoint "
+                    "is standing in as a landing page and cannot be cited as a "
+                    "per-part source" % (len(members), url)))
+        return out
 
     # rule 1, cross-row
     def _dup_identities(self):
@@ -1208,6 +1317,7 @@ def _run(name, expect, gate_factory, records):
 def selftest():
     mag = lambda: IngestGate("magnetics.ndjson", validate=False)      # noqa: E731
     mos = lambda: IngestGate("mosfets.ndjson", validate=False)        # noqa: E731
+    cap = lambda: IngestGate("capacitors.ndjson", validate=False)     # noqa: E731
     results = []
 
     # -- rule 1: identity -----------------------------------------------------
@@ -1312,6 +1422,44 @@ def selftest():
                for i in range(MIN_COHORT + 2)]
     results.append(_run("2h  family PDF, entry stamped seriesConfirmed as instructed",
                         "ACCEPTED", mag, stamped))
+
+    # -- rule 2: a parametric TOOL, which has no per-part URL ----------------
+    # Added 2026-09-20. K-SIM/TDK/Yuden answer a POST keyed on the part number
+    # and return that part's own curve; there is no document to cite and no
+    # per-part URL to point at. The endpoint reads as LANDING to a shape test,
+    # so 17,718 honestly-sourced rows were refused with no truthful way out:
+    # inventing a part-specific URL is fabrication and downgrading to
+    # inferredNotVerified is a false weakening of a claim that is simply true.
+    #
+    # BOTH fixtures matter, and the second is the one that keeps this honest.
+    # A blanket endpoint exemption would pass this pair identically to a working
+    # rule, which is precisely how the landing-page defect survived for so long.
+    def _ksim(pn, esr):
+        return {"capacitor": {"manufacturerInfo": {
+            "name": "KEMET", "reference": pn,
+            "datasheetInfo": {
+                "part": {"partNumber": pn, "series": "C0603"},
+                "electrical": {"capacitance": {"nominal": 1e-07},
+                               "esrPoints": {"xData": [100.0, 1000.0],
+                                             "yData": esr}},
+                "provenance": [{
+                    "source": "manufacturerParametric",
+                    "sourceName": "KEMET K-SIM 3 simulation, Impedance & ESR chart",
+                    "sourceUrl": "https://ksim3.kemet.com/api/csv/",
+                    "retrievedDate": "2026-09-20",
+                    "verification": "valuesReadFromSource",
+                    "verificationDate": "2026-09-20",
+                    "fields": ["electrical.esrPoints"]}]}}}}
+
+    per_part = [_ksim("C0603C%03dK5RACTU" % (100 + i), [12.0 + i, 1.2 + i * 0.1])
+                for i in range(MIN_COHORT + 2)]
+    results.append(_run("2i  tool endpoint, every row a different measured curve",
+                        "ACCEPTED", cap, per_part))
+
+    pasted = [_ksim("C0603C%03dK5RACTU" % (200 + i), [12.0, 1.2])
+              for i in range(MIN_COHORT + 2)]
+    results.append(_run("2j  same endpoint, ONE curve copied onto the whole cohort",
+                        "REFUSED", cap, pasted))
 
     # -- rule 3: minted constant ---------------------------------------------
     beads = [_mag("MPZ2012S%03dA" % (100 + 11 * i),
