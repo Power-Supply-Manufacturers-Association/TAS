@@ -1335,12 +1335,24 @@ def selftest(tmpdir: Path) -> int:
                      "verificationDate": "2026-09-20",
                      "fields": ["electrical.impedancePoints"]}]}}}}
 
-    led = verified_skew_cohorts().get(("ds.yuden.co.jp", "2026-07-30", "2026-09-20"))
-    # Bounded on purpose. An earlier version sized the fixture directly from the
-    # ledger, so a deliberately-crippled loader returning a huge
-    # rowsAtVerification made the FIXTURE try to write that many rows instead of
-    # failing the assertion. A test must not be steerable by the thing it tests.
-    n_at = min((led or {}).get("rowsAtVerification", 0), 40)
+    # The fixture brings its OWN ledger. Two earlier versions read the live one:
+    # the first sized itself from it, so a crippled loader returning a huge
+    # rowsAtVerification made the fixture try to build a billion rows (41 GB,
+    # killed by a peer); the second capped that at 40, which only worked while
+    # the live Yuden entry happened to hold 12 rows. The day it was updated to
+    # its real census of 5,156, the fixture's threshold (40) and the code's
+    # (5,156) came apart and the test failed for a reason unrelated to the code.
+    # A test must not depend on mutable production data at all -- not merely be
+    # bounded against it.
+    global VERIFIED_COHORTS
+    _real_ledger = VERIFIED_COHORTS
+    _fx_ledger = tmpdir / "verified_cohorts_fixture.json"
+    n_at = 12
+    _fx_ledger.write_text(json.dumps({"curve_date_skew": [{
+        "vendor": "ds.yuden.co.jp", "from": "2026-07-30", "to": "2026-09-20",
+        "rowsAtVerification": n_at, "verifiedDate": "2026-09-20",
+        "method": "fixture", "sampled": n_at, "identical": n_at, "drifted": 0}]}))
+    VERIFIED_COHORTS = _fx_ledger
     p.write_text("\n".join(json.dumps(_yuden_row("TY%04d" % i))
                             for i in range(n_at + 2)) + "\n")
     res = audit_file(p, ("verification",), sibling_root=REPO.parent)
@@ -1357,6 +1369,7 @@ def selftest(tmpdir: Path) -> int:
         "verification/CURVE_DATE_SKEW: a cohort no larger than it was at "
         f"verification must stay verified, got stale={c.get('stale')} "
         f"rows={c.get('rows')} at={n_at}")
+    VERIFIED_COHORTS = _real_ledger
 
     # 2f a search-shaped URL that names the part is a deep link, not a search
     # box. The look-alike -- a genuine query string naming nobody -- must still

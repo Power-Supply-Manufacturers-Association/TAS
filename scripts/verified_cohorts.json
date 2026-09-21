@@ -30,13 +30,13 @@
       "vendor": "ds.yuden.co.jp",
       "from": "2026-07-30",
       "to": "2026-09-20",
-      "verifiedDate": "2026-09-20",
-      "method": "census, every row",
-      "sampled": 12,
-      "identical": 12,
+      "verifiedDate": "2026-09-21",
+      "method": "census, every row, both curves compared by exact float equality",
+      "sampled": 5156,
+      "identical": 5156,
       "drifted": 0,
-      "outcome": "complete, no residual window",
-      "rowsAtVerification": 12
+      "outcome": "complete, no residual window. Comparator shown to report drift by a positive control of deliberately perturbed curves, flagged 4 of 5",
+      "rowsAtVerification": 5156
     }
   ]
 }
