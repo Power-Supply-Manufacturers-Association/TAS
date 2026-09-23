@@ -235,6 +235,214 @@ TEST_CASE("Capacitors: EnergyDensityImpossible", "[capacitors]") {
     CHECK(has(v, "CAP_ENERGY_DENSITY", Severity::Impossible));
 }
 
+// ---- Capacitor checks keyed on construction (2026-09-24) --------------------
+// A capacitor record built from its stated technology and electrical block only:
+// no manufacturer and no part number, because none of these rules may key on them.
+json cap_rec(const char* tech, const json& elec) {
+    json p;
+    p["capacitor"]["manufacturerInfo"]["reference"] = "X";
+    p["capacitor"]["manufacturerInfo"]["datasheetInfo"]["part"]["technology"] = tech;
+    p["capacitor"]["manufacturerInfo"]["datasheetInfo"]["electrical"] = elec;
+    return p;
+}
+
+// Below 10 pF capacitance is catalogued on a 0.1 pF step (codes 0R8, 9R9) with
+// 0.05 pF half-steps (0R75); 5,051 live class-1 rows sit there and were flagged.
+TEST_CASE("CapESeries: sub-10 pF step values are preferred values", "[capacitors][cap_relax]") {
+    for (double c : {9.9e-12, 0.8e-12, 5.7e-12, 0.75e-12, 8.6e-12})
+        CHECK(!has_code(V.validate(cap_rec("ceramic-class-1", {{"capacitance", c},
+                                                                 {"ratedVoltage", 50.0}})),
+                        "CAP_E_SERIES"));
+}
+
+TEST_CASE("CapESeries: sub-10 pF values off the step lattice still fire",
+          "[capacitors][cap_relax_guard]") {
+    // 1e-15 F: a femtofarad "ceramic" is a unit slip. Its mantissa (100) IS an
+    // E24 member, so this used to pass the E-series test; the step lattice
+    // catches it.
+    CHECK(has(V.validate(cap_rec("ceramic-class-1", {{"capacitance", 1e-15},
+                                                     {"ratedVoltage", 50.0}})),
+              "CAP_E_SERIES", Severity::Suspicious));
+    // 4.73 pF: off the 0.05 pF lattice.
+    CHECK(has(V.validate(cap_rec("ceramic-class-1", {{"capacitance", 4.73e-12},
+                                                     {"ratedVoltage", 50.0}})),
+              "CAP_E_SERIES", Severity::Suspicious));
+}
+
+// Wound/formed bulk parts >= 1 uF are catalogued at round values: DC-link film
+// 6/8/45/60 uF, MIL wet tantalum 8/60/86/290 uF, EDLC 6/8/60 F.
+TEST_CASE("CapESeries: bulk round values are preferred values", "[capacitors][cap_relax]") {
+    CHECK(!has_code(V.validate(cap_rec("film-polypropylene", {{"capacitance", 60e-6},
+                                                              {"ratedVoltage", 900.0}})),
+                    "CAP_E_SERIES"));
+    CHECK(!has_code(V.validate(cap_rec("film-polypropylene", {{"capacitance", 8e-6},
+                                                              {"ratedVoltage", 450.0}})),
+                    "CAP_E_SERIES"));
+    CHECK(!has_code(V.validate(cap_rec("tantalum-wet", {{"capacitance", 290e-6},
+                                                        {"ratedVoltage", 25.0}})),
+                    "CAP_E_SERIES"));
+    CHECK(!has_code(V.validate(cap_rec("aluminum-electrolytic-wet", {{"capacitance", 6000e-6},
+                                                                     {"ratedVoltage", 63.0}})),
+                    "CAP_E_SERIES"));
+    CHECK(!has_code(V.validate(cap_rec("supercapacitor-edlc", {{"capacitance", 60.0},
+                                                               {"ratedVoltage", 2.7}})),
+                    "CAP_E_SERIES"));
+}
+
+TEST_CASE("CapESeries: round values outside bulk construction still fire",
+          "[capacitors][cap_relax_guard]") {
+    // Same 8 uF, but a class-2 ceramic: MLCCs are E-series parts.
+    CHECK(has(V.validate(cap_rec("ceramic-class-2", {{"capacitance", 8e-6},
+                                                     {"ratedVoltage", 25.0}})),
+              "CAP_E_SERIES", Severity::Suspicious));
+    // Solid tantalum is an E6 family: the bulk allowance does not reach it
+    // (and "tantalum" must not read as "alum"inium).
+    CHECK(has(V.validate(cap_rec("tantalum-mno2", {{"capacitance", 6e-6},
+                                                   {"ratedVoltage", 20.0}})),
+              "CAP_E_SERIES", Severity::Suspicious));
+    // Bulk film below the 1 uF gate keeps the E-series test.
+    CHECK(has(V.validate(cap_rec("film-polypropylene", {{"capacitance", 0.6e-6},
+                                                        {"ratedVoltage", 275.0}})),
+              "CAP_E_SERIES", Severity::Suspicious));
+    // A 3-figure off-grid bulk value is not a round value.
+    CHECK(has(V.validate(cap_rec("film-polypropylene", {{"capacitance", 43.9e-6},
+                                                        {"ratedVoltage", 900.0}})),
+              "CAP_E_SERIES", Severity::Suspicious));
+}
+
+// Vishay publishes wet-tantalum DF up to 1.72 at 120 Hz (594 live rows).
+TEST_CASE("CapDF: wet tantalum up to its published ceiling is quiet", "[capacitors][cap_relax]") {
+    for (double df : {0.3, 0.92, 1.72})
+        CHECK(!has_code(V.validate(cap_rec("tantalum-wet", {{"capacitance", 1500e-6},
+                                                            {"ratedVoltage", 10.0},
+                                                            {"dissipationFactor", df}})),
+                        "CAP_DF_BOUNDS"));
+}
+
+TEST_CASE("CapDF: wet tantalum above its ceiling and percent slips still fire",
+          "[capacitors][cap_relax_guard]") {
+    CHECK(has(V.validate(cap_rec("tantalum-wet", {{"capacitance", 1500e-6},
+                                                  {"ratedVoltage", 10.0},
+                                                  {"dissipationFactor", 2.5}})),
+              "CAP_DF_BOUNDS", Severity::Suspicious));
+    // 30 (percent) for 0.30: past the hard ceiling.
+    CHECK(has(V.validate(cap_rec("tantalum-wet", {{"capacitance", 1500e-6},
+                                                  {"ratedVoltage", 10.0},
+                                                  {"dissipationFactor", 30.0}})),
+              "CAP_DF_BOUNDS", Severity::Impossible));
+    // Solid tantalum keeps its own 0.25 ceiling.
+    CHECK(has(V.validate(cap_rec("tantalum-mno2", {{"capacitance", 100e-6},
+                                                   {"ratedVoltage", 10.0},
+                                                   {"dissipationFactor", 0.30}})),
+              "CAP_DF_BOUNDS", Severity::Suspicious));
+}
+
+TEST_CASE("CapDF: aluminium polymer at 0.12-0.18 is quiet", "[capacitors][cap_relax]") {
+    for (double df : {0.12, 0.15, 0.18})
+        CHECK(!has_code(V.validate(cap_rec("aluminum-electrolytic-polymer",
+                                           {{"capacitance", 560e-6},
+                                            {"ratedVoltage", 2.5},
+                                            {"dissipationFactor", df}})),
+                        "CAP_DF_BOUNDS"));
+}
+
+TEST_CASE("CapDF: aluminium polymer above 0.20 still fires", "[capacitors][cap_relax_guard]") {
+    CHECK(has(V.validate(cap_rec("aluminum-electrolytic-polymer", {{"capacitance", 560e-6},
+                                                                   {"ratedVoltage", 2.5},
+                                                                   {"dissipationFactor", 0.25}})),
+              "CAP_DF_BOUNDS", Severity::Suspicious));
+    // Polymer tantalum is not widened.
+    CHECK(has(V.validate(cap_rec("tantalum-polymer", {{"capacitance", 100e-6},
+                                                      {"ratedVoltage", 6.3},
+                                                      {"dissipationFactor", 0.30}})),
+              "CAP_DF_BOUNDS", Severity::Suspicious));
+}
+
+TEST_CASE("CapDF: high-C class-2 ceramic up to 0.125 is quiet", "[capacitors][cap_relax]") {
+    for (double df : {0.035, 0.05, 0.12})
+        CHECK(!has_code(V.validate(cap_rec("ceramic-class-2", {{"capacitance", 22e-6},
+                                                               {"ratedVoltage", 25.0},
+                                                               {"dissipationFactor", df}})),
+                        "CAP_DF_BOUNDS"));
+}
+
+TEST_CASE("CapDF: class-2 percent slips and sub-uF class-2 still fire",
+          "[capacitors][cap_relax_guard]") {
+    // 2.5 for 2.5 %: the percent-vs-fraction error on an X7R.
+    CHECK(has(V.validate(cap_rec("ceramic-class-2", {{"capacitance", 22e-6},
+                                                     {"ratedVoltage", 25.0},
+                                                     {"dissipationFactor", 2.5}})),
+              "CAP_DF_BOUNDS", Severity::Suspicious));
+    CHECK(has(V.validate(cap_rec("ceramic-class-2", {{"capacitance", 100e-9},
+                                                     {"ratedVoltage", 50.0},
+                                                     {"dissipationFactor", 2.5}})),
+              "CAP_DF_BOUNDS", Severity::Suspicious));
+    // Just past the widened ceiling.
+    CHECK(has(V.validate(cap_rec("ceramic-class-2", {{"capacitance", 22e-6},
+                                                     {"ratedVoltage", 25.0},
+                                                     {"dissipationFactor", 0.15}})),
+              "CAP_DF_BOUNDS", Severity::Suspicious));
+    // Below 1 uF the class-2 ceiling stays 0.025.
+    CHECK(has(V.validate(cap_rec("ceramic-class-2", {{"capacitance", 100e-9},
+                                                     {"ratedVoltage", 50.0},
+                                                     {"dissipationFactor", 0.05}})),
+              "CAP_DF_BOUNDS", Severity::Suspicious));
+}
+
+// Coin/backup EDLCs: 0.47 F with 40 ohm is 18.8 s; a 25 F cell at 38 mohm is 0.95 s.
+TEST_CASE("CapESR: supercapacitor ESR*C of tens of seconds is quiet", "[capacitors][cap_relax]") {
+    CHECK(!has_code(V.validate(cap_rec("supercapacitor-edlc", {{"capacitance", 0.47},
+                                                               {"ratedVoltage", 5.5},
+                                                               {"esr", 40.0}})),
+                    "CAP_ESR_C"));
+    CHECK(!has_code(V.validate(cap_rec("supercapacitor-edlc", {{"capacitance", 500.0},
+                                                               {"ratedVoltage", 4.0},
+                                                               {"esr", 0.08}})),
+                    "CAP_ESR_C"));
+}
+
+TEST_CASE("CapESR: milliohm-as-ohm on an EDLC and >1 s on an electrolytic still fire",
+          "[capacitors][cap_relax_guard]") {
+    // 38 mohm stored as 38 ohm on a 25 F cell: 950 s.
+    CHECK(has(V.validate(cap_rec("supercapacitor-edlc", {{"capacitance", 25.0},
+                                                         {"ratedVoltage", 2.7},
+                                                         {"esr", 38.0}})),
+              "CAP_ESR_C", Severity::Suspicious));
+    CHECK(has(V.validate(cap_rec("aluminum-electrolytic-wet", {{"capacitance", 0.01},
+                                                               {"ratedVoltage", 63.0},
+                                                               {"esr", 200.0}})),
+              "CAP_ESR_C", Severity::Suspicious));
+}
+
+// "k*C*V or a fixed current, whichever is greater": 300 uA on a 10 uF / 10 V polymer
+// part is 3 /s of C*V and is the stated floor, not a leaky part.
+TEST_CASE("CapLeakage: aluminium fixed-floor leakage is quiet", "[capacitors][cap_relax]") {
+    CHECK(!has_code(V.validate(cap_rec("aluminum-electrolytic-polymer",
+                                       {{"capacitance", 10e-6},
+                                        {"ratedVoltage", 10.0},
+                                        {"leakageCurrent", 300e-6}})),
+                    "CAP_LEAKAGE_CV"));
+}
+
+TEST_CASE("CapLeakage: leakage above the floor, on other families, or impossible still fires",
+          "[capacitors][cap_relax_guard]") {
+    // 5 mA on the same part: above every stated floor.
+    CHECK(has(V.validate(cap_rec("aluminum-electrolytic-polymer", {{"capacitance", 100e-6},
+                                                                   {"ratedVoltage", 10.0},
+                                                                   {"leakageCurrent", 5e-3}})),
+              "CAP_LEAKAGE_CV", Severity::Suspicious));
+    // The floor is an aluminium convention; a ceramic is not excused.
+    CHECK(has(V.validate(cap_rec("ceramic-class-1", {{"capacitance", 220e-12},
+                                                     {"ratedVoltage", 50.0},
+                                                     {"leakageCurrent", 1e-7}})),
+              "CAP_LEAKAGE_CV", Severity::Suspicious));
+    // Under the floor but > 10 /s: still impossible.
+    CHECK(has(V.validate(cap_rec("aluminum-electrolytic-polymer", {{"capacitance", 1e-6},
+                                                                   {"ratedVoltage", 6.3},
+                                                                   {"leakageCurrent", 900e-6}})),
+              "CAP_LEAKAGE_CV", Severity::Impossible));
+}
+
 TEST_CASE("Semiconductors: MosfetCapHierarchy", "[semiconductors]") {
     json p = json::parse(R"json({"semiconductor": {"mosfet": {"manufacturerInfo": {
       "reference": "X", "datasheetInfo": {"part": {"technology": "GaN"},

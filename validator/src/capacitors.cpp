@@ -8,27 +8,75 @@
 #include "tas_validator/thresholds.hpp"
 #include "tas_validator/validator.hpp"
 
+#include <cmath>
 #include <sstream>
 #include <string>
 
 namespace tas {
 namespace {
 
-// Dissipation-factor ceiling for a normalised technology token.
-double df_ceiling(const std::string& t) {
+bool is_class2_ceramic(const std::string& t) {
+    return tech_has(t, "class2") || tech_has(t, "x7r") || tech_has(t, "x5r");
+}
+
+// "tantalum" contains "alum": a tantalum part is never an aluminium electrolytic.
+bool is_aluminum_electrolytic(const std::string& t) {
+    return !tech_has(t, "tantalum") && (tech_has(t, "alum") || tech_has(t, "electrolytic"));
+}
+
+bool is_wet_tantalum(const std::string& t) {
+    return tech_has(t, "tantalum") && tech_has(t, "wet");
+}
+
+bool is_edlc(const std::string& t) {
+    return tech_has(t, "supercapacitor") || tech_has(t, "edlc");
+}
+
+// Wound or formed bulk construction: film (not thin-film silicon), aluminium
+// electrolytic of any electrolyte, wet tantalum, EDLC.
+bool is_bulk_wound(const std::string& t) {
+    return (tech_has(t, "film") && !tech_has(t, "silicon")) || is_aluminum_electrolytic(t) ||
+           is_wet_tantalum(t) || is_edlc(t);
+}
+
+// Dissipation-factor ceiling for a normalised technology token and the nominal
+// capacitance (absent -> the capacitance-gated widenings do not apply).
+double df_ceiling(const std::string& t, std::optional<double> C) {
     // Ceramic class-1 (C0G/NP0). Cover NP0-with-zero and "Class 1"/"Class I" forms
     // so a class-1 part is not given the looser X7R ceiling.
     if (tech_has(t, "npo") || tech_has(t, "np0") || tech_has(t, "c0g") ||
         tech_has(t, "classi") || tech_has(t, "class1"))
         return thr::CAP_DF_CERAMIC_NPO;
     if (tech_has(t, "y5v") || tech_has(t, "z5u")) return thr::CAP_DF_CERAMIC_Y5V;
+    if (is_class2_ceramic(t) && C && *C >= thr::CAP_DF_CERAMIC_CLASS2_HIGH_C_GATE)
+        return thr::CAP_DF_CERAMIC_CLASS2_HIGH_C;
     if (tech_has(t, "x7r") || tech_has(t, "x5r") || tech_has(t, "mlcc") || tech_has(t, "ceramic"))
         return thr::CAP_DF_CERAMIC_X7R;
+    if (is_wet_tantalum(t)) return thr::CAP_DF_TANTALUM_WET;
     if (tech_has(t, "tantalum")) return thr::CAP_DF_TANTALUM;
+    if (is_aluminum_electrolytic(t) && tech_has(t, "polymer")) return thr::CAP_DF_ALUMINUM_POLYMER;
     if (tech_has(t, "polymer")) return thr::CAP_DF_POLYMER;
     if (tech_has(t, "electrolytic") || tech_has(t, "alum")) return thr::CAP_DF_ELECTROLYTIC;
     if (tech_has(t, "film")) return thr::CAP_DF_FILM;
     return thr::CAP_DF_DEFAULT;
+}
+
+// Is a nominal capacitance on the preferred-value lattice its construction is
+// actually catalogued on?
+//  - below 10 pF: the 0.05 pF step lattice, exclusively (E-series does not
+//    apply to absolute-tolerance values, and nothing is catalogued under 0.05 pF);
+//  - wound/formed bulk parts at >= 1 uF: E24/E96, or any 1-2 significant-figure
+//    round value;
+//  - everything else: E24/E96.
+bool cap_on_catalogue_grid(double c, const std::string& t) {
+    if (c < thr::CAP_SUB_10PF_LIMIT) {
+        const double n = c / thr::CAP_SUB_10PF_STEP;
+        const double k = std::round(n);
+        return k >= 1.0 && std::fabs(n - k) <= 1e-6 * n;
+    }
+    if (eseries::on_grid(c)) return true;
+    return c >= thr::CAP_BULK_ROUND_VALUE_GATE && is_bulk_wound(t) &&
+           eseries::sig_figs(c) <= thr::CAP_BULK_ROUND_VALUE_MAX_SIG_FIGS;
 }
 
 // Energy-density suspicious ceiling for a normalised technology token [J/m^3].
@@ -127,12 +175,14 @@ void check_capacitors(const json& datasheet, const Ctx& ctx, std::vector<Finding
         else if (*df >= 10.0)
             emit(out, ctx, "CAP_DF_BOUNDS", Severity::Impossible, *df, 10.0,
                  fmt("dissipation factor implausibly large", *df, 10.0));
-        else if (*df >= 1.0)
-            emit(out, ctx, "CAP_DF_BOUNDS", Severity::Suspicious, *df, 1.0,
-                 fmt("dissipation factor >= 1 (only cold/HF electrolytics)", *df, 1.0));
         else {
-            double ceil = df_ceiling(tech);
-            if (*df > ceil)
+            // Wet tantalum is the one family whose published ceiling is above 1;
+            // every other family keeps the DF >= 1 flag.
+            const double ceil = df_ceiling(tech, C);
+            if (*df >= 1.0 && ceil < 1.0)
+                emit(out, ctx, "CAP_DF_BOUNDS", Severity::Suspicious, *df, 1.0,
+                     fmt("dissipation factor >= 1 (only cold/HF electrolytics)", *df, 1.0));
+            else if (*df > ceil)
                 emit(out, ctx, "CAP_DF_BOUNDS", Severity::Suspicious, *df, ceil,
                      fmt("dissipation factor high for dielectric", *df, ceil));
         }
@@ -173,7 +223,9 @@ void check_capacitors(const json& datasheet, const Ctx& ctx, std::vector<Finding
                      thr::CAP_LEAKAGE_PER_CV_IMP,
                      fmt("leakage / (C*V) physically impossible [1/s]", per_cv,
                          thr::CAP_LEAKAGE_PER_CV_IMP));
-            else if (per_cv > thr::CAP_LEAKAGE_PER_CV_SUS)
+            else if (per_cv > thr::CAP_LEAKAGE_PER_CV_SUS &&
+                     !(is_aluminum_electrolytic(tech) &&
+                       *leak <= thr::CAP_LEAKAGE_FIXED_FLOOR_ALUMINUM))
                 emit(out, ctx, "CAP_LEAKAGE_CV", Severity::Suspicious, per_cv,
                      thr::CAP_LEAKAGE_PER_CV_SUS, fmt("leakage high for C*V [1/s]", per_cv,
                                                       thr::CAP_LEAKAGE_PER_CV_SUS));
@@ -185,10 +237,12 @@ void check_capacitors(const json& datasheet, const Ctx& ctx, std::vector<Finding
         if (*esr < 0)
             emit(out, ctx, "CAP_ESR_C", Severity::Impossible, *esr, 0, "ESR < 0");
         else if (C && *C > 0) {
-            double tau = *esr * *C;  // seconds; even bulk electrolytics stay well under 1 s
-            if (tau > 1.0)
-                emit(out, ctx, "CAP_ESR_C", Severity::Suspicious, tau, 1.0,
-                     fmt("ESR*C suspiciously high [s]", tau, 1.0));
+            const double tau = *esr * *C;  // seconds
+            const double lim =
+                is_edlc(tech) ? thr::CAP_ESR_C_TAU_SUS_EDLC : thr::CAP_ESR_C_TAU_SUS;
+            if (tau > lim)
+                emit(out, ctx, "CAP_ESR_C", Severity::Suspicious, tau, lim,
+                     fmt("ESR*C suspiciously high [s]", tau, lim));
         }
     }
 
@@ -212,8 +266,10 @@ void check_capacitors(const json& datasheet, const Ctx& ctx, std::vector<Finding
         }
     }
 
-    // CHECK (NEW, anti-synthesis): the nominal capacitance should land on an IEC
-    // 60063 E-series preferred value, and not be over-precise. SUSPICIOUS only —
+    // CHECK (NEW, anti-synthesis): the nominal capacitance should land on the
+    // preferred-value lattice its construction is catalogued on (IEC 60063
+    // E-series, the sub-10 pF step grid, or bulk round values -- see
+    // cap_on_catalogue_grid), and not be over-precise. SUSPICIOUS only —
     // a real-vs-fabricated signal, not a physics bound.
     if (const json* cf = at(*elec, "capacitance")) {
         std::optional<double> cnom;
@@ -222,9 +278,10 @@ void check_capacitors(const json& datasheet, const Ctx& ctx, std::vector<Finding
         else if (cf->is_object() && cf->contains("nominal") && (*cf)["nominal"].is_number())
             cnom = (*cf)["nominal"].get<double>();
         if (cnom && *cnom > 0) {
-            if (!eseries::on_grid(*cnom))
+            if (!cap_on_catalogue_grid(*cnom, tech))
                 emit(out, ctx, "CAP_E_SERIES", Severity::Suspicious, *cnom, 0,
-                     fmt("capacitance is not an IEC 60063 E-series preferred value [F]", *cnom));
+                     fmt("capacitance is not a preferred value for its construction [F]",
+                         *cnom));
             if (eseries::sig_figs(*cnom) > 4)
                 emit(out, ctx, "GEN_OVERPRECISION", Severity::Suspicious, *cnom, 0,
                      fmt("capacitance nominal carries more significant figures than a preferred "

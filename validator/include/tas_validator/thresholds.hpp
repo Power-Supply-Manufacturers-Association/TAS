@@ -96,10 +96,58 @@ inline constexpr double CAP_DF_TANTALUM = 0.25;  // solid Ta reaches 0.10-0.25 a
 inline constexpr double CAP_DF_ELECTROLYTIC = 0.30;
 inline constexpr double CAP_DF_POLYMER = 0.10;
 inline constexpr double CAP_DF_DEFAULT = 0.5;  // generic upper sanity
+// Wet (sintered-anode, liquid-electrolyte) tantalum. DF at 120 Hz is omega*C*ESR,
+// and the high-CV wet parts carry a large ESR against a large C: Vishay's wet-Ta
+// tables publish DF up to 1.72 at 120 Hz (verified on 594 live rows). The ceiling
+// sits just above that published maximum, so a DF stored in percent (e.g. 30 for
+// 0.30) still lands far above it.
+inline constexpr double CAP_DF_TANTALUM_WET = 1.75;
+// Aluminium conductive-polymer and hybrid-polymer electrolytics. Panasonic's
+// OS-CON tables list tan delta 0.12 / 0.15 / 0.18 at 120 Hz on the high-CV,
+// low-voltage codes (the live corpus maximum across 940 rows is 0.18; the maker's
+// site did not answer, so this is NOT re-verified). The old 0.10 ceiling was the
+// solid-polymer-tantalum figure. Widened to 0.20, just over the highest stated
+// value, rather than dropping the check.
+inline constexpr double CAP_DF_ALUMINUM_POLYMER = 0.20;
+// Class-2 ceramics at C >= 1 uF: high-CV X5R/X7R datasheets state tan delta of
+// 0.035 / 0.05 / 0.10 and up to 0.125 (large values measured at 120 Hz). Not
+// verified against the maker's documents; widened only above the gate so that a
+// sub-uF class-2 part keeps the 0.025 ceiling.
+inline constexpr double CAP_DF_CERAMIC_CLASS2_HIGH_C = 0.125;
+inline constexpr double CAP_DF_CERAMIC_CLASS2_HIGH_C_GATE = 1e-6;
+// ESR*C time constant [s]. Bulk electrolytics stay well under 1 s. An EDLC is a
+// different device: coin and hybrid supercapacitors are backup cells whose ESR
+// is tens of ohms on a fraction of a farad, and datasheet ESR*C reaches tens of
+// seconds (live corpus maximum 40 s). A milliohm stored as ohms on a
+// multi-farad cell overshoots 100 s by an order of magnitude.
+inline constexpr double CAP_ESR_C_TAU_SUS = 1.0;
+inline constexpr double CAP_ESR_C_TAU_SUS_EDLC = 100.0;
+// Capacitance preferred-value grids beyond IEC 60063 E24/E96.
+// Below 10 pF capacitance is specified with an ABSOLUTE tolerance and catalogued
+// in 0.1 pF steps (codes 0R8, 9R9) with 0.05 pF half-steps (0R75). The step
+// grid replaces the E-series there: a value off the 0.05 pF lattice (including
+// anything below 0.05 pF) is flagged.
+inline constexpr double CAP_SUB_10PF_LIMIT = 10e-12;
+inline constexpr double CAP_SUB_10PF_STEP = 0.05e-12;
+// Wound or formed bulk capacitors (film, aluminium electrolytic, wet tantalum,
+// EDLC) at >= 1 uF are catalogued at round values that are not E-series members
+// (motor-run/DC-link film 6, 8, 45, 60 uF; MIL wet tantalum 8, 60, 86, 290 uF;
+// EDLC 6, 8, 60 F). There a 1- or 2-significant-figure value is accepted; a
+// 3-figure off-grid value still flags.
+inline constexpr double CAP_BULK_ROUND_VALUE_GATE = 1e-6;
+inline constexpr int CAP_BULK_ROUND_VALUE_MAX_SIG_FIGS = 2;
 // Leakage: I_leak / (C*V)  [1/s] — fraction of charge bled per second.
 // Electrolytics ~1e-2..1e-1; film/ceramic far lower. Physically impossible above.
 inline constexpr double CAP_LEAKAGE_PER_CV_IMP = 10.0;
 inline constexpr double CAP_LEAKAGE_PER_CV_SUS = 1.0;
+// Aluminium electrolytic and polymer datasheets state leakage as
+// "k*C*V or a fixed current, whichever is greater" (e.g. 300-600 uA on small
+// polymer parts in the live corpus). Below this fixed-floor allowance the
+// stated leakage is the floor term and leakage/(C*V) says nothing about the
+// part, so the SUSPICIOUS ratio is not judged (the IMPOSSIBLE ratio still is:
+// no stated floor bleeds ten times the stored charge per second). Not verified against a published maximum
+// floor; 1 mA sits above every floor seen.
+inline constexpr double CAP_LEAKAGE_FIXED_FLOOR_ALUMINUM = 1e-3;
 // Insulation time constant Riso*C [s]: electrolytics short (~50-1000s), film/
 // ceramic long (>1e4 s). Suspicious outside a very wide band.
 // Riso*C low bound applies to BULK caps only (the check now gates on C > 1 uF);

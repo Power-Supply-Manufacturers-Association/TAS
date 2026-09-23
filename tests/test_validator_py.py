@@ -780,3 +780,38 @@ def test_foreign_order_suffix_is_suspicious_and_scoped():
                                                                     "MAX17501ASLE"))
     assert not any(c == "GEN_FOREIGN_ORDER_SUFFIX" for c, _ in _codes(rec("Infineon",
                                                                           "BSC010N04LS")))
+
+
+# ---------------------------------------------------------------------------
+# Capacitor checks keyed on construction: the relaxed families are quiet in the
+# shipped module, and the wrong values beside them still fire.
+# ---------------------------------------------------------------------------
+
+
+def _cap(tech, **elec):
+    return {"capacitor": {"manufacturerInfo": {
+        "reference": "X",
+        "datasheetInfo": {"part": {"technology": tech}, "electrical": elec}}}}
+
+
+def _cap_severities(rec, code):
+    return [str(f.severity) for f in tas_validator.validate(rec).findings if f.code == code]
+
+
+def test_wet_tantalum_published_df_is_quiet_and_percent_slip_fires():
+    assert _cap_severities(_cap("tantalum-wet", capacitance=1.5e-3, ratedVoltage=10.0,
+                       dissipationFactor=1.72), "CAP_DF_BOUNDS") == []
+    assert _cap_severities(_cap("tantalum-wet", capacitance=1.5e-3, ratedVoltage=10.0,
+                       dissipationFactor=30.0), "CAP_DF_BOUNDS") == ["IMPOSSIBLE"]
+
+
+def test_x7r_percent_df_still_fires():
+    assert _cap_severities(_cap("ceramic-class-2", capacitance=2.2e-5, ratedVoltage=25.0,
+                       dissipationFactor=2.5), "CAP_DF_BOUNDS") == ["SUSPICIOUS"]
+
+
+def test_sub_10pf_step_value_quiet_and_femtofarad_fires():
+    assert _cap_severities(_cap("ceramic-class-1", capacitance=9.9e-12, ratedVoltage=50.0),
+                  "CAP_E_SERIES") == []
+    assert _cap_severities(_cap("ceramic-class-1", capacitance=1e-15, ratedVoltage=50.0),
+                  "CAP_E_SERIES") == ["SUSPICIOUS"]
