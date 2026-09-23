@@ -3783,3 +3783,115 @@ TEST_CASE("MOS_IDC_VS_THERMAL: every isolated naming convention is recognised",
         CHECK(has(V.validate(p), "MOS_IDC_VS_THERMAL", Severity::Impossible));
     }
 }
+
+// --- 2026-09-23: three blind spots that let bad data sit with zero findings ---
+
+// A dielectric withstanding voltage is a proof test. 326 connector DWVs of 2-37 V
+// (clause numbers and wrong columns) were written on rows that mostly had no
+// ratedVoltage, so CONN_DWV_VS_RATED could see only 31 of them.
+TEST_CASE("CONN: a DWV below every published proof-test level is flagged without a rated voltage",
+          "[connector][dwv_floor]") {
+    json p = good_connector();
+    auto& e = p["connector"]["manufacturerInfo"]["datasheetInfo"]["electrical"];
+    e.erase("ratedVoltage");
+    e["dielectricWithstandingVoltage"] = 37.0;  // TE 108-25034's clause number
+    Verdict v = V.validate(p);
+    CHECK(has(v, "CONN_DWV_FLOOR", Severity::Suspicious));
+    CHECK(!has_code(v, "CONN_DWV_VS_RATED"));  // nothing to compare against
+    e["dielectricWithstandingVoltage"] = 2.0;
+    CHECK(has(V.validate(p), "CONN_DWV_FLOOR", Severity::Suspicious));
+}
+
+TEST_CASE("CONN: the lowest real DWVs, 100 V fine-pitch signal parts, stay clean",
+          "[connector][dwv_floor]") {
+    json p = good_connector();
+    auto& e = p["connector"]["manufacturerInfo"]["datasheetInfo"]["electrical"];
+    e["ratedVoltage"] = 50.0;
+    for (double d : {100.0, 150.0, 250.0, 1000.0}) {
+        e["dielectricWithstandingVoltage"] = d;
+        CHECK(!has_code(V.validate(p), "CONN_DWV_FLOOR"));
+    }
+}
+
+// SAS gives the clamp, breakdown and standoff voltages their own fields;
+// forwardVoltage is V_F on every subtype. 140 TI TVS/ESD rows stored a 5.5-75 V
+// clamp there and DIO_VF_RANGE skipped every one of them as "a TVS".
+namespace {
+json protection_diode(const char* sub, double vf) {
+    json d = json::parse(R"json({"semiconductor":{"diode":{"manufacturerInfo":{
+      "name":"Texas Instruments","reference":"TVS5800","datasheetInfo":{
+      "provenance":[{"source":"manufacturerDatasheet"}],
+      "part":{"partNumber":"TVS5800","technology":"Si"},
+      "electrical":{"standoffVoltage":58.0,"clampingVoltage":70.9,
+                    "peakPulseCurrent":25.0}}}}}})json");
+    auto& ds = d["semiconductor"]["diode"]["manufacturerInfo"]["datasheetInfo"];
+    ds["part"]["subType"] = sub;
+    ds["electrical"]["forwardVoltage"] = vf;
+    return d;
+}
+}  // namespace
+
+TEST_CASE("DIO: a clamp voltage stored as a protection diode's V_F is impossible",
+          "[diode][vf_protection]") {
+    CHECK(has(V.validate(protection_diode("tvs", 75.0)), "DIO_VF_PROTECTION", Severity::Impossible));
+    CHECK(has(V.validate(protection_diode("esd", 5.5)), "DIO_VF_PROTECTION", Severity::Impossible));
+    CHECK(has(V.validate(protection_diode("zener", 20.0)), "DIO_VF_PROTECTION", Severity::Impossible));
+    CHECK(!V.validate(protection_diode("tvs", 7.4)).valid);
+}
+
+TEST_CASE("DIO: a real surge-current V_F on a TVS stays clean", "[diode][vf_protection]") {
+    // Vishay SMAJ: 3.5 V at 25 A; 1.5KE stacked-die parts 5.0 V at 100 A; the
+    // ordinary 0.7-1.2 V of an ESD or zener junction at mA.
+    for (double vf : {0.7, 0.9, 1.2, 3.5, 5.0}) {
+        for (const char* sub : {"tvs", "esd", "zener"}) {
+            Verdict v = V.validate(protection_diode(sub, vf));
+            CHECK(!has_code(v, "DIO_VF_PROTECTION"));
+            CHECK(!has_code(v, "DIO_VF_RANGE"));  // no Si-PN band on a surge V_F
+        }
+    }
+}
+
+// 448 controllers were real Maxim / ADI / onsemi base parts with one of eight
+// generated suffixes appended; their values were copied from the base, so every
+// physics bound passed them.
+namespace {
+json ic(const char* mfr, const char* ref) {
+    json c = json::parse(R"json({"controller":{"manufacturerInfo":{"datasheetInfo":{
+      "function":{"category":"pwmController"},"part":{"deviceType":"controller"},
+      "provenance":[{"source":"manufacturerDatasheet"}]}}}})json");
+    auto& mi = c["controller"]["manufacturerInfo"];
+    mi["name"] = mfr;
+    mi["reference"] = ref;
+    mi["datasheetInfo"]["part"]["partNumber"] = ref;
+    return c;
+}
+}  // namespace
+
+TEST_CASE("GEN: a generated order suffix on a Maxim/ADI/onsemi part is suspicious",
+          "[antisynthesis][foreign_suffix]") {
+    for (const char* r : {"MAX17501DR", "MAX17501DT", "MAX17501LS", "MAX17501ASLE",
+                          "MAX17501FB", "MAX17501DFN", "MAX17501BGA", "MAX17501MSO"})
+        CHECK(has(V.validate(ic("Maxim Integrated", r)), "GEN_FOREIGN_ORDER_SUFFIX",
+                  Severity::Suspicious));
+    CHECK(has(V.validate(ic("Analog Devices", "LT8640DFN")), "GEN_FOREIGN_ORDER_SUFFIX",
+              Severity::Suspicious));
+    CHECK(has(V.validate(ic("onsemi", "NCP1342ASLE")), "GEN_FOREIGN_ORDER_SUFFIX",
+              Severity::Suspicious));
+    // Never a verdict on its own.
+    CHECK(!has(V.validate(ic("onsemi", "NCP1342ASLE")), "GEN_FOREIGN_ORDER_SUFFIX",
+               Severity::Impossible));
+}
+
+TEST_CASE("GEN: the same suffixes in other vendors' grammars, and real onsemi IGBTs, stay clean",
+          "[antisynthesis][foreign_suffix]") {
+    CHECK(!has_code(V.validate(ic("Maxim Integrated", "MAX17501")), "GEN_FOREIGN_ORDER_SUFFIX"));
+    CHECK(!has_code(V.validate(ic("Maxim Integrated", "MAX17501ATB+")), "GEN_FOREIGN_ORDER_SUFFIX"));
+    CHECK(!has_code(V.validate(ic("Analog Devices", "ADP2386ACPZN-R7")), "GEN_FOREIGN_ORDER_SUFFIX"));
+    // onsemi field-stop IGBT: DT after letters, not after the numeric core.
+    CHECK(!has_code(V.validate(ic("onsemi", "FGHL50T65MQDT")), "GEN_FOREIGN_ORDER_SUFFIX"));
+    // Real grammar at other vendors (all live in the catalogue).
+    CHECK(!has_code(V.validate(ic("Infineon", "BSC010N04LS")), "GEN_FOREIGN_ORDER_SUFFIX"));
+    CHECK(!has_code(V.validate(ic("Vishay", "SiZ240DT")), "GEN_FOREIGN_ORDER_SUFFIX"));
+    CHECK(!has_code(V.validate(ic("ROHM", "SCT4013DR")), "GEN_FOREIGN_ORDER_SUFFIX"));
+    CHECK(!has_code(V.validate(ic("STMicroelectronics", "STGW30H65FB")), "GEN_FOREIGN_ORDER_SUFFIX"));
+}

@@ -26,9 +26,11 @@ void check_diodes(const json& datasheet, const Ctx& ctx, std::vector<Finding>& o
     std::string tech = norm_tech(at(datasheet, "part", "technology")) +
                        norm_tech(at(datasheet, "part", "subType"));
     bool majority = tech_has(tech, "schottky") || tech_has(tech, "gan");
-    // TVS / Zener parts: the "forwardVoltage" field stores the clamp/breakdown
-    // voltage (tens of volts), not a PN forward drop. Detect by the TVS-only
-    // fields or technology so the high value is not treated as an impossible Vf.
+    // TVS / Zener / ESD parts ("protection diodes"). Their clamp, breakdown and
+    // standoff voltages have their own fields; SAS defines forwardVoltage as V_F
+    // for every subtype. The flag gates the checks whose OTHER inputs mean
+    // something different on a protection part (powerDissipation is peak pulse
+    // power, surgeCurrent is I_pp), and selects the protection V_F band below.
     bool tvs = elec->contains("standoffVoltage") || elec->contains("clampingVoltage") ||
                elec->contains("breakdownVoltage") || tech_has(tech, "tvs") ||
                tech_has(tech, "transient") || tech_has(tech, "zener") || tech_has(tech, "esd");
@@ -60,10 +62,29 @@ void check_diodes(const json& datasheet, const Ctx& ctx, std::vector<Finding>& o
              fmt("reverseLeakageCurrent above any datasheet fraction of "
                  "forwardCurrent [A]", *Ilk, *If));
 
-    // CHECK (NEW): forward-voltage range by technology (skipped for TVS/Zener,
-    // whose forwardVoltage field carries clamp/breakdown voltage).
+    // CHECK: forward voltage of a protection diode. This used to be skipped on
+    // the belief that the field carries the clamp voltage; that belief is what
+    // let 140 TI TVS/ESD rows store a 5.5-75 V clamp as V_F with no finding.
+    // Forward conduction of a TVS/zener/ESD junction is ordinary PN conduction:
+    // V_F = V_bi + I*R_s. Datasheets quote it at the surge current (SMAJ/SMBJ/
+    // P6KE 3.5 V at 25-50 A; 1.5KE 3.5 V, or 5.0 V for the stacked-die
+    // >200 V parts, at 100 A) and that is the top of the range: the same
+    // (0.05, 5] V hard window every other diode is held to. The per-technology
+    // SUSPICIOUS bands are NOT applied -- 3.5 V is a correct surge V_F (24 Vishay
+    // SMAJ rows) and would sit outside the Si PN band. Measured 2026-09-23 on
+    // the 356 protection rows carrying forwardVoltage: 352 in 0.7-3.5 V, and 4
+    // Littelfuse SMAJ24A/24C/30A/30C at 7.5 V and 20 V (same JEDEC-series
+    // parts Vishay rates 3.5 V; the C parts are bidirectional and have no
+    // forward conduction at all).
     if (Vf && tvs) {
         skipped.push_back("DIO_VF_RANGE");
+        if (*Vf < thr::DIO_VF_HARD_LO || *Vf > thr::DIO_VF_HARD_HI)
+            emit(out, ctx, "DIO_VF_PROTECTION", Severity::Impossible, *Vf,
+                 *Vf > thr::DIO_VF_HARD_HI ? thr::DIO_VF_HARD_HI : thr::DIO_VF_HARD_LO,
+                 fmt("protection-diode forwardVoltage outside (0.05,5] V: a forward-"
+                     "biased junction drops at most ~5 V even at its surge current; "
+                     "tens of volts is a clamp or breakdown figure in the wrong field",
+                     *Vf));
     } else if (Vf) {
         if (*Vf < thr::DIO_VF_HARD_LO || *Vf > thr::DIO_VF_HARD_HI) {
             emit(out, ctx, "DIO_VF_RANGE", Severity::Impossible, *Vf, 0,

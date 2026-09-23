@@ -428,6 +428,19 @@ inline constexpr double CONN_VOLTAGE_SUS = 5.0e4, CONN_VOLTAGE_IMP = 1.0e5;
 // connector geometry, which exceeds the entire body of every connector here.
 // Above this you are describing a substation bushing, not a connector.
 inline constexpr double CONN_IMPULSE_IMP = 1.0e5;
+// Dielectric withstanding voltage [V], ABSOLUTE floor (no ratedVoltage needed).
+// A DWV is a proof test (IEC 60512-4-1 / EIA-364-20), run at a multiple of the
+// working voltage plus a fixed margin, so its lowest real values sit where the
+// finest-pitch signal connectors are specified. Measured 2026-09-23 on all
+// 101,633 live values in data/connectors.ndjson: the lowest value any vendor
+// publishes in bulk is exactly 100 V (629 rows: Hirose 429, JST 136, JAE 47,
+// Wuerth 17), and there is nothing between 60 V and 100 V. Below 100 V sit 9
+// rows (7 JAE DX07 at 40 V, 2 Adam Tech RF20 at 60 V), both unverified. The
+// retracted batch this floor exists for was 2-37 V -- clause numbers and wrong
+// columns, 295 of them on rows with no ratedVoltage for CONN_DWV_VS_RATED to
+// compare against. SUSPICIOUS, not impossible: no conservation law puts a proof
+// test above 100 V; the floor is where every published specification sits.
+inline constexpr double CONN_DWV_FLOOR_SUS = 100.0;
 // Mated-pair contact resistance [Ohm]: power ~0.15 mOhm, signal up to ~0.1 Ohm.
 inline constexpr double CONN_RCONTACT_SUS_LO = 1.0e-5, CONN_RCONTACT_SUS_HI = 1.0;
 inline constexpr double CONN_RCONTACT_IMP_HI = 100.0;  // not a conducting contact above this

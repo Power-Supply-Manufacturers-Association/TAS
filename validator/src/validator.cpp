@@ -120,6 +120,61 @@ void check_fabricated_mpn(const json& ds, const Ctx& ctx, std::vector<Finding>& 
     }
 }
 
+// GEN_FOREIGN_ORDER_SUFFIX: a Maxim, Analog Devices or onsemi part number that ends,
+// directly after its numeric core, in one of the eight tokens a 2026-09 generator
+// appended to real base parts: DR, DT, LS, ASLE, FB, DFN, BGA, MSO. 448 controllers
+// were built that way (MAX17501 -> MAX17501DR ... MAX17501MSO; LT8640DFN;
+// onsemi likewise) and every physics bound passed them, because their values were
+// copied from the real base part. None of the three vendors' ordering grammars ends
+// a number that way: Maxim closes on temperature + package code + '+'/'+T'
+// (MAX17501ATB+), ADI on a package/grade code plus Z/R7 (ADP2386ACPZN-R7), onsemi
+// on a package code plus reel and Pb-free letters (NCP1117DT12RKG) -- a bare
+// package WORD (DFN, BGA, MSO) as the whole suffix is not an ordering code at all.
+//
+// It is keyed on those three manufacturers ON PURPOSE. The same eight tokens are
+// real grammar elsewhere, and a manufacturer-agnostic version was measured on every
+// live catalogue on 2026-09-23: 491 hits, all real parts -- Infineon OptiMOS
+// BSC010N04LS, Vishay SiZ240DT, ST STGW30H65FB, ROHM SCT4013DR, Toshiba TRS12N65FB,
+// Nexperia BAT54LS, Panasonic ELC09D101DFN, Vanguard SUU580DR. The digit anchor
+// matters too: onsemi's own field-stop IGBTs end in DT after letters
+// (FGHL50T65MQDT), and 9 of them are live.
+//
+// Measured with the three-manufacturer scope: 0 hits among the ~7,300 live Maxim,
+// ADI and onsemi records in every catalogue; 448 of the 448 removed controllers.
+// SUSPICIOUS, never impossible: a single record cannot prove a suffix was invented,
+// only that it is foreign to the vendor's published grammar, and the list is the
+// signature of one generator, not a closed theory of every vendor's part numbers.
+// Clone FAMILIES (a base part and its identical-valued siblings) are a
+// cross-record signal and belong to validate_corpus, not here.
+void check_foreign_order_suffix(const json& ds, const Ctx& ctx, std::vector<Finding>& out) {
+    if (ctx.component_obj == nullptr) return;
+    const json* mi = at(*ctx.component_obj, "manufacturerInfo");
+    if (mi == nullptr) return;
+    const std::string name = norm_tech(at(*mi, "name"));
+    const bool scoped = tech_has(name, "maxim") || tech_has(name, "analogdevices") ||
+                        name == "onsemi" || tech_has(name, "onsemiconductor");
+    if (!scoped) return;
+    static const std::regex SUFFIX(R"(^.*[0-9](DR|DT|LS|ASLE|FB|DFN|BGA|MSO)$)");
+    std::vector<std::string> ids;
+    if (!ctx.reference.empty()) ids.push_back(ctx.reference);
+    if (const json* part = at(ds, "part")) {
+        if (part->is_object() && part->contains("partNumber") &&
+            (*part)["partNumber"].is_string())
+            ids.push_back((*part)["partNumber"].get<std::string>());
+    }
+    for (const auto& id : ids) {
+        std::smatch m;
+        if (!std::regex_match(id, m, SUFFIX)) continue;
+        emit(out, ctx, "GEN_FOREIGN_ORDER_SUFFIX", Severity::Suspicious, 0, 0,
+             "part number '" + id + "' ends in '" + m[1].str() +
+                 "' directly after its numeric core, which " +
+                 (*at(*mi, "name")).get<std::string>() +
+                 "'s ordering grammar never produces -- the signature of a real base "
+                 "part with a generated suffix appended");
+        return;
+    }
+}
+
 // GEN_PACKAGE_MOUNT: mechanical.assemblyType contradicting the package named in
 // mechanical.case. A package outline's mount class is definitional, not a vendor
 // option — TO-252 (DPAK) is surface mount (gull-wing leads + solderable tab), and
@@ -400,6 +455,7 @@ void check_generic(const json& ds, const Ctx& ctx, std::vector<Finding>& out) {
              "datasheetInfo.provenance is not set — data origin is untracked");
 
     check_fabricated_mpn(ds, ctx, out);
+    check_foreign_order_suffix(ds, ctx, out);
     check_package_mount(ds, ctx, out);
     check_package_envelope(ds, ctx, out);
     check_family_coherence(ds, ctx, out);

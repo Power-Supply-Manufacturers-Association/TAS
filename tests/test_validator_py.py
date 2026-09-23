@@ -736,3 +736,47 @@ def test_non_rf_connector_sparseness_is_untouched():
     # chosen by the declared family, not by whatever the record happens to carry.
     cheat = _connector("pinHeaderSocket", {}, impedance=50.0)
     assert tas_validator.validate(cheat).completeness == 0.0
+
+
+# 2026-09-23: the three checks added for blind spots that let bad data sit with
+# zero findings. Exercised through the binding so a stale .so cannot pass them.
+def test_blind_spot_codes_are_emittable():
+    codes = set(tas_validator.check_codes())
+    assert {"CONN_DWV_FLOOR", "DIO_VF_PROTECTION", "GEN_FOREIGN_ORDER_SUFFIX"} <= codes
+
+
+def _codes(rec):
+    return {(f.code, f.severity) for f in tas_validator.validate(rec).findings}
+
+
+def test_connector_dwv_floor_needs_no_rated_voltage():
+    rec = {"connector": {"manufacturerInfo": {"name": "TE Connectivity", "reference": "X",
+           "datasheetInfo": {"provenance": [{"source": "manufacturerDatasheet"}],
+                             "electrical": {"dielectricWithstandingVoltage": 37.0}}}}}
+    assert ("CONN_DWV_FLOOR", "SUSPICIOUS") in _codes(rec)
+    rec["connector"]["manufacturerInfo"]["datasheetInfo"]["electrical"][
+        "dielectricWithstandingVoltage"] = 100.0
+    assert not any(c == "CONN_DWV_FLOOR" for c, _ in _codes(rec))
+
+
+def test_protection_diode_forward_voltage():
+    def rec(vf):
+        return {"semiconductor": {"diode": {"manufacturerInfo": {"reference": "ESD411",
+                "datasheetInfo": {"provenance": [{"source": "manufacturerDatasheet"}],
+                                  "part": {"subType": "esd", "technology": "Si"},
+                                  "electrical": {"standoffVoltage": 5.5,
+                                                 "forwardVoltage": vf}}}}}}
+    assert ("DIO_VF_PROTECTION", "IMPOSSIBLE") in _codes(rec(7.4))
+    assert not any(c == "DIO_VF_PROTECTION" for c, _ in _codes(rec(3.5)))
+
+
+def test_foreign_order_suffix_is_suspicious_and_scoped():
+    def rec(mfr, ref):
+        return {"controller": {"manufacturerInfo": {"name": mfr, "reference": ref,
+                "datasheetInfo": {"provenance": [{"source": "manufacturerDatasheet"}],
+                                  "function": {"category": "pwmController"},
+                                  "part": {"deviceType": "controller", "partNumber": ref}}}}}
+    assert ("GEN_FOREIGN_ORDER_SUFFIX", "SUSPICIOUS") in _codes(rec("Maxim Integrated",
+                                                                    "MAX17501ASLE"))
+    assert not any(c == "GEN_FOREIGN_ORDER_SUFFIX" for c, _ in _codes(rec("Infineon",
+                                                                          "BSC010N04LS")))

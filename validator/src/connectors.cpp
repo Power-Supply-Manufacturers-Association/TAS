@@ -264,6 +264,19 @@ void check_connectors(const json& datasheet, const Ctx& ctx, std::vector<Finding
                  fmt("dielectricWithstandingVoltage below ratedVoltage [V]", *dwv, *V));
     }
 
+    // CHECK: dielectric withstanding voltage against an ABSOLUTE floor. The check
+    // above needs a ratedVoltage on the same row, and 295 of the 326 bad DWVs
+    // written on 2026-09-23 (2-37 V: clause numbers and wrong columns from six TE
+    // specifications) sat on rows with none, so it saw only 31. A proof test below
+    // the lowest level any connector specification uses is not a DWV whatever
+    // else the row says. Independent of CONN_DWV_VS_RATED: a row can fail both.
+    // Calibration in thr::CONN_DWV_FLOOR_SUS.
+    if (dwv && *dwv > 0 && *dwv < thr::CONN_DWV_FLOOR_SUS)
+        emit(out, ctx, "CONN_DWV_FLOOR", Severity::Suspicious, *dwv, thr::CONN_DWV_FLOOR_SUS,
+             fmt("dielectricWithstandingVoltage below the lowest proof-test level any "
+                 "connector specification publishes [V]",
+                 *dwv, thr::CONN_DWV_FLOOR_SUS));
+
     // CHECK: rated impulse withstand voltage, per insulation path (2026-09-06).
     // electrical.insulationPaths is an ARRAY of per-path objects
     // ({from,to,workingVoltage,ratedImpulseVoltage,pollutionDegree,...}), and
