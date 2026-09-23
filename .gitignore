@@ -40,6 +40,10 @@
 !/scripts/validate_db.py
 !/scripts/check_component_uris.py
 !/scripts/check_no_fabricated_parts.py
+# External existence oracle: one web search per part, judged strictly by a model.
+# The pattern guards above cannot tell a unique, plausible invented part from a
+# real one; this asks the world. Calibrate it against known fakes before use.
+!/scripts/part_existence.py
 !/scripts/verify_provenance_content.py
 !/scripts/changed_records_gate.py
 !/scripts/blade_gate.py
