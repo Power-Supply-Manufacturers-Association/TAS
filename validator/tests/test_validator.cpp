@@ -2613,18 +2613,65 @@ TEST_CASE("circuit: seriesResistance must have one entry per winding", "[circuit
     CHECK(has(v, "CIR_L_R_LENGTH"));
 }
 
-TEST_CASE("circuit: a zero-farad capacitor is not an element", "[circuits]") {
-    // Live case: bricks 750811612 and 750315229 each carry one. It passes CIAS.json,
-    // passes validate_cias_structure, and LOWERS cleanly to "CCpri2 Cpri2__pi 1 0".
-    json b = json::parse(R"json({"name":"z","ports":[{"name":"a"},{"name":"b"}],
-      "components":[{"name":"C1","data":{"capacitor":{},
-        "inputs":{"designRequirements":{"capacitance":{"nominal":0}}}}}],
+// One-element bricks for the degenerate-value tests. `family` is the PEAS
+// discriminator and `key` its designRequirements value field, so the R, L and C
+// cases differ ONLY in the two strings that should make them behave differently.
+json one_element_brick(const char* family, const char* key, const char* value) {
+    return json::parse(std::string(R"json({"name":"z","ports":[{"name":"a"},{"name":"b"}],
+      "components":[{"name":"X1","data":{")json") + family + R"json(":{},
+        "inputs":{"designRequirements":{")json" + key + R"json(":{"nominal":)json" +
+                       value + R"json(}}}}}],
       "connections":[
-        {"name":"n1","endpoints":[{"component":"C1","pin":"1"},{"port":"a"}]},
-        {"name":"n2","endpoints":[{"component":"C1","pin":"2"},{"port":"b"}]}]})json");
-    Verdict v = validate_circuit(b);
-    CHECK_FALSE(v.valid);
-    CHECK(has(v, "CIR_NONPOSITIVE"));
+        {"name":"n1","endpoints":[{"component":"X1","pin":"1"},{"port":"a"}]},
+        {"name":"n2","endpoints":[{"component":"X1","pin":"2"},{"port":"b"}]}]})json");
+}
+
+TEST_CASE("circuit: a zero-farad capacitor is an open, not a short", "[circuits]") {
+    // Live case: bricks 750811612 and 750315229 each carry one, and both are
+    // faithful — WE-OLEFD.lib and WE-PPTI_1209.lib declare `.param Cprm2=0pf`.
+    // Zero farads removes the branch; it is not a short and not impossible.
+    Verdict v = validate_circuit(one_element_brick("capacitor", "capacitance", "0"));
+    CHECK(v.valid);
+    CHECK_FALSE(has_code(v, "CIR_NONPOSITIVE"));
+    REQUIRE(has(v, "CIR_ZERO_CAPACITANCE"));
+    for (const Finding& f : v.findings)
+        if (f.code == "CIR_ZERO_CAPACITANCE") {
+            CHECK(f.severity == Severity::Suspicious);
+            CHECK(f.message.find("short") == std::string::npos);
+        }
+    CHECK_FALSE(has_code(v, "CIR_VALUE_RANGE"));  // diagnosed once, not twice
+}
+
+TEST_CASE("circuit: a zero-ohm resistor and a zero-henry inductor are shorts",
+          "[circuits]") {
+    for (const Verdict& v : {validate_circuit(one_element_brick("resistor", "resistance", "0")),
+                             validate_circuit(one_element_brick(
+                                 "magnetic", "magnetizingInductance", "0"))}) {
+        CHECK_FALSE(v.valid);
+        REQUIRE(has(v, "CIR_NONPOSITIVE"));
+        for (const Finding& f : v.findings)
+            if (f.code == "CIR_NONPOSITIVE") {
+                CHECK(f.severity == Severity::Impossible);
+                CHECK(f.message.find("short") != std::string::npos);
+            }
+    }
+}
+
+TEST_CASE("circuit: a negative value is an energy source whatever the kind",
+          "[circuits]") {
+    for (const Verdict& v :
+         {validate_circuit(one_element_brick("resistor", "resistance", "-1")),
+          validate_circuit(one_element_brick("capacitor", "capacitance", "-1e-9")),
+          validate_circuit(one_element_brick("magnetic", "magnetizingInductance", "-1e-6"))}) {
+        CHECK_FALSE(v.valid);
+        REQUIRE(has(v, "CIR_NONPOSITIVE"));
+        for (const Finding& f : v.findings)
+            if (f.code == "CIR_NONPOSITIVE") {
+                CHECK(f.severity == Severity::Impossible);
+                CHECK(f.message.find("energy source") != std::string::npos);
+                CHECK(f.message.find("short") == std::string::npos);
+            }
+    }
 }
 
 TEST_CASE("circuit: 1e100 ohm is an in-band sentinel, not a measurement", "[circuits]") {

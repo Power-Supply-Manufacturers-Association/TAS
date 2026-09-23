@@ -322,11 +322,43 @@ void check_circuit(const json& brick, const Ctx& ctx, std::vector<Finding>& out,
         const char* unit = e.kind == 'R' ? "ohm" : (e.kind == 'C' ? "F" : "H");
         const char* what = e.kind == 'R' ? "resistance"
                                          : (e.kind == 'C' ? "capacitance" : "inductance");
-        if (e.value <= 0.0) {
+        // The three element kinds do NOT degenerate the same way, and this test
+        // used to say they did: `value <= 0` with one message asserting "it is a
+        // short". Zero ohms is a short and zero henries is a short, but zero
+        // farads is an OPEN — the branch is simply absent. Grading that
+        // IMPOSSIBLE told two faithful Würth bricks that the vendor's own
+        // netlist was physically impossible: WE-OLEFD.lib's .subckt 750811612 and
+        // WE-PPTI_1209.lib's .subckt 750315229 both declare `.param Cprm2=0pf`
+        // and place `Cpri2 … {Cprm2} Rser=10mohm`, i.e. a second inter-winding
+        // capacitance the part does not have. 285 of the 287 bricks carrying the
+        // Cpri1/Cpri2 pair have a positive Cpri2, so the zero is the vendor
+        // saying "no element here", not a broken conversion.
+        //
+        // A negative value is an energy source whatever the kind, and stays
+        // IMPOSSIBLE for all three.
+        if (e.value < 0.0) {
             emit(out, ctx, "CIR_NONPOSITIVE", Severity::Impossible, e.value, 0.0,
                  e.name + ": " + what + " = " + num(e.value) + " " + unit +
-                     " — a non-positive passive value is not an element; it is a short "
-                     "(or, negative, an energy source)");
+                     " — a negative passive value is not an element; it is an energy "
+                     "source");
+            continue;
+        }
+        if (e.value == 0.0 && e.kind != 'C') {
+            emit(out, ctx, "CIR_NONPOSITIVE", Severity::Impossible, e.value, 0.0,
+                 e.name + ": " + what + " = " + num(e.value) + " " + unit +
+                     " — a zero passive value is not an element; it is a short");
+            continue;
+        }
+        if (e.value == 0.0) {
+            // Zero farads, i.e. an open branch written as a value. Same objection
+            // as CIR_SENTINEL_VALUE below and the same severity: the structure,
+            // not a magic number, should say the element is absent. It is a note
+            // about how the netlist is written, never a claim that the data is
+            // wrong — the two live bricks transcribe their vendor exactly.
+            emit(out, ctx, "CIR_ZERO_CAPACITANCE", Severity::Suspicious, e.value, 0.0,
+                 e.name + ": capacitance = 0 F is an open branch expressed as a value, "
+                          "not a measurement. Express the open structurally (omit the "
+                          "element) rather than with a zero");
             continue;
         }
         if (e.kind == 'R' && e.value >= kROpenSentinel) {
