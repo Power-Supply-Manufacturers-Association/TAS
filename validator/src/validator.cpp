@@ -470,8 +470,45 @@ const std::vector<std::string>* diode_core_fields(const json& datasheet) {
 // datasheetInfo.electrical. Connector accessories need it: their content lives in
 // accessoryDetails and hostSystem, and four fifths of them have no electrical
 // object at all.
+// Connectors are scored per familyDetails.family, for the reason diodes are
+// scored per part.subType: the families do not share one defining rating, and
+// CONAS says so itself. connector.json's datasheetInfo requires
+// `electrical.ratedCurrentPerContact` of every family EXCEPT rf, whose $comment
+// reads "RF/coaxial connectors are characterised by characteristicImpedance
+// (required on familyRf), frequency and VSWR, not a published per-contact DC
+// current". A manifest that knew only the current spelling called 10,615 of
+// 10,619 live rf rows sparse -- 100.0% of the family, and 6.5% of every
+// GEN_SPARSE finding on the 393,710-row catalogue -- while those rows carry a
+// characteristic impedance on 100% of them and a dielectric withstanding
+// voltage on 7,393.
+//
+// Per-family rather than a '|' alternation on one shared list: the alternations
+// elsewhere in the table (relay `contacts|input`, the controller categories)
+// exist where the RECORD's own shape picks the spelling and there is no declared
+// discriminator to branch on. A connector declares its family, so the rule can
+// say what CONAS says -- only rf is characterised by impedance -- instead of
+// letting any family satisfy the slot with a mis-filed impedance. Adding the
+// next family whose published rating differs is one line here, the same way a
+// diode subtype is.
+//
+// ratedVoltage stays required of every family, rf included. The other eleven
+// fill it thinly (pinHeaderSocket 24.8%, circular 25.3%, power 35.0%) and that
+// is a real sourcing gap, not a vocabulary mismatch; so is the 4,182 rf rows'
+// missing working voltage. Note the PATH: characteristicImpedance lives under
+// familyDetails, not under electrical.
+const std::vector<std::string>* connector_core_fields(const json& datasheet) {
+    static const std::vector<std::string> RF = {"ratedVoltage",
+                                                "familyDetails.characteristicImpedance"};
+    static const std::vector<std::string> CONTACTED = {"ratedVoltage",
+                                                       "ratedCurrentPerContact"};
+    const json* fam = at(datasheet, "familyDetails", "family");
+    if (fam != nullptr && fam->is_string() && fam->get<std::string>() == "rf") return &RF;
+    return &CONTACTED;
+}
+
 const std::vector<std::string>* core_fields(const std::string& c, const json& datasheet) {
     if (c == "diode") return diode_core_fields(datasheet);
+    if (c == "connector") return connector_core_fields(datasheet);
     static const std::map<std::string, std::vector<std::string>> M = {
         // "a|b" lists ALTERNATE spellings of one field; present in either form counts.
         // An inductor carries a singular `dcResistance`, a common-mode choke or
@@ -501,7 +538,8 @@ const std::vector<std::string>* core_fields(const std::string& c, const json& da
          {"collectorEmitterVoltage", "collectorEmitterSaturation", "continuousCollectorCurrent"}},
         {"bjt", {"collectorEmitterVoltage", "collectorCurrent"}},
         {"varistor", {"varistorVoltage", "clampingVoltage", "peakSurgeCurrent"}},
-        {"connector", {"ratedVoltage", "ratedCurrentPerContact"}},
+        // "connector" is not in this map: it is scored per familyDetails.family by
+        // connector_core_fields() above, which core_fields() dispatches to first.
         // Relay / switch: the electrical block is NESTED (contacts / input /
         // isolation / trip are objects, not scalars), so the manifest names those
         // sub-objects. A single '|'-joined entry, not several AND'd fields, for the

@@ -3586,6 +3586,33 @@ TEST_CASE("completeness: a diode is scored against its own subType's manifest",
     CHECK(V.validate(mislabelled).completeness == 0.0);
 }
 
+TEST_CASE("completeness: an rf connector is scored on its characteristic impedance",
+          "[connector]") {
+    auto conn = [](const char* family, const char* extra) {
+        return json::parse(std::string(R"json({"connector": {"manufacturerInfo": {
+          "name": "Fixture", "reference": "FIX-K", "datasheetInfo": {
+            "part": {"partNumber": "FIX-K"},
+            "familyDetails": {"family": ")json") + family + R"json(")json" + extra +
+                           R"json(},
+            "electrical": {"ratedVoltage": 500.0},
+            "provenance": [{"source": "manufacturerDatasheet"}]}}}})json");
+    };
+    // CONAS exempts rf from ratedCurrentPerContact and requires an impedance
+    // instead; a 50 ohm coax carrying a working voltage is fully described.
+    Verdict rf = V.validate(conn("rf", R"json(, "characteristicImpedance": 50.0)json"));
+    CHECK(rf.completeness == 1.0);
+    CHECK_FALSE(has_code(rf, "GEN_SPARSE"));
+
+    // The same record without the impedance has nothing in that slot.
+    CHECK(V.validate(conn("rf", "")).completeness == 0.5);
+
+    // And a contacted family cannot fill the slot with an impedance: the
+    // manifest follows the declared family, not whatever the record carries.
+    CHECK(V.validate(conn("pinHeaderSocket",
+                          R"json(, "characteristicImpedance": 50.0)json"))
+              .completeness == 0.5);
+}
+
 TEST_CASE("completeness: -1.0 still means NOT SCORED for a family with no manifest",
           "[analog]") {
     json integrator = json::parse(R"json({"analog": {"integrator": {"manufacturerInfo": {

@@ -684,3 +684,55 @@ def test_electrical_only_families_keep_their_scores():
         "name": "Fixture", "reference": "FIX-C",
         "datasheetInfo": {"electrical": {"capacitance": {"nominal": 1e-7}}}}}}
     assert tas_validator.validate(cap).completeness == pytest.approx(0.5)
+
+
+# ---------------------------------------------------------------------------
+# The connector manifest and the rf family's own vocabulary
+# ---------------------------------------------------------------------------
+
+def _connector(family, electrical, impedance=None):
+    fd = {"family": family}
+    if impedance is not None:
+        fd["characteristicImpedance"] = impedance
+    return {"connector": {"manufacturerInfo": {
+        "name": "Fixture", "reference": "FIX-K",
+        "datasheetInfo": {"part": {"partNumber": "FIX-K"},
+                          "familyDetails": fd,
+                          "electrical": electrical}}}}
+
+
+def test_rf_connectors_score_on_characteristic_impedance():
+    """CONAS exempts rf from ratedCurrentPerContact; the manifest must agree."""
+    rf = _connector("rf", {"ratedVoltage": 500.0}, impedance=50.0)
+    v = tas_validator.validate(rf)
+    assert v.completeness == 1.0
+    assert not [f for f in v.findings if f.code == "GEN_SPARSE"]
+
+    # Without the impedance there is nothing in the current-rating slot at all.
+    no_z = _connector("rf", {"ratedVoltage": 500.0})
+    assert tas_validator.validate(no_z).completeness == pytest.approx(0.5)
+
+
+def test_rf_connectors_still_need_a_rated_voltage():
+    """The alternation must not silence the working-voltage gap it does not cover."""
+    v = tas_validator.validate(_connector("rf", {}, impedance=50.0))
+    assert v.completeness == pytest.approx(0.5)
+    assert [f for f in v.findings if f.code == "GEN_SPARSE"]
+
+
+def test_non_rf_connector_sparseness_is_untouched():
+    """The eleven other families are scored exactly as before."""
+    thin = _connector("pinHeaderSocket", {"ratedCurrentPerContact": 3.0})
+    v = tas_validator.validate(thin)
+    assert v.completeness == pytest.approx(0.5)
+    assert [f for f in v.findings if f.code == "GEN_SPARSE"], (
+        "a non-rf connector missing ratedVoltage is a real sourcing gap and must "
+        "stay reported"
+    )
+    full = _connector("pinHeaderSocket",
+                      {"ratedCurrentPerContact": 3.0, "ratedVoltage": 250.0})
+    assert tas_validator.validate(full).completeness == 1.0
+    # A non-rf family cannot buy its way out with an impedance: the manifest is
+    # chosen by the declared family, not by whatever the record happens to carry.
+    cheat = _connector("pinHeaderSocket", {}, impedance=50.0)
+    assert tas_validator.validate(cheat).completeness == 0.0
