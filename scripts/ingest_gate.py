@@ -539,9 +539,29 @@ def _citations(body):
     return urls
 
 
+# A part number inside a SEARCH parameter is the query somebody typed, not
+# evidence that the document names the part. Until 2026-09-23 the PART_SPECIFIC
+# test ran against the whole URL, so
+# `https://datasheetpdf.com/search?q=IKW75N65H5` counted as naming IKW75N65H5
+# and 223 IGBTs were admitted on the strength of their own part number pasted
+# into an aggregator's search box. Every one of those rows was later shown to
+# cite no document at all.
+#
+# Only the search PARAMETER is removed, never the whole query: a per-SKU detail
+# page is legitimately addressed by query (`?part_no=MPZ2012S101A`), and that
+# URL does lead a human to this part.
+SEARCH_PARAM_VALUE = re.compile(
+    r"[?&](?:q|query|keyword|keywords|search|searchterm|term|text|filter)=[^&]*", re.I)
+
+
+def _evidence_url(url):
+    """The part of a URL that can testify the page names a part."""
+    return SEARCH_PARAM_VALUE.sub("", url or "")
+
+
 def classify_citation(url, ident, entry):
     """PART_SPECIFIC / DOCUMENT_BY_ID / SERIES_DATASHEET / SEARCH / LANDING."""
-    if ident and _norm(ident) and _norm(ident) in _norm(url):
+    if ident and _norm(ident) and _norm(ident) in _norm(_evidence_url(url)):
         return "PART_SPECIFIC"
     if entry is not None and entry.get("verification") == SERIES_VERIFICATION:
         return "SERIES_DATASHEET"
@@ -1373,6 +1393,7 @@ def selftest():
     mos = lambda: IngestGate("mosfets.ndjson", validate=False)        # noqa: E731
     cap = lambda: IngestGate("capacitors.ndjson", validate=False)     # noqa: E731
     con = lambda: IngestGate("connectors.ndjson", validate=False)     # noqa: E731
+    igb = lambda: IngestGate("igbts.ndjson", validate=False)          # noqa: E731
     results = []
 
     # -- rule 1: identity -----------------------------------------------------
@@ -1540,6 +1561,41 @@ def selftest():
           for i in range(6)]
     results.append(_run("3c  6 genuine Wuerth 10 uH inductors sharing the value",
                         "ACCEPTED", mag, we))
+
+    # -- rule 2: a part number in a search box is not a citation --------------
+    # Added 2026-09-23. classify_citation tested the identity against the WHOLE
+    # url, so an aggregator search whose query string was the part number came
+    # back PART_SPECIFIC. 223 IGBTs cited datasheetpdf.com/search?q=<their own
+    # part number> and were admitted on it; none of them cites a document.
+    #
+    # The second fixture is the one that keeps this honest: a per-SKU page
+    # addressed BY QUERY is a real citation and must stay admitted, so the fix
+    # strips the search PARAMETER rather than the query string.
+    def _cite(pn, url):
+        return {"semiconductor": {"igbt": {"manufacturerInfo": {
+            "name": "Infineon", "reference": pn, "datasheetUrl": url,
+            "datasheetInfo": {
+                "part": {"partNumber": pn, "series": "IKW"},
+                "electrical": {"collectorEmitterVoltage": 650.0},
+                "provenance": [{"source": "scrape",
+                                "sourceName": "third-party datasheet aggregator",
+                                "sourceUrl": url,
+                                "verification": "valuesReadFromSource",
+                                "verificationDate": "2026-09-23",
+                                "fields": ["electrical.collectorEmitterVoltage"]}]}}}}}
+
+    searchbox = [_cite("IKW%02dN65H5" % i,
+                       "https://datasheetpdf.com/search?q=IKW%02dN65H5" % i)
+                 for i in range(MIN_COHORT + 2)]
+    results.append(_run("2k  a search box whose query IS the part number",
+                        "REFUSED", igb, searchbox))
+
+    persku = [_cite("MPZ2012S%03dA" % (100 + i),
+                    "https://product.tdk.com/en/search/x/info?part_no=MPZ2012S%03dA"
+                    % (100 + i))
+              for i in range(MIN_COHORT + 2)]
+    results.append(_run("2l  a per-SKU page addressed by ?part_no= is a real citation",
+                        "ACCEPTED", igb, persku))
 
     # -- rule 3: a quantity the record already explains -----------------------
     # Added 2026-09-21. An RF connector's description carries its characteristic
