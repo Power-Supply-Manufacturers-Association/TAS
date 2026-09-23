@@ -423,11 +423,55 @@ Resolved resolve(const json& component_obj) {
     return r;
 }
 
+// Diodes are scored per part.subType, because the SAS diode schema itself says the
+// subtypes carry disjoint datasheet field sets: diode.json's datasheetInfo.allOf
+// requires {breakdownVoltage, powerDissipation} of a zener, {standoffVoltage,
+// clampingVoltage, one of peakPulseCurrent/peakPulsePower} of a TVS,
+// {standoffVoltage, one of peakPulseCurrent/peakPulsePower/esdVoltageContact} of an
+// ESD diode and {reverseVoltage, forwardVoltage, forwardCurrent} of everything else.
+// That schema conditional is the non-circular ground truth for "what a real
+// datasheet of this subtype always carries" — it is what made a single diode
+// manifest false-flag ~45% of real parts and the family unscored until now. Each
+// list adds ONE field beyond the schema's required set that every real datasheet of
+// that subtype publishes but the schema leaves optional, so the score has range
+// instead of being a constant 1.0: I_ZT/Z_ZT for a zener (V_Z is meaningless without
+// the current it is measured at), V_BR for a TVS, C_j and V_C for an ESD diode
+// (line capacitance is that part's headline spec), I_FSM/I_R for a rectifying diode.
+const std::vector<std::string>* diode_core_fields(const json& datasheet) {
+    static const std::vector<std::string> ZENER = {"breakdownVoltage", "powerDissipation",
+                                                   "zenerTestCurrent|zenerImpedance"};
+    static const std::vector<std::string> TVS = {"standoffVoltage", "clampingVoltage",
+                                                 "peakPulseCurrent|peakPulsePower",
+                                                 "breakdownVoltage"};
+    static const std::vector<std::string> ESD = {
+        "standoffVoltage", "peakPulseCurrent|peakPulsePower|esdVoltageContact|esdVoltageAir",
+        "junctionCapacitance", "clampingVoltage|breakdownVoltage"};
+    // Every other subType (rectifier/schottky/sicSchottky/fastRecovery/ultrafast/
+    // switching/pin) AND a record with no subType at all: the schema's else-branch.
+    static const std::vector<std::string> RECTIFYING = {"reverseVoltage", "forwardVoltage",
+                                                        "forwardCurrent",
+                                                        "surgeCurrent|reverseLeakageCurrent"};
+    const json* st = at(datasheet, "part", "subType");
+    if (st != nullptr && st->is_string()) {
+        const std::string s = st->get<std::string>();
+        if (s == "zener") return &ZENER;
+        if (s == "tvs") return &TVS;
+        if (s == "esd") return &ESD;
+    }
+    return &RECTIFYING;
+}
+
 // Per-family core-field manifest: the electrical fields a real datasheet of this
 // family always (or nearly always) carries, curated from live-catalog field-
 // presence statistics (2026-06-24). completeness = fraction present; a record well
 // below the floor is sparse — the signature of a near-empty fabricated record.
-const std::vector<std::string>* core_fields(const std::string& c) {
+//
+// An entry containing a '.' is a path from datasheetInfo rather than a key inside
+// datasheetInfo.electrical. Connector accessories need it: their content lives in
+// accessoryDetails and hostSystem, and four fifths of them have no electrical
+// object at all.
+const std::vector<std::string>* core_fields(const std::string& c, const json& datasheet) {
+    if (c == "diode") return diode_core_fields(datasheet);
     static const std::map<std::string, std::vector<std::string>> M = {
         // "a|b" lists ALTERNATE spellings of one field; present in either form counts.
         // An inductor carries a singular `dcResistance`, a common-mode choke or
@@ -451,10 +495,8 @@ const std::vector<std::string>* core_fields(const std::string& c) {
         {"resistor", {"resistance", "powerRating", "tolerance"}},
         {"mosfet",
          {"onResistance", "drainSourceVoltage", "continuousDrainCurrent", "gateThresholdVoltage"}},
-        // Diodes are intentionally omitted: the subtypes (rectifier/Schottky/TVS/
-        // Zener/ESD) carry disjoint field sets, so no single core manifest fits —
-        // a fraction-of-core score false-flags ~45% of real parts. Completeness is
-        // not scored for diodes (returns -1).
+        // "diode" is not in this map: it is scored per part.subType by
+        // diode_core_fields() above, which core_fields() dispatches to first.
         {"igbt",
          {"collectorEmitterVoltage", "collectorEmitterSaturation", "continuousCollectorCurrent"}},
         {"bjt", {"collectorEmitterVoltage", "collectorCurrent"}},
@@ -476,19 +518,59 @@ const std::vector<std::string>* core_fields(const std::string& c) {
         // than a knob. Both AND'd, so a row carrying one of them scores 0.50 and
         // trips the 0.60 floor.
         {"potentiometer", {"totalResistance", "powerRating"}},
-        // connectorAccessory is intentionally omitted (the diode/time-base
-        // reasoning): most accessory KINDS are not electrical parts at all -- a
-        // marker strip, a coding key, a gasket, a crimp tool -- and 80.8% of live
-        // rows legitimately have no `electrical` object whatsoever. A manifest
-        // would score every one of them 0.0 and condemn four fifths of a sound
-        // catalogue. Completeness is not scored for accessories (returns -1).
+        // connectorAccessory is NOT an electrical family: a marker strip, a coding
+        // key, a gasket, a crimp tool have no ratings, and 14,735 of the 18,227 live
+        // rows (80.8%) carry no `electrical` object whatsoever. Scoring them off
+        // `electrical` would put four fifths of a sound catalogue at 0.0, which is
+        // why the family went unscored. What an accessory record actually carries is
+        // (a) a class descriptor -- the CONAS accessoryDetails union's own per-class
+        // fields, plus the contact branch's ratings -- and (b) the host system it
+        // fits. Both entries are '|'-joined, not AND'd, because the twenty-one
+        // classes are disjoint by construction: a hood publishes a shell size and a
+        // cable exit, a gland a thread, a marker its legend, a contact a wire gauge
+        // and a termination. Measured live: 41.9% carry both, 30.7% one, 27.4%
+        // neither. The 27.4% are real vendor parts (TE tooling and hoods whose only
+        // structured content is kind + part number), so the family's real-part
+        // minimum is 0.0 and it gets NO sparse floor -- see sparse_floor().
+        {"connectorAccessory",
+         {"accessoryDetails.cableExit|accessoryDetails.cableDiameterRange|"
+          "accessoryDetails.wireGaugeRange|accessoryDetails.terminationStyle|"
+          "accessoryDetails.contactSize|accessoryDetails.contactRetention|"
+          "accessoryDetails.markingText|accessoryDetails.shielded|"
+          "accessoryDetails.hardwareType|accessoryDetails.sealType|"
+          "accessoryDetails.threadDesignation|accessoryDetails.shellSize|"
+          "accessoryDetails.codingPosition|accessoryDetails.portsWide|"
+          "accessoryDetails.portsHigh|accessoryDetails.interfaceA|"
+          "accessoryDetails.interfaceB|accessoryDetails.toolType|"
+          "accessoryDetails.tethered|electrical.ratedCurrentPerContact|"
+          "electrical.ratedVoltage|electrical.contactResistance|"
+          "electrical.characteristicImpedance",
+          "hostSystem.series|hostSystem.standard|hostSystem.matesWithPartNumbers|"
+          "hostSystem.manufacturer|hostSystem.shellSize"}},
         // Thermistor: R25 is the single universal field; B constant is NTC-only and
         // absent on PTC, so it is not in the core manifest (would false-flag PTC).
         {"thermistor", {"resistanceAt25C"}},
-        // Time-base families (oscillator/timer/latch) are intentionally omitted:
-        // the catalog is brand-new (no live field-presence statistics to calibrate
-        // a sparse floor against), and behavioral-only records are legitimately
-        // near-empty. Completeness is not scored for them (returns -1).
+        // Time bases (TDAS). The oscillator schema requires no electrical field at
+        // all, so the manifest comes from what a timing-device datasheet always
+        // publishes: the nominal/resonant frequency, an accuracy figure, and the
+        // interface it presents. The third entry is '|'-joined because active and
+        // passive devices are disjoint by design -- an XO/TCXO/OCXO states a supply
+        // and an output type, a bare crystal or ceramic resonator states its load
+        // capacitance and ESR (or resonant impedance / built-in capacitance)
+        // instead. AND-ing them would call every real crystal sparse. `technology`
+        // is deliberately NOT counted: it is on 100% of rows because it is
+        // parametric tagging, and a manifest entry no record can fail measures
+        // nothing.
+        {"oscillator",
+         {"frequency", "frequencyStability|frequencyTolerance",
+          "supply|outputType|loadCapacitance|equivalentSeriesResistance|resonantImpedance|"
+          "builtInCapacitance"}},
+        // Timer / latch: supply rail, devices per package (a 556 is two timers), and
+        // the timing figure the part exists for. All 15 live timer rows carry the
+        // first two and neither of the last, so they score 0.67 -- a real gap the
+        // score now reports, not a reason to doubt the parts.
+        {"timer", {"supply", "numberOfChannels", "maximumFrequency|timingAccuracy"}},
+        {"latch", {"supply", "numberOfChannels", "propagationDelay"}},
         //
         // ABT #1015: "controller" and 11 of the 14 AAS analog-IC discriminators had
         // NO manifest at all -- compute_completeness() returned -1 unconditionally,
@@ -558,13 +640,28 @@ const std::vector<std::string>* core_fields(const std::string& c) {
 double sparse_floor(const std::string& c) {
     if (c == "magnetic") return 0.40;  // real-part min ~0.50
     if (c == "igbt") return 0.50;      // real-part min ~0.67
+    // Diode real-part min is 0.50: 169 live Infineon ESD parts publish only V_RWM
+    // and an IEC 61000-4-2 contact rating (2 of the ESD manifest's 4). Zeners bottom
+    // at 0.67, TVS and rectifying diodes at 0.75.
+    if (c == "diode") return 0.40;
+    // Oscillator real-part min is 0.33: four Abracon/Murata bare crystals carry only
+    // technology and outputType 'none'. Timer/latch mirror the other 3-entry
+    // families; live timer min is 0.67.
+    if (c == "oscillator") return 0.30;
+    if (c == "timer" || c == "latch") return 0.50;
+    // connectorAccessory has NO floor. Its real-part minimum is measured at 0.0 --
+    // 4,999 live rows are genuine TE tooling, hoods and covers whose only structured
+    // content is the accessory kind and the part number -- so any floor above zero
+    // would call real parts unreal. `comp < 0.0` is never true, so the score is
+    // published for the enrichment queue and GEN_SPARSE stays silent on the family.
+    if (c == "connectorAccessory") return 0.0;
     return 0.60;                       // cap / res / mosfet / varistor / connector (real min 1.0)
 }
 
 // Fraction of the family's core fields present in datasheetInfo.electrical (or
 // electrical[0] for the magnetics array). Returns -1 if no manifest exists.
 double compute_completeness(const std::string& component, const json& datasheet) {
-    const std::vector<std::string>* core = core_fields(component);
+    const std::vector<std::string>* core = core_fields(component, datasheet);
     if (core == nullptr || core->empty()) return -1.0;
     const json* elec = at(datasheet, "electrical");
     const json* obj = nullptr;
@@ -572,7 +669,16 @@ double compute_completeness(const std::string& component, const json& datasheet)
         obj = &elec->front();
     else if (elec && elec->is_object())
         obj = elec;
-    if (obj == nullptr) return 0.0;  // electrical absent/empty => maximally sparse
+    // A manifest whose every alternative is a bare key can only be answered from
+    // `electrical`; with no such object the record is maximally sparse and the walk
+    // below would say so anyway. Returning early keeps the electrical-only families
+    // bit-for-bit as they were, and is skipped for a manifest that names sections
+    // outside `electrical` (connectorAccessory), where an absent electrical object
+    // says nothing about the record.
+    bool any_path = false;
+    for (const auto& f : *core)
+        if (f.find('.') != std::string::npos) any_path = true;
+    if (obj == nullptr && !any_path) return 0.0;
     int present = 0;
     for (const auto& f : *core) {
         // A manifest entry may name alternate spellings of the same field, "a|b".
@@ -581,7 +687,22 @@ double compute_completeness(const std::string& component, const json& datasheet)
             const size_t bar = f.find('|', start);
             const std::string name =
                 f.substr(start, bar == std::string::npos ? std::string::npos : bar - start);
-            if (!name.empty() && obj->contains(name) && !(*obj)[name].is_null()) found = true;
+            if (!name.empty()) {
+                const size_t dot = name.find('.');
+                if (dot == std::string::npos) {
+                    if (obj != nullptr && obj->contains(name) && !(*obj)[name].is_null())
+                        found = true;
+                } else {
+                    // "section.field" — a path from datasheetInfo, not a key inside
+                    // electrical.
+                    const std::string section = name.substr(0, dot);
+                    const std::string leaf = name.substr(dot + 1);
+                    if (datasheet.is_object() && datasheet.contains(section) &&
+                        datasheet[section].is_object() && datasheet[section].contains(leaf) &&
+                        !datasheet[section][leaf].is_null())
+                        found = true;
+                }
+            }
             if (bar == std::string::npos) break;
             start = bar + 1;
         }

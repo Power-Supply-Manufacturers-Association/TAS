@@ -59,9 +59,15 @@ v.valid       # bool — False iff any IMPOSSIBLE finding
 v.findings    # list of Finding: .code .severity .component .reference .message .value .threshold
 v.skipped     # list of check codes skipped because required input data was absent
 v.completeness  # fraction of the family's core datasheet fields present, or -1.0
-                # for a family with NO manifest (diodes, time bases, connector
-                # accessories are deliberately unscored). -1 is a SENTINEL meaning
-                # "not scored", not a low score — never average it into a mean.
+                # for a family with NO manifest (the AAS integrator and summer
+                # subtypes, which are behavioural atoms with no electrical block).
+                # -1 is a SENTINEL meaning "not scored", not a low score — never
+                # average it into a mean. Diodes are scored per part.subType
+                # (zener/tvs/esd/everything-else, mirroring the SAS schema's own
+                # conditional required sets); connector accessories are scored off
+                # accessoryDetails/hostSystem rather than electrical, and carry no
+                # GEN_SPARSE floor because real tooling rows legitimately have
+                # nothing but a kind.
 tas_validator.validate_json(text)    # same, JSON string only
 tas_validator.check_codes()          # every check id the validator can emit
 tas_validator.build_fingerprint()    # content hash of the src this .so was built from (ABT #397)

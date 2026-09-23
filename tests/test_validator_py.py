@@ -550,3 +550,137 @@ def test_circuit_bricks_are_named_as_such_instead_of_unknown():
 def test_converter_documents_are_named_as_such():
     with pytest.raises(ValueError, match="converter document"):
         tas_validator.validate({"inputs": {}, "topology": {"stages": []}})
+
+
+# ---------------------------------------------------------------------------
+# Completeness for the families that used to return the -1.0 "not scored"
+# sentinel: diodes, time bases and connector accessories.
+# ---------------------------------------------------------------------------
+
+def _diode(sub_type, electrical):
+    return {"semiconductor": {"diode": {"manufacturerInfo": {
+        "name": "Fixture", "reference": "FIX-D",
+        "datasheetInfo": {"part": {"partNumber": "FIX-D", "subType": sub_type},
+                          "electrical": electrical}}}}}
+
+
+def test_diode_completeness_is_scored_per_subtype():
+    """A zener's manifest is the zener one, not the rectifying one."""
+    zener_block = {"breakdownVoltage": 12.0, "powerDissipation": 0.5,
+                   "zenerTestCurrent": 0.005}
+    assert tas_validator.validate(_diode("zener", zener_block)).completeness == 1.0
+    # The SAME electrical block on a rectifier carries none of {reverseVoltage,
+    # forwardVoltage, forwardCurrent, surgeCurrent|reverseLeakageCurrent}. If the
+    # family shared one manifest this could not differ from the line above.
+    assert tas_validator.validate(_diode("rectifier", zener_block)).completeness == 0.0
+
+    rect_block = {"reverseVoltage": 100.0, "forwardVoltage": 0.7,
+                  "forwardCurrent": 1.0, "surgeCurrent": 30.0}
+    assert tas_validator.validate(_diode("rectifier", rect_block)).completeness == 1.0
+    assert tas_validator.validate(_diode("zener", rect_block)).completeness == 0.0
+    # No subType at all falls to the rectifying manifest (the SAS schema's own
+    # else-branch), not to "unscored".
+    assert tas_validator.validate(_diode(None, rect_block)).completeness == 1.0
+
+
+def test_diode_partial_manifest_gives_a_fraction():
+    v = tas_validator.validate(_diode("tvs", {"standoffVoltage": 5.0,
+                                              "clampingVoltage": 9.2}))
+    assert v.completeness == pytest.approx(0.5)
+
+
+def test_time_base_completeness_is_scored():
+    osc = {"timeBase": {"oscillator": {"manufacturerInfo": {
+        "name": "Fixture", "reference": "FIX-X",
+        "datasheetInfo": {"part": {"partNumber": "FIX-X"},
+                          "electrical": {"frequency": 25e6,
+                                         "frequencyStability": 50e-6,
+                                         "outputType": "lvcmos"}}}}}}
+    assert tas_validator.validate(osc).completeness == 1.0
+    bare = json.loads(json.dumps(osc))
+    bare["timeBase"]["oscillator"]["manufacturerInfo"]["datasheetInfo"]["electrical"] = {
+        "technology": "quartzCrystal"}
+    # `technology` is parametric tagging, not a datasheet spec — it must not score.
+    assert tas_validator.validate(bare).completeness == 0.0
+
+
+def test_connector_accessory_is_scored_outside_the_electrical_object():
+    """Four fifths of accessories have no `electrical`; their content is elsewhere."""
+    def acc(datasheet_info):
+        return {"connectorAccessory": {"manufacturerInfo": {
+            "name": "Fixture", "reference": "FIX-A",
+            "datasheetInfo": datasheet_info}}}
+
+    rich = acc({"part": {"partNumber": "FIX-A"},
+                "accessoryDetails": {"kind": "backshell", "cableExit": "straight"},
+                "hostSystem": {"series": "Mini-Fit Jr."}})
+    assert tas_validator.validate(rich).completeness == 1.0
+
+    half = acc({"part": {"partNumber": "FIX-A"},
+                "accessoryDetails": {"kind": "backshell", "cableExit": "straight"}})
+    assert tas_validator.validate(half).completeness == pytest.approx(0.5)
+
+    # Identity only: the kind alone is not a datasheet field, it is schema-required.
+    stub = acc({"part": {"partNumber": "FIX-A"},
+                "accessoryDetails": {"kind": "tooling"}})
+    assert tas_validator.validate(stub).completeness == 0.0
+
+    # An accessory whose only content is a contact rating scores off `electrical`
+    # through the same path mechanism.
+    contact = acc({"part": {"partNumber": "FIX-A"},
+                   "accessoryDetails": {"kind": "contact"},
+                   "electrical": {"ratedCurrentPerContact": 13.0}})
+    assert tas_validator.validate(contact).completeness == pytest.approx(0.5)
+
+
+NEWLY_SCORED = ["diodes", "timing_devices", "connector_accessories"]
+
+
+@pytest.mark.parametrize("name", NEWLY_SCORED)
+def test_live_rows_of_newly_scored_families_are_not_sentinel(name):
+    seen = 0
+    for _, rec in iter_records(name, SAMPLE):
+        seen += 1
+        v = tas_validator.validate(rec)
+        assert v.completeness >= 0.0, f"{name} row {seen} still returns the -1 sentinel"
+        assert v.completeness <= 1.0
+    assert seen, f"{name}.ndjson produced no records"
+
+
+def test_newly_scored_families_have_real_spread():
+    """A rich family must not sit at 0 and a stub family must not sit at 1."""
+    osc = [tas_validator.validate(r).completeness
+           for _, r in iter_records("timing_devices", SAMPLE)]
+    assert min(osc) > 0.0 and sum(osc) / len(osc) > 0.9
+
+    # A wider window than SAMPLE: the first identity-only accessory in the live
+    # file is row 1,993, so a 500-row head would never see the 0.0 end.
+    acc = [tas_validator.validate(r).completeness
+           for _, r in iter_records("connector_accessories", max(SAMPLE, 2500))]
+    assert min(acc) == 0.0, "identity-only accessories must score 0"
+    assert max(acc) == 1.0, "fully described accessories must score 1"
+
+
+def test_not_scored_sentinel_is_still_reachable():
+    """-1.0 must stay a live value for a family with no manifest."""
+    integrator = {"analog": {"integrator": {"manufacturerInfo": {
+        "name": "Fixture", "reference": "FIX-I",
+        "datasheetInfo": {"part": {"partNumber": "FIX-I"},
+                          "behavioral": {"integratorType": "inverting"}}}}}}
+    assert tas_validator.validate(integrator).completeness == -1.0
+
+
+def test_electrical_only_families_keep_their_scores():
+    """The path-aware lookup must not perturb a family scored off `electrical`."""
+    mosfet = {"semiconductor": {"mosfet": {"manufacturerInfo": {
+        "name": "Fixture", "reference": "FIX-M",
+        "datasheetInfo": {"part": {"partNumber": "FIX-M"},
+                          "electrical": {"onResistance": 0.05,
+                                         "drainSourceVoltage": 600.0,
+                                         "continuousDrainCurrent": 10.0,
+                                         "gateThresholdVoltage": 3.0}}}}}}
+    assert tas_validator.validate(mosfet).completeness == 1.0
+    cap = {"capacitor": {"manufacturerInfo": {
+        "name": "Fixture", "reference": "FIX-C",
+        "datasheetInfo": {"electrical": {"capacitance": {"nominal": 1e-7}}}}}}
+    assert tas_validator.validate(cap).completeness == pytest.approx(0.5)

@@ -3494,10 +3494,58 @@ TEST_CASE("completeness: the new families score what their manifests say",
     CHECK(V.validate(good_relay()).completeness == 1.0);
     CHECK(V.validate(good_switch()).completeness == 1.0);
     CHECK(V.validate(good_pot()).completeness == 1.0);
-    // connectorAccessory is deliberately unscored: four fifths of live rows are
-    // non-electrical kinds (labels, keys, gaskets, tools) with no electrical
-    // block at all, and a manifest would condemn every one of them.
-    CHECK(V.validate(good_accessory()).completeness == -1.0);
+    // connectorAccessory used to be unscored because four fifths of live rows are
+    // non-electrical kinds (labels, keys, gaskets, tools) with no electrical block
+    // at all. It is now scored off accessoryDetails/hostSystem instead: this
+    // fixture carries a class descriptor but names no host system, so it is half
+    // described.
+    CHECK(V.validate(good_accessory()).completeness == 0.5);
+}
+
+TEST_CASE("completeness: an accessory is scored outside the electrical object",
+          "[accessory]") {
+    json p = good_accessory();
+    acc_ds(p)["hostSystem"] = json{{"series", "Universal MATE-N-LOK"}};
+    CHECK(V.validate(p).completeness == 1.0);
+
+    // Strip everything but the kind: a real TE tooling row looks like this, so it
+    // scores 0.0 and — the family having no sparse floor — still says nothing.
+    json stub = good_accessory();
+    acc_ds(stub).erase("electrical");
+    acc_ds(stub)["accessoryDetails"] = json{{"kind", "tooling"}};
+    Verdict v = V.validate(stub);
+    CHECK(v.completeness == 0.0);
+    CHECK_FALSE(has_code(v, "GEN_SPARSE"));
+}
+
+TEST_CASE("completeness: a diode is scored against its own subType's manifest",
+          "[diode]") {
+    json zener = json::parse(R"json({"semiconductor": {"diode": {"manufacturerInfo": {
+      "name": "Fixture", "reference": "FIX-Z", "datasheetInfo": {
+        "part": {"partNumber": "FIX-Z", "subType": "zener"},
+        "electrical": {"breakdownVoltage": 12.0, "powerDissipation": 0.5,
+                       "zenerTestCurrent": 0.005},
+        "provenance": [{"source": "manufacturerDatasheet"}]}}}}})json");
+    CHECK(V.validate(zener).completeness == 1.0);
+
+    // The SAME electrical block declared as a rectifier answers none of
+    // {reverseVoltage, forwardVoltage, forwardCurrent, surgeCurrent|leakage}. One
+    // shared diode manifest could not tell these two apart, which is why the
+    // family was unscored.
+    json mislabelled = zener;
+    mislabelled["semiconductor"]["diode"]["manufacturerInfo"]["datasheetInfo"]["part"]
+               ["subType"] = "rectifier";
+    CHECK(V.validate(mislabelled).completeness == 0.0);
+}
+
+TEST_CASE("completeness: -1.0 still means NOT SCORED for a family with no manifest",
+          "[analog]") {
+    json integrator = json::parse(R"json({"analog": {"integrator": {"manufacturerInfo": {
+      "name": "Fixture", "reference": "FIX-I", "datasheetInfo": {
+        "part": {"partNumber": "FIX-I"},
+        "behavioral": {"integratorType": "inverting"},
+        "provenance": [{"source": "manufacturerDatasheet"}]}}}}})json");
+    CHECK(V.validate(integrator).completeness == -1.0);
 }
 
 TEST_CASE("GEN_SPARSE: a relay stub with no electrical block at all fires", "[relay]") {

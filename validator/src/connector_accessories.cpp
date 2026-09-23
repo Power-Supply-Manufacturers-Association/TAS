@@ -5,8 +5,9 @@
 // ratedVoltage,characteristicImpedance,contactResistance}, mechanical, hostSystem.
 //
 // Most accessory kinds are not electrical parts at all (a marker strip, a coding
-// key, a crimp tool), so there is no single field every row carries and no
-// completeness manifest for the family — see core_fields() in validator.cpp. The
+// key, a crimp tool), so the family's completeness manifest is scored off
+// accessoryDetails and hostSystem rather than electrical, and carries no sparse
+// floor — see core_fields() and sparse_floor() in validator.cpp. The
 // two checks with real teeth both live on the CONTACT kinds, which are 3,324 of
 // the 18,227 live rows and the only ones that carry both a conductor range and a
 // current rating:
