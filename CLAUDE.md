@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 TAS ("Topology Agnostic Structure") is two things in one repo:
 
 1. **A JSON Schema standard** (`schemas/`) describing a complete power converter design.
-2. **A component database** (`data/`, NDJSON) of ~660k real, orderable parts used by the
+2. **A component database** (`data/`, NDJSON) of ~1.02M real, orderable parts used by the
    Proteus / Heaviside AI design system.
 
 TAS is a git repo of its own (`OpenConverters/TAS`). It is checked out in two places:
@@ -66,12 +66,15 @@ documents — good references for document shape.
 
 ## Component database (`data/`)
 
-NDJSON, one JSON object per line. Files are **huge** (`capacitors.ndjson` ~263 MB /
-230k records, `magnetics.ndjson` ~276 MB / 92k, `connectors.ndjson` ~138 MB / 138k,
-`resistors.ndjson` ~123 MB / 161k, `circuits.ndjson` ~95 MB / 12k CIAS bricks). Active
-catalogs: `mosfets`, `diodes`, `igbts`, `bjts`, `capacitors`, `resistors`, `varistors`,
-`magnetics`, `controllers`, `analog_ics`, `connectors`, plus `circuits` (CIAS bricks)
-and `converters` (47 full TAS documents). A single `quarantine.ndjson` (202k rows) holds
+NDJSON, one JSON object per line. Files are **huge**, and they grow — re-measure rather
+than trusting this paragraph. As of 2026-09-23: `circuits.ndjson` 1,204 MB / 25,234 CIAS
+bricks, `capacitors.ndjson` 984 MB / 253,832, `connectors.ndjson` 641 MB / 393,710,
+`magnetics.ndjson` 389 MB / 84,208, `resistors.ndjson` 213 MB / 172,656; 1,020,171 live
+records in total. Active catalogs: `mosfets`, `diodes`, `igbts`, `bjts`, `capacitors`,
+`resistors`, `varistors`, `magnetics`, `controllers`, `analog_ics`, `connectors`,
+`relays`, `switches`, `thermistors`, `potentiometers`, `timing_devices`,
+`connector_accessories`, plus `circuits` (CIAS bricks) and `converters` (34 full TAS
+documents). A single `quarantine.ndjson` (96,751 rows) holds
 parts with verified data errors or incomplete data — excluded from queries, typically
 carrying a `quarantineReason`. The per-catalog `*.quarantine_*.ndjson` siblings this
 file used to describe do NOT exist on disk; two separate audits went looking for them
