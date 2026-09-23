@@ -900,4 +900,78 @@ inline constexpr double THERM_PTC_TSW_SUS_HI = 330.0;
 inline constexpr double THERM_ISS_IMP_HI = 100.0;
 inline constexpr double THERM_ISS_SUS_HI = 50.0;
 
+
+// ---- Electromechanical: shared contact set (EMAS utils contactSet) ----------
+// A closed metallic contact interface is a few milliohms (power relay 20..100
+// mOhm; gold dry-circuit signal contact up to ~0.2 Ohm; the highest real reed
+// figure is ~0.15 Ohm). 100 Ohm is not a closed contact, it is an open circuit
+// or a resistance written in the wrong field -- so only that is IMPOSSIBLE, and
+// no suspicious tier is set (the real spread of contact-resistance measurement
+// conditions is too wide to draw a second line that means anything).
+inline constexpr double CONTACT_R_IMP_HI = 100.0;
+
+// ---- Relays (EMAS relay.json) ----------------------------------------------
+// Coil Ohm's law: on a DC coil, P = V^2/R and I = V/R are identities, not
+// specifications. Only the ratio of the stated coil power to the one the coil
+// voltage and DC resistance imply is tested, so rounding of any single figure
+// cannot fire it. A datasheet rounds each of V, R and P to 2..3 significant
+// figures and states P at the rated voltage with the coil hot, whose resistance
+// is up to ~1.4x the cold value quoted -- hence a generous suspicious tier.
+// Beyond 5x the two numbers cannot describe the same coil.
+inline constexpr double REL_COIL_OHMS_SUS = 1.6;
+inline constexpr double REL_COIL_OHMS_IMP = 5.0;
+// Reed contacts are a pair of ferromagnetic blades sealed in a glass capsule:
+// the switching ratings of the whole published family sit between 0.25 A and
+// 3 A (Standex-Meder, Littelfuse, Coto), and the largest reed SWITCHES made
+// reach ~5 A. The catalogue's own reed rows top out at exactly 3 A. 10 A is
+// above every real reed part; 25 A is a contactor rating filed on a reed.
+inline constexpr double REL_REED_CURRENT_SUS = 10.0;
+inline constexpr double REL_REED_CURRENT_IMP = 25.0;
+// A relay transition is milliseconds (signal ~1 ms, power ~15 ms); a time-delay
+// relay's own operate time can be published in hours. One hour is therefore the
+// only defensible ceiling: above it the number is not a transition time at all.
+inline constexpr double REL_TIME_IMP_HI = 3600.0;
+
+// ---- Potentiometers (RAS potentiometer.json) --------------------------------
+// Commercial tracks run 10 Ohm .. 10 MOhm (the catalogue's own span is
+// 10 Ohm .. 1 MOhm). Below 1 Ohm the wiper contact resistance alone dominates
+// the track, above 100 MOhm the element is not a resistive track.
+inline constexpr double POT_R_SUS_LO = 1.0;
+inline constexpr double POT_R_SUS_HI = 1e8;
+// resistanceTolerance is a FRACTION. Potentiometer tolerances are wide by trade
+// (+/-10% cermet, +/-20..30% carbon), so 0.3 is the loosest real grade; a value
+// at or above 1.0 is a percent written into a fraction field, not a tolerance.
+inline constexpr double POT_TOL_SUS_HI = 0.3;
+inline constexpr double POT_TOL_IMP_HI = 1.0;
+// Rounding headroom for the two energy relations below. maximumWorkingVoltage
+// and powerRating are each published to 2-3 significant figures, and
+// POT_VOLTAGE_POWER SQUARES the voltage, so a 3-sig-fig voltage alone moves the
+// implied power by ~1%; vendors also round the stated Vmax UP to the next round
+// number above sqrt(P*R). 10% absorbs both. Beyond it the two published numbers
+// are not describing the same element. This is a rounding allowance on published
+// figures, NOT a physics margin: the underlying relation is an equality.
+inline constexpr double POT_ENERGY_ROUNDING = 1.10;
+// A fitted taper exponent equal to 1 IS the linear law. Compared with a
+// tolerance because the exponent is a fit result, not a printed constant.
+inline constexpr double POT_TAPER_EXP_TOL = 0.01;
+
+// ---- Connector accessories (CONAS connectorAccessory.json) ------------------
+// AWG is a geometric series: one gauge step is a factor 92^(2/39) = 1.2610 in
+// conductor AREA. A vendor that publishes BOTH an AWG range and an area range
+// for the same accessory is describing the same conductors, so the two may
+// disagree by the rounding to the nearest whole gauge -- up to one step -- but
+// two full steps (1.2610^2 = 1.590) apart they are describing different wire.
+inline constexpr double ACC_AWG_AREA_RATIO_SUS = 1.6;
+// Preece's fusing current for copper in free air: I_fuse [A] = 80 * d[mm]^1.5
+// (1 mm copper wire fuses at 80 A). A contact crimped inside a connector
+// housing is cooled worse than free air, so a CONTINUOUS per-contact rating
+// above the free-air fusing current of the largest conductor the contact
+// accepts is unreachable by any wiring of that contact.
+inline constexpr double ACC_PREECE_COPPER_K = 80.0;
+inline constexpr double ACC_PREECE_EXPONENT = 1.5;
+// Real transmission-line impedances span 25 Ohm (high-power/low-loss coax) to
+// 125 Ohm (air-spaced lines); 50, 75 and 93 Ohm are the catalogue's reality.
+inline constexpr double ACC_IMPEDANCE_SUS_LO = 25.0;
+inline constexpr double ACC_IMPEDANCE_SUS_HI = 150.0;
+
 }  // namespace tas::thr

@@ -10,6 +10,7 @@
 
 #include <nlohmann/json.hpp>
 
+#include <cstdlib>
 #include <string>
 #include <vector>
 
@@ -54,8 +55,25 @@ struct Ctx {
 };
 
 // Append a fired finding. `message` should already name the offending quantity.
+//
+// TAS_VALIDATOR_REVERT_HARNESS (tests only, never the shipped library or the
+// Python module -- see CMakeLists.txt) compiles in a switch that makes named
+// check codes behave as though the check had never been written. It exists for
+// the counter-check this codebase learned the hard way: "a test that passes with
+// the fix REVERTED proves nothing, and looks identical to one that works." With
+// it, proving that is one run per code instead of one rebuild per code:
+//     TAS_VALIDATOR_SUPPRESS=REL_COIL_ORDER ./build/tas_validator_tests_revert "[relay]"
+// must turn that check's must-fire test RED, and must leave its must-stay-quiet
+// test GREEN.
 inline void emit(std::vector<Finding>& out, const Ctx& ctx, std::string code, Severity sev,
                  double value, double threshold, std::string message) {
+#ifdef TAS_VALIDATOR_REVERT_HARNESS
+    if (const char* suppress = std::getenv("TAS_VALIDATOR_SUPPRESS");
+        suppress != nullptr && *suppress != '\0') {
+        const std::string list = std::string(",") + suppress + ",";
+        if (list.find("," + code + ",") != std::string::npos) return;
+    }
+#endif
     Finding f;
     f.code = std::move(code);
     f.severity = sev;
@@ -149,6 +167,16 @@ void check_igbts(const json& datasheet, const Ctx&, std::vector<Finding>&, std::
 void check_bjts(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
 void check_varistors(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
 void check_connectors(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
+// Electromechanical (EMAS) and the two families that were previously undispatchable.
+void check_relays(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
+void check_switches(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
+void check_potentiometers(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
+void check_connector_accessories(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
+// Shared by relays AND switches: EMAS models both families' switched circuit
+// with the same contactSet/isolation types, so the contact physics lives once
+// (contacts.cpp) instead of being mirrored into two files. Takes the family's
+// datasheetInfo.electrical object, not a datasheetInfo.
+void check_contact_block(const json& electrical, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
 void check_thermistors(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
 void check_analog(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
 void check_controllers(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);

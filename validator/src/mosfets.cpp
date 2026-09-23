@@ -11,10 +11,66 @@
 #include "tas_validator/validator.hpp"
 
 #include <cmath>
+#include <regex>
 #include <sstream>
 #include <string>
 
 namespace tas {
+
+namespace {
+
+// Does this package name denote an ISOLATED (fully-molded / insulated-tab)
+// power outline? The distinction is load-bearing for MOS_IDC_VS_THERMAL below:
+// vendors rate an isolated part at its NON-isolated sibling's silicon current
+// with an explicit duty-cycle footnote, so a 2-3x cold overcommit is the rating
+// convention there and a data defect on a bare package.
+//
+// This is written as the industry's NAMING CONVENTIONS, not as a list of the
+// spellings someone has happened to meet. The previous version was such a list
+// (fullpak / fullpack / to220f / to3pf) and it cost a human reading 31 YAGEO
+// datasheets to discover that TO-220CFM -- "case fully molded", the same
+// isolated class, 99 live rows -- was not on it. TO-220FP (43 rows), TO-247ISO
+// (6) and ISOPLUS247 (2) were missing for the same reason. The conventions:
+//
+//   * "FullPAK"/"FullPack"  -- the marketing name (Infineon, ST, Vishay).
+//   * "CFM"                 -- Case Fully Molded (YAGEO/XSemi, Diodes Inc).
+//   * "ISO"/"ISOPLUS"/"ISOTOP" -- the explicit isolated-baseplate families
+//                              (IXYS ISOPLUS247, TO-247ISO, SOT-227 ISOTOP).
+//   * a TO-220/247/264/3P outline whose number is followed DIRECTLY by F, FP or
+//     FM and nothing else -- the universal suffix for the isolated variant of a
+//     tab outline (TO-220F, TO-220FP, TO-3PF, TO-247F). The trailing boundary is
+//     required so this branch cannot swallow an unrelated suffix.
+//
+// NOT isolated, and deliberately absent: LFPAK/PowerSO8 (a copper-clip SMD
+// package with an exposed drain pad, 300+ live rows) -- "PAK" alone must never
+// be the test.
+//
+// What this function deliberately does NOT do is infer isolation from the
+// record's own thermal numbers. The tempting corroborator -- powerDissipation
+// equal to (Tjmax-25)/Rth(j-c), which every real isolated row satisfies -- is
+// satisfied EXACTLY as well by the defect this check was written for: ABT #500's
+// IPW80R280P7 is a TO-247 carrying its FullPak sibling's whole thermal row, so
+// its Ptot and its Rth agree with each other (that is why MOS_POWER_THERMAL
+// cannot see it) and it would be granted the 4x isolated bar by any such rule --
+// at 2.0x it would then pass. That would widen the bar instead of fixing the
+// classification, which is worse than the false positive being fixed.
+bool is_isolated_power_package(const std::string& pkg_norm) {
+    if (pkg_norm.empty()) return false;
+    if (tech_has(pkg_norm, "fullpak") || tech_has(pkg_norm, "fullpack")) return true;
+    if (tech_has(pkg_norm, "cfm")) return true;   // Case Fully Molded
+    if (tech_has(pkg_norm, "iso")) return true;   // TO-247ISO, ISOPLUS247, ISOTOP
+    // norm_tech has already lowercased and stripped punctuation, so "TO-220FP"
+    // is "to220fp" here. The suffix must not be followed by another LETTER, so
+    // "to220fullpak" cannot match as "to220f" + junk (it is caught by the
+    // FullPAK branch above instead). A following DIGIT is allowed on purpose:
+    // vendors append a lead count to the outline, and "TO-3PF-3L" normalises to
+    // "to3pf3l" — dropping that allowance silently unclassifies it, which is the
+    // same kind of miss this rewrite exists to end.
+    static const std::regex ISO_SUFFIX(R"(to(?:220|247|264|3p)(?:f|fp|fm)(?![a-z]))");
+    return std::regex_search(pkg_norm, ISO_SUFFIX);
+}
+
+}  // namespace
 
 void check_mosfets(const json& datasheet, const Ctx& ctx, std::vector<Finding>& out,
                    std::vector<std::string>& skipped) {
@@ -231,8 +287,7 @@ void check_mosfets(const json& datasheet, const Ctx& ctx, std::vector<Finding>& 
         // the #500 exhibit, a TO-247 wearing FullPak thermals, is exactly what
         // this check exists to catch, and it stays caught.
         std::string pkg = norm_tech(at(datasheet, "part", "case"));
-        bool isolated = tech_has(pkg, "fullpak") || tech_has(pkg, "fullpack") ||
-                        tech_has(pkg, "to220f") || tech_has(pkg, "to3pf");
+        bool isolated = is_isolated_power_package(pkg);
         double bar = isolated ? thr::MOS_IDC_THERMAL_RATIO_ISO_IMP
                               : thr::MOS_IDC_THERMAL_RATIO_IMP;
         if (pcond > pmax * bar)

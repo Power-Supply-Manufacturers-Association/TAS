@@ -32,6 +32,17 @@ void check_family_coherence(const json& ds, const Ctx& ctx, std::vector<Finding>
         desc += static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
     auto group = [](const std::string& c) -> std::string {
         if (c == "mosfet" || c == "diode" || c == "igbt" || c == "bjt") return "semiconductor";
+        // A connector ACCESSORY is named after the connector it fits -- that is
+        // what an accessory is. "Backshell for ... Connector", "Connector Cap",
+        // "Connector Marker Strip": 3,796 of the 18,227 live accessory rows say
+        // "connector" in their description, and every one of them is correct.
+        // Without this line the noun test accuses all 3,796 of being a connector
+        // mis-filed as an accessory -- a check firing on a fifth of a catalogue
+        // is measuring its own vocabulary, not the data.
+        if (c == "connectorAccessory") return "connector";
+        // Likewise a potentiometer is a resistor with a moving tap, and lives in
+        // RAS beside the resistor: "Trimmer Resistor" is its own family's noun.
+        if (c == "potentiometer") return "resistor";
         return c;
     };
     const std::string g = group(ctx.component);
@@ -427,7 +438,16 @@ const std::vector<std::string>* core_fields(const std::string& c) {
         // to "real-part min ~0.50", but that 0.50 was this bug, not a property of the
         // catalogue.
         {"magnetic", {"inductance", "dcResistance|dcResistances"}},
-        {"capacitor", {"capacitance", "ratedVoltage"}},
+        // The AC spelling is the SAME field for a safety capacitor that has no DC
+        // rating at all: CAS 96278ad (user-approved) lets an AC-only class-X/Y part
+        // omit `ratedVoltage` and carry `voltageRatedAcMax` instead. Counting only
+        // the DC spelling dropped 261 migrated TDK rows from 1.00 to 0.50
+        // completeness and fired GEN_SPARSE on every one of them -- the data is not
+        // sparse, the manifest did not know the second spelling. Exactly the
+        // blindness `dcResistance|dcResistances` above exists for, and the same
+        // self-concealing shape: the "real-part min" a floor is calibrated against
+        // is only real if the manifest can see every spelling of the field.
+        {"capacitor", {"capacitance", "ratedVoltage|voltageRatedAcMax"}},
         {"resistor", {"resistance", "powerRating", "tolerance"}},
         {"mosfet",
          {"onResistance", "drainSourceVoltage", "continuousDrainCurrent", "gateThresholdVoltage"}},
@@ -440,6 +460,28 @@ const std::vector<std::string>* core_fields(const std::string& c) {
         {"bjt", {"collectorEmitterVoltage", "collectorCurrent"}},
         {"varistor", {"varistorVoltage", "clampingVoltage", "peakSurgeCurrent"}},
         {"connector", {"ratedVoltage", "ratedCurrentPerContact"}},
+        // Relay / switch: the electrical block is NESTED (contacts / input /
+        // isolation / trip are objects, not scalars), so the manifest names those
+        // sub-objects. A single '|'-joined entry, not several AND'd fields, for the
+        // controller reason: a solid-state relay carries `input` and a bare switch
+        // carries only `contacts`, and AND-ing them would call every correct
+        // single-block record sparse. Measured live, 97.8% of relays and 99.5% of
+        // switches carry at least one; what scores 0.0 is a row whose electrical
+        // block is absent entirely -- an identity-only stub, which is the signature
+        // this score exists to catch.
+        {"relay", {"contacts|input"}},
+        {"switch", {"contacts|trip"}},
+        // Potentiometer: totalResistance and powerRating are on 100% of the live
+        // rows and are the two numbers that make the part a potentiometer rather
+        // than a knob. Both AND'd, so a row carrying one of them scores 0.50 and
+        // trips the 0.60 floor.
+        {"potentiometer", {"totalResistance", "powerRating"}},
+        // connectorAccessory is intentionally omitted (the diode/time-base
+        // reasoning): most accessory KINDS are not electrical parts at all -- a
+        // marker strip, a coding key, a gasket, a crimp tool -- and 80.8% of live
+        // rows legitimately have no `electrical` object whatsoever. A manifest
+        // would score every one of them 0.0 and condemn four fifths of a sound
+        // catalogue. Completeness is not scored for accessories (returns -1).
         // Thermistor: R25 is the single universal field; B constant is NTC-only and
         // absent on PTC, so it is not in the core manifest (would false-flag PTC).
         {"thermistor", {"resistanceAt25C"}},
@@ -562,7 +604,7 @@ Verdict PartValidator::validate(const json& part) const {
     // below would silently pick the first).
     static const char* DISCRIMINATORS[] = {
         "magnetic", "capacitor", "resistor", "varistor", "thermistor", "connector", "controller",
-        "semiconductor", "timeBase",
+        "semiconductor", "timeBase", "relay", "switch", "potentiometer", "connectorAccessory",
         "operationalAmplifier", "comparator", "instrumentationAmplifier", "differenceAmplifier",
         "programmableGainAmplifier", "buffer", "sampleHold", "analogSwitch", "multiplexer",
         "adc", "dac", "multiplier", "integrator", "summer"};
@@ -615,6 +657,14 @@ Verdict PartValidator::validate(const json& part) const {
         run("connector", part["connector"], &check_connectors);
     } else if (part.contains("thermistor")) {
         run("thermistor", part["thermistor"], &check_thermistors);
+    } else if (part.contains("relay")) {
+        run("relay", part["relay"], &check_relays);
+    } else if (part.contains("switch")) {
+        run("switch", part["switch"], &check_switches);
+    } else if (part.contains("potentiometer")) {
+        run("potentiometer", part["potentiometer"], &check_potentiometers);
+    } else if (part.contains("connectorAccessory")) {
+        run("connectorAccessory", part["connectorAccessory"], &check_connector_accessories);
     } else if (part.contains("controller")) {
         run("controller", part["controller"], &check_controllers);
     } else if (part.contains("timeBase")) {
@@ -667,10 +717,29 @@ Verdict PartValidator::validate(const json& part) const {
             if (aas.contains(k)) { hit = k; break; }
         if (hit != nullptr)
             run(hit, aas[hit], &check_analog);
+        else if (part.contains("ports") && part.contains("components"))
+            // A CIAS brick, not a part. It has its own entry point; saying so is
+            // the difference between "this record cannot be judged" and "this
+            // record was handed to the wrong gate". TAS/data/circuits.ndjson is
+            // 25,234 rows of exactly this, and a sweep that pushes them through
+            // validate() counts every one as unjudgeable.
+            throw std::invalid_argument(
+                "record is a CIAS circuit brick (it has ports[] and components[]), not a "
+                "component part — use validate_circuit()");
+        else if (part.contains("topology"))
+            // A whole TAS converter document (inputs + topology + stages of CIAS
+            // bricks). It is a DESIGN, not a catalogue part: there is nothing for
+            // a per-part physics gate to judge, and its bricks are validated
+            // individually by validate_circuit(). TAS/data/converters.ndjson does
+            // not belong in a part sweep at all.
+            throw std::invalid_argument(
+                "record is a TAS converter document (it has a topology), not a component part "
+                "— validate its stages' CIAS bricks with validate_circuit() instead");
         else
             throw std::invalid_argument(
                 "no known component discriminator (magnetic/capacitor/resistor/varistor/"
-                "connector/thermistor/semiconductor/analog-AAS)");
+                "connector/thermistor/relay/switch/potentiometer/connectorAccessory/"
+                "semiconductor/analog-AAS)");
     }
 
     for (const auto& f : v.findings)

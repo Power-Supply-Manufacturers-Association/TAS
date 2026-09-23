@@ -122,6 +122,11 @@ add_library(tas_validator_core STATIC
   src/bjts.cpp
   src/varistors.cpp
   src/connectors.cpp
+  src/contacts.cpp
+  src/relays.cpp
+  src/switches.cpp
+  src/potentiometers.cpp
+  src/connector_accessories.cpp
   src/thermistors.cpp
   src/analog.cpp
   src/controllers.cpp
@@ -159,6 +164,34 @@ if(BUILD_TAS_VALIDATOR_TESTS)
   # validator/ at TEST time and assert it equals the compiled-in
   # tas::build_fingerprint(), same idea as the #549 check_codes guard above.
   target_compile_definitions(tas_validator_tests PRIVATE
+    TAS_VALIDATOR_FINGERPRINT_SCRIPT="${BUILD_FINGERPRINT_GEN_SCRIPT}"
+    TAS_VALIDATOR_ROOT_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
+
+  # --- the revert counter-check harness --------------------------------------
+  # A SECOND test binary, built from the same sources with
+  # TAS_VALIDATOR_REVERT_HARNESS defined, whose emit() honours the
+  # TAS_VALIDATOR_SUPPRESS environment variable (see validator.hpp). Running a
+  # check's tests with its own code suppressed is the mechanical equivalent of
+  # deleting the check and rebuilding -- it is how "revert the fix and confirm
+  # the test fails" is actually performed here, per code, in seconds instead of
+  # a rebuild each. The shipped library and the Python module NEVER see this
+  # define, so nothing in production can be switched off from the environment.
+  add_library(tas_validator_core_revert STATIC $<TARGET_PROPERTY:tas_validator_core,SOURCES>)
+  add_dependencies(tas_validator_core_revert tas_validator_generated_check_codes
+                    tas_validator_generated_build_fingerprint)
+  target_include_directories(tas_validator_core_revert PUBLIC
+    "${CMAKE_CURRENT_SOURCE_DIR}/include")
+  target_include_directories(tas_validator_core_revert PRIVATE
+    "${CMAKE_CURRENT_BINARY_DIR}/generated")
+  target_link_libraries(tas_validator_core_revert PUBLIC nlohmann_json::nlohmann_json)
+  target_compile_definitions(tas_validator_core_revert PUBLIC TAS_VALIDATOR_REVERT_HARNESS)
+
+  add_executable(tas_validator_tests_revert tests/test_validator.cpp)
+  target_link_libraries(tas_validator_tests_revert PRIVATE tas_validator_core_revert
+                        Catch2::Catch2WithMain)
+  target_compile_definitions(tas_validator_tests_revert PRIVATE
+    TAS_VALIDATOR_GEN_SCRIPT="${CHECK_CODES_GEN_SCRIPT}"
+    TAS_VALIDATOR_SRC_DIR="${CMAKE_CURRENT_SOURCE_DIR}/src"
     TAS_VALIDATOR_FINGERPRINT_SCRIPT="${BUILD_FINGERPRINT_GEN_SCRIPT}"
     TAS_VALIDATOR_ROOT_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
 endif()

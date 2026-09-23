@@ -15,6 +15,7 @@
 #include "tas_validator/helpers.hpp"
 #include "tas_validator/validator.hpp"
 
+#include <pybind11/eval.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
@@ -50,14 +51,67 @@ Verdict do_validate_circuit(const py::object& obj) { return validate_circuit(to_
 PYBIND11_MODULE(tas_validator, m) {
     m.doc() = "TAS physics validator — is a catalog part physically valid?";
 
-    py::enum_<Severity>(m, "Severity")
-        .value("Ok", Severity::Ok)
-        .value("Suspicious", Severity::Suspicious)
-        .value("Impossible", Severity::Impossible);
+    // `Severity` is a str-derived Python Enum, and `Finding.severity` /
+    // `CorpusFinding.severity` return one of its members.
+    //
+    // It used to be a plain uppercase str ('IMPOSSIBLE') while the module ALSO
+    // exported a pybind11 enum whose members stringify as 'Severity.Impossible'.
+    // The obvious severity test --
+    //     f.severity == tas_validator.Severity.Impossible
+    // -- was therefore SILENTLY False: "do we have any impossible parts?"
+    // answered "no" vacuously, for every corpus, with nothing raised anywhere.
+    //
+    // BOTH spellings must work, or the transition itself produces the same
+    // silent false pass in the other direction: a consumer written against the
+    // string spelling gets 0 IMPOSSIBLE the day the enum lands, and finds out by
+    // spot-checking a record it already knew was bad. (That is not hypothetical
+    // -- it happened to a parallel agent on 2026-09-23 the moment an earlier,
+    // pure-py::enum_ version of this fix landed on the shared build.)
+    //
+    // A py::enum_ CANNOT give both: pybind11 installs its own __eq__, __str__
+    // and __hash__ on the enum type, and a .def() of those names afterwards does
+    // not displace them -- the built-in compares against ints and enums only and
+    // answers a plain False for a str, which is precisely the silent wrong
+    // answer being removed. So the type is built as a real Python
+    // `class Severity(str, Enum)` instead: its members ARE the uppercase strings
+    // they print, so ==, `in`, str(), f-strings, dict/set keys and
+    // isinstance(x, str) all behave exactly as they did before, while
+    // `== Severity.Impossible` now also answers True.
+    py::exec(R"py(
+import enum
+
+
+class Severity(str, enum.Enum):
+    """A finding's severity.
+
+    Both spellings compare equal, on purpose:
+        f.severity == tas_validator.Severity.Impossible   -> True
+        f.severity == "IMPOSSIBLE"                        -> True
+    """
+
+    Ok = "OK"
+    Suspicious = "SUSPICIOUS"
+    Impossible = "IMPOSSIBLE"
+
+    def __str__(self):
+        return self.value
+
+    def __format__(self, spec):
+        return format(self.value, spec)
+
+    def __repr__(self):
+        return "<Severity.%s>" % self.name
+)py",
+             m.attr("__dict__"));
+    const py::object severity_cls = m.attr("Severity");
+    auto to_severity = [severity_cls](Severity s) {
+        return severity_cls(py::str(to_string(s)));
+    };
 
     py::class_<Finding>(m, "Finding")
         .def_readonly("code", &Finding::code)
-        .def_property_readonly("severity", [](const Finding& f) { return to_string(f.severity); })
+        .def_property_readonly("severity",
+                               [to_severity](const Finding& f) { return to_severity(f.severity); })
         .def_readonly("component", &Finding::component)
         .def_readonly("reference", &Finding::reference)
         .def_readonly("message", &Finding::message)
@@ -81,8 +135,9 @@ PYBIND11_MODULE(tas_validator, m) {
     py::class_<CorpusFinding>(m, "CorpusFinding")
         .def_readonly("index", &CorpusFinding::index)
         .def_readonly("code", &CorpusFinding::code)
-        .def_property_readonly("severity",
-                               [](const CorpusFinding& f) { return to_string(f.severity); })
+        .def_property_readonly(
+            "severity",
+            [to_severity](const CorpusFinding& f) { return to_severity(f.severity); })
         .def_readonly("reference", &CorpusFinding::reference)
         .def_readonly("message", &CorpusFinding::message)
         .def_readonly("value", &CorpusFinding::value)

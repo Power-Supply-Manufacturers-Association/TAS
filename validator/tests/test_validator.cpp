@@ -2770,3 +2770,863 @@ TEST_CASE("GEN_SERIES_IS_MANUFACTURER sees an ASCII-folded brand name", "[genera
     p["connector"]["manufacturerInfo"]["datasheetInfo"]["part"]["series"] = "Wurth Elektronik";
     CHECK(has(V.validate(p), "GEN_SERIES_IS_MANUFACTURER", Severity::Suspicious));
 }
+
+// ===========================================================================
+// Electromechanical + potentiometer + connector-accessory families
+//
+// These four discriminators used to make PartValidator::validate() THROW
+// "no known component discriminator" — on 25,940 live rows (relays 4,693,
+// switches 2,914, potentiometers 106, connector accessories 18,227). A gate
+// that cannot run reads as a pass, so every one of those parts had been
+// reported clean without ever being looked at.
+//
+// Each check below has BOTH a must-fire and a must-stay-quiet case. To prove
+// the pair is measuring the check and not something else, run the same cases
+// against the revert harness with the check switched off:
+//     TAS_VALIDATOR_SUPPRESS=<CODE> ./build/tas_validator_tests_revert "<name>"
+// the must-fire case must go RED and the must-stay-quiet case must stay GREEN.
+// ===========================================================================
+
+// Omron G2R-1-E, 24 VDC coil: 1 Form C, 16 A / 250 VAC contacts, 1,152 ohm coil
+// (24^2/1152 = 0.500 W against the datasheet's 0.53 W — the ~6% gap between a
+// cold DC resistance and the rated coil power is what REL_COIL_OHMS_SUS = 1.6
+// is set wide enough to tolerate).
+json good_relay() {
+    return json::parse(R"json({"relay": {"manufacturerInfo": {
+      "name": "Omron", "reference": "G2R-1-E-DC24", "datasheetInfo": {
+        "part": {"partNumber": "G2R-1-E-DC24", "technology": "electromechanical",
+                 "subType": "generalPurposePower", "actuationMode": "monostable",
+                 "description": "General Purpose Power Relay, 1 Form C, 16 A, 24 VDC coil"},
+        "electrical": {
+          "input": {"inputType": "coil", "coilVoltage": {"nominal": 24.0},
+                    "coilVoltageType": "dc", "coilResistance": 1152.0, "coilPower": 0.53,
+                    "coilCount": 1},
+          "contacts": {"form": {"poles": 1, "form": "C", "throw": "changeover"},
+                       "ratedCurrent": 16.0, "ratedVoltage": 250.0, "ratedVoltageType": "ac",
+                       "carryCurrent": 16.0, "contactResistance": 0.1,
+                       "electricalLife": 100000, "mechanicalLife": 20000000},
+          "operateTime": 0.015, "releaseTime": 0.01},
+        "provenance": [{"source": "manufacturerDatasheet"}]
+      }}}})json");
+}
+
+// C&K 7101 toggle: 1 Form C, 5 A / 120 VAC, two maintained positions.
+json good_switch() {
+    return json::parse(R"json({"switch": {"manufacturerInfo": {
+      "name": "C&K", "reference": "7101SYZQE", "datasheetInfo": {
+        "part": {"partNumber": "7101SYZQE", "technology": "toggle",
+                 "subType": "generalPurpose", "description": "Toggle Switch, SPDT, 5 A"},
+        "electrical": {"contacts": {"form": {"poles": 1, "form": "C", "throw": "changeover"},
+                                    "ratedCurrent": 5.0, "ratedVoltage": 120.0,
+                                    "ratedVoltageType": "ac", "plating": "silver"}},
+        "mechanical": {"positions": 2, "positionSequence": ["on", "off"], "detented": true},
+        "provenance": [{"source": "manufacturerDatasheet"}]
+      }}}})json");
+}
+
+// Bourns 3296W-1-103, 10 kohm cermet trimmer, 0.5 W. Its maximum working
+// voltage is the datasheet's own "200 VDC or sqrt(P*R), whichever is LESS" —
+// sqrt(0.5 * 10000) = 70.7 V here, which is exactly the relation
+// POT_VOLTAGE_POWER tests.
+json good_pot() {
+    return json::parse(R"json({"potentiometer": {"manufacturerInfo": {
+      "name": "Bourns", "reference": "3296W-1-103LF", "datasheetInfo": {
+        "part": {"partNumber": "3296W-1-103LF", "technology": "cermet",
+                 "adjustmentAccess": "trimmer",
+                 "description": "Trimmer Potentiometer, 10 kOhm, 0.5 W, cermet"},
+        "electrical": {"totalResistance": {"nominal": 10000.0}, "resistanceTolerance": 0.1,
+                       "powerRating": 0.5, "maximumWorkingVoltage": 70.0, "gangs": 1,
+                       "endResistance": 2.0, "independentLinearity": 0.005,
+                       "taper": {"law": "linear", "exponent": 1.0},
+                       "wiper": {"resistance": 3.0, "maximumCurrent": 0.005}},
+        "mechanical": {"case": "3296W", "mounting": "board",
+                       "actuation": {"turns": 25, "mechanicalTravel": 9000.0,
+                                     "electricalTravel": 8640.0}},
+        "provenance": [{"source": "manufacturerDatasheet"}]
+      }}}})json");
+}
+
+// TE 350550-2, Universal MATE-N-LOK pin contact: 18-24 AWG / 0.205-0.823 mm^2,
+// 5 A. The published AWG range and the published area range agree gauge for
+// gauge (AWG 24 = 0.2047 mm^2, AWG 18 = 0.8231 mm^2).
+json good_accessory() {
+    return json::parse(R"json({"connectorAccessory": {"manufacturerInfo": {
+      "name": "TE Connectivity", "reference": "350550-2X", "datasheetInfo": {
+        "part": {"partNumber": "350550-2X",
+                 "description": "Pin Contact, 18 - 24 AWG, Crimp, Universal MATE-N-LOK"},
+        "accessoryDetails": {"kind": "contact", "terminationStyle": "crimp",
+                             "wireGaugeRange": {"minimumAwg": 18, "maximumAwg": 24,
+                                                "minimumArea": 2.047e-7,
+                                                "maximumArea": 8.231e-7}},
+        "electrical": {"ratedCurrentPerContact": 5.0, "ratedVoltage": 600.0},
+        "provenance": [{"source": "manufacturerDatasheet"}]
+      }}}})json");
+}
+
+json& rel_elec(json& p) {
+    return p["relay"]["manufacturerInfo"]["datasheetInfo"]["electrical"];
+}
+json& swt_ds(json& p) { return p["switch"]["manufacturerInfo"]["datasheetInfo"]; }
+json& pot_elec(json& p) {
+    return p["potentiometer"]["manufacturerInfo"]["datasheetInfo"]["electrical"];
+}
+json& acc_ds(json& p) { return p["connectorAccessory"]["manufacturerInfo"]["datasheetInfo"]; }
+
+// --- dispatch --------------------------------------------------------------
+
+TEST_CASE("the four formerly undispatchable families are judged, not thrown at",
+          "[dispatch][relay][switch][potentiometer][accessory]") {
+    for (const json& p : {good_relay(), good_switch(), good_pot(), good_accessory()}) {
+        Verdict v;
+        REQUIRE_NOTHROW(v = V.validate(p));
+        INFO("record: " << p.dump());
+        for (const Finding& f : v.findings) INFO(f.code << " " << f.message);
+        CHECK(v.valid);
+        CHECK(v.findings.empty());
+    }
+}
+
+TEST_CASE("a CIAS brick handed to validate() says so instead of 'unknown discriminator'",
+          "[dispatch][circuits]") {
+    json brick = json::parse(R"json({"name":"half-bridge","ports":[{"name":"a"}],
+                                     "components":[],"connections":[]})json");
+    REQUIRE_THROWS_AS(V.validate(brick), std::invalid_argument);
+    try {
+        V.validate(brick);
+    } catch (const std::invalid_argument& e) {
+        CHECK(std::string(e.what()).find("validate_circuit") != std::string::npos);
+    }
+}
+
+TEST_CASE("a TAS converter document handed to validate() says so", "[dispatch]") {
+    json doc = json::parse(R"json({"inputs":{},"topology":{"stages":[]}})json");
+    REQUIRE_THROWS_AS(V.validate(doc), std::invalid_argument);
+    try {
+        V.validate(doc);
+    } catch (const std::invalid_argument& e) {
+        CHECK(std::string(e.what()).find("converter document") != std::string::npos);
+    }
+}
+
+// --- shared contact set (contacts.cpp) -------------------------------------
+
+TEST_CASE("CONTACT_FORM_THROW: form letter contradicting throw fires", "[relay][contacts]") {
+    json p = good_relay();
+    // TE 1618406-1 / K1124232 / 5-1617802-5 carry exactly this: "1 Form X
+    // SPST-NC". Form X is SPST-NO-DM, a MAKE contact; the throw says break.
+    rel_elec(p)["contacts"]["form"]["form"] = "X";
+    rel_elec(p)["contacts"]["form"]["throw"] = "normallyClosed";
+    CHECK(has(V.validate(p), "CONTACT_FORM_THROW", Severity::Suspicious));
+}
+
+TEST_CASE("CONTACT_FORM_THROW: a matching Form C / changeover pair stays quiet",
+          "[relay][contacts]") {
+    CHECK_FALSE(has_code(V.validate(good_relay()), "CONTACT_FORM_THROW"));
+}
+
+TEST_CASE("CONTACT_FORM_THROW: an unmappable letter (P, bridging) is not judged",
+          "[relay][contacts]") {
+    json p = good_relay();
+    rel_elec(p)["contacts"]["form"]["form"] = "P";
+    rel_elec(p)["contacts"]["form"]["throw"] = "normallyOpen";
+    CHECK_FALSE(has_code(V.validate(p), "CONTACT_FORM_THROW"));
+}
+
+TEST_CASE("CONTACT_VOLTAGE_RANGE: minimumVoltage above ratedVoltage fires",
+          "[relay][contacts]") {
+    json p = good_relay();
+    rel_elec(p)["contacts"]["minimumVoltage"] = 400.0;   // rated is 250 V
+    CHECK(has(V.validate(p), "CONTACT_VOLTAGE_RANGE", Severity::Impossible));
+}
+
+TEST_CASE("CONTACT_VOLTAGE_RANGE: a real 12 V lower bound stays quiet", "[relay][contacts]") {
+    json p = good_relay();
+    rel_elec(p)["contacts"]["minimumVoltage"] = 12.0;
+    CHECK_FALSE(has_code(V.validate(p), "CONTACT_VOLTAGE_RANGE"));
+}
+
+TEST_CASE("CONTACT_CARRY_VS_SWITCH: carry below the switching rating fires",
+          "[relay][contacts]") {
+    json p = good_relay();
+    rel_elec(p)["contacts"]["carryCurrent"] = 10.0;   // switches 16 A
+    CHECK(has(V.validate(p), "CONTACT_CARRY_VS_SWITCH", Severity::Suspicious));
+}
+
+TEST_CASE("CONTACT_CARRY_VS_SWITCH: carry above the switching rating stays quiet",
+          "[relay][contacts]") {
+    json p = good_relay();
+    rel_elec(p)["contacts"]["carryCurrent"] = 20.0;
+    CHECK_FALSE(has_code(V.validate(p), "CONTACT_CARRY_VS_SWITCH"));
+}
+
+TEST_CASE("CONTACT_LIFE_ORDER: loaded life outlasting unloaded life fires",
+          "[relay][contacts]") {
+    json p = good_relay();
+    rel_elec(p)["contacts"]["electricalLife"] = 50000000;   // mechanical is 2e7
+    CHECK(has(V.validate(p), "CONTACT_LIFE_ORDER", Severity::Suspicious));
+}
+
+TEST_CASE("CONTACT_LIFE_ORDER: 1e5 electrical under 2e7 mechanical stays quiet",
+          "[relay][contacts]") {
+    CHECK_FALSE(has_code(V.validate(good_relay()), "CONTACT_LIFE_ORDER"));
+}
+
+TEST_CASE("CONTACT_SWITCHING_POWER: P above ratedVoltage*ratedCurrent fires",
+          "[relay][contacts]") {
+    json p = good_relay();
+    rel_elec(p)["contacts"]["maximumSwitchingPower"] = 5000.0;   // 250 V * 16 A = 4000 W
+    CHECK(has(V.validate(p), "CONTACT_SWITCHING_POWER", Severity::Impossible));
+}
+
+TEST_CASE("CONTACT_SWITCHING_POWER: a DC power rating inside the envelope stays quiet",
+          "[relay][contacts]") {
+    json p = good_relay();
+    rel_elec(p)["contacts"]["maximumSwitchingPower"] = 240.0;
+    CHECK_FALSE(has_code(V.validate(p), "CONTACT_SWITCHING_POWER"));
+}
+
+TEST_CASE("CONTACT_RESISTANCE: a 'contact' resistance of kiloohms fires",
+          "[relay][contacts]") {
+    json p = good_relay();
+    rel_elec(p)["contacts"]["contactResistance"] = 1000.0;
+    CHECK(has(V.validate(p), "CONTACT_RESISTANCE", Severity::Impossible));
+}
+
+TEST_CASE("CONTACT_RESISTANCE: 100 milliohm stays quiet", "[relay][contacts]") {
+    CHECK_FALSE(has_code(V.validate(good_relay()), "CONTACT_RESISTANCE"));
+}
+
+TEST_CASE("CONTACT_POSITIVITY: a zero contact current rating fires", "[relay][contacts]") {
+    json p = good_relay();
+    rel_elec(p)["contacts"]["ratedCurrent"] = 0.0;
+    CHECK(has(V.validate(p), "CONTACT_POSITIVITY", Severity::Impossible));
+}
+
+TEST_CASE("CONTACT_POSITIVITY: a 1 mA dry-circuit rating stays quiet", "[switch][contacts]") {
+    json p = good_switch();
+    swt_ds(p)["electrical"]["contacts"]["ratedCurrent"] = 0.001;
+    CHECK_FALSE(has_code(V.validate(p), "CONTACT_POSITIVITY"));
+}
+
+TEST_CASE("CONTACT_ISOLATION: clearance longer than creepage fires", "[relay][contacts]") {
+    json p = good_relay();
+    rel_elec(p)["isolation"] = {{"creepage", 0.004}, {"clearance", 0.008}};
+    CHECK(has(V.validate(p), "CONTACT_ISOLATION", Severity::Impossible));
+}
+
+TEST_CASE("CONTACT_ISOLATION: creepage above clearance stays quiet", "[relay][contacts]") {
+    json p = good_relay();
+    rel_elec(p)["isolation"] = {{"creepage", 0.008}, {"clearance", 0.004}};
+    CHECK_FALSE(has_code(V.validate(p), "CONTACT_ISOLATION"));
+}
+
+// --- relays ----------------------------------------------------------------
+
+TEST_CASE("REL_COIL_OHMS_LAW: a coil power that is not V^2/R fires", "[relay]") {
+    json p = good_relay();
+    rel_elec(p)["input"]["coilPower"] = 12.0;   // 24^2/1152 = 0.5 W
+    CHECK(has(V.validate(p), "REL_COIL_OHMS_LAW", Severity::Impossible));
+}
+
+TEST_CASE("REL_COIL_OHMS_LAW: the datasheet's own 0.53 W against 0.50 W implied stays quiet",
+          "[relay]") {
+    CHECK_FALSE(has_code(V.validate(good_relay()), "REL_COIL_OHMS_LAW"));
+}
+
+TEST_CASE("REL_COIL_OHMS_LAW: an AC coil is skipped, not accused", "[relay]") {
+    // An AC coil's current is set by its impedance, not its DC resistance, so
+    // P = V^2/R_dc is the wrong relation and must not be applied.
+    json p = good_relay();
+    rel_elec(p)["input"]["coilVoltageType"] = "ac";
+    rel_elec(p)["input"]["coilPower"] = 12.0;
+    Verdict v = V.validate(p);
+    CHECK_FALSE(has_code(v, "REL_COIL_OHMS_LAW"));
+    CHECK(std::find(v.skipped.begin(), v.skipped.end(), "REL_COIL_OHMS_LAW") != v.skipped.end());
+}
+
+TEST_CASE("REL_COIL_ORDER: a pickup voltage above the rated coil voltage fires", "[relay]") {
+    json p = good_relay();
+    rel_elec(p)["input"]["pickupVoltage"] = 30.0;   // rated coil is 24 V
+    CHECK(has(V.validate(p), "REL_COIL_ORDER", Severity::Impossible));
+}
+
+TEST_CASE("REL_COIL_ORDER: a 75%-of-rated pickup with a lower dropout stays quiet", "[relay]") {
+    json p = good_relay();
+    rel_elec(p)["input"]["pickupVoltage"] = 18.0;
+    rel_elec(p)["input"]["dropoutVoltage"] = 2.4;
+    rel_elec(p)["input"]["maximumContinuousVoltage"] = 26.4;
+    CHECK_FALSE(has_code(V.validate(p), "REL_COIL_ORDER"));
+}
+
+TEST_CASE("REL_COIL_ORDER: dropout above pickup fires", "[relay]") {
+    json p = good_relay();
+    rel_elec(p)["input"]["pickupVoltage"] = 18.0;
+    rel_elec(p)["input"]["dropoutVoltage"] = 20.0;
+    CHECK(has(V.validate(p), "REL_COIL_ORDER", Severity::Impossible));
+}
+
+TEST_CASE("REL_POSITIVITY: a zero coil resistance fires", "[relay]") {
+    json p = good_relay();
+    rel_elec(p)["input"]["coilResistance"] = 0.0;
+    CHECK(has(V.validate(p), "REL_POSITIVITY", Severity::Impossible));
+}
+
+TEST_CASE("REL_POSITIVITY: a 15 ms operate time stays quiet", "[relay]") {
+    CHECK_FALSE(has_code(V.validate(good_relay()), "REL_POSITIVITY"));
+}
+
+TEST_CASE("REL_TECH_INPUT: a solid-state relay with a coil input fires", "[relay]") {
+    json p = good_relay();
+    p["relay"]["manufacturerInfo"]["datasheetInfo"]["part"]["technology"] = "solidState";
+    CHECK(has(V.validate(p), "REL_TECH_INPUT", Severity::Suspicious));
+}
+
+TEST_CASE("REL_TECH_INPUT: an electromechanical relay with a coil input stays quiet",
+          "[relay]") {
+    CHECK_FALSE(has_code(V.validate(good_relay()), "REL_TECH_INPUT"));
+}
+
+TEST_CASE("REL_REED_CURRENT: a reed relay with a contactor's rating fires", "[relay]") {
+    json p = good_relay();
+    p["relay"]["manufacturerInfo"]["datasheetInfo"]["part"]["technology"] = "reed";
+    rel_elec(p)["contacts"]["ratedCurrent"] = 300.0;
+    CHECK(has(V.validate(p), "REL_REED_CURRENT", Severity::Impossible));
+}
+
+TEST_CASE("REL_REED_CURRENT: the catalogue's real 3 A reed maximum stays quiet", "[relay]") {
+    json p = good_relay();
+    p["relay"]["manufacturerInfo"]["datasheetInfo"]["part"]["technology"] = "reed";
+    rel_elec(p)["contacts"]["ratedCurrent"] = 3.0;
+    CHECK_FALSE(has_code(V.validate(p), "REL_REED_CURRENT"));
+}
+
+TEST_CASE("REL_REED_CURRENT: a 16 A ELECTROMECHANICAL relay is not judged as a reed",
+          "[relay]") {
+    CHECK_FALSE(has_code(V.validate(good_relay()), "REL_REED_CURRENT"));
+}
+
+// --- switches --------------------------------------------------------------
+
+TEST_CASE("SWT_POSITION_SEQUENCE: a sequence shorter than the position count fires",
+          "[switch]") {
+    json p = good_switch();
+    swt_ds(p)["mechanical"]["positions"] = 3;   // sequence lists two
+    CHECK(has(V.validate(p), "SWT_POSITION_SEQUENCE", Severity::Suspicious));
+}
+
+TEST_CASE("SWT_POSITION_SEQUENCE: two positions listed as two stays quiet", "[switch]") {
+    CHECK_FALSE(has_code(V.validate(good_switch()), "SWT_POSITION_SEQUENCE"));
+}
+
+TEST_CASE("SWT_POSITIVITY: zero positions fires", "[switch]") {
+    json p = good_switch();
+    swt_ds(p)["mechanical"]["positions"] = 0;
+    swt_ds(p)["mechanical"].erase("positionSequence");
+    CHECK(has(V.validate(p), "SWT_POSITIVITY", Severity::Impossible));
+}
+
+TEST_CASE("SWT_POSITIVITY: a 1.27 mm terminal pitch stays quiet", "[switch]") {
+    json p = good_switch();
+    swt_ds(p)["mechanical"]["terminalPitch"] = 0.00127;
+    CHECK_FALSE(has_code(V.validate(p), "SWT_POSITIVITY"));
+}
+
+// A circuit breaker, the only switch technology with a trip element.
+json good_breaker() {
+    json p = good_switch();
+    swt_ds(p)["part"]["technology"] = "circuitBreaker";
+    swt_ds(p)["part"]["description"] = "Thermal Circuit Breaker, 10 A, 250 VAC";
+    swt_ds(p)["electrical"]["contacts"]["ratedCurrent"] = 15.0;
+    swt_ds(p)["electrical"]["contacts"]["ratedVoltage"] = 250.0;
+    swt_ds(p)["electrical"]["trip"] = json::parse(R"json({
+      "mechanism": "thermal", "sensingConfiguration": "series", "ratedCurrent": 10.0,
+      "interruptingCapacity": 1000.0, "tripFree": true,
+      "tripCurve": {"currentMultiple": [2.0, 2.0, 4.0, 4.0], "time": [4.0, 40.0, 1.0, 8.0],
+                    "bound": "nominal"}})json");
+    return p;
+}
+
+TEST_CASE("SWT_BREAKER_TRIP: a circuitBreaker with no trip element fires", "[switch]") {
+    json p = good_breaker();
+    swt_ds(p)["electrical"].erase("trip");
+    CHECK(has(V.validate(p), "SWT_BREAKER_TRIP", Severity::Suspicious));
+}
+
+TEST_CASE("SWT_BREAKER_TRIP: a toggle switch with no trip element stays quiet", "[switch]") {
+    CHECK_FALSE(has_code(V.validate(good_switch()), "SWT_BREAKER_TRIP"));
+}
+
+TEST_CASE("SWT_BREAKER_TRIP: a breaker WITH its trip element stays quiet", "[switch]") {
+    CHECK_FALSE(has_code(V.validate(good_breaker()), "SWT_BREAKER_TRIP"));
+}
+
+TEST_CASE("SWT_INTERRUPT_CAPACITY: a breaker that cannot break its own rating fires",
+          "[switch]") {
+    json p = good_breaker();
+    swt_ds(p)["electrical"]["trip"]["interruptingCapacity"] = 5.0;   // rated 10 A
+    CHECK(has(V.validate(p), "SWT_INTERRUPT_CAPACITY", Severity::Impossible));
+}
+
+TEST_CASE("SWT_INTERRUPT_CAPACITY: 1 kA against a 10 A handle stays quiet", "[switch]") {
+    CHECK_FALSE(has_code(V.validate(good_breaker()), "SWT_INTERRUPT_CAPACITY"));
+}
+
+TEST_CASE("SWT_TRIP_VS_CONTACT: tripping above the contact rating fires", "[switch]") {
+    json p = good_breaker();
+    swt_ds(p)["electrical"]["trip"]["ratedCurrent"] = 30.0;   // contacts rated 15 A
+    CHECK(has(V.validate(p), "SWT_TRIP_VS_CONTACT", Severity::Suspicious));
+}
+
+TEST_CASE("SWT_TRIP_VS_CONTACT: a 10 A handle inside 15 A contacts stays quiet", "[switch]") {
+    CHECK_FALSE(has_code(V.validate(good_breaker()), "SWT_TRIP_VS_CONTACT"));
+}
+
+TEST_CASE("SWT_TRIP_CURVE: a curve that trips LATER at a higher overload fires", "[switch]") {
+    json p = good_breaker();
+    // 4x now trips slower than 2x on both edges of the band.
+    swt_ds(p)["electrical"]["trip"]["tripCurve"]["time"] = {4.0, 40.0, 60.0, 80.0};
+    CHECK(has(V.validate(p), "SWT_TRIP_CURVE", Severity::Impossible));
+}
+
+TEST_CASE("SWT_TRIP_CURVE: the live band-at-one-multiple shape stays quiet", "[switch]") {
+    // Every one of the 108 live tripCurve rows stores the two EDGES of a band at
+    // ONE multiple ("4 to 40 s at 200%"). A naive monotonicity test over the raw
+    // arrays condemns all 108; this is the regression that shape must not cause.
+    json p = good_breaker();
+    swt_ds(p)["electrical"]["trip"]["tripCurve"] =
+        json::parse(R"json({"currentMultiple":[2.0,2.0],"time":[4.0,40.0],
+                            "bound":"nominal"})json");
+    CHECK_FALSE(has_code(V.validate(p), "SWT_TRIP_CURVE"));
+}
+
+TEST_CASE("SWT_TRIP_CURVE: a real falling two-point band stays quiet", "[switch]") {
+    CHECK_FALSE(has_code(V.validate(good_breaker()), "SWT_TRIP_CURVE"));
+}
+
+TEST_CASE("SWT_TRIP_CURVE: index-aligned arrays of different lengths fire", "[switch]") {
+    json p = good_breaker();
+    swt_ds(p)["electrical"]["trip"]["tripCurve"]["time"] = {4.0, 40.0, 1.0};
+    CHECK(has(V.validate(p), "SWT_TRIP_CURVE", Severity::Impossible));
+}
+
+// --- potentiometers --------------------------------------------------------
+
+TEST_CASE("POT_VOLTAGE_POWER: 200 V across a 10 k track rated 0.5 W fires",
+          "[potentiometer]") {
+    // The classic import error: copying the family's headline 200 VDC onto every
+    // resistance code. 200^2/10000 = 4 W into a 0.5 W track. The datasheet's own
+    // rule is "200 VDC or sqrt(P*R), whichever is less" = 70.7 V here.
+    json p = good_pot();
+    pot_elec(p)["maximumWorkingVoltage"] = 200.0;
+    CHECK(has(V.validate(p), "POT_VOLTAGE_POWER", Severity::Impossible));
+}
+
+TEST_CASE("POT_VOLTAGE_POWER: the sqrt(P*R) value the datasheet states stays quiet",
+          "[potentiometer]") {
+    CHECK_FALSE(has_code(V.validate(good_pot()), "POT_VOLTAGE_POWER"));
+}
+
+TEST_CASE("POT_WIPER_CURRENT: a wiper rated above the track's own thermal limit fires",
+          "[potentiometer]") {
+    json p = good_pot();
+    pot_elec(p)["wiper"]["maximumCurrent"] = 0.1;   // sqrt(0.5/10000) = 7.07 mA
+    CHECK(has(V.validate(p), "POT_WIPER_CURRENT", Severity::Suspicious));
+}
+
+TEST_CASE("POT_WIPER_CURRENT: a 50 mA wiper on a 100 ohm track stays quiet",
+          "[potentiometer]") {
+    json p = good_pot();
+    pot_elec(p)["totalResistance"]["nominal"] = 100.0;   // sqrt(0.5/100) = 70.7 mA
+    pot_elec(p)["maximumWorkingVoltage"] = 7.0;
+    pot_elec(p)["wiper"]["maximumCurrent"] = 0.05;
+    CHECK_FALSE(has_code(V.validate(p), "POT_WIPER_CURRENT"));
+}
+
+TEST_CASE("POT_TOLERANCE: a percent written into the fraction field fires",
+          "[potentiometer]") {
+    json p = good_pot();
+    pot_elec(p)["resistanceTolerance"] = 10.0;   // 10% stored as 10
+    CHECK(has(V.validate(p), "POT_TOLERANCE", Severity::Impossible));
+}
+
+TEST_CASE("POT_TOLERANCE: the widest real carbon grade (0.3) stays quiet",
+          "[potentiometer]") {
+    json p = good_pot();
+    pot_elec(p)["resistanceTolerance"] = 0.3;
+    CHECK_FALSE(has_code(V.validate(p), "POT_TOLERANCE"));
+}
+
+TEST_CASE("POT_END_RESISTANCE: an end resistance equal to the whole track fires",
+          "[potentiometer]") {
+    json p = good_pot();
+    pot_elec(p)["endResistance"] = 10000.0;
+    CHECK(has(V.validate(p), "POT_END_RESISTANCE", Severity::Impossible));
+}
+
+TEST_CASE("POT_END_RESISTANCE: a 2 ohm residue on a 10 k track stays quiet",
+          "[potentiometer]") {
+    CHECK_FALSE(has_code(V.validate(good_pot()), "POT_END_RESISTANCE"));
+}
+
+TEST_CASE("POT_TRAVEL_ORDER: electrical travel beyond mechanical travel fires",
+          "[potentiometer]") {
+    json p = good_pot();
+    p["potentiometer"]["manufacturerInfo"]["datasheetInfo"]["mechanical"]["actuation"]
+     ["electricalTravel"] = 10000.0;   // mechanical is 9000 degrees
+    CHECK(has(V.validate(p), "POT_TRAVEL_ORDER", Severity::Impossible));
+}
+
+TEST_CASE("POT_TRAVEL_ORDER: 8640 of 9000 degrees on the track stays quiet",
+          "[potentiometer]") {
+    CHECK_FALSE(has_code(V.validate(good_pot()), "POT_TRAVEL_ORDER"));
+}
+
+TEST_CASE("POT_FRACTION_RANGE: linearity given as a percent fires", "[potentiometer]") {
+    json p = good_pot();
+    pot_elec(p)["independentLinearity"] = 0.5e2;   // 0.5% written as 50
+    CHECK(has(V.validate(p), "POT_FRACTION_RANGE", Severity::Impossible));
+}
+
+TEST_CASE("POT_FRACTION_RANGE: 0.005 as a fraction stays quiet", "[potentiometer]") {
+    CHECK_FALSE(has_code(V.validate(good_pot()), "POT_FRACTION_RANGE"));
+}
+
+TEST_CASE("POT_R_RANGE: a 0.1 ohm 'track' fires", "[potentiometer]") {
+    json p = good_pot();
+    pot_elec(p)["totalResistance"]["nominal"] = 0.1;
+    pot_elec(p)["maximumWorkingVoltage"] = 0.2;
+    pot_elec(p)["endResistance"] = 0.01;
+    pot_elec(p)["wiper"]["maximumCurrent"] = 2.0;
+    CHECK(has(V.validate(p), "POT_R_RANGE", Severity::Suspicious));
+}
+
+TEST_CASE("POT_R_RANGE: 10 kohm stays quiet", "[potentiometer]") {
+    CHECK_FALSE(has_code(V.validate(good_pot()), "POT_R_RANGE"));
+}
+
+TEST_CASE("POT_POSITIVITY: zero gangs fires", "[potentiometer]") {
+    json p = good_pot();
+    pot_elec(p)["gangs"] = 0;
+    CHECK(has(V.validate(p), "POT_POSITIVITY", Severity::Impossible));
+}
+
+TEST_CASE("POT_POSITIVITY: a single-gang 0.5 W trimmer stays quiet", "[potentiometer]") {
+    CHECK_FALSE(has_code(V.validate(good_pot()), "POT_POSITIVITY"));
+}
+
+TEST_CASE("POT_TAPER: a 'linear' law with a non-unity exponent fires", "[potentiometer]") {
+    json p = good_pot();
+    pot_elec(p)["taper"]["exponent"] = 2.5;
+    CHECK(has(V.validate(p), "POT_TAPER", Severity::Suspicious));
+}
+
+TEST_CASE("POT_TAPER: linear with exponent 1 stays quiet", "[potentiometer]") {
+    CHECK_FALSE(has_code(V.validate(good_pot()), "POT_TAPER"));
+}
+
+// --- connector accessories -------------------------------------------------
+
+TEST_CASE("ACC_AWG_AREA: an AWG range two gauge steps from its own area range fires",
+          "[accessory]") {
+    // TE 1-794217-0 ships this: "30 - 26 AWG, .05 - 1.5 mm^2 Wire". AWG 26 is
+    // 0.128 mm^2; 1.5 mm^2 is AWG 16, eleven gauges away.
+    json p = good_accessory();
+    acc_ds(p)["accessoryDetails"]["wireGaugeRange"] =
+        json::parse(R"json({"minimumAwg":26,"maximumAwg":30,"minimumArea":5e-8,
+                            "maximumArea":1.5e-6})json");
+    acc_ds(p)["electrical"]["ratedCurrentPerContact"] = 1.0;
+    CHECK(has(V.validate(p), "ACC_AWG_AREA", Severity::Suspicious));
+}
+
+TEST_CASE("ACC_AWG_AREA: an 18-24 AWG contact whose areas match the gauge table stays quiet",
+          "[accessory]") {
+    CHECK_FALSE(has_code(V.validate(good_accessory()), "ACC_AWG_AREA"));
+}
+
+TEST_CASE("ACC_AWG_AREA: one whole gauge step of vendor rounding stays quiet", "[accessory]") {
+    // Vendors routinely publish an area range rounded to the neighbouring gauge
+    // (18-24 AWG stated as 0.3 - 0.8 mm^2, TE 770147-1). One step is rounding;
+    // the check only fires past two.
+    json p = good_accessory();
+    acc_ds(p)["accessoryDetails"]["wireGaugeRange"]["minimumArea"] = 3.0e-7;
+    acc_ds(p)["accessoryDetails"]["wireGaugeRange"]["maximumArea"] = 8.4e-7;
+    CHECK_FALSE(has_code(V.validate(p), "ACC_AWG_AREA"));
+}
+
+TEST_CASE("ACC_CONTACT_FUSING: a rating above the fusing current of every accepted wire fires",
+          "[accessory]") {
+    // TE 66461-1: "Size 16, 32 AWG wire wrap" rated 13 A. AWG 32 is 0.032 mm^2
+    // (0.203 mm), which fuses at 80 * 0.203^1.5 = 7.3 A in free air.
+    json p = good_accessory();
+    acc_ds(p)["accessoryDetails"]["wireGaugeRange"] =
+        json::parse(R"json({"minimumAwg":32,"maximumAwg":32,"minimumArea":3.2e-8,
+                            "maximumArea":3.2e-8})json");
+    acc_ds(p)["electrical"]["ratedCurrentPerContact"] = 13.0;
+    CHECK(has(V.validate(p), "ACC_CONTACT_FUSING", Severity::Impossible));
+}
+
+TEST_CASE("ACC_CONTACT_FUSING: 5 A on an 18 AWG contact stays quiet", "[accessory]") {
+    CHECK_FALSE(has_code(V.validate(good_accessory()), "ACC_CONTACT_FUSING"));
+}
+
+TEST_CASE("ACC_CONTACT_FUSING: the check uses the LARGEST accepted conductor, not the smallest",
+          "[accessory]") {
+    // 5 A is far above 30 AWG's fusing current but far below 18 AWG's; a
+    // contact accepting both must be judged on the wire that can carry it.
+    json p = good_accessory();
+    acc_ds(p)["accessoryDetails"]["wireGaugeRange"]["maximumAwg"] = 30;
+    acc_ds(p)["accessoryDetails"]["wireGaugeRange"]["minimumArea"] = 5.06e-8;
+    CHECK_FALSE(has_code(V.validate(p), "ACC_CONTACT_FUSING"));
+}
+
+TEST_CASE("ACC_CABLE_RANGE: an inverted cable-diameter range fires", "[accessory]") {
+    json p = good_accessory();
+    acc_ds(p)["accessoryDetails"]["cableDiameterRange"] =
+        json::parse(R"json({"minimum":0.0159,"maximum":0.0002})json");
+    CHECK(has(V.validate(p), "ACC_CABLE_RANGE", Severity::Impossible));
+}
+
+TEST_CASE("ACC_CABLE_RANGE: the live 0.2 mm - 15.9 mm backshell range stays quiet",
+          "[accessory]") {
+    // 0.0002 m is 0.008 inch — the vendor's own published lower bound on 2,063
+    // live backshells, not a parse error.
+    json p = good_accessory();
+    acc_ds(p)["accessoryDetails"]["cableDiameterRange"] =
+        json::parse(R"json({"minimum":0.0002,"maximum":0.0159})json");
+    CHECK_FALSE(has_code(V.validate(p), "ACC_CABLE_RANGE"));
+}
+
+TEST_CASE("ACC_WIRE_GAUGE_RANGE: an inverted area range fires", "[accessory]") {
+    json p = good_accessory();
+    acc_ds(p)["accessoryDetails"]["wireGaugeRange"]["minimumArea"] = 8.231e-7;
+    acc_ds(p)["accessoryDetails"]["wireGaugeRange"]["maximumArea"] = 2.047e-7;
+    CHECK(has(V.validate(p), "ACC_WIRE_GAUGE_RANGE", Severity::Impossible));
+}
+
+TEST_CASE("ACC_WIRE_GAUGE_RANGE: an ordered 18-24 AWG range stays quiet", "[accessory]") {
+    CHECK_FALSE(has_code(V.validate(good_accessory()), "ACC_WIRE_GAUGE_RANGE"));
+}
+
+TEST_CASE("ACC_RF_IMPEDANCE: a contact resistance in the impedance field fires",
+          "[accessory]") {
+    json p = good_accessory();
+    acc_ds(p)["electrical"]["characteristicImpedance"] = 0.01;
+    CHECK(has(V.validate(p), "ACC_RF_IMPEDANCE", Severity::Suspicious));
+}
+
+TEST_CASE("ACC_RF_IMPEDANCE: 50 and 75 ohm stay quiet", "[accessory]") {
+    for (double z : {50.0, 75.0}) {
+        json p = good_accessory();
+        acc_ds(p)["electrical"]["characteristicImpedance"] = z;
+        CHECK_FALSE(has_code(V.validate(p), "ACC_RF_IMPEDANCE"));
+    }
+}
+
+TEST_CASE("ACC_POSITIVITY: zero positions fires", "[accessory]") {
+    json p = good_accessory();
+    acc_ds(p)["mechanical"] = {{"positions", 0}};
+    CHECK(has(V.validate(p), "ACC_POSITIVITY", Severity::Impossible));
+}
+
+TEST_CASE("ACC_POSITIVITY: a real 7529-position LGA socket stays quiet", "[accessory]") {
+    json p = good_accessory();
+    acc_ds(p)["mechanical"] = {{"positions", 7529}};
+    CHECK_FALSE(has_code(V.validate(p), "ACC_POSITIVITY"));
+}
+
+// --- the AWG identity the two accessory checks rest on ---------------------
+
+TEST_CASE("the AWG area table the accessory checks use is the printed one", "[accessory]") {
+    // If this drifts, ACC_AWG_AREA and ACC_CONTACT_FUSING both move with it.
+    json p = good_accessory();
+    // AWG 18 = 0.823 mm^2 and AWG 24 = 0.205 mm^2 are the handbook values; the
+    // good fixture stores exactly them and must not fire.
+    CHECK_FALSE(has_code(V.validate(p), "ACC_AWG_AREA"));
+    // One gauge either way from 18 (0.653 / 1.038 mm^2) is inside one step and
+    // still must not fire; three gauges (0.326 mm^2, AWG 22) must.
+    acc_ds(p)["accessoryDetails"]["wireGaugeRange"]["maximumArea"] = 1.038e-6;
+    CHECK_FALSE(has_code(V.validate(p), "ACC_AWG_AREA"));
+    acc_ds(p)["accessoryDetails"]["wireGaugeRange"]["maximumArea"] = 3.26e-7;
+    CHECK(has(V.validate(p), "ACC_AWG_AREA", Severity::Suspicious));
+}
+
+// --- completeness manifests ------------------------------------------------
+
+// An AC-only safety capacitor (CAS 96278ad, user-approved) carries
+// voltageRatedAcMax and NO ratedVoltage. 261 migrated TDK rows dropped from 1.00
+// to 0.50 completeness and fired GEN_SPARSE because the manifest knew only the
+// DC spelling — the data was never sparse.
+TEST_CASE("GEN_SPARSE: an AC-only capacitor scores 1.0 and stays quiet", "[capacitor]") {
+    json p = json::parse(R"json({"capacitor": {"manufacturerInfo": {
+      "reference": "CD11ZU2GA332MYGKA", "datasheetInfo": {
+        "part": {"technology": "ceramic-class-2"},
+        "electrical": {"capacitance": {"nominal": 3.3e-9}, "voltageRatedAcMax": 440.0,
+                       "insulationResistance": 1e10},
+        "provenance": [{"source": "manufacturerDatasheet"}]}}}})json");
+    Verdict v = V.validate(p);
+    CHECK(v.completeness == 1.0);
+    CHECK_FALSE(has_code(v, "GEN_SPARSE"));
+}
+
+// The counter-check the manifest entry must survive: widening it must not blunt
+// the detector. A near-empty fabricated row has NEITHER spelling and must still
+// score 0.5 and still fire.
+TEST_CASE("GEN_SPARSE: a capacitor with neither voltage spelling still scores 0.5 and fires",
+          "[capacitor]") {
+    json p = json::parse(R"json({"capacitor": {"manufacturerInfo": {
+      "reference": "MLCC000001", "datasheetInfo": {
+        "part": {"technology": "ceramic-class-2"},
+        "electrical": {"capacitance": {"nominal": 1e-7}},
+        "provenance": [{"source": "manufacturerDatasheet"}]}}}})json");
+    Verdict v = V.validate(p);
+    CHECK(v.completeness == 0.5);
+    CHECK(has(v, "GEN_SPARSE", Severity::Suspicious));
+}
+
+TEST_CASE("GEN_SPARSE: a DC-rated capacitor is unaffected by the AC spelling", "[capacitor]") {
+    Verdict v = V.validate(good_cap());
+    CHECK(v.completeness == 1.0);
+    CHECK_FALSE(has_code(v, "GEN_SPARSE"));
+}
+
+TEST_CASE("completeness: the new families score what their manifests say",
+          "[relay][switch][potentiometer][accessory]") {
+    CHECK(V.validate(good_relay()).completeness == 1.0);
+    CHECK(V.validate(good_switch()).completeness == 1.0);
+    CHECK(V.validate(good_pot()).completeness == 1.0);
+    // connectorAccessory is deliberately unscored: four fifths of live rows are
+    // non-electrical kinds (labels, keys, gaskets, tools) with no electrical
+    // block at all, and a manifest would condemn every one of them.
+    CHECK(V.validate(good_accessory()).completeness == -1.0);
+}
+
+TEST_CASE("GEN_SPARSE: a relay stub with no electrical block at all fires", "[relay]") {
+    json p = good_relay();
+    p["relay"]["manufacturerInfo"]["datasheetInfo"].erase("electrical");
+    Verdict v = V.validate(p);
+    CHECK(v.completeness == 0.0);
+    CHECK(has(v, "GEN_SPARSE", Severity::Suspicious));
+}
+
+// --- family-coherence vocabulary for the new families ----------------------
+
+TEST_CASE("GEN_FAMILY_MISMATCH: an accessory named after its host connector stays quiet",
+          "[accessory][general]") {
+    // 3,796 of the 18,227 live accessory rows say "connector" in their
+    // description — a backshell, cap or marker strip IS named for the connector
+    // it fits. Before connectorAccessory was grouped with connector, adding the
+    // family to the dispatcher accused every one of them.
+    json p = good_accessory();
+    acc_ds(p)["part"]["description"] = "Backshell, Straight, for Circular Connector, Size 17";
+    CHECK_FALSE(has_code(V.validate(p), "GEN_FAMILY_MISMATCH"));
+}
+
+TEST_CASE("GEN_FAMILY_MISMATCH: an accessory whose description names an INDUCTOR still fires",
+          "[accessory][general]") {
+    json p = good_accessory();
+    acc_ds(p)["part"]["description"] = "Shielded Power Inductor, 10 uH";
+    CHECK(has(V.validate(p), "GEN_FAMILY_MISMATCH", Severity::Suspicious));
+}
+
+TEST_CASE("GEN_FAMILY_MISMATCH: a potentiometer described as a trimmer resistor stays quiet",
+          "[potentiometer][general]") {
+    json p = good_pot();
+    p["potentiometer"]["manufacturerInfo"]["datasheetInfo"]["part"]["description"] =
+        "Trimmer Resistor, 10 kOhm, 25 turn";
+    CHECK_FALSE(has_code(V.validate(p), "GEN_FAMILY_MISMATCH"));
+}
+
+TEST_CASE("GEN_FAMILY_MISMATCH: a potentiometer described as a CAPACITOR still fires",
+          "[potentiometer][general]") {
+    json p = good_pot();
+    p["potentiometer"]["manufacturerInfo"]["datasheetInfo"]["part"]["description"] =
+        "Multilayer Ceramic Capacitor, 100 nF";
+    CHECK(has(V.validate(p), "GEN_FAMILY_MISMATCH", Severity::Suspicious));
+}
+
+// --- isolated-package classification for MOS_IDC_VS_THERMAL ----------------
+//
+// The isolated-package matcher used to be a fixed list of spellings
+// (fullpak / fullpack / to220f / to3pf). TO-220CFM — "case fully molded", the
+// same isolated class, with the datasheet's own "high isolation voltage
+// capability ... between the tab and the external heat-sink" — was not on it,
+// so 99 live YAGEO XSemi rows were held to the 2.0x bare-package bar and 31 of
+// them fired IMPOSSIBLE. TO-220FP (43 rows), TO-247ISO (6) and ISOPLUS247 (2)
+// were missing for the same reason.
+//
+// The pair below is the proof that the CLASSIFICATION was fixed and the BAR was
+// not widened: the two records differ in nothing but the case string.
+
+// YAGEO XSemi XP60CM060IT, verbatim: TO-220CFM-T, 50 A, 60 mohm, Rth(j-c) 3 K/W,
+// Tjmax 150 C, Ptot 41.6 W = (150-25)/3 to rounding. 50^2*0.06 = 150 W against
+// a 41.67 W path — 3.6x, the top of the 31 flagged rows and inside the isolated
+// band.
+json yageo_cfm() {
+    return json::parse(R"json({"semiconductor": {"mosfet": {"manufacturerInfo": {
+      "name": "YAGEO XSemi", "reference": "XP60CM060IT", "datasheetInfo": {
+        "part": {"technology": "Si", "case": "TO-220CFM-T", "partNumber": "XP60CM060IT"},
+        "electrical": {"drainSourceVoltage": 600, "onResistance": 0.06,
+                       "continuousDrainCurrent": 50.0, "gateThresholdVoltage": {"maximum": 5.0},
+                       "powerDissipation": 41.6},
+        "thermal": {"thermalResistanceJunctionCase": 3.0, "junctionTemperatureMax": 150},
+        "provenance": [{"source": "manufacturerDatasheet"}]}}}}})json");
+}
+
+TEST_CASE("MOS_IDC_VS_THERMAL: a real TO-220CFM is judged as the isolated package it is",
+          "[semiconductors]") {
+    Verdict v = V.validate(yageo_cfm());
+    CHECK_FALSE(has(v, "MOS_IDC_VS_THERMAL", Severity::Impossible));
+    CHECK(v.valid);
+    // Still VISIBLE — the isolated band 2x..4x stays Suspicious, it is not silenced.
+    CHECK(has(v, "MOS_IDC_VS_THERMAL", Severity::Suspicious));
+}
+
+TEST_CASE("MOS_IDC_VS_THERMAL: the SAME numbers on a bare TO-220 still fire IMPOSSIBLE",
+          "[semiconductors]") {
+    // Nothing differs but the case string. If this goes quiet too, the bar was
+    // widened rather than the classification fixed — which would be worse than
+    // the false positive being fixed.
+    json p = yageo_cfm();
+    p["semiconductor"]["mosfet"]["manufacturerInfo"]["datasheetInfo"]["part"]["case"] = "TO-220";
+    Verdict v = V.validate(p);
+    CHECK(has(v, "MOS_IDC_VS_THERMAL", Severity::Impossible));
+    CHECK_FALSE(v.valid);
+}
+
+TEST_CASE("MOS_IDC_VS_THERMAL: the ABT #500 TO-247 exhibit is untouched by the widening",
+          "[semiconductors]") {
+    // A TO-247 wearing its FullPak sibling's whole thermal row — Ptot and Rth
+    // agree with each other, which is why MOS_POWER_THERMAL cannot see it, and
+    // which is why isolation must NOT be inferred from the record's own thermal
+    // numbers: that rule would hand this record the 4x bar and let it pass.
+    json p = json::parse(R"json({"semiconductor": {"mosfet": {"manufacturerInfo": {
+      "reference": "IPW80R280P7", "datasheetInfo": {"part": {"technology": "Si", "case": "TO-247"},
+      "electrical": {"drainSourceVoltage": 800, "onResistance": 0.28,
+                     "continuousDrainCurrent": 16, "powerDissipation": 36},
+      "thermal": {"thermalResistanceJunctionCase": 3.5,
+                  "junctionTemperatureMax": 150}}}}}})json");
+    CHECK(has(V.validate(p), "MOS_IDC_VS_THERMAL", Severity::Impossible));
+}
+
+TEST_CASE("MOS_IDC_VS_THERMAL: every isolated naming convention is recognised",
+          "[semiconductors]") {
+    // The four conventions, on identical 3.6x numbers: none may fire IMPOSSIBLE.
+    for (const char* kase : {"TO-220CFM", "TO-220CFM-NL", "TO-220FP", "TO-220F",
+                             "TO-220-3 FullPak", "TO220 FullPAK", "TO-247ISO", "ISOPLUS247",
+                             "TO-3PF-3L"}) {
+        json p = yageo_cfm();
+        p["semiconductor"]["mosfet"]["manufacturerInfo"]["datasheetInfo"]["part"]["case"] = kase;
+        INFO("case: " << kase);
+        CHECK_FALSE(has(V.validate(p), "MOS_IDC_VS_THERMAL", Severity::Impossible));
+    }
+    // And the packages that are NOT isolated must keep the bare 2.0x bar. LFPAK
+    // is the trap: a copper-clip SMD package with an EXPOSED drain pad, 300+
+    // live rows, whose name ends in "PAK".
+    for (const char* kase : {"TO-220", "TO-220AB", "TO-247", "TO-247AC", "TO-263",
+                             "LFPAK56; Power-SO8", "LFPAK33", "D2PAK", "TO-264"}) {
+        json p = yageo_cfm();
+        p["semiconductor"]["mosfet"]["manufacturerInfo"]["datasheetInfo"]["part"]["case"] = kase;
+        INFO("case: " << kase);
+        CHECK(has(V.validate(p), "MOS_IDC_VS_THERMAL", Severity::Impossible));
+    }
+}
