@@ -365,12 +365,11 @@ TEST_CASE("Semiconductors: MosfetRatedCurrentExceedsOwnThermalPath", "[semicondu
     CHECK(!has(V.validate(p), "MOS_IDC_VS_THERMAL", Severity::Impossible));
 }
 
-// An isolated FullPAK carrying its DATASHEET's own values must not be
-// impossible: Infineon IPA60R120P7's front page rates 26 A (the TO-220
-// equivalent silicon current, "Limited by Tj max. D=0.5") behind 4.49 K/W /
-// 28 W — a 2.9x cold overcommit that is the vendor's rating convention.
-// It stays visible as Suspicious; only above 4x does isolated become
-// impossible (ABT #500 calibration).
+// An isolated FullPAK carrying its DATASHEET's own values must not fire at all.
+// Infineon IPA60R120P7's front page rates 26 A behind 4.49 K/W / 28 W, and its
+// footnote 1 on that very row reads "Limited by Tj,max. Maximum Duty Cycle
+// D = 0.50; TO-220 equivalent". 26^2*0.12*0.5 = 40.56 W against 27.84 W is
+// 1.46x — inside Rds(on) typ-vs-max, and nothing a validator can adjudicate.
 TEST_CASE("Semiconductors: FullPakSiliconRatedIdValid", "[semiconductors]") {
     json p = json::parse(R"json({"semiconductor": {"mosfet": {"manufacturerInfo": {
       "reference": "IPA60R120P7", "datasheetInfo": {"part": {"technology": "Si", "case": "TO-220 FullPAK"},
@@ -379,15 +378,17 @@ TEST_CASE("Semiconductors: FullPakSiliconRatedIdValid", "[semiconductors]") {
       "thermal": {"thermalResistanceJunctionCase": 4.49,
                   "junctionTemperatureMax": 150}}}}}})json");
     Verdict v = V.validate(p);
-    CHECK(!has(v, "MOS_IDC_VS_THERMAL", Severity::Impossible));
-    CHECK(has(v, "MOS_IDC_VS_THERMAL", Severity::Suspicious));
+    CHECK_FALSE(has_code(v, "MOS_IDC_VS_THERMAL"));
     // The same 4.49 K/W table on a BARE TO-220 record is the #500 disease and
-    // must stay impossible — the exemption is package-gated, not a loosening.
+    // must stay impossible. Nothing states a duty cycle on a bare datasheet, so
+    // D stays 1 there and the full 81.12 W is judged — the correction is
+    // package-gated, exactly as the exemption it replaces was.
     p["semiconductor"]["mosfet"]["manufacturerInfo"]["datasheetInfo"]["part"]
      ["case"] = "TO-220";
     CHECK(has(V.validate(p), "MOS_IDC_VS_THERMAL", Severity::Impossible));
-    // And a FullPAK whose Id overcommits by >4x (fabricated thermal pair) is
-    // still impossible: 26 A / 0.12 ohm behind 10 K/W is 6.5x.
+    // And a FullPAK whose Id overcommits even AFTER the duty cycle is still
+    // impossible: 26 A / 0.12 ohm behind 10 K/W is 40.56 W against 12.5 W, 3.2x.
+    // This is the same bar the 4x-on-uncorrected-loss rule used to draw.
     p["semiconductor"]["mosfet"]["manufacturerInfo"]["datasheetInfo"]["part"]
      ["case"] = "TO-220 FullPAK";
     p["semiconductor"]["mosfet"]["manufacturerInfo"]["datasheetInfo"]["thermal"]
@@ -3667,13 +3668,43 @@ json yageo_cfm() {
         "provenance": [{"source": "manufacturerDatasheet"}]}}}}})json");
 }
 
-TEST_CASE("MOS_IDC_VS_THERMAL: a real TO-220CFM is judged as the isolated package it is",
+TEST_CASE("MOS_IDC_VS_THERMAL: a real TO-220CFM is judged at the duty cycle it is rated at",
           "[semiconductors]") {
+    // XP60CM060IT's note 6 on I_D: "Limited by max. junction temperature.
+    // Maximum duty cycle D=0.5". 50^2*0.06*0.5 = 75 W against 41.67 W is 1.8x,
+    // the WORST of the 33 rows this check used to report, and still under the 2x
+    // bar. The vendor is not contradicting itself and the check must not say so.
     Verdict v = V.validate(yageo_cfm());
-    CHECK_FALSE(has(v, "MOS_IDC_VS_THERMAL", Severity::Impossible));
     CHECK(v.valid);
-    // Still VISIBLE — the isolated band 2x..4x stays Suspicious, it is not silenced.
-    CHECK(has(v, "MOS_IDC_VS_THERMAL", Severity::Suspicious));
+    CHECK_FALSE(has_code(v, "MOS_IDC_VS_THERMAL"));
+}
+
+TEST_CASE("MOS_IDC_VS_THERMAL: the duty cycle is applied to the isolated package only",
+          "[semiconductors]") {
+    // Exactly one character of difference decides it, and the numbers on both
+    // sides are the vendor's. Without the package gate the check would halve the
+    // loss for every bare part too, and the IPW80R280P7 exhibit below — 2.008x,
+    // the tightest real violation in the catalogue — would drop to 1.004x and
+    // vanish. The gate is what keeps the check alive.
+    json iso = yageo_cfm();
+    json bare = yageo_cfm();
+    bare["semiconductor"]["mosfet"]["manufacturerInfo"]["datasheetInfo"]["part"]["case"] =
+        "TO-220";
+    CHECK_FALSE(has_code(V.validate(iso), "MOS_IDC_VS_THERMAL"));
+    REQUIRE(has(V.validate(bare), "MOS_IDC_VS_THERMAL", Severity::Impossible));
+    // The bare verdict is judged on the UNHALVED loss: 50^2*0.06 = 150 W.
+    for (const Finding& f : V.validate(bare).findings)
+        if (f.code == "MOS_IDC_VS_THERMAL") CHECK(std::fabs(f.value - 150.0) < 1e-6);
+    // And the isolated one, were it reported, would be the halved 75 W. Assert it
+    // through the bar instead: raising Rth(j-c) until 75 W exceeds 2x the ceiling
+    // brings it back, which proves the isolated path is still armed rather than
+    // switched off.
+    json iso_bad = yageo_cfm();
+    iso_bad["semiconductor"]["mosfet"]["manufacturerInfo"]["datasheetInfo"]["thermal"]
+           ["thermalResistanceJunctionCase"] = 8.0;   // ceiling 15.6 W, 75 W is 4.8x
+    REQUIRE(has(V.validate(iso_bad), "MOS_IDC_VS_THERMAL", Severity::Impossible));
+    for (const Finding& f : V.validate(iso_bad).findings)
+        if (f.code == "MOS_IDC_VS_THERMAL") CHECK(std::fabs(f.value - 75.0) < 1e-6);
 }
 
 TEST_CASE("MOS_IDC_VS_THERMAL: the SAME numbers on a bare TO-220 still fire IMPOSSIBLE",

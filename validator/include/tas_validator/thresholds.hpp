@@ -147,12 +147,19 @@ inline constexpr double MOS_PTHERMAL_RATIO_SUS = 3.0;
 // overcommit of this factor is called impossible: at 2x cold the part is 4-5x
 // over its own ceiling hot, which no rounding explains.
 inline constexpr double MOS_IDC_THERMAL_RATIO_IMP = 2.0;
-// Isolated packages (FullPAK/TO-220F/TO-3PF): vendors publish the bare sibling's
-// silicon Id with a duty-cycle footnote, so 2-3x cold overcommit is the rating
-// convention, not a defect. Datasheet-verified on Infineon IPA60R120P7 (2.9x)
-// and IPA60R190P6 (2.3x) during the ABT #500 campaign; 4x still catches wrong
-// thermal tables (the pre-repair records sat at 3-13x with FABRICATED pairs).
-inline constexpr double MOS_IDC_THERMAL_RATIO_ISO_IMP = 4.0;
+// The duty cycle isolated-package vendors STATE their continuous Id against. It
+// is a datasheet condition, not a tuning factor, and both vendors in this
+// catalogue's isolated cohort print it on the Id row itself:
+//   * Infineon IPA60R120P7, footnote 1 on "Continuous drain current 26 A,
+//     TC=25 C": "Limited by Tj,max. Maximum Duty Cycle D = 0.50; TO-220
+//     equivalent" (RthJC 4.49 C/W on the same page).
+//   * YAGEO XSemi XP60CM060IT, note 6 on I_D: "Limited by max. junction
+//     temperature. Maximum duty cycle D=0.5" (Rthj-c 3 C/W).
+// SAS has nowhere to record it -- electricalBase documents continuousDrainCurrent
+// as "I_D at Tc=25C in Amperes" and carries no duty-cycle property -- so the
+// package class is the only signal, and the constant applies where
+// is_isolated_power_package() says so. A bare package keeps D = 1.
+inline constexpr double MOS_IDC_RATED_DUTY_CYCLE_ISO = 0.5;
 // A powerDissipation that is really an on-resistance (ABT #482/#494: Vishay
 // serves "On-resistance at 4.5 V" one column from "Power dissipation (max.)").
 // Anchored on the PACKAGE, not on the ohm value: a die rated to carry

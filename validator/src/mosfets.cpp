@@ -274,30 +274,44 @@ void check_mosfets(const json& datasheet, const Ctx& ctx, std::vector<Finding>& 
     // IPW80R280P7 stored 16 A through 0.28 ohm (71.7 W cold) behind a 3.5 K/W path
     // good for 35.7 W, where the TO-247 datasheet says 1.2 K/W / 101 W.
     if (idc && ron && rthjc && tjmax && *ron > 0 && *rthjc > 0 && *tjmax > 25.0) {
-        double pcond = (*idc) * (*idc) * (*ron);  // conduction loss at the 25 C Rds(on)
-        double pmax = (*tjmax - 25.0) / *rthjc;   // case held at 25 C
-        // Isolated packages (FullPAK / TO-220F / TO-3PF) are rated by vendors at
-        // the NON-isolated sibling's silicon current with an explicit duty-cycle
-        // footnote ("Limited by Tj max. Maximum duty cycle D=0.5" -- Infineon
-        // IPA60R120P7's own front page: 26 A behind 4.49 K/W, a 2.9x cold
-        // overcommit), so on those a 2-3x excess is the vendor's rating
-        // convention, not broken data. The impossible bar moves to 4x for them
-        // (ABT #500 calibration, datasheet-verified 2026-08-02); the band in
-        // between stays visible as Suspicious. Bare packages keep the 2x bar --
-        // the #500 exhibit, a TO-247 wearing FullPak thermals, is exactly what
-        // this check exists to catch, and it stays caught.
+        // Isolated packages (FullPAK / TO-220F / TO-220CFM / TO-3PF) are rated at
+        // a duty cycle their vendors STATE on the Id row -- Infineon "Maximum Duty
+        // Cycle D = 0.50", YAGEO XSemi "Maximum duty cycle D=0.5", both quoted in
+        // full beside MOS_IDC_RATED_DUTY_CYCLE_ISO. The loss at the rated point is
+        // therefore D*Id^2*Ron, and this check used to leave the factor out. It
+        // showed: over 9,629 live rows the check produced 33 findings, all of them
+        // isolated full-mold packages, and the SMALLEST excess was 2.004x -- the
+        // floor of the surviving band was the constant the check had forgotten.
+        // Applying D lands those 33 at 1.00-1.80x, i.e. at their rating, which is
+        // what "limited by Tj,max" means. Every one of the 33 is a faithful
+        // transcription: its stored powerDissipation equals (Tjmax-25)/Rth(j-c) to
+        // within 0.64%.
+        //
+        // D is NOT applied to a bare package. Nothing in a bare datasheet states
+        // one, and halving the loss globally would exactly undo the check: the
+        // exhibit it was written for, a TO-247 IPW80R280P7 wearing its FullPak
+        // sibling's thermal table, sits at 2.008x and would drop to 1.004x.
+        //
+        // One bar for both classes now. The isolated IMPOSSIBLE threshold is
+        // unchanged in effect -- 2.0x on the duty-corrected loss IS the 4.0x on
+        // the uncorrected loss it used to be -- and the 2.0-4.0x Suspicious band
+        // it used to report is deleted rather than rescaled, because that band was
+        // the duty cycle. What remains of the residual after D (1.00-1.80x) is
+        // inside Ron typ-vs-max plus the undocumented package substitution
+        // Infineon's own footnote admits to ("TO-220 equivalent": the Id is quoted
+        // against a bare TO-220's thermal path while Ptot is the FullPAK's), so
+        // the check cannot adjudicate an isolated part's vendor-rated Id at that
+        // resolution and must not pretend to.
         std::string pkg = norm_tech(at(datasheet, "part", "case"));
         bool isolated = is_isolated_power_package(pkg);
-        double bar = isolated ? thr::MOS_IDC_THERMAL_RATIO_ISO_IMP
-                              : thr::MOS_IDC_THERMAL_RATIO_IMP;
-        if (pcond > pmax * bar)
+        double duty = isolated ? thr::MOS_IDC_RATED_DUTY_CYCLE_ISO : 1.0;
+        double pcond = duty * (*idc) * (*idc) * (*ron);  // at the 25 C Rds(on)
+        double pmax = (*tjmax - 25.0) / *rthjc;          // case held at 25 C
+        if (pcond > pmax * thr::MOS_IDC_THERMAL_RATIO_IMP)
             emit(out, ctx, "MOS_IDC_VS_THERMAL", Severity::Impossible, pcond, pmax,
-                 fmt("conduction loss at the rated continuous drain current exceeds "
-                     "(Tjmax-25)/Rth(j-c) [W]", pcond, pmax));
-        else if (isolated && pcond > pmax * thr::MOS_IDC_THERMAL_RATIO_IMP)
-            emit(out, ctx, "MOS_IDC_VS_THERMAL", Severity::Suspicious, pcond, pmax,
-                 fmt("conduction loss at rated Id exceeds (Tjmax-25)/Rth(j-c) on an "
-                     "isolated package (vendor silicon-rated Id) [W]", pcond, pmax));
+                 fmt("conduction loss at the rated continuous drain current, at the duty "
+                     "cycle the package class is rated for, exceeds (Tjmax-25)/Rth(j-c) [W]",
+                     pcond, pmax));
     }
 
     // CHECK (NEW): powerDissipation that is really an on-resistance. The May-2026
