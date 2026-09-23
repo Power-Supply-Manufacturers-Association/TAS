@@ -418,3 +418,135 @@ def test_absent_resistance_list_is_not_flagged_as_incomplete():
     rec = _magnetic({"subtype": "transformer", "inductance": {"nominal": 1e-03},
                      "turnsRatios": [1.0]})
     assert not any(c == "MAG_WINDING_DATA_INCOMPLETE" for c, _ in _codes(rec))
+
+
+# ---------------------------------------------------------------------------
+# Finding.severity: the enum/string comparison trap
+#
+# `Finding.severity` used to be a plain uppercase str ('IMPOSSIBLE') while the
+# module ALSO exported a `Severity` enum whose members stringify as
+# 'Severity.Impossible'. So the obvious way to write the gate --
+#     any(f.severity == tas_validator.Severity.Impossible for f in v.findings)
+# -- was SILENTLY False for every record ever validated: "do we have any
+# impossible parts?" answered "no" vacuously, with nothing raised anywhere.
+#
+# The fix returns the enum, and keeps every older spelling working (str(), the
+# f-string form, the bare 'IMPOSSIBLE' comparison, and use as a dict/set key)
+# rather than breaking it. These tests fail on the pre-fix binding: the first
+# two by asserting the enum comparison is True where it used to be False.
+# ---------------------------------------------------------------------------
+
+
+def _impossible_verdict():
+    """A record with a guaranteed IMPOSSIBLE finding (a fabrication-template MPN)."""
+    rec = {"capacitor": {"manufacturerInfo": {
+        "reference": "MLCC123456",
+        "datasheetInfo": {"part": {"technology": "ceramic-class-2"},
+                          "electrical": {"capacitance": {"nominal": 1e-7},
+                                         "ratedVoltage": 50.0},
+                          "provenance": [{"source": "manufacturerDatasheet"}]}}}}
+    v = tas_validator.validate(rec)
+    assert v.findings, "fixture no longer produces any finding"
+    return v
+
+
+def test_severity_compares_equal_to_the_exported_enum():
+    v = _impossible_verdict()
+    assert any(f.severity == tas_validator.Severity.Impossible for f in v.findings)
+    assert not v.valid
+
+
+def test_severity_enum_membership_test_is_not_vacuous():
+    """The shape a caller actually writes: a set of enum members."""
+    v = _impossible_verdict()
+    wanted = {tas_validator.Severity.Impossible}
+    assert any(f.severity in wanted for f in v.findings)
+
+
+def test_severity_string_spelling_keeps_working():
+    v = _impossible_verdict()
+    sev = [f.severity for f in v.findings if f.code == "GEN_FABRICATED_MPN"][0]
+    assert sev == "IMPOSSIBLE"
+    assert "IMPOSSIBLE" == sev              # reflected comparison
+    assert str(sev) == "IMPOSSIBLE"
+    assert f"{sev}" == "IMPOSSIBLE"
+    assert sev != "SUSPICIOUS"
+    assert sev in ("SUSPICIOUS", "IMPOSSIBLE")
+
+
+def test_severity_hashes_as_its_own_name():
+    """An enum member and its uppercase name must be interchangeable as keys —
+    otherwise a Counter built one way cannot be read the other."""
+    sev = tas_validator.Severity.Impossible
+    assert hash(sev) == hash("IMPOSSIBLE")
+    assert {"IMPOSSIBLE": 1}[sev] == 1
+    assert {sev: 1}["IMPOSSIBLE"] == 1
+
+
+def test_severity_does_not_claim_equality_with_unrelated_types():
+    sev = tas_validator.Severity.Impossible
+    assert sev != 3.14
+    assert sev != None  # noqa: E711
+    assert sev != "SUSPICIOUS"
+
+
+def test_severity_is_a_str_subclass_so_old_consumers_are_unaffected():
+    """The transition itself must not produce the mirror-image false pass.
+
+    A consumer written against the old plain-string attribute (`f.severity ==
+    'IMPOSSIBLE'`, `f.severity in ('SUSPICIOUS','IMPOSSIBLE')`, `"%s" %
+    f.severity`, a Counter keyed on it) keeps working unchanged, because the
+    enum members ARE the uppercase strings they print. A pure (non-str) enum
+    would silently answer False to all of those — which is exactly the failure
+    being removed, pointed the other way.
+    """
+    sev = tas_validator.Severity.Impossible
+    assert isinstance(sev, str)
+    assert sev == "IMPOSSIBLE"
+    assert "%s" % sev == "IMPOSSIBLE"
+    assert "IMPOSSIBLE".__eq__(sev) is True
+    assert sorted({tas_validator.Severity.Ok, "OK"}) == ["OK"]
+
+
+def test_corpus_finding_severity_is_the_same_type():
+    """CorpusFinding.severity goes through the same binding as Finding.severity."""
+    sev = tas_validator.Severity.Suspicious
+    assert str(sev) == "SUSPICIOUS"
+    rec = {"capacitor": {"manufacturerInfo": {
+        "name": "Fixture", "reference": "FIX-1",
+        "datasheetInfo": {"electrical": {"capacitance": {"nominal": 1e-7},
+                                         "ratedVoltage": 50.0}}}}}
+    findings = tas_validator.validate_corpus([rec] * 3)
+    for f in findings:
+        assert isinstance(f.severity, tas_validator.Severity)
+        assert f.severity in (tas_validator.Severity.Suspicious,
+                              tas_validator.Severity.Impossible)
+        assert str(f.severity) in ("SUSPICIOUS", "IMPOSSIBLE")
+
+
+# ---------------------------------------------------------------------------
+# The four families that used to throw "no known component discriminator"
+# ---------------------------------------------------------------------------
+
+NEW_FILES = ["relays", "switches", "potentiometers", "connector_accessories"]
+
+
+@pytest.mark.parametrize("name", NEW_FILES)
+def test_formerly_unjudgeable_families_are_judged(name):
+    seen = 0
+    for _, rec in iter_records(name, SAMPLE):
+        seen += 1
+        v = tas_validator.validate(rec)     # must NOT raise ValueError any more
+        assert isinstance(v.valid, bool)
+    assert seen, f"{name}.ndjson produced no records"
+
+
+def test_circuit_bricks_are_named_as_such_instead_of_unknown():
+    brick = {"name": "b", "ports": [{"name": "a"}], "components": [], "connections": []}
+    with pytest.raises(ValueError, match="validate_circuit"):
+        tas_validator.validate(brick)
+
+
+def test_converter_documents_are_named_as_such():
+    with pytest.raises(ValueError, match="converter document"):
+        tas_validator.validate({"inputs": {}, "topology": {"stages": []}})
