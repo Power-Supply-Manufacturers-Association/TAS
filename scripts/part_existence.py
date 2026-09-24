@@ -180,9 +180,12 @@ def extension_ok(q, found):
       * digit -> letter boundary: accepted for a >= 2-character extension on a >= 6-character
         reference (LT8330 + EDDB#PBF), or a single packaging letter on a >= 10-character
         reference (GRM1555C1H221GA01 + D);
-      * letter -> letter: accepted only for a >= 3-character extension on a >= 6-character
-        reference (ADS8924B + RGER, 1EDN7136G + XTMA1, DG509B + EJ-E3);
-      * letter -> digit, digit -> digit and shorter letter -> letter continuations: rejected;
+      * letter -> letter, letter -> digit and digit -> digit continuations: rejected.  The
+        stress test showed why letter -> letter cannot be allowed: TI package codes nest
+        (TPS25750 + DR is not an order code, yet TPS25750DRJKR is), which is exactly the
+        shape of an invented package suffix;
+      * an evaluation board or kit (EVM, EVAL, EVK, KIT, DEMO in the extension) never
+        confirms the chip: UCC28910 + FB matched UCC28910FBEVM-526;
       * a separator plus 1-3 digits (TE's -N) or 1-2 letters plus 1-2 digits (value
         continuations such as C3 + V3): rejected wherever they occur.
     """
@@ -194,11 +197,12 @@ def extension_ok(q, found):
     if not f.startswith(q) or not q[-1].isalnum():
         return None
     ext = f[len(q):]
-    if len(ext) > 12:
+    if len(ext) > 12 or re.search(r'EVM|EVAL|EVK|KIT|DEMO', ext):
         return None
     # a short digit group after a separator is part of the number, not an order suffix
     # (TE 6-1419128-6 vs 6-1419128-2); so is a value continuation like C3 + V3 (BZX84J-C3V3)
-    if re.fullmatch(r'[-/.,_][0-9]{1,3}', ext) or re.fullmatch(r'[A-Z]{1,2}[0-9]{1,2}', ext):
+    # (a comma group is Nexperia/NXP 12NC packaging, BAS16,215, and stays allowed)
+    if re.fullmatch(r'[-/._][0-9]{1,3}', ext) or re.fullmatch(r'[A-Z]{1,2}[0-9]{1,2}', ext):
         return None
     if ext[0] in '-/#+,(._':
         return 'extension' if len(q) >= 5 else None
@@ -207,8 +211,6 @@ def extension_ok(q, found):
             return 'extension'
         if len(ext) == 1 and len(q) >= 10:
             return 'extension'
-    if q[-1].isalpha() and ext[0].isalpha() and len(ext) >= 3 and len(q) >= 6:
-        return 'extension'
     return None
 
 
@@ -610,7 +612,7 @@ def stress(work, outp):
             v, ev = judge_archive(rec, j)
             if v == 'real':
                 bad[kind] += 1
-                if len(examples) < 400:
+                if sum(1 for e in examples if e[0] == kind) < 200:
                     examples.append((kind, ref, rec['reference'], rec['manufacturer'], ev))
     out = {'tested': dict(n), 'called_real': dict(bad), 'examples': examples}
     json.dump(out, open(os.path.join(work, 'stress.json'), 'w'), indent=1)
@@ -764,6 +766,56 @@ def report(work):
             lo, hi = wilson(tk, tn)
             L += ['| **all (unweighted)** | | %d | %d | %d | %.1f%% | %.1f-%.1f%% | | |' % (
                 tn, tk, tn - tk, 100 * tk / max(tn, 1), 100 * lo, 100 * hi), '']
+            if stratum == 'sample' and all(pop[c] for c in by):
+                npop = sum(pop[c] for c in by)
+                est = sum(by[c]['real'] / (by[c]['real'] + by[c]['unresolved']) * pop[c] for c in by) / npop
+                var = sum((pop[c] / npop) ** 2 * (lambda p, n: p * (1 - p) / n)(
+                    by[c]['real'] / (by[c]['real'] + by[c]['unresolved']), by[c]['real'] + by[c]['unresolved'])
+                    for c in by)
+                L += ['Weighted by catalogue size (%d rows), the share of rows confirmed real is '
+                      '%.1f%% +/- %.1f (95%%, stratified normal approximation).' % (
+                          npop, 100 * est, 196 * math.sqrt(var)), '']
+    if os.path.exists(rp):
+        def why(r):
+            e = r['evidence'] or ''
+            if r['verdict'] == 'real':
+                return 'real'
+            if 'exact number under' in e:
+                return 'number listed under another maker'
+            if 'near-misses' in e:
+                return 'only near-miss numbers'
+            if 'no datasheet or stock rows' in e:
+                return 'archive has nothing'
+            if 'too short' in e:
+                return 'reference unsearchable'
+            return 'rows, none matching'
+        cls = ['archive has nothing', 'only near-miss numbers', 'number listed under another maker',
+               'rows, none matching', 'reference unsearchable']
+        for stratum, title in (('sample', 'sample'), ('suspect', 'suspect cohorts')):
+            sel = [r for r in rs if r.get('stratum') == stratum]
+            if not sel:
+                continue
+            L += ['## Unresolved %s, by what the archive showed' % title, '',
+                  '| catalogue | unresolved | ' + ' | '.join(cls) + ' |',
+                  '|---|---:|' + '---:|' * len(cls)]
+            by = collections.defaultdict(collections.Counter)
+            for r in sel:
+                by[r['catalogue']][why(r)] += 1
+            for c in sorted(by):
+                u = sum(v for k, v in by[c].items() if k != 'real')
+                L.append('| %s | %d | ' % (c, u) + ' | '.join(str(by[c][k]) for k in cls) + ' |')
+            L.append('')
+            L += ['## Per manufacturer, %s' % title, '',
+                  '| catalogue | manufacturer | checked | real | unresolved | real share |',
+                  '|---|---|---:|---:|---:|---:|']
+            bm = collections.defaultdict(collections.Counter)
+            for r in sel:
+                bm[(r['catalogue'], r['manufacturer'])][r['verdict']] += 1
+            for (c, m), v in sorted(bm.items()):
+                n = v['real'] + v['unresolved']
+                L.append('| %s | %s | %d | %d | %d | %.0f%% |' % (c, m, n, v['real'], v['unresolved'],
+                                                                 100 * v['real'] / n))
+            L.append('')
     open(os.path.join(work, 'report.md'), 'w').write('\n'.join(L) + '\n')
     print('wrote', os.path.join(work, 'report.md'))
 
