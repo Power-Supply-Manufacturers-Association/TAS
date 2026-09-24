@@ -167,7 +167,7 @@ SPICE, PLECS, Modelica, etc.
 | `models[]` | `{name, format, definition}` — `format` ∈ `spice-model \| spice-subcircuit \| modelica \| verilog-a \| plecs \| table` (the tag lets each backend pick what it understands) |
 | `overrides[]` | `{stage, component, model?, parameters[]}` — bind a model / override params on one brick component |
 | `stimulus[]` | `{stage, component, signal, waveform}` — **open-loop** drive; `waveform` = `oneOf[ pwm{frequency,dutyCycle,phase?,deadTime?} \| constant{value} ]` |
-| `initialConditions[]` | `{node, voltage}` — nodes that begin **pre-charged** at t=0 instead of solved from a cold DC operating point (SPICE: `.ic` + UIC). Lets converters whose steady state is unreachable from a cold start — resonant tanks with ill-conditioned DC points, or active synchronous rectifiers that can't self-start into 0 V — begin near steady state. |
+| `initialConditions[]` | `{node, voltage}` — nodes that begin **pre-charged** at t=0 instead of solved from a cold DC operating point (SPICE: `.ic` + UIC); `node` may be `<stage>.<net>` for a net internal to one stage. Or `{stage, component, winding?, current}` — the initial current through one winding of a magnetic component (SPICE: inductor `IC=` + UIC), for LC filters that would otherwise ring far beyond any bounded run. Lets converters whose steady state is unreachable from a cold start — resonant tanks with ill-conditioned DC points, or active synchronous rectifiers that can't self-start into 0 V — begin near steady state. |
 
 A TAS may carry **both** a `virtualControl` stage (closed loop) and `simulation.stimulus`
 (open loop); a stimulus on a switch takes precedence over a drive for that switch.

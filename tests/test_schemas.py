@@ -673,3 +673,38 @@ def test_stage_result_dutyCycle_range(tas_validator, flyback_doc):
 def test_metrics_no_longer_accepts_cost(tas_validator, flyback_doc):
     flyback_doc["outputs"] = {"metrics": {"cost": 5.0}}
     assert_invalid(tas_validator, flyback_doc)
+
+
+# ── simulation.initialConditions: node voltages and (since 2026-09-24) winding currents ──
+
+def _with_ics(flyback_doc, ics):
+    doc = copy.deepcopy(flyback_doc)
+    doc.setdefault("simulation", {})["initialConditions"] = ics
+    return doc
+
+
+def test_initial_node_voltage_validates(tas_validator, flyback_doc):
+    assert_valid(tas_validator, _with_ics(flyback_doc, [
+        {"node": "Vout", "voltage": 12.0},
+        {"node": "flybuckCell.vout_sec", "voltage": 10.0},
+    ]))
+
+
+def test_initial_branch_current_validates(tas_validator, flyback_doc):
+    assert_valid(tas_validator, _with_ics(flyback_doc, [
+        {"node": "Vout", "voltage": 12.0},
+        {"stage": "flybuckCell", "component": "T1", "current": 0.02},
+        {"stage": "flybuckCell", "component": "T1", "winding": 1, "current": -0.1},
+    ]))
+
+
+def test_initial_branch_current_requires_stage_component_current(tas_validator, flyback_doc):
+    assert_invalid(tas_validator, _with_ics(flyback_doc, [{"component": "T1", "current": 0.02}]))
+    assert_invalid(tas_validator, _with_ics(flyback_doc, [{"stage": "cell", "component": "T1"}]))
+
+
+def test_initial_condition_cannot_mix_voltage_and_current(tas_validator, flyback_doc):
+    assert_invalid(tas_validator, _with_ics(flyback_doc, [
+        {"node": "Vout", "voltage": 12.0, "stage": "cell", "component": "T1", "current": 1.0}]))
+    assert_invalid(tas_validator, _with_ics(flyback_doc, [
+        {"stage": "cell", "component": "T1", "winding": -1, "current": 1.0}]))

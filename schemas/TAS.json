@@ -62,13 +62,36 @@
 
     "initialCondition": {
       "title": "initialCondition",
+      "description": "One element of the initial transient state at t=0: a node's voltage, or the current through one winding of a magnetic component. Currents are needed where a voltage precharge alone still leaves a lightly damped LC ringing for far longer than any bounded simulation (e.g. an output filter inductor that must start at its steady-state current).",
+      "oneOf": [
+        { "$ref": "#/$defs/initialNodeVoltage" },
+        { "$ref": "#/$defs/initialBranchCurrent" }
+      ]
+    },
+
+    "initialNodeVoltage": {
+      "title": "initialNodeVoltage",
       "type": "object",
       "additionalProperties": false,
       "required": ["node", "voltage"],
       "description": "One node's initial voltage at t=0.",
       "properties": {
-        "node": { "type": "string", "description": "Node to initialise — an inter-stage connection name or external-port name (e.g. the output port)." },
+        "node": { "type": "string", "description": "Node to initialise — an inter-stage connection name or external-port name (e.g. the output port), or '<stage>.<net>' for a net inside one stage's circuit that has no port of its own (e.g. an isolated rail internal to a switching cell)." },
         "voltage": { "type": "number", "description": "Initial node voltage at t=0, in volts." }
+      }
+    },
+
+    "initialBranchCurrent": {
+      "title": "initialBranchCurrent",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stage", "component", "current"],
+      "description": "The initial current at t=0 through one winding of a magnetic component inside a stage's circuit.",
+      "properties": {
+        "stage": { "type": "string", "minLength": 1, "description": "Stage instance whose circuit contains the magnetic component." },
+        "component": { "type": "string", "minLength": 1, "description": "The magnetic component, by its name in that stage's circuit." },
+        "winding": { "type": "integer", "minimum": 0, "default": 0, "description": "Winding index in the component's winding order: 0 is the primary (or the only winding of an inductor), 1 the first secondary, and so on." },
+        "current": { "type": "number", "description": "Initial winding current at t=0, in amperes, positive flowing into the winding's start (dotted) terminal and out of its end terminal." }
       }
     },
 
