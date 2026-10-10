@@ -206,8 +206,10 @@ _CATALOGUES = [
     ]),
     Catalogue("mosfets.ndjson", ["semiconductor", "mosfet"], "SAS", "mosfet.json", [
         Field("onResistance", _di("electrical", "onResistance"), "OHM", bound=1e6),
-        Field("drainSourceVoltage", _di("electrical", "drainSourceVoltage"), bound=1e5),
-        Field("continuousDrainCurrent", _di("electrical", "continuousDrainCurrent")),
+        # Signed as the datasheet prints them: a P-channel part's V_DS and I_D are
+        # negative. check_channel_sign ties the sign to part.subType instead.
+        Field("drainSourceVoltage", _di("electrical", "drainSourceVoltage"), positive=False, bound=1e5),
+        Field("continuousDrainCurrent", _di("electrical", "continuousDrainCurrent"), positive=False),
         Field("totalGateCharge", _di("electrical", "totalGateCharge")),
         Field("inputCapacitance", _di("electrical", "inputCapacitance"), "F", bound=1.0),
         Field("outputCapacitance", _di("electrical", "outputCapacitance"), "F", bound=1.0),
@@ -694,6 +696,30 @@ def check_units(body, fields):
     return out
 
 
+CHANNEL_SIGNED = ("drainSourceVoltage", "continuousDrainCurrent", "pulsedDrainCurrent")
+
+
+def check_channel_sign(body):
+    """MOSFET ratings are stored signed as the datasheet prints them: negative on a
+    P-channel part, positive on an N-channel one. A sign that disagrees with
+    part.subType is a mapping bug (or the wrong channel), so it is refused."""
+    out = []
+    di = (body.get("manufacturerInfo") or {}).get("datasheetInfo") or {}
+    sub = (di.get("part") or {}).get("subType")
+    want = {"pChannel": -1, "nChannel": 1}.get(sub)
+    if want is None:
+        return out
+    el = di.get("electrical") or {}
+    for k in CHANNEL_SIGNED:
+        v = el.get(k)
+        if isinstance(v, (int, float)) and not isinstance(v, bool) and v != 0 and (v > 0) != (want > 0):
+            out.append(Refusal(5, identity_of(body) or "<no identity>",
+                               "%s = %r on a %s part; ratings are stored signed as the "
+                               "datasheet prints them (negative for P-channel, positive "
+                               "for N-channel)" % (k, v, sub)))
+    return out
+
+
 # ---------------------------------------------------------------------------
 # rule 7 -- no two-seed expansion (per record)
 # ---------------------------------------------------------------------------
@@ -890,6 +916,8 @@ class IngestGate:
         refusals += check_identity(body)
         refusals += check_citation(body)
         refusals += check_units(body, self.cat.fields)
+        if self.cat.disc == ["semiconductor", "mosfet"]:
+            refusals += check_channel_sign(body)
         refusals += check_seed_identity(body)
         if validator is not None:
             refusals += self._check_schema(body, validator)
@@ -1698,6 +1726,19 @@ def selftest():
     results.append(_run("5a  capacitance = -5e-14 F", "REFUSED",
                         lambda: IngestGate("capacitors.ndjson", validate=False),
                         [negcap]))
+
+    # 5b-5d: MOSFET ratings carry the datasheet's sign, tied to the channel.
+    def _ch(pn, sub, vds, i_d):
+        r = _mos(pn, drainSourceVoltage=vds, continuousDrainCurrent=i_d)
+        r["semiconductor"]["mosfet"]["manufacturerInfo"]["datasheetInfo"]["part"]["subType"] = sub
+        return r
+    nocheck = lambda: IngestGate("mosfets.ndjson", validate=False)
+    results.append(_run("5b  P-channel -30 V / -5 A, signed as printed", "ACCEPTED",
+                        nocheck, [_ch("TESTP1", "pChannel", -30.0, -5.0)]))
+    results.append(_run("5c  P-channel stored +30 V", "REFUSED",
+                        nocheck, [_ch("TESTP2", "pChannel", 30.0, -5.0)]))
+    results.append(_run("5d  N-channel stored -60 V", "REFUSED",
+                        nocheck, [_ch("TESTN1", "nChannel", -60.0, 4.0)]))
 
     # -- rule 6: schema, with vacuous-required counted as missing -------------
     vacuous = {"magnetic": {"manufacturerInfo": {
