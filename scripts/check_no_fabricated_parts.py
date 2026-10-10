@@ -663,6 +663,13 @@ def iter_parts(record, _nested=False):
 # in silicon, not one that is merely unusual.
 SCHOTTKY_MAX_VRRM = 300.0
 SCHOTTKY_MAX_VF = 1.2
+# A 150-200 V trench Schottky at its full rated current really does print more than
+# 1.2 V (Vishay V20150S: 1.43 V max at 20 A, 25 degC). Such a VF is accepted up to this
+# ceiling only when the row says WHERE it was measured (forwardVoltageAt) and cites a
+# document read for this part -- the mis-mapped BAS40 had neither.
+SCHOTTKY_HV_MIN_VRRM = 100.0
+SCHOTTKY_HV_MAX_VF = 2.0
+_PART_READ = {"partNamed", "valuesReadFromSource"}
 
 
 def impossible_ratings(info, electrical):
@@ -677,7 +684,13 @@ def impossible_ratings(info, electrical):
     if vrrm is not None and vrrm > SCHOTTKY_MAX_VRRM:
         return f"silicon Schottky rated {vrrm:g} V reverse (barrier height caps this ~{SCHOTTKY_MAX_VRRM:g} V)"
     if vf is not None and vf > SCHOTTKY_MAX_VF:
-        return f"Schottky with a {vf:g} V forward drop — mis-typed PN/ultrafast rectifier"
+        prov = (info.get("datasheetInfo") or {}).get("provenance") or []
+        cited = any(isinstance(e, dict) and e.get("verification") in _PART_READ
+                    and "electrical.forwardVoltage" in (e.get("fields") or []) for e in prov)
+        documented_hv = (vrrm is not None and vrrm >= SCHOTTKY_HV_MIN_VRRM
+                         and num(electrical.get("forwardVoltageAt")) is not None and cited)
+        if not (documented_hv and vf <= SCHOTTKY_HV_MAX_VF):
+            return f"Schottky with a {vf:g} V forward drop — mis-typed PN/ultrafast rectifier"
     return None
 
 

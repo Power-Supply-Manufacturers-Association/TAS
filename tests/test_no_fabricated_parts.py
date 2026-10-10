@@ -670,3 +670,45 @@ def test_phase5_template_knows_every_unit_letter():
         assert any(p.match(mpn) for p, _ in guard.KNOWN_TEMPLATES), mpn
     for mpn in ("TDK001k08051065_50", "SLF7032T-331MR22-2PF", "B82559A0472A033"):
         assert not any(p.match(mpn) for p, _ in guard.KNOWN_TEMPLATES), mpn
+
+
+# ── impossible Schottky ratings ───────────────────────────────────────────────
+
+def schottky(ref, vrrm, vf, vf_at=None, verification="partNamed", fields=True):
+    el = {"reverseVoltage": vrrm, "forwardCurrent": 20.0, "forwardVoltage": vf}
+    if vf_at is not None:
+        el["forwardVoltageAt"] = vf_at
+    prov = [{"source": "manufacturerDatasheet", "sourceUrl": "https://www.vishay.com/docs/89059/v20150s.pdf",
+             "retrievedDate": "2026-10-10", "verification": verification,
+             **({"fields": ["electrical.forwardVoltage", "electrical.forwardVoltageAt"]} if fields else {})}]
+    return {"semiconductor": {"diode": {"manufacturerInfo": {"name": "Vishay", "reference": ref,
+            "datasheetInfo": {"part": {"partNumber": ref, "subType": "schottky", "technology": "Si"},
+                              "electrical": el, "provenance": prov}}}}}
+
+
+def schottky_findings(tmp_path, *records):
+    path = tmp_path / "diodes.ndjson"
+    path.write_text("".join(json.dumps(r) + "\n" for r in records))
+    return guard.check_file(path)
+
+
+def test_documented_high_voltage_schottky_vf_is_accepted(tmp_path):
+    """Vishay V20150S prints 1.43 V max at 20 A, 25 degC; stored with its test current and cited."""
+    assert schottky_findings(tmp_path, schottky("V20150S-E3/4W", 150.0, 1.43, vf_at=20.0)) == []
+
+
+def test_low_voltage_schottky_over_1v2_is_still_refused(tmp_path):
+    """The BAS40 failure mode: a 40 V Schottky with a rectifier's VF is a mis-mapping."""
+    found = schottky_findings(tmp_path, schottky("BAS40", 40.0, 1.43, vf_at=0.2))
+    assert len(found) == 1 and "forward drop" in found[0][2]
+
+
+def test_high_vf_without_test_current_is_refused(tmp_path):
+    found = schottky_findings(tmp_path, schottky("V20150S-X", 150.0, 1.43))
+    assert len(found) == 1 and "forward drop" in found[0][2]
+
+
+def test_high_vf_with_only_a_series_citation_is_refused(tmp_path):
+    found = schottky_findings(tmp_path, schottky("V20150S-Y", 150.0, 1.43, vf_at=20.0,
+                                                 verification="seriesConfirmed"))
+    assert len(found) == 1 and "forward drop" in found[0][2]
