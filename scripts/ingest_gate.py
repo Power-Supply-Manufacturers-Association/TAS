@@ -508,6 +508,94 @@ def _norm(s):
 
 
 # ---------------------------------------------------------------------------
+# known identities -- is a candidate already in the live catalogue/quarantine?
+# ---------------------------------------------------------------------------
+# Every pipeline join key drops whitespace, '-', '_' and '/'. That is a
+# bijection for most vendors and a COLLISION for some: Eaton prints the decimal
+# point of a standoff voltage as a hyphen, so 10BJ6-0A (6.0 V) and 10BJ60A
+# (60 V) are two different parts under one key -- 121 such pairs are live in
+# diodes.ndjson. Rule (approved by Alf 2026-10-17): only an exact,
+# case-insensitive spelling match is a duplicate. A spelling that differs from
+# a known one only by those characters is a SPELLING TWIN: neither admitted nor
+# dropped as a duplicate, but held for review, admitted only once someone has
+# checked that the vendor prints both spellings.
+# (This is the catalogue-join key. _norm / _token_pattern above, which match a
+# part number inside DOCUMENT TEXT, are a separate tolerance and unchanged.)
+
+_SPELLING_PUNCT = re.compile(r"[\s\-_/]")
+HELD_TWIN = "1-twin"      # Refusal.rule of a held spelling twin
+ALREADY_KNOWN = "already in live catalogue or quarantine"
+_KNOWN_FIELD_RE = {
+    f: re.compile(r'"%s":\s*"((?:[^"\\]|\\.)*)"' % f) for f in ("partNumber", "reference")}
+
+
+def spelling_key(ident):
+    """The pipeline's join key: whitespace, '-', '_' and '/' dropped, upper-cased.
+    Two identities with one key are the same part ONLY if exact_spelling agrees."""
+    return _SPELLING_PUNCT.sub("", ident or "").upper()
+
+
+def exact_spelling(ident):
+    """Identity as compared for duplicates: outer whitespace stripped, upper-cased."""
+    return (ident or "").strip().upper()
+
+
+class KnownSpellings:
+    """Every spelling seen under each spelling_key, with where it was seen."""
+
+    def __init__(self):
+        self._by_key = {}     # key -> {exact spelling: (where, as printed)}
+
+    def __len__(self):
+        return len(self._by_key)
+
+    def add(self, ident, where):
+        k = spelling_key(ident)
+        if k:
+            self._by_key.setdefault(k, {}).setdefault(exact_spelling(ident), (where, ident))
+
+    def add_file(self, path, where, fields=("partNumber", "reference")):
+        """Index every `fields` string on every line of an NDJSON file (a regex
+        scan, so a 1 GB catalogue indexes in seconds; read-only)."""
+        pats = [_KNOWN_FIELD_RE[f] for f in fields]
+        with open(path, encoding="utf-8", errors="replace") as fh:
+            for line in fh:
+                for p in pats:
+                    for m in p.findall(line):
+                        self.add(json.loads('"%s"' % m), where)
+        return self
+
+    def spellings(self, ident):
+        """{exact spelling: (where, as printed)} under ident's key."""
+        return dict(self._by_key.get(spelling_key(ident), {}))
+
+    def verdict(self, ident):
+        """None (unknown) | ("duplicate", where, printed) | ("twin", [(where, printed), ...])."""
+        known = self._by_key.get(spelling_key(ident))
+        if not known:
+            return None
+        hit = known.get(exact_spelling(ident))
+        if hit:
+            return ("duplicate",) + hit
+        return ("twin", sorted(known.values()))
+
+    def reason(self, ident):
+        """The reject reason for `ident`, or None when it is new."""
+        v = self.verdict(ident)
+        if v is None:
+            return None
+        if v[0] == "duplicate":
+            return ALREADY_KNOWN
+        return twin_reason(v[1])
+
+
+def twin_reason(known):
+    return ("spelling twin: differs from %s only by '-', '_', '/' or spaces; "
+            "admit only if the vendor prints both"
+            % ", ".join("%s %s" % wp for wp in known))
+
+
+# ---------------------------------------------------------------------------
 # rule 1 -- identity is real
 # ---------------------------------------------------------------------------
 # A description is prose; a part number is a code. The signals below are the
@@ -1117,7 +1205,11 @@ class IngestGate:
     """Per-record rules on offer(); cohort rules on close()."""
 
     def __init__(self, catalogue, validate=True, min_cohort=MIN_COHORT,
-                 outlier_overrides=(), median_outliers=False):
+                 outlier_overrides=(), median_outliers=False, known=None):
+        """`known`: an optional KnownSpellings of the live catalogue and the
+        quarantine. When given, an exact spelling match is refused as a
+        duplicate (rule 1) and a spelling twin is held (rule HELD_TWIN)."""
+        self.known = known
         if catalogue not in CATALOGUES:
             raise IngestRefused(
                 "unknown catalogue %r -- the gate refuses to pass rows into a file "
@@ -1167,6 +1259,13 @@ class IngestGate:
                             % ("/".join(self.cat.disc), self.cat.disc[0]))]
         refusals = []
         refusals += check_identity(body)
+        if self.known is not None and identity_of(body):
+            v = self.known.verdict(identity_of(body))
+            if v is not None and v[0] == "duplicate":
+                refusals.append(Refusal(1, identity_of(body),
+                                        "%s (%s %s)" % (ALREADY_KNOWN, v[1], v[2])))
+            elif v is not None:
+                refusals.append(Refusal(HELD_TWIN, identity_of(body), twin_reason(v[1])))
         refusals += check_citation(body)
         refusals += check_units(body, self.cat.fields)
         if self.cat.disc == ["semiconductor", "mosfet"]:
@@ -2168,6 +2267,42 @@ def _selftest():
                     "744314101.pdf")
     results.append(_run("6b  a complete, cited, schema-valid magnetic", "ACCEPTED",
                         lambda: IngestGate("magnetics.ndjson"), [real]))
+
+    # -- rule 1, against the live catalogue: hyphen-aware duplicates ----------
+    # Eaton 10BJ60A (60 V) is live; 10BJ6-0A is the 6.0 V part, a different
+    # part under the same hyphen-blind key. The known index is read from temp
+    # NDJSON files so add_file's regex scan is exercised too.
+    import tempfile
+    with tempfile.TemporaryDirectory(prefix="gate_selftest_known_") as kd:
+        live_f, quar_f = Path(kd, "diodes.ndjson"), Path(kd, "quarantine.ndjson")
+        live_f.write_text(json.dumps(_mos("10BJ60A")) + "\n" + json.dumps(_mos("SMBJ5.0A")) + "\n")
+        quar_f.write_text(json.dumps(_mos("10BJ7-5A")) + "\n")
+        known = KnownSpellings()
+        known.add_file(live_f, "live")
+        known.add_file(quar_f, "quarantined")
+    kgate = lambda: IngestGate("mosfets.ndjson", validate=False, known=known)  # noqa: E731
+
+    def _known_case(name, expect, pn):
+        refusals = kgate().offer(_mos(pn))
+        got = ("HELD" if any(r.rule == HELD_TWIN for r in refusals)
+               else "REFUSED" if refusals else "ACCEPTED")
+        ok = got == expect
+        print("%-4s %-9s (expected %-9s) %s" % ("PASS" if ok else "FAIL", got, expect, name))
+        for r in refusals[:2]:
+            print("        %s" % r)
+        return ok
+
+    results.append(_known_case("1e  exact live duplicate 10BJ60A", "REFUSED", "10BJ60A"))
+    results.append(_known_case("1f  exact duplicate, other case: 10bj60a", "REFUSED", "10bj60a"))
+    results.append(_known_case("1g  exact quarantined duplicate 10BJ7-5A", "REFUSED", "10BJ7-5A"))
+    results.append(_known_case("1h  hyphen twin 10BJ6-0A of live 10BJ60A", "HELD", "10BJ6-0A"))
+    results.append(_known_case("1i  hyphen-less twin 10BJ75A of quarantined 10BJ7-5A",
+                               "HELD", "10BJ75A"))
+    results.append(_known_case("1j  slash/space twin 'SMBJ5.0 A' of SMBJ5.0A", "HELD",
+                               "SMBJ5.0 A"))
+    results.append(_known_case("1k  unrelated part 10BJ33A", "ACCEPTED", "10BJ33A"))
+    results.append(_known_case("1l  a dot is identity: SMBJ50A is not a twin of SMBJ5.0A",
+                               "ACCEPTED", "SMBJ50A"))
 
     print("\n%d/%d counter-checks behaved as specified" % (sum(results), len(results)))
     return 0 if all(results) else 1
