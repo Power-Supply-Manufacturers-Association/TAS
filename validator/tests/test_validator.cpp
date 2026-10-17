@@ -1899,6 +1899,101 @@ TEST_CASE("Corpus: a varistor with no surgeWaveform is screened only among unsta
           std::string::npos);
 }
 
+// ---- 2026-10-17: TVS/zener/ESD leakage screened per standoff-voltage band ----
+// reverseLeakageCurrent of tvs/esd parts is grouped by standoffVoltage band
+// (<7 V, 7-10 V, >=10 V; zener: breakdownVoltage), absent voltage = "unstated",
+// and those cohorts use a 0.30-decade MAD floor (thresholds.hpp CORPUS_LEAK_*).
+// Revert check: restore HEAD's corpus.cpp, rebuild, and the first three
+// "[leakage_band]" cases go RED.
+namespace {
+json leak_row(const std::string& ref, const char* subtype, std::optional<json> volts,
+              double ir) {
+    json r = json::parse(R"json({"semiconductor":{"diode":{"manufacturerInfo":{
+      "name":"ACME","reference":"R","datasheetInfo":{"part":{"technology":"Si"},
+      "electrical":{}}}}}})json");
+    auto& mi = r["semiconductor"]["diode"]["manufacturerInfo"];
+    mi["reference"] = ref;
+    mi["datasheetInfo"]["part"]["subType"] = subtype;
+    auto& e = mi["datasheetInfo"]["electrical"];
+    e["reverseLeakageCurrent"] = ir;
+    if (volts) e[std::string(subtype) == "zener" ? "breakdownVoltage" : "standoffVoltage"] = *volts;
+    return r;
+}
+// The live Bourns shape: >=10 V parts at 1-2 uA dominate the cohort.
+void add_high_voltage_tvs(std::vector<json>& recs) {
+    const double vrwm[] = {12, 13, 14, 15, 16, 17, 18, 20, 22, 24,
+                           26, 28, 30, 33, 36, 40, 43, 45, 48, 51};
+    for (int i = 0; i < 20; ++i)
+        recs.push_back(leak_row("HV", "tvs", json(vrwm[i]), i % 2 ? 2e-6 : 1e-6));
+}
+}  // namespace
+
+TEST_CASE("Corpus: a 5 V TVS at 1 mA among 5 V parts is not a leakage outlier",
+          "[corpus][leakage_band]") {
+    std::vector<json> recs;
+    add_high_voltage_tvs(recs);
+    for (int i = 0; i < 9; ++i) recs.push_back(leak_row("LV", "tvs", json(5.0), i % 2 ? 1e-3 : 8e-4));
+    recs.push_back(leak_row("SMAJ5.0A", "tvs", json(5.0), 1e-3));
+    CHECK(!flagged(recs, "SMAJ5.0A", "GEN_COHORT_OUTLIER"));
+    // A row stating no standoffVoltage is its own "unstated" band, never pooled
+    // with the >=10 V rows...
+    recs.push_back(leak_row("NOVRWM", "tvs", std::nullopt, 1e-3));
+    CHECK(!flagged(recs, "NOVRWM", "GEN_COHORT_OUTLIER"));
+    // ...while the same 1 mA stated at 24 V IS judged against the >=10 V band.
+    recs.back() = leak_row("NOVRWM", "tvs", json(24.0), 1e-3);
+    CHECK(flagged(recs, "NOVRWM", "GEN_COHORT_OUTLIER"));
+}
+
+TEST_CASE("Corpus: a 10 V part at 1 mA among 10 V parts at 5 uA is flagged",
+          "[corpus][leakage_band]") {
+    // Pooled with 5 V parts at 1 mA, the 10 V typo hid inside the spread; in
+    // its own band it stands 2.3 decades above ten identical 5 uA mates (raw
+    // MAD 0, so only the floor lets the band be judged at all).
+    std::vector<json> recs;
+    for (int i = 0; i < 10; ++i) recs.push_back(leak_row("V10", "tvs", json(10.0), 5e-6));
+    for (int i = 0; i < 9; ++i) recs.push_back(leak_row("V5", "tvs", json(5.0), 1e-3));
+    recs.push_back(leak_row("TYPO10V", "tvs", json(10.0), 1e-3));
+    CHECK(flagged(recs, "TYPO10V", "GEN_COHORT_OUTLIER"));
+    CHECK(message_for(recs, "TYPO10V", "GEN_COHORT_OUTLIER").find("standoffVoltage=>=10V") !=
+          std::string::npos);
+    CHECK(!flagged(recs, "V5", "GEN_COHORT_OUTLIER"));
+}
+
+TEST_CASE("Corpus: banded leakage needs more than a 0.3-decade MAD to fire",
+          "[corpus][leakage_band]") {
+    // Nine >=10 V rows on near-identical values (raw MAD ~0.04 decades): a part
+    // at 10 uA is 0.96 decades up -- z ~16 on the raw MAD, ~2.2 on the floor.
+    std::vector<json> recs;
+    const double tight[] = {1.0e-6, 1.0e-6, 1.0e-6, 1.1e-6, 1.1e-6, 1.1e-6, 1.2e-6, 1.2e-6, 1.2e-6};
+    for (double ir : tight) recs.push_back(leak_row("T", "esd", json(24.0), ir));
+    recs.push_back(leak_row("TENX", "esd", json(24.0), 1e-5));
+    CHECK(!flagged(recs, "TENX", "GEN_COHORT_OUTLIER"));
+    // The floor is confined to banded leakage: the same tight spread in another
+    // log-scaled field is still judged on its raw MAD.
+    for (std::size_t i = 0; i < recs.size(); ++i)
+        recs[i]["semiconductor"]["diode"]["manufacturerInfo"]["datasheetInfo"]["electrical"]
+            ["junctionCapacitance"] = i + 1 < recs.size() ? tight[i] * 1e-6 : 1e-11;
+    CHECK(flagged(recs, "TENX", "GEN_COHORT_OUTLIER"));
+    CHECK(message_for(recs, "TENX", "GEN_COHORT_OUTLIER").find("junctionCapacitance=") == 0);
+}
+
+TEST_CASE("Corpus: a zener's leakage band comes from its breakdownVoltage",
+          "[corpus][leakage_band]") {
+    // breakdownVoltage is a dimensionWithTolerance; {2.2, 2.6} resolves to 2.4 V.
+    std::vector<json> recs;
+    for (int i = 0; i < 10; ++i)
+        recs.push_back(leak_row("Z24", "zener", json{{"nominal", 24.0}}, i % 2 ? 2e-7 : 1e-7));
+    for (int i = 0; i < 9; ++i)
+        recs.push_back(leak_row("Z2V4", "zener", json{{"minimum", 2.2}, {"maximum", 2.6}},
+                                i % 2 ? 2e-5 : 5e-5));
+    recs.push_back(leak_row("BZT52C2V4", "zener", json{{"minimum", 2.2}, {"maximum", 2.6}}, 5e-5));
+    CHECK(!flagged(recs, "BZT52C2V4", "GEN_COHORT_OUTLIER"));
+    recs.back() = leak_row("BZT52C2V4", "zener", json{{"nominal", 24.0}}, 5e-5);
+    CHECK(flagged(recs, "BZT52C2V4", "GEN_COHORT_OUTLIER"));
+    CHECK(message_for(recs, "BZT52C2V4", "GEN_COHORT_OUTLIER").find("breakdownVoltage=>=10V") !=
+          std::string::npos);
+}
+
 // ---- 2026-09-04 fabrication-shape checks -------------------------------------
 
 // ABT #531 shape: outputCapacitance = onResistance^2*10^k EXACTLY and

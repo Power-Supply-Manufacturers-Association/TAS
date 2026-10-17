@@ -143,6 +143,14 @@ target_include_directories(tas_validator_core PUBLIC
   "${CMAKE_CURRENT_SOURCE_DIR}/include")
 target_include_directories(tas_validator_core PRIVATE
   "${CMAKE_CURRENT_BINARY_DIR}/generated")
+# The PEAS sibling repo supplies resolve_dimensional_values (header-only), the one
+# rule for collapsing a dimensionWithTolerance to a scalar (corpus.cpp reads a
+# zener's breakdownVoltage through it). Same workspace-layout requirement as CIAS.
+set(PEAS_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../PEAS/src")
+if(NOT EXISTS "${PEAS_SRC_DIR}/DimensionJson.hpp")
+  message(FATAL_ERROR "PEAS sibling repo not found next to TAS (${PEAS_SRC_DIR}) -- the PSMA workspace layout is required")
+endif()
+target_include_directories(tas_validator_core PRIVATE "${PEAS_SRC_DIR}")
 target_link_libraries(tas_validator_core PUBLIC nlohmann_json::nlohmann_json)
 
 # --- Python module -----------------------------------------------------------
@@ -189,7 +197,7 @@ if(BUILD_TAS_VALIDATOR_TESTS AND NOT EMSCRIPTEN)
   target_include_directories(tas_validator_core_revert PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}/include")
   target_include_directories(tas_validator_core_revert PRIVATE
-    "${CMAKE_CURRENT_BINARY_DIR}/generated")
+    "${CMAKE_CURRENT_BINARY_DIR}/generated" "${PEAS_SRC_DIR}")
   target_link_libraries(tas_validator_core_revert PUBLIC nlohmann_json::nlohmann_json)
   target_compile_definitions(tas_validator_core_revert PUBLIC TAS_VALIDATOR_REVERT_HARNESS)
 

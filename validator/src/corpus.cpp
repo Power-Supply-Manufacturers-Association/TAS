@@ -10,7 +10,10 @@
 // legitimate second-source equivalents and part-number-family variants (33-51% of
 // parts share a block), so it is not a reliable synthesis signal.
 #include "tas_validator/helpers.hpp"
+#include "tas_validator/thresholds.hpp"
 #include "tas_validator/validator.hpp"
+
+#include "DimensionJson.hpp"  // PEAS::resolve_dimensional_values
 
 #include <algorithm>
 #include <cmath>
@@ -115,6 +118,61 @@ const char* waveform_field_for(const std::string& field) {
     return nullptr;
 }
 
+// ---- standoff-voltage bands for TVS/zener/ESD leakage (2026-10-17) ---------
+// reverseLeakageCurrent of a tvs/esd/zener diode depends steeply on its working
+// voltage (tunnelling below ~7 V, avalanche above ~10 V; evidence and band edges
+// in thresholds.hpp CORPUS_LEAK_*). Pooled, every honest 5 V part at ~1 mA was an
+// outlier of a cohort dominated by >=10 V parts at ~1 uA. So that field is
+// screened only against rows in the SAME voltage band: standoffVoltage (V_RWM)
+// for tvs/esd, breakdownVoltage (V_Z) for zener -- the voltage SAS diode.json
+// defines for each subtype. Other diode subtypes (rectifier, schottky, ...) are
+// untouched: their leakage is specified at V_RRM, a different statement.
+//
+// Absent band voltage -> its own "unstated" band, never a default band. A
+// present voltage that cannot be resolved to a positive finite number cannot be
+// placed in any band, so that row's leakage is left out of the screen (the same
+// rule as an uninterpretable waveform above; the schema gate rejects it).
+const char* leakage_band_voltage_for(const std::string& comp, const std::string& subtype,
+                                     const std::string& field) {
+    if (comp != "diode" || field != "reverseLeakageCurrent") return nullptr;
+    if (subtype == "tvs" || subtype == "esd") return "standoffVoltage";
+    if (subtype == "zener") return "breakdownVoltage";
+    return nullptr;
+}
+
+// The voltage that places a row in a band, or nullopt when the field is present
+// but not a usable value. breakdownVoltage is a dimensionWithTolerance, so it is
+// collapsed with the canonical PEAS resolver (nominal, else mid-range, else the
+// stated end); the presence check first keeps the resolver from throwing on a
+// malformed object, which is then reported as unplaceable rather than guessed.
+std::optional<double> band_voltage(const json& v) {
+    bool resolvable = v.is_number();
+    if (v.is_object())
+        for (const char* k : {"nominal", "minimum", "maximum"})
+            if (v.contains(k) && v[k].is_number()) resolvable = true;
+    if (!resolvable) return std::nullopt;
+    double d = PEAS::resolve_dimensional_values(v);
+    if (!std::isfinite(d) || d <= 0) return std::nullopt;
+    return d;
+}
+
+// Why the MAD floor (thresholds.hpp CORPUS_LEAK_MAD_FLOOR_DECADES) is confined to
+// these banded leakage cohorts. Measured 2026-10-17 on every live catalogue
+// (GEN_COHORT_OUTLIER, read-only): applied to ALL log-scaled fields, a 0.30-decade
+// floor removes 9,009 of 22,814 findings -- resistors 12,309 -> 10,756, capacitors
+// 3,471 -> 486, connectors 2,918 -> 546, bjts 994 -> 700, diodes 965 -> 200,
+// mosfets 368 -> 156, controllers 195 -> 11, ... -- and those are not round-value
+// artefacts: a Nichicon UBY thermalResistance of 15 at z=-11, a 4.1 W Nexperia
+// zener powerDissipation at z=+9.7 among its cohort, Vishay film voltageRatedAcMax
+// at z=+18. Judging raw-MAD-0 cohorts against the floor as well ADDS 11,546
+// (11,157 of them capacitor dissipationFactorFrequency, a catalogue axis). Those
+// fields' cohorts have real, continuous spreads; a floor there would hide outliers.
+const char* leakage_band_label(double volts) {
+    if (volts < thr::CORPUS_LEAK_BAND_LOW_V) return "<7V";
+    if (volts < thr::CORPUS_LEAK_BAND_HIGH_V) return "7-10V";
+    return ">=10V";
+}
+
 constexpr std::size_t CEILING_MIN_AT_MAX = 5;   // enough repeats to be systematic
 // max/median. Tuned on the live capacitor catalogue: at 10x this also catches honest
 // family structure (a Rubycon series whose smallest can legitimately sits 12x above
@@ -178,6 +236,7 @@ const json* find_component(const json& part, std::string& comp) {
 
 struct Rec {
     std::string comp, mfr, ref, sub;  // sub = technology/series sub-cohort key
+    std::string subtype;              // datasheetInfo.part.subType, if a string
     std::string url;                  // manufacturerInfo.datasheetUrl, if a string
     const json* elec = nullptr;       // the electrical object (electrical[0] for magnetics)
 };
@@ -198,6 +257,8 @@ Rec describe(const json& part) {
     // different dielectrics / voltage classes together, collapsing the MAD and
     // exploding z-scores. technology+subType+series narrows to comparable parts.
     const json* part_obj = at(*mi, "datasheetInfo", "part");
+    if (part_obj && part_obj->contains("subType") && (*part_obj)["subType"].is_string())
+        r.subtype = (*part_obj)["subType"].get<std::string>();
     if (part_obj)
         for (const char* k : {"technology", "subType", "series"})
             if (part_obj->contains(k) && (*part_obj)[k].is_string()) {
@@ -564,6 +625,7 @@ std::vector<CorpusFinding> validate_corpus(const std::vector<json>& records) {
         // waveform_field_for); `label` carries that sub-cohort into the message.
         struct FieldGroup {
             std::string field, label;
+            bool madFloor = false;  // a CORPUS_LEAK_MAD_FLOOR_DECADES cohort
             std::vector<std::pair<std::size_t, double>> vals;
         };
         std::unordered_map<std::string, FieldGroup> byField;
@@ -574,6 +636,7 @@ std::vector<CorpusFinding> validate_corpus(const std::vector<json>& records) {
                 if (!v) continue;
                 std::string gk = it.key();
                 std::string label = key;
+                bool madFloor = false;
                 if (const char* wf = waveform_field_for(it.key())) {
                     std::string wave;
                     if (!e.contains(wf)) {
@@ -586,10 +649,25 @@ std::vector<CorpusFinding> validate_corpus(const std::vector<json>& records) {
                     gk += std::string("@") + wf + "=" + wave;
                     label += std::string(" ") + wf + "=" + wave;
                 }
+                if (const char* bf =
+                        leakage_band_voltage_for(recs[i].comp, recs[i].subtype, it.key())) {
+                    std::string band;
+                    if (!e.contains(bf)) {
+                        band = "unstated";
+                    } else if (auto bv = band_voltage(e[bf])) {
+                        band = leakage_band_label(*bv);
+                    } else {
+                        continue;  // unplaceable band voltage: no cohort to judge it in
+                    }
+                    gk += std::string("@") + bf + "=" + band;
+                    label += std::string(" ") + bf + "=" + band;
+                    madFloor = true;
+                }
                 FieldGroup& g = byField[gk];
                 if (g.vals.empty()) {
                     g.field = it.key();
                     g.label = label;
+                    g.madFloor = madFloor;
                 }
                 g.vals.push_back({i, *v});
             }
@@ -643,6 +721,13 @@ std::vector<CorpusFinding> validate_corpus(const std::vector<json>& records) {
             dev.reserve(xs.size());
             for (double x : xs) dev.push_back(std::fabs(x - med));
             double mad = median_sorted(dev);
+            // Banded leakage cohorts sit on a few round 1-2-5 values, so their raw
+            // MAD is 0 or log10(2): the floor keeps the screen on at a fixed
+            // sensitivity instead of letting one ingest switch it from off to a
+            // hair trigger (thresholds.hpp CORPUS_LEAK_MAD_FLOOR_DECADES). A
+            // floored cohort is judged even at raw MAD 0. Not applied elsewhere:
+            // see the measurement note above leakage_band_label.
+            if (grp.madFloor && allPos) mad = std::max(mad, thr::CORPUS_LEAK_MAD_FLOOR_DECADES);
             if (mad <= 0) continue;  // cohort is (near-)constant; no spread to judge
 
             for (std::size_t j = 0; j < vals.size(); ++j) {

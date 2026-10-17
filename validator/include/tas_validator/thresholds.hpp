@@ -1117,4 +1117,52 @@ inline constexpr double ACC_PREECE_EXPONENT = 1.5;
 inline constexpr double ACC_IMPEDANCE_SUS_LO = 25.0;
 inline constexpr double ACC_IMPEDANCE_SUS_HI = 150.0;
 
+// ---- Corpus screen: TVS / zener / ESD reverse leakage (corpus.cpp) ----------
+// A silicon TVS/zener/ESD diode's leakage at its working voltage is NOT one
+// population: below ~7 V the junction is so heavily doped that band-to-band
+// tunnelling dominates and I_R sits near a milliamp; above ~10 V it is avalanche
+// devices at ~1 uA; between them the curve falls about 1.5 decades. Pooling the
+// three made every honest low-voltage part a GEN_COHORT_OUTLIER: on 2026-10-17
+// the Bourns|diode|Si/tvs cohort (1,295 rows) produced 83 such findings, every
+// one a 5-6.5 V SMAJ/SMBJ/SMCJ/SMLJ/P4SMA/P6SMB/1.5SMC/5.0SMDJ part at 0.5-1.05 mA,
+// each matching its Bourns datasheet (staging/vendor_pull/bourns/ds/).
+//
+// Bands chosen from the live Bourns rows (I_R by stated standoffVoltage):
+//   3.3-6.5 V  : 0.5-1.05 mA (SMxJ-class), 5 uA (CDSOD323-T03/T05, real per
+//                cdsod323-txxc.pdf "Maximum Leakage Current @ VWM 5 uA")
+//   7.0-9.4 V  : 200 uA at 7 V falling to 5 uA at 9.4 V -- the transition
+//   10 V and up: 5 uA at 10-10.2 V, then 1-2 uA (10 uA on some series) to 495 V
+// The YAGEO BZT52C2V4W/2V7W zeners (50 / 20 uA at V_Z 2.4 / 2.7 V) follow the same
+// low-voltage physics and were the only other leakage outliers this banding
+// removes. Three bands, not finer: a half-decade grid (log-spaced) was also
+// measured on the live diodes. Without the floor below it only trades the four
+// CDSOD323-T03/T05 flags for three Nexperia BZX84-x9V1 ones; with the floor
+// the two grids flag the same rows. The coarser grid keeps cohorts larger
+// (8-row screening minimum), so it wins.
+// The band is read from standoffVoltage (V_RWM) for tvs/esd and from
+// breakdownVoltage (V_Z, the zener's defining voltage; SAS has no separate
+// zenerVoltage) for zener. A row that states neither is its own "unstated" band.
+inline constexpr double CORPUS_LEAK_BAND_LOW_V = 7.0;    // [0, 7) V: tunnelling
+inline constexpr double CORPUS_LEAK_BAND_HIGH_V = 10.0;  // [7, 10) V transition; >= 10 V
+// Minimum MAD (in decades) for those banded leakage cohorts. Datasheet leakage
+// maxima are round numbers on a 1-2-5 ladder, so a cohort sits on one or two
+// values and its MAD is 0 or exactly log10(2) = 0.301: the screen was either OFF
+// (MAD 0, skipped) or on a hair trigger, and one ingest flipped it -- 54 Bourns
+// PTVS rows at 10 uA turned the 83 findings above on. With the floor the screen is
+// always on and needs a departure of 5 / 0.6745 x 0.30 = 2.22 decades (166x) from
+// the band median before it fires. A 1 mA part among 10 V parts at 5 uA (2.30
+// decades) still fires; the CDSOD323 rows above (2.20 decades below their band
+// median) do not -- close to the line, and recorded here so a later move of the
+// floor is made knowingly.
+// A floored cohort is judged even when its raw MAD is 0, so the screen does not
+// switch on and off with ingests. Cost, measured 2026-10-17: the Bourns|diode|
+// Si/esd >=10 V band (19 rows at 1 uA) now flags its four CDSOD323-T12C/T24C-DSL(Q)
+// rows at 1 nA (z=-6.7). Those values are real ("Maximum Leakage Current @ VWM
+// 1 nA", cdsod323-t24c-dslq.pdf): a deliberate low-leakage series 1000x below
+// its siblings, which is what a Suspicious screen exists to show a human.
+// Scope: ONLY these banded leakage cohorts. Applied to every log-scaled corpus
+// field the floor removes 9,009 of 22,814 live findings, real outliers among them
+// -- counts and examples in corpus.cpp above leakage_band_label.
+inline constexpr double CORPUS_LEAK_MAD_FLOOR_DECADES = 0.30;
+
 }  // namespace tas::thr
