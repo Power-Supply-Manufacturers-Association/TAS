@@ -63,6 +63,10 @@ FAMILIES = {
     "thyristors.ndjson": (["semiconductor", "thyristor"], "SAS", "thyristor.json", ("semiconductor", "thyristor")),
     "jfets.ndjson": (["semiconductor", "jfet"], "SAS", "jfet.json", ("semiconductor", "jfet")),
     "optocouplers.ndjson": (["semiconductor", "optocoupler"], "SAS", "optocoupler.json", ("semiconductor", "optocoupler")),
+    "connector_accessories.ndjson": (["connectorAccessory"], "CONAS", "connectorAccessory.json", "connectorAccessory"),
+    "relays.ndjson": (["relay"], "EMAS", "relay.json", "relay"),
+    "switches.ndjson": (["switch"], "EMAS", "switch.json", "switch"),
+    "potentiometers.ndjson": (["potentiometer"], "RAS", "potentiometer.json", "potentiometer"),
 }
 
 # circuits.ndjson is not a part catalogue and cannot use FAMILIES: a record is a whole CIAS
@@ -77,7 +81,8 @@ CIRCUITS = "circuits.ndjson"
 # explicitly means an unexpected validator error on a KNOWN family still blocks, instead of
 # being swallowed by a bare try/except.
 BLADE_DISCRIMINATORS = {"magnetic", "capacitor", "resistor", "varistor", "connector",
-                        "thermistor", "semiconductor", "analog", "controller", "timeBase"}
+                        "thermistor", "semiconductor", "analog", "controller", "timeBase",
+                        "connectorAccessory", "relay", "switch", "potentiometer"}
 PEAS_NATIVE_ATOMS = {"behavioral", "transmissionLine"}
 
 
@@ -86,7 +91,7 @@ def build_registry():
     from referencing.jsonschema import DRAFT202012
     by_id = {}
     for repo in ("PEAS", "SAS", "CAS", "RAS", "MAS", "CTAS", "AAS", "CONAS", "TDAS",
-                 "CIAS"):
+                 "CIAS", "EMAS"):
         d = PSMA / repo / "schemas"
         if not d.is_dir():
             continue
@@ -336,7 +341,7 @@ def main():
     gateable = [f for f in files if f in FAMILIES]
     circuits = CIRCUITS in files
     for f in unmapped:
-        if ".quarantine_" in f or f.endswith((".bak", ".backup.ndjson")):
+        if f == "quarantine.ndjson" or ".quarantine_" in f or f.endswith((".bak", ".backup.ndjson")):
             print(f"  {f}: quarantine/backup file, not gated")
         else:
             print(f"  {f}: NO FAMILY MAPPING — cannot gate, refusing to pass",
