@@ -815,3 +815,66 @@ def test_sub_10pf_step_value_quiet_and_femtofarad_fires():
                   "CAP_E_SERIES") == []
     assert _cap_severities(_cap("ceramic-class-1", capacitance=1e-15, ratedVoltage=50.0),
                   "CAP_E_SERIES") == ["SUSPICIOUS"]
+
+
+# ---------------------------------------------------------------------------
+# 2026-10-17: TVS pulse ratings carry their surge waveform (PEAS surgeWaveform,
+# SAS diode peakPulse*Waveform / clampingCurrent / clampingWaveform). Exercised
+# through the binding so a stale .so cannot pass them.
+# ---------------------------------------------------------------------------
+
+
+def _tvs(**elec):
+    return {"semiconductor": {"diode": {"manufacturerInfo": {
+        "name": "ACME", "reference": elec.pop("_ref", "X"),
+        "datasheetInfo": {"part": {"subType": "tvs", "technology": "Si"},
+                          "electrical": elec}}}}}
+
+
+def test_tvs_waveform_codes_are_emittable():
+    assert {"DIO_TVS_PULSE_PRODUCT", "DIO_TVS_WAVEFORM_ORDER"} <= set(tas_validator.check_codes())
+
+
+def test_tvs_pulse_product_needs_one_stated_pulse():
+    one = dict(standoffVoltage=8.0, clampingVoltage=13.6, peakPulsePower=1000.0,
+               peakPulseCurrent=58.8, peakPulsePowerWaveform="10/1000",
+               peakPulseCurrentWaveform="10/1000", clampingWaveform="10/1000")
+    assert ("DIO_TVS_PULSE_PRODUCT", "SUSPICIOUS") in _codes(_tvs(**one))
+    closes = dict(one, peakPulsePower=800.0)
+    assert not any(c == "DIO_TVS_PULSE_PRODUCT" for c, _ in _codes(_tvs(**closes)))
+    bare = {k: v for k, v in one.items() if not k.endswith("Waveform")}
+    v = tas_validator.validate(_tvs(**bare))
+    assert not any(f.code == "DIO_TVS_PULSE_PRODUCT" for f in v.findings)
+    assert "DIO_TVS_PULSE_PRODUCT" in v.skipped
+
+
+def test_tvs_waveform_order_needs_a_bounded_10_1000_current():
+    rec = dict(standoffVoltage=6.5, clampingVoltage=12.0, clampingCurrent=50.0,
+               clampingWaveform="10/1000", peakPulsePower=600.0,
+               peakPulsePowerWaveform="10/1000", peakPulseCurrent=30.0,
+               peakPulseCurrentWaveform="8/20")
+    assert ("DIO_TVS_WAVEFORM_ORDER", "IMPOSSIBLE") in _codes(_tvs(**rec))
+    assert not any(c == "DIO_TVS_WAVEFORM_ORDER"
+                   for c, _ in _codes(_tvs(**dict(rec, peakPulseCurrent=300.0))))
+    no_ic = {k: v for k, v in rec.items() if k != "clampingCurrent"}
+    assert not any(c == "DIO_TVS_WAVEFORM_ORDER" for c, _ in _codes(_tvs(**no_ic)))
+
+
+def test_corpus_splits_peak_pulse_current_by_waveform():
+    smaj = [8.0, 10.3, 12.5, 15.4, 17.9, 21.0, 24.0, 28.6, 33.0, 38.0, 41.7, 47.0]
+
+    def cohort(kA_wave):
+        recs = [_tvs(_ref="R", standoffVoltage=24.0, peakPulseCurrent=v,
+                     peakPulseCurrentWaveform="10/1000") for v in smaj]
+        kA = dict(_ref="PTVS", standoffVoltage=24.0, peakPulseCurrent=1.0e4)
+        if kA_wave is not None:
+            kA["peakPulseCurrentWaveform"] = kA_wave
+        return recs + [_tvs(**kA)]
+
+    def flagged(recs):
+        return any(f.reference == "PTVS" and f.code == "GEN_COHORT_OUTLIER"
+                   for f in tas_validator.validate_corpus(recs))
+
+    assert not flagged(cohort("8/20"))
+    assert not flagged(cohort(None))   # unstated: its own cohort, never a default
+    assert flagged(cohort("10/1000"))

@@ -341,6 +341,41 @@ inline constexpr double MOS_FOM_GAN_SUS = 1.0e-10;        //    100 mohm*nC (all
 // separately guaranteed at VRWM). Below 0.75x no spec convention explains it —
 // that is a wrong-column value. Calibrated during ABT #500/#507 (2026-08-02).
 inline constexpr double DIO_TVS_VBR_VSO_GUARD = 0.75;
+// DIO_TVS_PULSE_PRODUCT: V_C x I_PP / P_PP for a TVS whose three pulse values
+// are stated at ONE surgeWaveform with V_C at I_PP. By the datasheet's own
+// definition the ratio is 1; the band is how far vendor rounding legitimately
+// moves it. CALIBRATED 2026-10-17 on the 10,587 live data/diodes.ndjson rows
+// carrying all three values (no row states a waveform yet, so this is the
+// population the check will meet once Phase-2 stamping lands):
+//   p1 0.897  p2 0.963  p5 0.992  p25 1.000  p50 1.003  p75 1.020  p95 1.067
+//   p99 1.125  p99.5 1.135  p99.9 1.404
+// The honest upper shoulder is a VENDOR CONVENTION, not a defect: Littelfuse
+// SA (500 W, e.g. SA10 VC 18.8 V x IPP 30 A = 1.128), P4KE/P4SMA (P4SMA530C
+// 1.142), P6SMB51C 1.153, TPSMB650CA-A 1.196 print V_C MAXIMUM at an I_PP
+// derived from the nominal P_PP, so the product sits 10-20 % high across whole
+// series. 1.25 clears the highest of those (1.196) by ~5 %. Above it only 17
+// rows remain, all Texas Instruments TSD (1.27-1.70: e.g. TSD24C 250 W, 9 A,
+// 39 V = 1.404), the mixed-waveform signature this check exists for.
+// The lower side has no comparable convention: below 0.95 the population is
+// sparse except two discrete clusters at 0.75 (Vishay P4SMA510A, TPSMPxxA,
+// SMAJ110A-M3; Littelfuse LCE6.5) and 0.7997 (24 Vishay SMB8Jxx rows storing
+// P_PP 1000 W while V_C x I_PP = 800 W). A whole series sitting at exactly 3/4
+// or 4/5 of its stated power is a different-pulse or wrong-power value, so the
+// floor 0.8 (strict <) flags both clusters (87 rows) and nothing in 0.80-0.95.
+// At [0.8, 1.25] 104 of 10,587 rows (0.98 %) would fire, against 270 at the
+// +/-10 % band PROPOSAL.md section 5 used to count "rows that close".
+inline constexpr double DIO_TVS_PULSE_PRODUCT_LO = 0.8, DIO_TVS_PULSE_PRODUCT_HI = 1.25;
+// "clampingCurrent equals peakPulseCurrent": equality to float precision. A
+// different test current (19.8 A against a 20 A I_PP) is a different V_C
+// statement, and the pulse-product rule only holds for V_C AT I_PP.
+inline constexpr double DIO_TVS_SAME_CURRENT_REL = 1e-6;
+// DIO_TVS_WAVEFORM_ORDER rounding allowance. The reconstructed 10/1000 current
+// is a quotient of two printed values (P_PP / V_C), each rounded to 2-3
+// significant figures (~+/-5 % on the quotient), and the comparison is against a
+// third printed value. Real parts sit far from the line (an 8/20 I_PP is
+// typically 5-10x the 10/1000 one), so 0.9 costs no sensitivity: it only keeps
+// an IMPOSSIBLE verdict from resting on a rounding digit.
+inline constexpr double DIO_TVS_WAVEFORM_ORDER_ROUNDING = 0.9;
 // Forward-voltage windows by technology [V].
 inline constexpr double DIO_VF_HARD_LO = 0.05, DIO_VF_HARD_HI = 5.0;  // IMP outside
 inline constexpr double DIO_VF_SCHOTTKY_LO = 0.2, DIO_VF_SCHOTTKY_HI = 1.3;  // real Schottky Vf 0.26-1.2

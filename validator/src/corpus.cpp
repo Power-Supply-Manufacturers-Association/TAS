@@ -78,6 +78,26 @@ bool ceiling_eligible(const std::string& field) {
 // The finding is Suspicious for exactly that reason; a value repeated at the same
 // ceiling by SEVERAL independent manufacturers is the one that is nearly always ours.
 
+// ---- surge-waveform sub-cohorts (2026-10-17, TVS waveform schema) -----------
+// A TVS/ESD pulse rating is only a number AT a stated impulse: SAS diode.json
+// carries peakPulseCurrentWaveform / peakPulsePowerWaveform beside the two
+// ratings (PEAS surgeWaveform enum). The same part's 8/20 us IPP is several times
+// its 10/1000 us IPP, and a Bourns PTVS rates 1-20 kA at 8/20 where an SMAJ-class
+// part rates tens of A at 10/1000 -- pooling them makes every honest 8/20 rating
+// an "outlier" or a "ceiling" of the other wave's cohort. So a waveform-bound
+// field is screened ONLY against rows that state the SAME waveform for it.
+//
+// A row that states NO waveform is screened against the other no-waveform rows
+// and never against a stated one: absent means "not stated", not a default
+// waveform. A present but non-string waveform cannot be placed in any cohort, so
+// that row's value is left out of that field's screen (it is the schema gate's
+// job to reject it; this screen does not guess).
+const char* waveform_field_for(const std::string& field) {
+    if (field == "peakPulseCurrent") return "peakPulseCurrentWaveform";
+    if (field == "peakPulsePower") return "peakPulsePowerWaveform";
+    return nullptr;
+}
+
 constexpr std::size_t CEILING_MIN_AT_MAX = 5;   // enough repeats to be systematic
 // max/median. Tuned on the live capacitor catalogue: at 10x this also catches honest
 // family structure (a Rubycon series whose smallest can legitimately sits 12x above
@@ -522,17 +542,47 @@ std::vector<CorpusFinding> validate_corpus(const std::vector<json>& records) {
     for (auto& [key, idxs] : cohorts) {
         if (idxs.size() < MIN_COHORT) continue;
 
-        // Collect (index, value) per field across the cohort.
-        std::unordered_map<std::string, std::vector<std::pair<std::size_t, double>>> byField;
+        // Collect (index, value) per field across the cohort. A waveform-bound
+        // field is further split by the waveform the row states for it (see
+        // waveform_field_for); `label` carries that sub-cohort into the message.
+        struct FieldGroup {
+            std::string field, label;
+            std::vector<std::pair<std::size_t, double>> vals;
+        };
+        std::unordered_map<std::string, FieldGroup> byField;
         for (std::size_t i : idxs) {
             const json& e = *recs[i].elec;
             for (auto it = e.begin(); it != e.end(); ++it) {
                 auto v = field_scalar(it.value());
-                if (v) byField[it.key()].push_back({i, *v});
+                if (!v) continue;
+                std::string gk = it.key();
+                std::string label = key;
+                if (const char* wf = waveform_field_for(it.key())) {
+                    std::string wave;
+                    if (!e.contains(wf)) {
+                        wave = "unstated";
+                    } else if (e[wf].is_string()) {
+                        wave = e[wf].get<std::string>();
+                    } else {
+                        continue;  // uninterpretable waveform: no cohort to judge it in
+                    }
+                    gk += std::string("@") + wf + "=" + wave;
+                    label += std::string(" ") + wf + "=" + wave;
+                }
+                FieldGroup& g = byField[gk];
+                if (g.vals.empty()) {
+                    g.field = it.key();
+                    g.label = label;
+                }
+                g.vals.push_back({i, *v});
             }
         }
 
-        for (auto& [field, vals] : byField) {
+        for (auto& entry : byField) {
+            FieldGroup& grp = entry.second;
+            const std::string& field = grp.field;
+            const std::string& label = grp.label;
+            auto& vals = grp.vals;
             if (vals.size() < MIN_COHORT) continue;
             // Work in log10 space iff every value is strictly positive (multiplicative
             // electrical quantities); otherwise use raw values.
@@ -561,7 +611,7 @@ std::vector<CorpusFinding> validate_corpus(const std::vector<json>& records) {
                         if (p.second != mx) continue;
                         std::ostringstream m;
                         m << field << "=" << mx << " is shared by " << at_max << " parts at the "
-                          << "TOP of its " << key << " cohort (n=" << vals.size() << ", median "
+                          << "TOP of its " << label << " cohort (n=" << vals.size() << ", median "
                           << raw_med << ", " << (mx / raw_med)
                           << "x) — a clamp or placeholder, not a measurement";
                         out.push_back({p.first, "GEN_COHORT_CEILING", Severity::Suspicious,
@@ -584,7 +634,7 @@ std::vector<CorpusFinding> validate_corpus(const std::vector<json>& records) {
                     std::size_t ri = vals[j].first;
                     std::ostringstream m;
                     m << field << "=" << vals[j].second << " is a robust-z=" << z
-                      << " outlier within its " << key << " cohort (n=" << vals.size() << ")";
+                      << " outlier within its " << label << " cohort (n=" << vals.size() << ")";
                     out.push_back({ri, "GEN_COHORT_OUTLIER", Severity::Suspicious, recs[ri].ref,
                                    m.str(), vals[j].second, z});
                 }

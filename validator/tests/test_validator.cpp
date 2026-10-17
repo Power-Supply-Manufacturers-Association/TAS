@@ -1129,6 +1129,144 @@ TEST_CASE("AntiSynthesis: TvsSnapbackGuardBandValid", "[antisynthesis]") {
     CHECK(has(V.validate(p), "DIO_TVS_ORDERING", Severity::Impossible));
 }
 
+// ---- TVS pulse ratings at stated waveforms (2026-10-17) ----------------------
+// SAS diode.json: peakPulsePower@peakPulsePowerWaveform, peakPulseCurrent@
+// peakPulseCurrentWaveform, clampingVoltage@clampingCurrent+clampingWaveform.
+// Revert check for each code (must-fire RED, must-stay-quiet GREEN):
+//     TAS_VALIDATOR_SUPPRESS=DIO_TVS_PULSE_PRODUCT ./build/tas_validator_tests_revert "[tvs_pulse_product]"
+//     TAS_VALIDATOR_SUPPRESS=DIO_TVS_WAVEFORM_ORDER ./build/tas_validator_tests_revert "[tvs_waveform_order]"
+namespace {
+json tvs_rec(const json& elec) {
+    json p = json::parse(R"json({"semiconductor":{"diode":{"manufacturerInfo":{
+      "name":"ACME","reference":"X","datasheetInfo":{"part":{"subType":"tvs","technology":"Si"},
+      "electrical":{}}}}}})json");
+    p["semiconductor"]["diode"]["manufacturerInfo"]["datasheetInfo"]["electrical"] = elec;
+    return p;
+}
+bool skipped_has(const Verdict& v, const char* code) {
+    return std::find(v.skipped.begin(), v.skipped.end(), code) != v.skipped.end();
+}
+}  // namespace
+
+// Vishay P6KE200A as its datasheet states it: 600 W at 10/1000, I_PP 2.2 A, V_C
+// 274 V at I_PP -> 274 x 2.2 / 600 = 1.005, closes.
+TEST_CASE("TvsPulseProduct: one-pulse triple that closes is quiet",
+          "[diodes][tvs_pulse_product]") {
+    json e = {{"standoffVoltage", 171.0}, {"clampingVoltage", 274.0},
+              {"peakPulsePower", 600.0}, {"peakPulsePowerWaveform", "10/1000"},
+              {"peakPulseCurrent", 2.2}, {"peakPulseCurrentWaveform", "10/1000"},
+              {"clampingCurrent", 2.2}, {"clampingWaveform", "10/1000"}};
+    Verdict v = V.validate(tvs_rec(e));
+    CHECK(!has_code(v, "DIO_TVS_PULSE_PRODUCT"));
+    CHECK(!skipped_has(v, "DIO_TVS_PULSE_PRODUCT"));
+    // Littelfuse SA10 vendor convention, V_C max x I_PP = 1.128 x P_PP: still quiet.
+    e["peakPulsePower"] = 500.0; e["peakPulseCurrent"] = 30.0; e["clampingVoltage"] = 18.8;
+    e["clampingCurrent"] = 30.0; e["standoffVoltage"] = 10.0;
+    CHECK(!has_code(V.validate(tvs_rec(e)), "DIO_TVS_PULSE_PRODUCT"));
+}
+
+TEST_CASE("TvsPulseProduct: same-waveform triple that does not close fires",
+          "[diodes][tvs_pulse_product]") {
+    // P_PP 1000 W but V_C x I_PP = 13.6 x 58.8 = 800 W (ratio 0.7997).
+    json e = {{"standoffVoltage", 8.0}, {"clampingVoltage", 13.6},
+              {"peakPulsePower", 1000.0}, {"peakPulsePowerWaveform", "10/1000"},
+              {"peakPulseCurrent", 58.8}, {"peakPulseCurrentWaveform", "10/1000"},
+              {"clampingWaveform", "10/1000"}};  // clampingCurrent absent: allowed
+    CHECK(has(V.validate(tvs_rec(e)), "DIO_TVS_PULSE_PRODUCT", Severity::Suspicious));
+    e["clampingCurrent"] = 58.8;                  // equal to I_PP: same verdict
+    CHECK(has(V.validate(tvs_rec(e)), "DIO_TVS_PULSE_PRODUCT", Severity::Suspicious));
+    // High side: TI TSD24C-like 250 W, 9 A, 39 V (1.404) all at 8/20.
+    json h = {{"standoffVoltage", 24.0}, {"clampingVoltage", 39.0},
+              {"peakPulsePower", 250.0}, {"peakPulsePowerWaveform", "8/20"},
+              {"peakPulseCurrent", 9.0}, {"peakPulseCurrentWaveform", "8/20"},
+              {"clampingWaveform", "8/20"}};
+    CHECK(has(V.validate(tvs_rec(h)), "DIO_TVS_PULSE_PRODUCT", Severity::Suspicious));
+}
+
+TEST_CASE("TvsPulseProduct: never judged without one stated common pulse",
+          "[diodes][tvs_pulse_product]") {
+    json base = {{"standoffVoltage", 8.0}, {"clampingVoltage", 13.6},
+                 {"peakPulsePower", 1000.0}, {"peakPulseCurrent", 58.8}};
+    // No waveform anywhere (every live row today): skipped, never assumed 10/1000.
+    Verdict v0 = V.validate(tvs_rec(base));
+    CHECK(!has_code(v0, "DIO_TVS_PULSE_PRODUCT"));
+    CHECK(skipped_has(v0, "DIO_TVS_PULSE_PRODUCT"));
+    // Mixed waveforms: P_PP at 10/1000, I_PP and V_C at 8/20 -- not one pulse.
+    json m = base;
+    m["peakPulsePowerWaveform"] = "10/1000";
+    m["peakPulseCurrentWaveform"] = "8/20";
+    m["clampingWaveform"] = "8/20";
+    Verdict v1 = V.validate(tvs_rec(m));
+    CHECK(!has_code(v1, "DIO_TVS_PULSE_PRODUCT"));
+    CHECK(skipped_has(v1, "DIO_TVS_PULSE_PRODUCT"));
+    // Same waveform, but V_C stated at another current (1 A): not V_C at I_PP.
+    json c = base;
+    c["peakPulsePowerWaveform"] = "10/1000";
+    c["peakPulseCurrentWaveform"] = "10/1000";
+    c["clampingWaveform"] = "10/1000";
+    c["clampingCurrent"] = 1.0;
+    Verdict v2 = V.validate(tvs_rec(c));
+    CHECK(!has_code(v2, "DIO_TVS_PULSE_PRODUCT"));
+    CHECK(skipped_has(v2, "DIO_TVS_PULSE_PRODUCT"));
+    // clampingWaveform missing while the other two agree: skipped.
+    c.erase("clampingCurrent");
+    c.erase("clampingWaveform");
+    CHECK(!has_code(V.validate(tvs_rec(c)), "DIO_TVS_PULSE_PRODUCT"));
+}
+
+// An 8/20 I_PP below the part's own 10/1000 current. P_PP 600 W at 10/1000 with
+// V_C 12 V at 50 A, 10/1000: I_c x V_C = 600 = P_PP, so the 10/1000 rating is
+// >= min(50, 600/12) = 50 A, and an 8/20 rating of 30 A is impossible.
+TEST_CASE("TvsWaveformOrder: 8/20 IPP below the 10/1000 current is impossible",
+          "[diodes][tvs_waveform_order]") {
+    json e = {{"standoffVoltage", 6.5}, {"clampingVoltage", 12.0},
+              {"clampingCurrent", 50.0}, {"clampingWaveform", "10/1000"},
+              {"peakPulsePower", 600.0}, {"peakPulsePowerWaveform", "10/1000"},
+              {"peakPulseCurrent", 30.0}, {"peakPulseCurrentWaveform", "8/20"}};
+    Verdict v = V.validate(tvs_rec(e));
+    CHECK(has(v, "DIO_TVS_WAVEFORM_ORDER", Severity::Impossible));
+    CHECK(!v.valid);
+}
+
+TEST_CASE("TvsWaveformOrder: a plausible 8/20 rating and unusable inputs stay quiet",
+          "[diodes][tvs_waveform_order]") {
+    json e = {{"standoffVoltage", 6.5}, {"clampingVoltage", 12.0},
+              {"clampingCurrent", 50.0}, {"clampingWaveform", "10/1000"},
+              {"peakPulsePower", 600.0}, {"peakPulsePowerWaveform", "10/1000"},
+              {"peakPulseCurrent", 300.0}, {"peakPulseCurrentWaveform", "8/20"}};
+    Verdict ok = V.validate(tvs_rec(e));
+    CHECK(!has_code(ok, "DIO_TVS_WAVEFORM_ORDER"));
+    CHECK(!skipped_has(ok, "DIO_TVS_WAVEFORM_ORDER"));
+    // Within the rounding allowance (46 A against 50 A): not an IMPOSSIBLE verdict.
+    e["peakPulseCurrent"] = 46.0;
+    CHECK(!has_code(V.validate(tvs_rec(e)), "DIO_TVS_WAVEFORM_ORDER"));
+    e["peakPulseCurrent"] = 30.0;
+    // V_C at a LOW stated current (9 V at 1 A): the lower bound is min(1, 66.7)
+    // = 1 A, so 30 A is no contradiction.
+    json low = e;
+    low["clampingVoltage"] = 9.0;
+    low["clampingCurrent"] = 1.0;
+    CHECK(!has_code(V.validate(tvs_rec(low)), "DIO_TVS_WAVEFORM_ORDER"));
+    // clampingCurrent unstated: P_PP/V_C is not a bound, skipped.
+    json noic = e;
+    noic.erase("clampingCurrent");
+    Verdict v1 = V.validate(tvs_rec(noic));
+    CHECK(!has_code(v1, "DIO_TVS_WAVEFORM_ORDER"));
+    CHECK(skipped_has(v1, "DIO_TVS_WAVEFORM_ORDER"));
+    // V_C measured at 8/20, not 10/1000: skipped.
+    json vc820 = e;
+    vc820["clampingWaveform"] = "8/20";
+    CHECK(!has_code(V.validate(tvs_rec(vc820)), "DIO_TVS_WAVEFORM_ORDER"));
+    // P_PP waveform unstated: never assumed to be 10/1000.
+    json nopw = e;
+    nopw.erase("peakPulsePowerWaveform");
+    CHECK(!has_code(V.validate(tvs_rec(nopw)), "DIO_TVS_WAVEFORM_ORDER"));
+    // I_PP waveform unstated: never assumed to be 8/20.
+    json noiw = e;
+    noiw.erase("peakPulseCurrentWaveform");
+    CHECK(!has_code(V.validate(tvs_rec(noiw)), "DIO_TVS_WAVEFORM_ORDER"));
+}
+
 TEST_CASE("AntiSynthesis: IgbtVcesatRatioIncoherent", "[antisynthesis]") {
     // Vces=100, Vcesat=4: each individually plausible, ratio 0.04 is incoherent.
     json p = json::parse(R"json({"semiconductor":{"igbt":{"manufacturerInfo":{
@@ -1616,6 +1754,75 @@ TEST_CASE("Corpus: AnalogCatalogueIsScreenedWrappedAndBare", "[corpus][dispatche
     CHECK(found_outlier_on_bad(
         cohort_at({"analog", "operationalAmplifier"}, "gainBandwidthProduct", 1.0e12)));
     CHECK(found_outlier_on_bad(cohort_at({"adc"}, "sampleRate", 1.0e12)));
+}
+
+// ---- 2026-10-17: surge-waveform sub-cohorts for TVS pulse ratings -----------
+// peakPulseCurrent / peakPulsePower are screened only against rows stating the
+// SAME waveform for them; rows stating none form their own "unstated" cohort.
+// Revert check (corpus findings are push_back, not emit(), so the SUPPRESS
+// harness cannot switch them off): restore HEAD's corpus.cpp, rebuild, and the
+// two "[surge_waveform]" must-stay-quiet cases go RED.
+namespace {
+json tvs_cohort_row(const std::string& ref, double ipp, const char* wave) {
+    json r = json::parse(R"json({"semiconductor":{"diode":{"manufacturerInfo":{
+      "name":"ACME","reference":"R","datasheetInfo":{"part":{"technology":"Si",
+      "subType":"tvs"},"electrical":{"standoffVoltage":24.0}}}}}})json");
+    auto& mi = r["semiconductor"]["diode"]["manufacturerInfo"];
+    mi["reference"] = ref;
+    mi["datasheetInfo"]["electrical"]["peakPulseCurrent"] = ipp;
+    if (wave != nullptr) mi["datasheetInfo"]["electrical"]["peakPulseCurrentWaveform"] = wave;
+    return r;
+}
+const double SMAJ_IPP[] = {8.0, 10.3, 12.5, 15.4, 17.9, 21.0, 24.0, 28.6, 33.0, 38.0, 41.7, 47.0};
+bool flagged(const std::vector<json>& recs, const char* ref, const char* code) {
+    auto f = validate_corpus(recs);
+    return std::any_of(f.begin(), f.end(), [&](const CorpusFinding& c) {
+        return c.reference == ref && c.code == code;
+    });
+}
+}  // namespace
+
+TEST_CASE("Corpus: an 8/20 kA rating is not an outlier of a 10/1000 cohort",
+          "[corpus][surge_waveform]") {
+    std::vector<json> recs;
+    for (double v : SMAJ_IPP) recs.push_back(tvs_cohort_row("R", v, "10/1000"));
+    recs.push_back(tvs_cohort_row("PTVS", 1.0e4, "8/20"));
+    CHECK(!flagged(recs, "PTVS", "GEN_COHORT_OUTLIER"));
+    // Must-fire twin: the same 10 kA stated at 10/1000 IS judged against its peers.
+    recs.back() = tvs_cohort_row("PTVS", 1.0e4, "10/1000");
+    CHECK(flagged(recs, "PTVS", "GEN_COHORT_OUTLIER"));
+}
+
+TEST_CASE("Corpus: unstated waveform is its own cohort, never merged into a stated one",
+          "[corpus][surge_waveform]") {
+    std::vector<json> recs;
+    for (double v : SMAJ_IPP) recs.push_back(tvs_cohort_row("R", v, "10/1000"));
+    recs.push_back(tvs_cohort_row("NOWAVE", 1.0e4, nullptr));
+    CHECK(!flagged(recs, "NOWAVE", "GEN_COHORT_OUTLIER"));
+    // Unstated rows are still screened among themselves.
+    std::vector<json> bare;
+    for (double v : SMAJ_IPP) bare.push_back(tvs_cohort_row("R", v, nullptr));
+    bare.push_back(tvs_cohort_row("NOWAVE", 1.0e4, nullptr));
+    CHECK(flagged(bare, "NOWAVE", "GEN_COHORT_OUTLIER"));
+}
+
+// Ceiling pile-up: five PTVS-class 8/20 rows at 20 kA beside 10/1000 SMAJ rows
+// are 400x the pooled median; within their own 8/20 cohort they are ordinary.
+TEST_CASE("Corpus: 8/20 kA ratings are not a ceiling of a 10/1000 cohort",
+          "[corpus][surge_waveform]") {
+    std::vector<json> recs;
+    for (double v : SMAJ_IPP) recs.push_back(tvs_cohort_row("R", v, "10/1000"));
+    for (double v : {1.0e3, 2.0e3, 3.0e3, 6.0e3})
+        recs.push_back(tvs_cohort_row("PTVS", v, "8/20"));
+    for (int i = 0; i < 5; ++i) recs.push_back(tvs_cohort_row("PTVS20", 2.0e4, "8/20"));
+    CHECK(!flagged(recs, "PTVS20", "GEN_COHORT_CEILING"));
+    // Must-fire twin: the same pile-up stated at 10/1000 is a ceiling.
+    std::vector<json> same;
+    for (double v : SMAJ_IPP) same.push_back(tvs_cohort_row("R", v, "10/1000"));
+    for (double v : {1.0e3, 2.0e3, 3.0e3, 6.0e3})
+        same.push_back(tvs_cohort_row("PTVS", v, "10/1000"));
+    for (int i = 0; i < 5; ++i) same.push_back(tvs_cohort_row("PTVS20", 2.0e4, "10/1000"));
+    CHECK(flagged(same, "PTVS20", "GEN_COHORT_CEILING"));
 }
 
 // ---- 2026-09-04 fabrication-shape checks -------------------------------------

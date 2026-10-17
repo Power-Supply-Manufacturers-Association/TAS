@@ -7,6 +7,9 @@
 #include "tas_validator/thresholds.hpp"
 #include "tas_validator/validator.hpp"
 
+#include <algorithm>
+#include <cmath>
+#include <optional>
 #include <sstream>
 #include <string>
 
@@ -167,6 +170,81 @@ void check_diodes(const json& datasheet, const Ctx& ctx, std::vector<Finding>& o
                  fmt(esd_array ? "clampingVoltage < breakdownVoltage (esd array: "
                                  "a forward-VF clamp sits below reverse breakdown)"
                                : "clampingVoltage < breakdownVoltage", *vcl, *vbr));
+    }
+
+    // ---- TVS pulse ratings and their stated waveforms (2026-10-17) ----------
+    // SAS diode.json states each pulse rating AT an impulse (PEAS surgeWaveform):
+    // peakPulsePower@peakPulsePowerWaveform, peakPulseCurrent@
+    // peakPulseCurrentWaveform, clampingVoltage@clampingCurrent+clampingWaveform.
+    // Absent waveform = NOT STATED. Neither check below ever assumes one (no
+    // "TVS means 10/1000"), so a row that does not state every input it needs is
+    // recorded as skipped, not judged.
+    auto wave_of = [&](const char* key) -> std::optional<std::string> {
+        const json* w = at(*elec, key);
+        if (w == nullptr || w->is_null()) return std::nullopt;
+        if (!w->is_string())
+            throw MalformedField(std::string("electrical.") + key +
+                                 " is not a surgeWaveform string");
+        return w->get<std::string>();
+    };
+    auto Ppp = scalar_at(*elec, {"peakPulsePower"});
+    auto Ipp = scalar_at(*elec, {"peakPulseCurrent"});
+    auto Vc = scalar_at(*elec, {"clampingVoltage"});
+    auto Ic = scalar_at(*elec, {"clampingCurrent"});
+    auto wPpp = wave_of("peakPulsePowerWaveform");
+    auto wIpp = wave_of("peakPulseCurrentWaveform");
+    auto wVc = wave_of("clampingWaveform");
+
+    // CHECK (NEW): DIO_TVS_PULSE_PRODUCT. When P_PP, I_PP and V_C are all stated
+    // at ONE waveform and V_C is stated at I_PP (clampingCurrent equal to
+    // peakPulseCurrent, or not given), the three describe a single pulse and the
+    // datasheet's own definition P_PP = V_C x I_PP must close. Outside
+    // [DIO_TVS_PULSE_PRODUCT_LO, _HI] one of the three belongs to a different
+    // pulse (mixed waveform) or is wrong. SUSPICIOUS: rounding conventions are
+    // vendor-specific (see thresholds.hpp) and the ratio cannot say which value
+    // is off.
+    if (Ppp && Ipp && Vc && wPpp && wIpp && wVc && *wPpp == *wIpp && *wIpp == *wVc &&
+        *Ppp > 0 && *Ipp > 0 && *Vc > 0 &&
+        (!Ic || std::fabs(*Ic - *Ipp) <= thr::DIO_TVS_SAME_CURRENT_REL * *Ipp)) {
+        double ratio = (*Vc) * (*Ipp) / (*Ppp);
+        if (ratio < thr::DIO_TVS_PULSE_PRODUCT_LO || ratio > thr::DIO_TVS_PULSE_PRODUCT_HI)
+            emit(out, ctx, "DIO_TVS_PULSE_PRODUCT", Severity::Suspicious, ratio,
+                 ratio < thr::DIO_TVS_PULSE_PRODUCT_LO ? thr::DIO_TVS_PULSE_PRODUCT_LO
+                                                        : thr::DIO_TVS_PULSE_PRODUCT_HI,
+                 fmt("clampingVoltage x peakPulseCurrent / peakPulsePower, all stated at "
+                     "the " + *wIpp + " us pulse, outside [0.8, 1.25]: P_PP = V_C x I_PP "
+                     "does not close, so one rating belongs to another pulse or is wrong",
+                     ratio));
+    } else if (Ppp || Ipp) {
+        skipped.push_back("DIO_TVS_PULSE_PRODUCT");
+    }
+
+    // CHECK (NEW): DIO_TVS_WAVEFORM_ORDER. The same junction survives MORE peak
+    // current in a short 8/20 us pulse than in a long 10/1000 us one (the
+    // dissipated energy, ~V_C x I x pulse width, is ~50x smaller), so an 8/20
+    // I_PP below the part's own 10/1000 I_PP is physically impossible.
+    //
+    // The 10/1000 I_PP is not stored when the I_PP field holds the 8/20 rating;
+    // it is reconstructed from P_PP@10/1000 / V_C. That division is only a
+    // guaranteed LOWER bound on the 10/1000 current when V_C is the 10/1000
+    // clamp at a stated current I_c (clampingWaveform '10/1000' AND
+    // clampingCurrent present): V_C(I) x I rises with I, so if I_c x V_C >= P_PP
+    // then I_c is at or above the 10/1000 rating and P_PP/V_C <= I_10/1000, and
+    // otherwise I_c itself is below it. Hence L = min(I_c, P_PP/V_C) never
+    // exceeds the true 10/1000 rating. A V_C at an unstated current (a 1 A V_C
+    // makes P_PP/V_C far too large) or another waveform is never used: skipped.
+    if (Ppp && Ipp && Vc && Ic && wPpp && wIpp && wVc && *wIpp == "8/20" &&
+        *wPpp == "10/1000" && *wVc == "10/1000" && *Ppp > 0 && *Ipp > 0 && *Vc > 0 &&
+        *Ic > 0) {
+        double lower_1000 = std::min(*Ic, *Ppp / *Vc);
+        if (*Ipp < lower_1000 * thr::DIO_TVS_WAVEFORM_ORDER_ROUNDING)
+            emit(out, ctx, "DIO_TVS_WAVEFORM_ORDER", Severity::Impossible, *Ipp, lower_1000,
+                 fmt("peakPulseCurrent at 8/20 us below the part's own 10/1000 us peak "
+                     "pulse current min(clampingCurrent, peakPulsePower/clampingVoltage) "
+                     "[A]: the shorter pulse always allows more current",
+                     *Ipp, lower_1000));
+    } else if (wIpp || wPpp) {
+        skipped.push_back("DIO_TVS_WAVEFORM_ORDER");
     }
 
     // CHECK (NEW): surge current must exceed continuous forward current.
