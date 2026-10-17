@@ -76,11 +76,54 @@ as useless as one that refuses nothing, so every rule carries its counter-exampl
     a quantity in the part number -- IPP60R080P7 states its 80 mOhm Rds(on),
     744043100 states its 10 uH -- so ONE field tracking a numeric run is
     expected. Several unrelated fields tracking the same run is a generator.
+  * Rule 2 does NOT require the URL to spell the part. ST "DM00..." links,
+    Littelfuse asset ids, family PDFs and distributor mirrors print the part
+    number inside the document while their URLs never do. Such a citation is
+    accepted when a cached copy of THAT EXACT document is in the document-
+    evidence store and its text prints the exact part number (see below). The
+    store is consulted read-only and offline: no document on file means the old
+    URL-only rule applies unchanged, never "assume it names the part".
+
+THE DOCUMENT-EVIDENCE STORE (rule 2's second path; approved by Alf 2026-10-17)
+
+  Location: <TAS>/staging/doc_evidence/  (DOC_EVIDENCE_DIR). staging/ is
+  gitignored, so the store is NOT committed; it lives beside the campaigns'
+  own document caches it is filled from.
+
+  Key: evidence_key(url) = sha256 of the provenance sourceUrl (or the
+  datasheetUrl) exactly as stored in the record, whitespace-stripped, UTF-8.
+  Records carry no extra field -- the key is derived from sourceUrl, so the
+  check is reproducible from the record plus the store.
+
+  Layout, one entry per document:
+      doc_evidence/<key[:2]>/<key>.json     metadata
+      doc_evidence/<key[:2]>/<key>.txt.gz   the document's extracted text, gzip
+  Metadata keys: url (must equal the cited URL byte for byte), evidenceKey,
+  retrievedDate (when the document was fetched), textSha256 (sha256 of the
+  UTF-8 text; re-checked on every read -- a mismatch RAISES DocEvidenceError),
+  documentSha256 (sha256 of the original bytes when they were on file, else
+  null), textMethod (how the text was extracted), registeredFrom (the cache
+  file it came from), registeredDate.
+
+  Entries are added only by scripts/register_doc_evidence.py, from documents a
+  campaign already fetched. The gate never fetches.
+
+  Match: the part number, normalised like _norm (alphanumerics, upper-case),
+  must occur in the text as a whole token -- one optional punctuation/space
+  character allowed between its characters, and no letter/digit (nor a
+  "-letter/digit" suffix or prefix) touching either end. So IRF540 is NOT named
+  by a document that prints only IRF540N, and GT400TH60N is not named by one
+  that prints only VS-GT400TH60N. Identities shorter than
+  MIN_TEXT_MATCH_LEN normalised characters never use this path, and a
+  search-shaped URL never does (a results page echoes the query it was given).
 """
 from __future__ import annotations
 
 import argparse
+import gzip
+import hashlib
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -570,9 +613,12 @@ def _evidence_url(url):
 
 
 def classify_citation(url, ident, entry):
-    """PART_SPECIFIC / DOCUMENT_BY_ID / SERIES_DATASHEET / SEARCH / LANDING."""
+    """PART_SPECIFIC / DOCUMENT_NAMES_PART / SERIES_DATASHEET / TOOL_QUERIED /
+    DOCUMENT_BY_ID / SEARCH / LANDING."""
     if ident and _norm(ident) and _norm(ident) in _norm(_evidence_url(url)):
         return "PART_SPECIFIC"
+    if ident and stored_document_names_part(url, ident):
+        return "DOCUMENT_NAMES_PART"
     if entry is not None and entry.get("verification") == SERIES_VERIFICATION:
         return "SERIES_DATASHEET"
     if _is_tool_citation(url, entry):
@@ -616,8 +662,193 @@ def _is_tool_citation(url, entry):
     return isinstance(fields, list) and bool(fields)
 
 
-ACCEPTABLE_CITATIONS = {"PART_SPECIFIC", "DOCUMENT_BY_ID", "SERIES_DATASHEET",
-                        "TOOL_QUERIED"}
+ACCEPTABLE_CITATIONS = {"PART_SPECIFIC", "DOCUMENT_NAMES_PART", "DOCUMENT_BY_ID",
+                        "SERIES_DATASHEET", "TOOL_QUERIED"}
+# The citation kinds that name THIS part (by URL, or by the stored document's
+# text). A row holding one is not a family document passed off as per-part.
+NAMES_PART_CITATIONS = {"PART_SPECIFIC", "DOCUMENT_NAMES_PART"}
+
+
+# ---------------------------------------------------------------------------
+# rule 2 -- the document-evidence store (layout in the module docstring)
+# ---------------------------------------------------------------------------
+# A URL that does not spell the part can still cite a document that prints it:
+# ST "DM00..." links, Littelfuse asset ids, family PDFs, distributor mirrors.
+# The URL-only test cannot see that, and refused verified work for it. The
+# store holds the text of documents a campaign already fetched, keyed by the
+# cited URL, so the gate can read the document instead of guessing from its
+# address -- offline, deterministically, and only for documents on file.
+
+DOC_EVIDENCE_DIR = REPO / "staging" / "doc_evidence"
+MIN_TEXT_MATCH_LEN = 5    # normalised characters; shorter identities match noise
+
+
+class DocEvidenceError(Exception):
+    """A store entry exists but cannot be trusted (URL or text hash mismatch,
+    unreadable file). Raised, never treated as 'not on file': a corrupt entry
+    is a broken store, and silently refusing would hide it."""
+
+
+def evidence_key(url):
+    """The store key of a cited URL: sha256 of the URL exactly as recorded."""
+    return hashlib.sha256((url or "").strip().encode("utf-8")).hexdigest()
+
+
+class DocEvidenceStore:
+    """Read side of staging/doc_evidence. The key set is listed once, at
+    construction (plus whatever register() adds), so a sweep over a million
+    rows costs a set lookup per citation, not a stat."""
+
+    def __init__(self, root):
+        self.root = Path(root)
+        self._keys = set()
+        self._texts = {}
+        if self.root.is_dir():
+            for sub in sorted(self.root.iterdir()):
+                if sub.is_dir() and len(sub.name) == 2:
+                    for f in sub.iterdir():
+                        if f.name.endswith(".json"):
+                            self._keys.add(f.name[:-5])
+
+    def _paths(self, key):
+        d = self.root / key[:2]
+        return d / (key + ".json"), d / (key + ".txt.gz")
+
+    def __contains__(self, url):
+        return evidence_key(url) in self._keys
+
+    def __len__(self):
+        return len(self._keys)
+
+    def text_for(self, url):
+        """The stored text of the document at exactly `url`, or None when it is
+        not on file. Raises DocEvidenceError on an entry that fails its checks."""
+        url = (url or "").strip()
+        key = evidence_key(url)
+        if key not in self._keys:
+            return None
+        if key in self._texts:
+            return self._texts[key]
+        meta_p, text_p = self._paths(key)
+        try:
+            meta = json.loads(meta_p.read_text(encoding="utf-8"))
+            raw = gzip.decompress(text_p.read_bytes())
+        except (OSError, ValueError, EOFError) as e:
+            raise DocEvidenceError("doc-evidence entry %s for %s is unreadable: %s"
+                                   % (key, url, e)) from e
+        if meta.get("url") != url:
+            raise DocEvidenceError("doc-evidence entry %s records url %r, not the "
+                                   "cited %r" % (key, meta.get("url"), url))
+        if hashlib.sha256(raw).hexdigest() != meta.get("textSha256"):
+            raise DocEvidenceError("doc-evidence entry %s (%s): stored text does not "
+                                   "hash to its recorded textSha256" % (key, url))
+        text = raw.decode("utf-8")
+        if len(self._texts) > 256:
+            self._texts.clear()
+        self._texts[key] = text
+        return text
+
+    def register(self, url, text, retrieved_date, registered_from,
+                 document_sha256=None, text_method=None, registered_date=None,
+                 replace=False):
+        """Write one entry. Returns 'added', 'unchanged' or 'replaced'. Refuses
+        (DocEvidenceError) to overwrite different text unless replace=True."""
+        url = (url or "").strip()
+        if not url:
+            raise DocEvidenceError("cannot register a document with no URL")
+        if not isinstance(text, str) or not text.strip():
+            raise DocEvidenceError("cannot register %s: the text is empty" % url)
+        if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", str(retrieved_date or "")):
+            raise DocEvidenceError("cannot register %s: retrievedDate %r is not "
+                                   "YYYY-MM-DD" % (url, retrieved_date))
+        raw = text.encode("utf-8")
+        key = evidence_key(url)
+        meta_p, text_p = self._paths(key)
+        sha = hashlib.sha256(raw).hexdigest()
+        status = "added"
+        if meta_p.exists():
+            old = json.loads(meta_p.read_text(encoding="utf-8"))
+            if old.get("textSha256") == sha and old.get("url") == url:
+                self._keys.add(key)
+                return "unchanged"
+            if not replace:
+                raise DocEvidenceError(
+                    "%s is already on file (%s) with DIFFERENT text; pass "
+                    "replace=True only if the stored copy is known wrong"
+                    % (url, key))
+            status = "replaced"
+        meta = {"url": url, "evidenceKey": key, "retrievedDate": retrieved_date,
+                "textSha256": sha, "documentSha256": document_sha256,
+                "textMethod": text_method, "registeredFrom": str(registered_from),
+                "registeredDate": registered_date}
+        meta_p.parent.mkdir(parents=True, exist_ok=True)
+        # mtime=0: the same text always gzips to the same bytes
+        tmp = text_p.with_suffix(".gz.tmp")
+        tmp.write_bytes(gzip.compress(raw, mtime=0))
+        os.replace(tmp, text_p)
+        tmp = meta_p.with_suffix(".json.tmp")
+        tmp.write_text(json.dumps(meta, indent=1, sort_keys=True) + "\n",
+                       encoding="utf-8")
+        os.replace(tmp, meta_p)
+        self._keys.add(key)
+        self._texts.pop(key, None)
+        return status
+
+
+_EVIDENCE_STORE = None
+
+
+def evidence_store():
+    global _EVIDENCE_STORE
+    if _EVIDENCE_STORE is None:
+        _EVIDENCE_STORE = DocEvidenceStore(DOC_EVIDENCE_DIR)
+    return _EVIDENCE_STORE
+
+
+def set_evidence_store(store):
+    """Swap the store the gate reads (the selftest uses a temporary one).
+    Returns the previous store so the caller can put it back."""
+    global _EVIDENCE_STORE
+    prev, _EVIDENCE_STORE = _EVIDENCE_STORE, store
+    return prev
+
+
+_ALNUM = "0-9A-Za-z"
+
+
+def _token_pattern(ident):
+    """Regex for `ident` as a whole token in free text, or None if too short.
+
+    Characters are compared after _norm (so punctuation in the record and in the
+    document need not agree: CM150EXS24S == CM150EXS-24S); one optional
+    non-alphanumeric character may sit between any two of them; and neither end
+    may touch a letter/digit or a "-letter/digit" continuation, which is what
+    keeps IRF540 from being "named" by IRF540N and GT400TH60N by VS-GT400TH60N.
+    """
+    n = _norm(ident)
+    if len(n) < MIN_TEXT_MATCH_LEN:
+        return None
+    body = ("[^%s\\n]?" % _ALNUM).join(re.escape(c) for c in n)
+    return re.compile(r"(?<![%s])(?<![%s]-)%s(?![%s])(?!-[%s])"
+                      % (_ALNUM, _ALNUM, body, _ALNUM, _ALNUM), re.I)
+
+
+def text_names_part(text, ident):
+    pat = _token_pattern(ident)
+    return bool(pat and text and pat.search(text))
+
+
+def stored_document_names_part(url, ident):
+    """True only when the store holds the document at exactly `url` AND its text
+    prints `ident` as a whole token. A search-shaped URL is never consulted: a
+    results page echoes the query it was given, which is not a document naming
+    the part (see SEARCH_PARAM_VALUE)."""
+    if not url or SEARCH_RE.search(url):
+        return False
+    store = evidence_store()
+    if url.strip() not in store:
+        return False
+    return text_names_part(store.text_for(url), ident)
 
 
 
@@ -672,7 +903,9 @@ def check_citation(body):
     return [Refusal(2, ident,
                     "no citation names this part (%s) but provenance claims "
                     "verification=%s. Downgrade to %s or cite a document that "
-                    "names the part"
+                    "names the part (a URL that does not spell the part counts "
+                    "only when the document's text is in the doc-evidence store "
+                    "and prints it: scripts/register_doc_evidence.py)"
                     % (kinds, ",".join(str(s) for s in strong),
                        "/".join(sorted(WEAK_VERIFICATION))))]
 
@@ -936,7 +1169,7 @@ class IngestGate:
         self.values.append({f.key: first(body, f.segs) for f in self.cat.fields})
         kinds = [(u, classify_citation(u, identity_of(body), e))
                  for u, e in _citations(body)]
-        self.cites.append((any(k == "PART_SPECIFIC" for _, k in kinds),
+        self.cites.append((any(k in NAMES_PART_CITATIONS for _, k in kinds),
                            {u for u, k in kinds if k == "DOCUMENT_BY_ID"}))
         self.accepted += 1
         return []
@@ -1425,6 +1658,20 @@ def _run(name, expect, gate_factory, records):
 
 
 def selftest():
+    # Every counter-check runs against a TEMPORARY evidence store, so the
+    # verdicts depend on nothing but this file: the real staging/doc_evidence
+    # is never read here, and the doc-evidence cases register what they need.
+    import tempfile
+    tmp = tempfile.TemporaryDirectory(prefix="gate_selftest_evidence_")
+    prev = set_evidence_store(DocEvidenceStore(tmp.name))
+    try:
+        return _selftest()
+    finally:
+        set_evidence_store(prev)
+        tmp.cleanup()
+
+
+def _selftest():
     mag = lambda: IngestGate("magnetics.ndjson", validate=False)      # noqa: E731
     mos = lambda: IngestGate("mosfets.ndjson", validate=False)        # noqa: E731
     cap = lambda: IngestGate("capacitors.ndjson", validate=False)     # noqa: E731
@@ -1632,6 +1879,93 @@ def selftest():
               for i in range(MIN_COHORT + 2)]
     results.append(_run("2l  a per-SKU page addressed by ?part_no= is a real citation",
                         "ACCEPTED", igb, persku))
+
+    # -- rule 2: the cited document's STORED TEXT prints the part --------------
+    # Added 2026-10-17 (approved by Alf). A distributor mirror, an ST DM00 link,
+    # a Littelfuse asset id or a family PDF prints the part number inside the
+    # document while its URL never does. Rule 2 read only the URL and refused
+    # verified corrections for it (73 IGBT ops, 118 tracing ops, 64 Bourns TVS
+    # rows stamped seriesConfirmed to get past it). Now a cached copy of that
+    # exact document, in the doc-evidence store, can testify -- and every one of
+    # the refusal fixtures below is what keeps that from becoming a blanket pass.
+    store = evidence_store()
+    mirror = ("https://mm.digikey.com/Volume0/opasdata/d220001/medias/docus/404/"
+              "6th_Gen_NX-Series_Choppers_PB_11-14-12.pdf")
+    store.register(mirror, "6th Gen NX-Series Choppers\n"
+                   "  CM150EXS-24S   150 A  1200 V\n  CM200EXS-24S   200 A  1200 V\n"
+                   "  Tjmax = 175 \u00b0C for higher operating temperature\n",
+                   "2026-10-17", "selftest")
+    other = "https://mm.digikey.com/Volume0/opasdata/d220001/medias/docus/405/NX_B.pdf"
+    store.register(other, "NX-Series dual\n  CM300DY-24S  300 A  1200 V\n",
+                   "2026-10-17", "selftest")
+
+    def _mirror(pn, url, sub="igbt", verification="valuesReadFromSource"):
+        return {"semiconductor": {sub: {"manufacturerInfo": {
+            "name": "Powerex Inc.", "reference": pn,
+            "datasheetInfo": {
+                "part": {"partNumber": pn},
+                "thermal": {"junctionTemperatureMax": 175},
+                "provenance": [{"source": "manufacturerDatasheet",
+                                "sourceName": "datasheet (distributor copy)",
+                                "sourceUrl": url, "retrievedDate": "2026-10-17",
+                                "verification": verification,
+                                "verificationDate": "2026-10-17",
+                                "fields": ["thermal.junctionTemperatureMax"]}]}}}}}
+
+    results.append(_run("2m  URL lacks the part, STORED document text prints it",
+                        "ACCEPTED", igb, [_mirror("CM150EXS-24S", mirror)]))
+    results.append(_run("2n  stored document text does NOT print the part",
+                        "REFUSED", igb, [_mirror("CM600EXS-24S", mirror)]))
+    results.append(_run("2o  same URL shape, document NOT in the store",
+                        "REFUSED", igb, [_mirror(
+                            "CM150EXS-24S",
+                            "https://mm.digikey.com/Volume0/opasdata/d220001/"
+                            "medias/docus/999/not_on_file.pdf")]))
+    results.append(_run("2p  stored text names a DIFFERENT document's part",
+                        "REFUSED", igb, [_mirror("CM150EXS-24S", other)]))
+
+    # Prefix collisions: the normaliser strips punctuation, so a bare substring
+    # test would let IRF540N "name" IRF540 and VS-GT400TH60N "name" GT400TH60N.
+    coll = "https://example.org/assets/a7f3e9/family_sheet.pdf"
+    store.register(coll, "Ordering: IRF540N, IRF540NS (D2PAK). Also VS-GT400TH60N.\n",
+                   "2026-10-17", "selftest")
+    results.append(_run("2q  IRF540 vs a document that prints only IRF540N",
+                        "REFUSED", mos, [_mirror("IRF540", coll, sub="mosfet")]))
+    results.append(_run("2r  GT400TH60N vs a document that prints only VS-GT400TH60N",
+                        "REFUSED", igb, [_mirror("GT400TH60N", coll)]))
+    results.append(_run("2s  IRF540N itself, printed in the same document",
+                        "ACCEPTED", mos, [_mirror("IRF540N", coll, sub="mosfet")]))
+
+    # A results page echoes its query, so a stored search page is never evidence.
+    srch = "https://www.alldatasheet.com/view.jsp?Searchword=x&q=CM150EXS-24S"
+    store.register(srch, "Results for CM150EXS-24S\n", "2026-10-17", "selftest")
+    results.append(_run("2t  stored SEARCH page whose text echoes the part",
+                        "REFUSED", igb, [_mirror("CM150EXS-24S", srch)]))
+
+    # The cross-row half: the same family PDF on many rows (2g's refusal) is no
+    # longer "a document standing in for parts it does not name" once its
+    # stored text prints every one of them.
+    vis = "https://www.vishay.com/docs/34609/ihlp1008.pdf"
+    grid = ["IHLP1008ABEZ%dR0M11" % i for i in range(MIN_COHORT + 2)]
+    store.register(vis, "STANDARD ELECTRICAL SPECIFICATIONS\nPART NUMBER\n"
+                   + "\n".join(grid) + "\n", "2026-10-17", "selftest")
+    results.append(_run("2u  family PDF on %d rows, stored text prints each part"
+                        % len(grid), "ACCEPTED", mag,
+                        [_shared_pdf(pn, ["electrical.inductance"]) for pn in grid]))
+
+    # A tampered entry must not read as "not on file": it raises.
+    key = evidence_key(other)
+    (store.root / key[:2] / (key + ".txt.gz")).write_bytes(
+        gzip.compress(b"NX-Series dual\n  CM600EXS-24S\n"))
+    store._texts.pop(key, None)
+    try:
+        store.text_for(other)
+        ok = False
+    except DocEvidenceError:
+        ok = True
+    print("%-4s %-9s (expected %-9s) %s" % ("PASS" if ok else "FAIL",
+          "RAISED" if ok else "READ", "RAISED", "2v  tampered store entry"))
+    results.append(ok)
 
     # -- rule 3: a quantity the record already explains -----------------------
     # Added 2026-09-21. An RF connector's description carries its characteristic

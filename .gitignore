@@ -89,6 +89,10 @@
 # required-but-vacuous counted as missing). An importer that imports it must find
 # it in a fresh clone, and a gate nobody can run is not a gate.
 !/scripts/ingest_gate.py
+# The only writer of the gate's document-evidence store (staging/doc_evidence/,
+# itself gitignored): rule 2 reads that store, so the tool that fills it ships
+# with the gate.
+!/scripts/register_doc_evidence.py
 !/scripts/we_inductors_import.py
 !/scripts/we_transformers_import.py
 !/scripts/tdk_meister_import.py
