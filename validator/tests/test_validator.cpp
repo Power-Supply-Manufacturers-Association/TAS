@@ -4001,6 +4001,299 @@ TEST_CASE("SWT_TRIP_CURVE: index-aligned arrays of different lengths fire", "[sw
     CHECK(has(V.validate(p), "SWT_TRIP_CURVE", Severity::Impossible));
 }
 
+// --- protection (EMAS protection.json) ----------------------------------------
+// The good records are the five EMAS protection examples, verbatim (each read
+// from its manufacturer datasheet): Littelfuse 0451001.MRL fuse, Bourns
+// MF-MSMF050-2 PPTC, Bourns 2038-15-SM GDT, Schurter 0031.8201 fuse holder,
+// Multicomp MP001618 thermal cut-off.
+json good_prot_fuse() {
+    return json::parse(R"json({"protection":{"manufacturerInfo":{"name":"Littelfuse","reference":"0451001.MRL","status":"production","family":"451","description":"NANO2 very fast-acting surface-mount fuse, 1 A, 125 V","datasheetUrl":"https://www.littelfuse.com/assetdocs/fuse-451-and-453-datasheet?assetguid=533cd5cc-956c-4243-867f-6ab5a62f6ba1","datasheetInfo":{"part":{"partNumber":"0451001.MRL","series":"451","family":"fuse","formFactor":"surfaceMount","application":"generalPurpose","description":"451/453 Series Very Fast-Acting Fuse (Nano2 SMF), 1.00 A, amp code 001., gold-plated caps, 1000 pcs tape and reel"},"electrical":{"ratedCurrent":1.0,"ratedVoltageAc":125,"ratedVoltageDc":125,"breakingCapacities":[{"current":50,"voltage":125,"voltageType":"acDc"},{"current":300,"voltage":32,"voltageType":"dc"},{"current":100,"voltage":100,"voltageType":"ac","standard":"PSE"}],"speed":"veryFastActing","meltingI2t":0.6029,"meltingI2tTime":0.008,"coldResistance":0.078,"coldResistanceTestCurrent":0.1,"openingTimes":[{"currentMultiple":1.0,"minimumTime":14400},{"currentMultiple":2.0,"maximumTime":5}]},"thermal":{"operatingTemperature":{"minimum":-55,"maximum":125}},"mechanical":{"length":{"nominal":0.0061,"minimum":0.0059,"maximum":0.0063},"width":{"nominal":0.00269,"minimum":0.00244,"maximum":0.00294},"height":{"nominal":0.00269,"minimum":0.00244,"maximum":0.00294}},"provenance":[{"source":"manufacturerDatasheet","verification":"valuesReadFromSource","verificationDate":"2026-10-18","sourceName":"Littelfuse 451/453 Series datasheet, revised GD. 12/01/25","sourceUrl":"https://www.littelfuse.com/assetdocs/fuse-451-and-453-datasheet?assetguid=533cd5cc-956c-4243-867f-6ab5a62f6ba1","retrievedDate":"2026-10-18"}]}}}})json");
+}
+json good_prot_pptc() {
+    return json::parse(R"json({"protection":{"manufacturerInfo":{"name":"Bourns","reference":"MF-MSMF050-2","status":"production","family":"MF-MSMF","description":"PTC resettable fuse, 1812, I_hold 0.50 A, V_max 15 V","datasheetUrl":"https://www.bourns.com/docs/Product-Datasheets/mf-msmf.pdf","datasheetInfo":{"part":{"partNumber":"MF-MSMF050-2","series":"MF-MSMF","case":"1812","family":"resettableFuse","formFactor":"surfaceMount","description":"MF-MSMF Series PTC Resettable Fuse, model MF-MSMF050, tape and reel (-2)"},"electrical":{"holdCurrent":0.5,"tripCurrent":1.0,"maximumVoltage":15,"maximumFaultCurrent":100,"timeToTrip":{"current":8.0,"time":0.15},"trippedPowerDissipation":0.8,"minimumResistance":0.15,"maximumResistanceAfterTrip":1.0,"ratingTemperature":23},"thermal":{"operatingTemperature":{"minimum":-40,"maximum":85}},"mechanical":{"length":{"minimum":0.00437,"maximum":0.00473},"width":{"minimum":0.00307,"maximum":0.00341},"height":{"minimum":0.00055,"maximum":0.00085}},"provenance":[{"source":"manufacturerDatasheet","verification":"valuesReadFromSource","verificationDate":"2026-10-18","sourceName":"Bourns MF-MSMF Series datasheet, REV. BE, 09/26","sourceUrl":"https://www.bourns.com/docs/Product-Datasheets/mf-msmf.pdf","retrievedDate":"2026-10-18"}]}}}})json");
+}
+json good_prot_gdt() {
+    return json::parse(R"json({"protection":{"manufacturerInfo":{"name":"Bourns","reference":"2038-15-SM","status":"production","family":"2038","description":"Miniature symmetrical 3-electrode surface-mount gas discharge tube, 150 V","datasheetUrl":"https://www.bourns.com/docs/product-datasheets/2038-xx-sm.pdf","datasheetInfo":{"part":{"partNumber":"2038-15-SM","series":"2038","family":"gasDischargeTube","formFactor":"surfaceMount","application":"telecom","description":"2038 Series Miniature Symmetrical 3-Electrode Surface Mount Gas Discharge Tube (Mini-TRIGARD)"},"electrical":{"electrodeCount":3,"dcSparkoverVoltage":{"nominal":150,"minimum":112.5,"maximum":187.5},"dcSparkoverRampRate":100,"impulseSparkoverVoltages":[{"voltage":350,"rampRate":100000000.0,"bound":"typical"},{"voltage":500,"rampRate":1000000000.0,"bound":"typical"}],"impulseDischargeCurrents":[{"current":10000,"waveform":"8/20","operations":1},{"current":5000,"waveform":"8/20","operations":10},{"current":200,"waveform":"10/1000","operations":300},{"current":200,"waveform":"10/700","operations":500},{"current":10,"waveform":"10/1000","operations":1500}],"acDischargeCurrents":[{"current":10,"duration":1,"operations":1},{"current":5,"duration":1,"operations":10}],"insulationResistance":1000000000.0,"insulationResistanceTestVoltage":100,"capacitance":1e-12,"capacitanceTestFrequency":1000000.0,"arcVoltage":10,"glowVoltage":70,"glowArcTransitionCurrent":0.5,"dcHoldoverVoltage":80,"impulseTransverseDelay":5e-08},"thermal":{"operatingTemperature":{"minimum":-40,"maximum":90}},"mechanical":{"length":{"nominal":0.0075,"minimum":0.00724,"maximum":0.00776},"diameter":{"nominal":0.005,"minimum":0.0047,"maximum":0.0053}},"provenance":[{"source":"manufacturerDatasheet","verification":"valuesReadFromSource","verificationDate":"2026-10-18","sourceName":"Bourns 2038 Series datasheet, REV. Q 10/26","sourceUrl":"https://www.bourns.com/docs/product-datasheets/2038-xx-sm.pdf","retrievedDate":"2026-10-18"}]}}}})json");
+}
+json good_prot_holder() {
+    return json::parse(R"json({"protection":{"manufacturerInfo":{"name":"Schurter","reference":"0031.8201","status":"production","family":"OGN","description":"Fuseholder open design, 5 x 20 mm, THT, pin distance 22.5 mm, tin-plated, bulk 100 pcs","datasheetUrl":"https://www.schurter.com/en/datasheet/typ_OGN.pdf","datasheetInfo":{"part":{"partNumber":"0031.8201","series":"OGN","family":"fuseHolder","formFactor":"throughHole","application":"acPower","description":"OGN Fuseholder Open Design, 5 x 20 mm, THT, IEC 60335-1"},"electrical":{"fuseLink":{"format":"cartridge","designation":"5 x 20 mm","diameter":0.005,"length":0.02},"ratedCurrent":16,"ratedVoltageAc":500,"ratedVoltageDc":500,"ratedPowerAcceptance":4,"ratedPowerAcceptanceCurrent":16,"ratedPowerAcceptanceAmbientTemperature":23,"contactResistance":0.01,"shockSafeCategory":"PC1"},"thermal":{"operatingTemperature":{"minimum":-40,"maximum":85}},"mechanical":{"weight":0.0017,"assemblyType":"tht"},"provenance":[{"source":"manufacturerDatasheet","verification":"valuesReadFromSource","verificationDate":"2026-10-18","sourceName":"Schurter OGN datasheet, 01.09.2025","sourceUrl":"https://www.schurter.com/en/datasheet/typ_OGN.pdf","retrievedDate":"2026-10-18"}]}}}})json");
+}
+json good_prot_tco() {
+    return json::parse(R"json({"protection":{"manufacturerInfo":{"name":"Multicomp Pro","reference":"MP001618","status":"production","family":"BTT","description":"Thermal Fuse, 73\u00b0C, 15A, 250V AC, Axial Leaded","datasheetUrl":"https://www.farnell.com/datasheets/2877838.pdf","datasheetInfo":{"part":{"partNumber":"MP001618","series":"BTT","family":"thermalCutoff","formFactor":"throughHoleAxial","description":"BTT thermal cutoff fuse, axial leaded, metal casing, epoxy sealing"},"electrical":{"ratedFunctioningTemperature":73,"functioningTemperature":{"nominal":69,"minimum":67,"maximum":71},"holdingTemperature":50,"maximumTemperatureLimit":150,"ratedCurrent":15,"ratedVoltageAc":250,"sensingElement":"pellet","reset":"nonResettable"},"mechanical":{"diameter":{"nominal":0.004},"length":{"nominal":0.01}},"provenance":[{"source":"manufacturerDatasheet","verification":"valuesReadFromSource","verificationDate":"2026-10-18","sourceName":"Multicomp Pro BTT thermal fuse datasheet, V1.0 16/12/19","sourceUrl":"https://www.farnell.com/datasheets/2877838.pdf","retrievedDate":"2026-10-18"}]}}}})json");
+}
+json& prt_ds(json& p) { return p["protection"]["manufacturerInfo"]["datasheetInfo"]; }
+json& prt_el(json& p) { return prt_ds(p)["electrical"]; }
+
+TEST_CASE("protection: the five datasheet examples carry no IMPOSSIBLE finding",
+          "[protection]") {
+    for (const json& p : {good_prot_fuse(), good_prot_pptc(), good_prot_gdt(),
+                          good_prot_holder(), good_prot_tco()}) {
+        const Verdict v = V.validate(p);
+        CHECK(v.valid);
+        for (const auto& f : v.findings) {
+            INFO(f.code << ": " << f.message);
+            CHECK(f.severity != Severity::Impossible);
+        }
+    }
+}
+
+TEST_CASE("protection: a family outside the EMAS enum is malformed, not skipped",
+          "[protection]") {
+    json p = good_prot_fuse();
+    prt_ds(p)["part"]["family"] = "circuitBreaker";
+    CHECK_THROWS_AS(V.validate(p), MalformedField);
+}
+
+TEST_CASE("protection: a record with two discriminators fires GEN_MULTI_DISCRIMINATOR",
+          "[protection]") {
+    json p = good_prot_fuse();
+    p["varistor"] = json::object();
+    CHECK(has(V.validate(p), "GEN_MULTI_DISCRIMINATOR", Severity::Impossible));
+}
+
+// fuse
+TEST_CASE("PRT_FUSE_BREAK_VS_RATED: a breaking capacity below the rated current fires",
+          "[protection]") {
+    json p = good_prot_fuse();
+    prt_el(p)["breakingCapacities"][0]["current"] = 0.5;   // rated 1 A
+    CHECK(has(V.validate(p), "PRT_FUSE_BREAK_VS_RATED", Severity::Impossible));
+}
+TEST_CASE("PRT_FUSE_BREAK_VS_RATED: 50 A breaking on a 1 A link stays quiet", "[protection]") {
+    CHECK_FALSE(has_code(V.validate(good_prot_fuse()), "PRT_FUSE_BREAK_VS_RATED"));
+}
+
+TEST_CASE("PRT_FUSE_BREAK_VOLTAGE: a DC breaking test above the DC rating fires",
+          "[protection]") {
+    json p = good_prot_fuse();
+    prt_el(p)["breakingCapacities"][1]["voltage"] = 250;   // dc, rated 125 V DC
+    CHECK(has(V.validate(p), "PRT_FUSE_BREAK_VOLTAGE", Severity::Impossible));
+}
+TEST_CASE("PRT_FUSE_BREAK_VOLTAGE: an AC test is judged against the AC rating only",
+          "[protection]") {
+    json p = good_prot_fuse();
+    prt_el(p)["ratedVoltageDc"] = 32;                       // 32 V DC, 125 V AC
+    prt_el(p)["breakingCapacities"] = json::parse(
+        R"json([{"current":100,"voltage":125,"voltageType":"ac"},
+                {"current":300,"voltage":32,"voltageType":"dc"}])json");
+    CHECK_FALSE(has_code(V.validate(p), "PRT_FUSE_BREAK_VOLTAGE"));
+}
+TEST_CASE("PRT_FUSE_BREAK_VOLTAGE: the datasheet's three breaking lines stay quiet",
+          "[protection]") {
+    CHECK_FALSE(has_code(V.validate(good_prot_fuse()), "PRT_FUSE_BREAK_VOLTAGE"));
+}
+
+TEST_CASE("PRT_FUSE_OPENING_ORDER: minimumTime above maximumTime on one line fires",
+          "[protection]") {
+    json p = good_prot_fuse();
+    prt_el(p)["openingTimes"][1]["minimumTime"] = 10;       // max 5 s at 2 x
+    CHECK(has(V.validate(p), "PRT_FUSE_OPENING_ORDER", Severity::Impossible));
+}
+TEST_CASE("PRT_FUSE_OPENING_ORDER: opening at 10 x no sooner than the slowest 2 x fires",
+          "[protection]") {
+    json p = good_prot_fuse();
+    prt_el(p)["openingTimes"].push_back(json::parse(R"json({"currentMultiple":10,"minimumTime":6})json"));
+    CHECK(has(V.validate(p), "PRT_FUSE_OPENING_ORDER", Severity::Impossible));
+}
+TEST_CASE("PRT_FUSE_OPENING_ORDER: the overlapping IEC 60127-2 time-lag table stays quiet",
+          "[protection]") {
+    // IEC 60127-2 standard sheet 3 (time-lag T, 5 x 20 mm): 1.5 x >= 60 min,
+    // 2.1 x <= 30 min, 2.75 x 0.4-10 s, 4 x 0.15-3 s, 10 x 20-150 ms. 4 x may
+    // take up to 3 s while 2.75 x must take at least 0.4 s -- overlapping bands,
+    // which the proposal's first rule ("a higher max above a lower min")
+    // condemned.
+    json p = good_prot_fuse();
+    prt_el(p)["openingTimes"] = json::parse(R"json([
+        {"currentMultiple":1.5,"minimumTime":3600},
+        {"currentMultiple":2.1,"maximumTime":1800},
+        {"currentMultiple":2.75,"minimumTime":0.4,"maximumTime":10},
+        {"currentMultiple":4,"minimumTime":0.15,"maximumTime":3},
+        {"currentMultiple":10,"minimumTime":0.02,"maximumTime":0.15}])json");
+    CHECK_FALSE(has_code(V.validate(p), "PRT_FUSE_OPENING_ORDER"));
+}
+
+TEST_CASE("PRT_FUSE_I2T_ORDER: clearing below a short-time melting I2t fires", "[protection]") {
+    json p = good_prot_fuse();
+    prt_el(p)["clearingI2t"] = 0.3;                         // melting 0.6029 at 8 ms
+    CHECK(has(V.validate(p), "PRT_FUSE_I2T_ORDER", Severity::Impossible));
+}
+TEST_CASE("PRT_FUSE_I2T_ORDER: clearing above melting stays quiet", "[protection]") {
+    json p = good_prot_fuse();
+    prt_el(p)["clearingI2t"] = 1.2;
+    CHECK_FALSE(has_code(V.validate(p), "PRT_FUSE_I2T_ORDER"));
+}
+TEST_CASE("PRT_FUSE_I2T_ORDER: a melting I2t stated at 100 ms is not compared", "[protection]") {
+    // Beyond the adiabatic limit the I2t to melt grows with the time; a 100 ms
+    // melting I2t above a few-ms clearing I2t is honest.
+    json p = good_prot_fuse();
+    prt_el(p)["meltingI2tTime"] = 0.1;
+    prt_el(p)["clearingI2t"] = 0.3;
+    CHECK_FALSE(has_code(V.validate(p), "PRT_FUSE_I2T_ORDER"));
+}
+
+// PPTC
+TEST_CASE("PRT_PPTC_TRIP_HOLD: a trip current equal to the hold current fires", "[protection]") {
+    json p = good_prot_pptc();
+    prt_el(p)["tripCurrent"] = 0.5;                          // hold 0.5 A
+    CHECK(has(V.validate(p), "PRT_PPTC_TRIP_HOLD", Severity::Impossible));
+}
+TEST_CASE("PRT_PPTC_TRIP_HOLD: 1.0 A trip over 0.5 A hold stays quiet", "[protection]") {
+    CHECK_FALSE(has_code(V.validate(good_prot_pptc()), "PRT_PPTC_TRIP_HOLD"));
+}
+
+TEST_CASE("PRT_PPTC_RES_ORDER: a post-trip resistance below the minimum fires",
+          "[protection]") {
+    json p = good_prot_pptc();
+    prt_el(p)["maximumResistanceAfterTrip"] = 0.1;           // R_min 0.15 Ohm
+    CHECK(has(V.validate(p), "PRT_PPTC_RES_ORDER", Severity::Impossible));
+}
+TEST_CASE("PRT_PPTC_RES_ORDER: an inverted initial band fires", "[protection]") {
+    json p = good_prot_pptc();
+    prt_el(p)["maximumResistance"] = 0.1;                    // R_min 0.15 Ohm
+    CHECK(has(V.validate(p), "PRT_PPTC_RES_ORDER", Severity::Impossible));
+}
+TEST_CASE("PRT_PPTC_RES_ORDER: 0.15 Ohm initial, 1.0 Ohm after trip stays quiet",
+          "[protection]") {
+    CHECK_FALSE(has_code(V.validate(good_prot_pptc()), "PRT_PPTC_RES_ORDER"));
+}
+
+TEST_CASE("PRT_PPTC_FAULT_VS_HOLD: a fault rating below the trip current fires",
+          "[protection]") {
+    json p = good_prot_pptc();
+    prt_el(p)["maximumFaultCurrent"] = 0.8;                  // trip 1.0 A
+    CHECK(has(V.validate(p), "PRT_PPTC_FAULT_VS_HOLD", Severity::Impossible));
+}
+TEST_CASE("PRT_PPTC_FAULT_VS_HOLD: 100 A fault over a 1 A trip stays quiet", "[protection]") {
+    CHECK_FALSE(has_code(V.validate(good_prot_pptc()), "PRT_PPTC_FAULT_VS_HOLD"));
+}
+
+TEST_CASE("PRT_PPTC_TTT_CURRENT: a time-to-trip stated below the trip current fires",
+          "[protection]") {
+    json p = good_prot_pptc();
+    prt_el(p)["timeToTrip"]["current"] = 0.9;                // trip 1.0 A
+    CHECK(has(V.validate(p), "PRT_PPTC_TTT_CURRENT", Severity::Impossible));
+}
+TEST_CASE("PRT_PPTC_TTT_CURRENT: time-to-trip exactly at the trip current stays quiet",
+          "[protection]") {
+    json p = good_prot_pptc();
+    prt_el(p)["timeToTrip"]["current"] = 1.0;                // strict: equal is allowed
+    CHECK_FALSE(has_code(V.validate(p), "PRT_PPTC_TTT_CURRENT"));
+}
+
+// GDT / spark gap
+TEST_CASE("PRT_GDT_SPARKOVER_BAND: a nominal above the maximum fires", "[protection]") {
+    json p = good_prot_gdt();
+    prt_el(p)["dcSparkoverVoltage"]["nominal"] = 200;        // max 187.5 V
+    CHECK(has(V.validate(p), "PRT_GDT_SPARKOVER_BAND", Severity::Impossible));
+}
+TEST_CASE("PRT_GDT_SPARKOVER_BAND: 150 V +/-25 % stays quiet", "[protection]") {
+    CHECK_FALSE(has_code(V.validate(good_prot_gdt()), "PRT_GDT_SPARKOVER_BAND"));
+}
+
+TEST_CASE("PRT_GDT_IMPULSE_VS_DC: an impulse sparkover below the DC minimum fires",
+          "[protection]") {
+    json p = good_prot_gdt();
+    prt_el(p)["impulseSparkoverVoltages"][0]["voltage"] = 100;  // DC min 112.5 V
+    CHECK(has(V.validate(p), "PRT_GDT_IMPULSE_VS_DC", Severity::Impossible));
+}
+TEST_CASE("PRT_GDT_IMPULSE_VS_DC: without a printed DC minimum it is not judged",
+          "[protection]") {
+    json p = good_prot_gdt();
+    prt_el(p)["dcSparkoverVoltage"] = json::parse(R"json({"nominal":150})json");
+    prt_el(p)["impulseSparkoverVoltages"][0]["voltage"] = 140;  // below nominal: not a bound
+    CHECK_FALSE(has_code(V.validate(p), "PRT_GDT_IMPULSE_VS_DC"));
+}
+TEST_CASE("PRT_GDT_IMPULSE_VS_DC: 350 V at 100 V/us stays quiet", "[protection]") {
+    CHECK_FALSE(has_code(V.validate(good_prot_gdt()), "PRT_GDT_IMPULSE_VS_DC"));
+}
+
+TEST_CASE("PRT_GDT_ARC_GLOW: an arc voltage above the glow voltage fires", "[protection]") {
+    json p = good_prot_gdt();
+    prt_el(p)["arcVoltage"] = 80;                            // glow 70 V
+    CHECK(has(V.validate(p), "PRT_GDT_ARC_GLOW", Severity::Impossible));
+}
+TEST_CASE("PRT_GDT_ARC_GLOW: a glow voltage above the DC sparkover minimum fires",
+          "[protection]") {
+    json p = good_prot_gdt();
+    prt_el(p)["glowVoltage"] = 120;                          // DC min 112.5 V
+    CHECK(has(V.validate(p), "PRT_GDT_ARC_GLOW", Severity::Impossible));
+}
+TEST_CASE("PRT_GDT_ARC_GLOW: 10 V arc, 70 V glow, 112.5 V minimum stays quiet",
+          "[protection]") {
+    CHECK_FALSE(has_code(V.validate(good_prot_gdt()), "PRT_GDT_ARC_GLOW"));
+}
+
+TEST_CASE("PRT_GDT_PULSE_ORDER: more operations at a higher current of one waveform fires",
+          "[protection]") {
+    json p = good_prot_gdt();
+    prt_el(p)["impulseDischargeCurrents"][0]["operations"] = 20;  // 10 kA x20 vs 5 kA x10
+    CHECK(has(V.validate(p), "PRT_GDT_PULSE_ORDER", Severity::Impossible));
+}
+TEST_CASE("PRT_GDT_PULSE_ORDER: waveforms are never compared with each other",
+          "[protection]") {
+    // 200 A 10/700 x500 against 200 A 10/1000 x300 and 10 A 10/1000 x1500: the
+    // datasheet's own lines, different labels kept apart (PEAS surgeWaveform).
+    CHECK_FALSE(has_code(V.validate(good_prot_gdt()), "PRT_GDT_PULSE_ORDER"));
+}
+TEST_CASE("PRT_GDT_PULSE_ORDER: a spark gap is judged by the same sparkover block",
+          "[protection]") {
+    json p = good_prot_gdt();
+    prt_ds(p)["part"]["family"] = "sparkGap";
+    prt_el(p)["impulseDischargeCurrents"][0]["operations"] = 20;
+    CHECK(has(V.validate(p), "PRT_GDT_PULSE_ORDER", Severity::Impossible));
+}
+
+// SPD module
+json good_prot_spd() {
+    json p = good_prot_fuse();
+    prt_ds(p)["part"] = json::parse(
+        R"json({"partNumber":"SPD-TEST","family":"surgeProtectiveDevice","formFactor":"dinRailModule"})json");
+    prt_ds(p)["electrical"] = json::parse(R"json({"iecTestClass":"II",
+        "maximumContinuousOperatingVoltage":275,"maximumContinuousOperatingVoltageType":"ac",
+        "nominalDischargeCurrent":{"current":20000,"waveform":"8/20"},
+        "maximumDischargeCurrent":{"current":40000,"waveform":"8/20"},
+        "voltageProtectionLevel":1500})json");
+    return p;
+}
+TEST_CASE("PRT_SPD_IMAX_IN: I_max below I_n at the same waveform fires", "[protection]") {
+    json p = good_prot_spd();
+    prt_el(p)["maximumDischargeCurrent"]["current"] = 10000;
+    CHECK(has(V.validate(p), "PRT_SPD_IMAX_IN", Severity::Impossible));
+}
+TEST_CASE("PRT_SPD_IMAX_IN: different waveforms are not compared", "[protection]") {
+    json p = good_prot_spd();
+    prt_el(p)["maximumDischargeCurrent"] = json::parse(R"json({"current":12500,"waveform":"10/350"})json");
+    CHECK_FALSE(has_code(V.validate(p), "PRT_SPD_IMAX_IN"));
+}
+TEST_CASE("PRT_SPD_IMAX_IN: 40 kA over 20 kA 8/20 stays quiet", "[protection]") {
+    CHECK_FALSE(has_code(V.validate(good_prot_spd()), "PRT_SPD_IMAX_IN"));
+}
+TEST_CASE("PRT_SPD_UP_UC: a protection level not above U_c fires", "[protection]") {
+    json p = good_prot_spd();
+    prt_el(p)["voltageProtectionLevel"] = 275;
+    CHECK(has(V.validate(p), "PRT_SPD_UP_UC", Severity::Impossible));
+}
+TEST_CASE("PRT_SPD_UP_UC: 1.5 kV over 275 V stays quiet", "[protection]") {
+    CHECK_FALSE(has_code(V.validate(good_prot_spd()), "PRT_SPD_UP_UC"));
+}
+
+// thermal cut-off
+TEST_CASE("PRT_TCO_HOLD_VS_TF: a holding temperature at T_f fires", "[protection]") {
+    json p = good_prot_tco();
+    prt_el(p)["holdingTemperature"] = 73;                    // T_f 73 degC
+    CHECK(has(V.validate(p), "PRT_TCO_HOLD_VS_TF", Severity::Impossible));
+}
+TEST_CASE("PRT_TCO_HOLD_VS_TF: T_h 50 degC under T_f 73 degC stays quiet", "[protection]") {
+    CHECK_FALSE(has_code(V.validate(good_prot_tco()), "PRT_TCO_HOLD_VS_TF"));
+}
+TEST_CASE("PRT_TCO_TM_VS_TF: a maximum temperature limit below T_f fires", "[protection]") {
+    json p = good_prot_tco();
+    prt_el(p)["maximumTemperatureLimit"] = 60;
+    CHECK(has(V.validate(p), "PRT_TCO_TM_VS_TF", Severity::Impossible));
+}
+TEST_CASE("PRT_TCO_TM_VS_TF: T_m 150 degC over T_f 73 degC stays quiet", "[protection]") {
+    CHECK_FALSE(has_code(V.validate(good_prot_tco()), "PRT_TCO_TM_VS_TF"));
+}
+
 // --- potentiometers --------------------------------------------------------
 
 TEST_CASE("POT_VOLTAGE_POWER: 200 V across a 10 k track rated 0.5 W fires",

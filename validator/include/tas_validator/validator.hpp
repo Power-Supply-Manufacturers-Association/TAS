@@ -170,6 +170,9 @@ void check_connectors(const json& datasheet, const Ctx&, std::vector<Finding>&, 
 // Electromechanical (EMAS) and the two families that were previously undispatchable.
 void check_relays(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
 void check_switches(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
+// EMAS protection: dispatches on part.family (fuse, resettableFuse, gasDischargeTube,
+// sparkGap, surgeProtectiveDevice, fuseHolder, thermalCutoff) -- see protection.cpp.
+void check_protection(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
 void check_potentiometers(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
 void check_connector_accessories(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
 // Shared by relays AND switches: EMAS models both families' switched circuit

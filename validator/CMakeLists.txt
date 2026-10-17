@@ -130,6 +130,7 @@ add_library(tas_validator_core STATIC
   src/contacts.cpp
   src/relays.cpp
   src/switches.cpp
+  src/protection.cpp
   src/potentiometers.cpp
   src/connector_accessories.cpp
   src/thermistors.cpp

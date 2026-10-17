@@ -1083,6 +1083,20 @@ inline constexpr double REL_REED_CURRENT_IMP = 25.0;
 // only defensible ceiling: above it the number is not a transition time at all.
 inline constexpr double REL_TIME_IMP_HI = 3600.0;
 
+// ---- Circuit protection (EMAS protection.json, protection.cpp) -------------
+// The protection checks are orderings (no calibrated bounds); this is their one
+// constant. Melting (pre-arcing) I2t is a material constant of the fuse element
+// only in the ADIABATIC regime, where the element melts before heat can leave
+// it. IEC 60127 and IEC 60269 state the nominal melting I2t at short pre-arcing
+// times, and manufacturers print it at ~1-10 ms (Littelfuse 0451001.MRL:
+// 0.6029 A2s at 8 ms, the EMAS protection example). At longer pre-arcing times
+// conduction to the caps and leads adds heat that never melts the element, so
+// the I2t to melt grows with the time -- a melting I2t printed at 100 ms can
+// honestly exceed the clearing I2t of the breaking test, which is over in a few
+// ms. Clearing >= melting is therefore asserted only when the melting time is
+// absent (the datasheet's nominal short-time value) or at most this limit.
+inline constexpr double PRT_I2T_ADIABATIC_TIME_S = 0.010;
+
 // ---- Potentiometers (RAS potentiometer.json) --------------------------------
 // Commercial tracks run 10 Ohm .. 10 MOhm (the catalogue's own span is
 // 10 Ohm .. 1 MOhm). Below 1 Ohm the wiper contact resistance alone dominates

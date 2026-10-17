@@ -819,7 +819,8 @@ Verdict PartValidator::validate(const json& part) const {
     // below would silently pick the first).
     static const char* DISCRIMINATORS[] = {
         "magnetic", "capacitor", "resistor", "varistor", "thermistor", "connector", "controller",
-        "semiconductor", "timeBase", "relay", "switch", "potentiometer", "connectorAccessory",
+        "semiconductor", "timeBase", "relay", "switch", "protection", "potentiometer",
+        "connectorAccessory",
         "operationalAmplifier", "comparator", "instrumentationAmplifier", "differenceAmplifier",
         "programmableGainAmplifier", "buffer", "sampleHold", "analogSwitch", "multiplexer",
         "adc", "dac", "multiplier", "integrator", "summer"};
@@ -876,6 +877,8 @@ Verdict PartValidator::validate(const json& part) const {
         run("relay", part["relay"], &check_relays);
     } else if (part.contains("switch")) {
         run("switch", part["switch"], &check_switches);
+    } else if (part.contains("protection")) {
+        run("protection", part["protection"], &check_protection);
     } else if (part.contains("potentiometer")) {
         run("potentiometer", part["potentiometer"], &check_potentiometers);
     } else if (part.contains("connectorAccessory")) {
@@ -953,7 +956,7 @@ Verdict PartValidator::validate(const json& part) const {
         else
             throw std::invalid_argument(
                 "no known component discriminator (magnetic/capacitor/resistor/varistor/"
-                "connector/thermistor/relay/switch/potentiometer/connectorAccessory/"
+                "connector/thermistor/relay/switch/protection/potentiometer/connectorAccessory/"
                 "semiconductor/analog-AAS)");
     }
 
