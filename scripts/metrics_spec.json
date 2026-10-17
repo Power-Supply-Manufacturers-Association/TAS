@@ -1,0 +1,1919 @@
+{
+ "version": "1",
+ "weights": {
+  "existence": 15,
+  "traced": 25,
+  "fields": 25,
+  "curves": 15,
+  "url": 10,
+  "valid": 10
+ },
+ "catalogues": {
+  "mosfets": {
+   "file": "mosfets.ndjson",
+   "wrap": [
+    "semiconductor",
+    "mosfet"
+   ],
+   "schema": "https://psma.com/sas/mosfet.json",
+   "fields": [
+    "electrical.drainSourceVoltage|dies[].electrical.drainSourceVoltage",
+    "electrical.continuousDrainCurrent|dies[].electrical.continuousDrainCurrent",
+    "electrical.pulsedDrainCurrent|dies[].electrical.pulsedDrainCurrent",
+    "electrical.onResistance|dies[].electrical.onResistance",
+    "electrical.onResistanceVgs|dies[].electrical.onResistanceVgs",
+    "electrical.gateThresholdVoltage|dies[].electrical.gateThresholdVoltage",
+    "electrical.gateSourceVoltageMax|dies[].electrical.gateSourceVoltageMax",
+    "electrical.totalGateCharge|dies[].electrical.totalGateCharge",
+    "electrical.gateSourceCharge|dies[].electrical.gateSourceCharge",
+    "electrical.gateDrainCharge|dies[].electrical.gateDrainCharge",
+    "electrical.inputCapacitance|dies[].electrical.inputCapacitance",
+    "electrical.outputCapacitance|dies[].electrical.outputCapacitance",
+    "electrical.reverseTransferCapacitance|dies[].electrical.reverseTransferCapacitance",
+    "electrical.powerDissipation|dies[].electrical.powerDissipation",
+    "electrical.bodyDiodeForwardVoltage|dies[].electrical.bodyDiodeForwardVoltage",
+    "electrical.reverseRecoveryCharge|dies[].electrical.reverseRecoveryCharge",
+    "thermal.thermalResistanceJunctionCase|thermal.thermalResistanceJunctionAmbient",
+    "thermal.junctionTemperatureMax",
+    "part.case|part.package"
+   ],
+   "curves": [
+    "curves.cissVsVds|curves.cossVsVds|curves.crssVsVds",
+    "curves.soa",
+    "curves.thermalImpedance",
+    "curves.gateCharge",
+    "curves.rdsOnVsTj"
+   ],
+   "curves_missing_in_schema": [
+    "output characteristic Id-Vds",
+    "transfer characteristic Id-Vgs"
+   ]
+  },
+  "igbts": {
+   "file": "igbts.ndjson",
+   "wrap": [
+    "semiconductor",
+    "igbt"
+   ],
+   "schema": "https://psma.com/sas/igbt.json",
+   "fields": [
+    "electrical.collectorEmitterVoltage",
+    "electrical.continuousCollectorCurrent",
+    "electrical.collectorEmitterSaturation",
+    "electrical.gateEmitterVoltageMax",
+    "electrical.gateThresholdVoltage",
+    "electrical.totalGateCharge",
+    "electrical.inputCapacitance",
+    "electrical.turnOnEnergy",
+    "electrical.turnOffEnergy",
+    "electrical.powerDissipation",
+    "electrical.shortCircuitTime",
+    "thermal.thermalResistanceJunctionCase",
+    "thermal.junctionTemperatureMax",
+    "part.case|part.package"
+   ],
+   "curves": [
+    "curves.vceVsIc",
+    "curves.eonVsIc",
+    "curves.eoffVsIc",
+    "curves.soa",
+    "curves.thermalImpedance"
+   ],
+   "curves_missing_in_schema": [
+    "transfer characteristic Ic-Vge",
+    "gate charge Vge-Qg",
+    "capacitance vs Vce",
+    "switching energy vs Rg/Tj",
+    "anti-parallel diode forward characteristic"
+   ]
+  },
+  "diodes": {
+   "file": "diodes.ndjson",
+   "wrap": [
+    "semiconductor",
+    "diode"
+   ],
+   "schema": "https://psma.com/sas/diode.json",
+   "fields": [
+    "thermal.junctionTemperatureMax",
+    "part.case|part.package",
+    {
+     "path": "electrical.reverseVoltage",
+     "when": {
+      "part.subType": [
+       "schottky",
+       "ultrafast",
+       "sicSchottky",
+       "rectifier",
+       "fastRecovery",
+       "switching"
+      ]
+     }
+    },
+    {
+     "path": "electrical.forwardCurrent",
+     "when": {
+      "part.subType": [
+       "schottky",
+       "ultrafast",
+       "sicSchottky",
+       "rectifier",
+       "fastRecovery",
+       "switching"
+      ]
+     }
+    },
+    {
+     "path": "electrical.forwardVoltage",
+     "when": {
+      "part.subType": [
+       "schottky",
+       "ultrafast",
+       "sicSchottky",
+       "rectifier",
+       "fastRecovery",
+       "switching"
+      ]
+     }
+    },
+    {
+     "path": "electrical.forwardVoltageAt",
+     "when": {
+      "part.subType": [
+       "schottky",
+       "ultrafast",
+       "sicSchottky",
+       "rectifier",
+       "fastRecovery",
+       "switching"
+      ]
+     }
+    },
+    {
+     "path": "electrical.surgeCurrent",
+     "when": {
+      "part.subType": [
+       "schottky",
+       "ultrafast",
+       "sicSchottky",
+       "rectifier",
+       "fastRecovery",
+       "switching"
+      ]
+     }
+    },
+    {
+     "path": "electrical.reverseLeakageCurrent",
+     "when": {
+      "part.subType": [
+       "schottky",
+       "ultrafast",
+       "sicSchottky",
+       "rectifier",
+       "fastRecovery",
+       "switching"
+      ]
+     }
+    },
+    {
+     "path": "electrical.junctionCapacitance",
+     "when": {
+      "part.subType": [
+       "schottky",
+       "ultrafast",
+       "sicSchottky",
+       "rectifier",
+       "fastRecovery",
+       "switching"
+      ]
+     }
+    },
+    {
+     "path": "thermal.thermalResistanceJunctionCase|thermal.thermalResistanceJunctionAmbient",
+     "when": {
+      "part.subType": [
+       "schottky",
+       "ultrafast",
+       "sicSchottky",
+       "rectifier",
+       "fastRecovery",
+       "switching"
+      ]
+     }
+    },
+    {
+     "path": "electrical.reverseRecoveryTime",
+     "when": {
+      "part.subType": [
+       "ultrafast",
+       "fastRecovery",
+       "switching",
+       "rectifier"
+      ]
+     }
+    },
+    {
+     "path": "electrical.reverseRecoveryCharge",
+     "when": {
+      "part.subType": [
+       "ultrafast",
+       "fastRecovery",
+       "sicSchottky"
+      ]
+     }
+    },
+    {
+     "path": "electrical.standoffVoltage",
+     "when": {
+      "part.subType": [
+       "tvs",
+       "esd"
+      ]
+     }
+    },
+    {
+     "path": "electrical.breakdownVoltage",
+     "when": {
+      "part.subType": [
+       "tvs",
+       "esd"
+      ]
+     }
+    },
+    {
+     "path": "electrical.clampingVoltage",
+     "when": {
+      "part.subType": [
+       "tvs",
+       "esd"
+      ]
+     }
+    },
+    {
+     "path": "electrical.peakPulseCurrent",
+     "when": {
+      "part.subType": [
+       "tvs",
+       "esd"
+      ]
+     }
+    },
+    {
+     "path": "electrical.reverseLeakageCurrent",
+     "when": {
+      "part.subType": [
+       "tvs",
+       "esd"
+      ]
+     }
+    },
+    {
+     "path": "electrical.junctionCapacitance",
+     "when": {
+      "part.subType": [
+       "tvs",
+       "esd"
+      ]
+     }
+    },
+    {
+     "path": "electrical.peakPulsePower",
+     "when": {
+      "part.subType": [
+       "tvs"
+      ]
+     }
+    },
+    {
+     "path": "electrical.esdVoltageContact|electrical.esdVoltageAir",
+     "when": {
+      "part.subType": [
+       "esd"
+      ]
+     }
+    },
+    {
+     "path": "electrical.breakdownVoltage",
+     "when": {
+      "part.subType": [
+       "zener"
+      ]
+     }
+    },
+    {
+     "path": "electrical.zenerTestCurrent",
+     "when": {
+      "part.subType": [
+       "zener"
+      ]
+     }
+    },
+    {
+     "path": "electrical.zenerImpedance",
+     "when": {
+      "part.subType": [
+       "zener"
+      ]
+     }
+    },
+    {
+     "path": "electrical.powerDissipation",
+     "when": {
+      "part.subType": [
+       "zener"
+      ]
+     }
+    },
+    {
+     "path": "electrical.reverseLeakageCurrent",
+     "when": {
+      "part.subType": [
+       "zener"
+      ]
+     }
+    }
+   ],
+   "curves": [
+    {
+     "path": "curves.forwardVoltageVsCurrent",
+     "when": {
+      "part.subType": [
+       "schottky",
+       "ultrafast",
+       "sicSchottky",
+       "rectifier",
+       "fastRecovery",
+       "switching"
+      ]
+     }
+    },
+    {
+     "path": "curves.capacitanceVsVoltage",
+     "when": {
+      "part.subType": [
+       "esd",
+       "sicSchottky"
+      ]
+     }
+    }
+   ],
+   "curves_missing_in_schema": [
+    "reverse-recovery trr/Qrr vs di/dt",
+    "TVS clamping voltage vs peak pulse current",
+    "TVS peak-pulse-power derating vs ambient",
+    "zener Vz-Iz knee/impedance curve"
+   ]
+  },
+  "bjts": {
+   "file": "bjts.ndjson",
+   "wrap": [
+    "semiconductor",
+    "bjt"
+   ],
+   "schema": "https://psma.com/sas/bjt.json",
+   "fields": [
+    "electrical.collectorEmitterVoltage",
+    "electrical.collectorBaseVoltage",
+    "electrical.collectorCurrent",
+    "electrical.dcCurrentGain",
+    "electrical.saturationVoltage",
+    "electrical.powerDissipation",
+    "electrical.transitionFrequency",
+    "thermal.junctionTemperatureMax",
+    "thermal.thermalResistanceJunctionAmbient|thermal.thermalResistanceJunctionCase",
+    "part.case|part.package"
+   ],
+   "curves": [],
+   "curves_missing_in_schema": [
+    "output characteristic Ic-Vce",
+    "hFE vs Ic",
+    "VCEsat vs Ic",
+    "SOA"
+   ]
+  },
+  "capacitors": {
+   "file": "capacitors.ndjson",
+   "wrap": [
+    "capacitor"
+   ],
+   "schema": "https://psma.com/cas/capacitor.json",
+   "fields": [
+    "electrical.capacitance",
+    "electrical.capacitance.minimum|electrical.capacitance.maximum",
+    "electrical.ratedVoltage|electrical.voltageRatedDcMax|electrical.voltageRatedAcMax",
+    "thermal.temperature|thermal.operatingTemperature",
+    "electrical.esr|electrical.dissipationFactor|electrical.qFactor|electrical.impedancePoints|electrical.esrPoints",
+    "mechanical.dimensions.length|mechanical.dimensions.diameter",
+    "mechanical.dimensions.height|mechanical.dimensions.thickness|mechanical.dimensions.width",
+    "part.case",
+    {
+     "path": "electrical.leakageCurrent",
+     "when": {
+      "part.technology": [
+       "aluminum-electrolytic-wet",
+       "aluminum-electrolytic-polymer",
+       "aluminum-hybrid-polymer",
+       "tantalum-polymer",
+       "tantalum-mno2",
+       "tantalum-wet",
+       "supercapacitor-edlc"
+      ]
+     }
+    },
+    {
+     "path": "electrical.rippleCurrent",
+     "when": {
+      "part.technology": [
+       "aluminum-electrolytic-wet",
+       "aluminum-electrolytic-polymer",
+       "aluminum-hybrid-polymer",
+       "tantalum-polymer",
+       "tantalum-mno2",
+       "tantalum-wet",
+       "supercapacitor-edlc"
+      ]
+     }
+    },
+    {
+     "path": "lifetime.lifetimeEndurance",
+     "when": {
+      "part.technology": [
+       "aluminum-electrolytic-wet",
+       "aluminum-electrolytic-polymer",
+       "aluminum-hybrid-polymer"
+      ]
+     }
+    },
+    {
+     "path": "electrical.insulationResistance",
+     "when": {
+      "part.technology": [
+       "ceramic-class-1",
+       "ceramic-class-2",
+       "ceramic-class-3",
+       "film-polypropylene",
+       "film-polyester",
+       "film-paper",
+       "film-polyphenylene-sulfide",
+       "film-acrylic"
+      ]
+     }
+    },
+    {
+     "path": "part.dielectricCode",
+     "when": {
+      "part.technology": [
+       "ceramic-class-1",
+       "ceramic-class-2",
+       "ceramic-class-3"
+      ]
+     }
+    },
+    {
+     "path": "thermal.temperatureCoefficient",
+     "when": {
+      "part.technology": [
+       "ceramic-class-1"
+      ]
+     }
+    }
+   ],
+   "curves": [
+    "electrical.impedancePoints",
+    {
+     "path": "electrical.esrPoints",
+     "when": {
+      "part.technology": [
+       "aluminum-electrolytic-wet",
+       "aluminum-electrolytic-polymer",
+       "aluminum-hybrid-polymer",
+       "tantalum-polymer",
+       "tantalum-mno2",
+       "tantalum-wet"
+      ]
+     }
+    },
+    {
+     "path": "electrical.capacitanceBiasPoints",
+     "when": {
+      "part.technology": [
+       "ceramic-class-2",
+       "ceramic-class-3"
+      ]
+     }
+    },
+    {
+     "path": "electrical.rippleCurrentFrequencyPoints",
+     "when": {
+      "part.technology": [
+       "aluminum-electrolytic-wet",
+       "aluminum-electrolytic-polymer",
+       "aluminum-hybrid-polymer"
+      ]
+     }
+    },
+    {
+     "path": "electrical.rippleCurrentTemperaturePoints",
+     "when": {
+      "part.technology": [
+       "aluminum-electrolytic-wet",
+       "aluminum-electrolytic-polymer",
+       "aluminum-hybrid-polymer"
+      ]
+     }
+    }
+   ],
+   "curves_missing_in_schema": []
+  },
+  "resistors": {
+   "file": "resistors.ndjson",
+   "wrap": [
+    "resistor"
+   ],
+   "schema": "https://psma.com/ras/resistor.json",
+   "fields": [
+    "electrical.resistance",
+    "electrical.tolerance",
+    "electrical.temperatureCoefficient",
+    "electrical.powerRating",
+    "electrical.powerRatingTemperature",
+    {
+     "path": "electrical.maxVoltage",
+     "when": {
+      "part.technology": [
+       "thickFilm",
+       "thinFilm",
+       "metalFilm",
+       "carbonFilm",
+       "wirewound",
+       "metalOxide",
+       "metalFoil"
+      ]
+     }
+    },
+    "thermal.operatingTemperature",
+    "mechanical.length",
+    "mechanical.width",
+    "mechanical.height",
+    "part.case"
+   ],
+   "curves": [
+    "factors.powerDerating"
+   ],
+   "curves_missing_in_schema": []
+  },
+  "varistors": {
+   "file": "varistors.ndjson",
+   "wrap": [
+    "varistor"
+   ],
+   "schema": "https://psma.com/ras/varistor.json",
+   "fields": [
+    "electrical.varistorVoltage",
+    "electrical.clampingVoltage",
+    "electrical.clampingCurrent",
+    "electrical.maxContinuousAcVoltage",
+    "electrical.maxContinuousDcVoltage",
+    "electrical.peakSurgeCurrent",
+    "electrical.surgeWaveform",
+    "electrical.energyAbsorption",
+    "electrical.capacitance",
+    "electrical.leakageCurrent",
+    "thermal.operatingTemperature",
+    "mechanical.diameter|mechanical.length",
+    "part.case"
+   ],
+   "curves": [
+    "viCurve"
+   ],
+   "curves_missing_in_schema": [
+    "voltage-vs-temperature / surge-life derating (pulse-count vs current)"
+   ]
+  },
+  "thermistors": {
+   "file": "thermistors.ndjson",
+   "wrap": [
+    "thermistor"
+   ],
+   "schema": "https://psma.com/ras/thermistor.json",
+   "fields": [
+    "electrical.resistanceAt25C",
+    "electrical.resistanceTolerance",
+    "electrical.bConstant",
+    "electrical.bConstantTemperatures",
+    "electrical.dissipationConstant",
+    "electrical.thermalTimeConstant",
+    "electrical.maximumSteadyStateCurrent",
+    "thermal.operatingTemperature",
+    "part.case"
+   ],
+   "curves": [],
+   "curves_missing_in_schema": [
+    "resistance-vs-temperature (R-T) curve"
+   ]
+  },
+  "potentiometers": {
+   "file": "potentiometers.ndjson",
+   "wrap": [
+    "potentiometer"
+   ],
+   "schema": "https://psma.com/ras/potentiometer.json",
+   "fields": [
+    "electrical.totalResistance",
+    "electrical.resistanceTolerance",
+    "electrical.powerRating",
+    "electrical.powerRatingTemperature",
+    "electrical.temperatureCoefficient",
+    "electrical.taper.law",
+    "electrical.wiper.maximumCurrent",
+    "thermal.operatingTemperature",
+    "mechanical.actuation.type",
+    "mechanical.actuation.turns",
+    "mechanical.length",
+    "mechanical.width",
+    "mechanical.height",
+    "part.case"
+   ],
+   "curves": [
+    "factors.powerDerating"
+   ],
+   "curves_missing_in_schema": []
+  },
+  "magnetics": {
+   "file": "magnetics.ndjson",
+   "wrap": [
+    "magnetic"
+   ],
+   "schema": "https://psma.com/mas/magnetic.json",
+   "fields": [
+    "mechanical.length",
+    "mechanical.width",
+    "mechanical.height",
+    "thermal.operatingTemperature",
+    {
+     "path": "electrical[].inductance",
+     "when": {
+      "electrical[].subtype": [
+       "inductor",
+       "commonModeChoke",
+       "transformer"
+      ]
+     }
+    },
+    {
+     "path": "electrical[].dcResistance|electrical[].dcResistances",
+     "when": {
+      "electrical[].subtype": [
+       "inductor",
+       "commonModeChoke",
+       "transformer",
+       "chipBead"
+      ]
+     }
+    },
+    {
+     "path": "electrical[].ratedCurrents",
+     "when": {
+      "electrical[].subtype": [
+       "inductor",
+       "commonModeChoke",
+       "transformer",
+       "chipBead"
+      ]
+     }
+    },
+    {
+     "path": "electrical[].saturationCurrentPeak|electrical[].saturationCurrents",
+     "when": {
+      "electrical[].subtype": [
+       "inductor"
+      ]
+     }
+    },
+    {
+     "path": "electrical[].selfResonantFrequency",
+     "when": {
+      "electrical[].subtype": [
+       "inductor"
+      ]
+     }
+    },
+    {
+     "path": "electrical[].ratedVoltageAC|electrical[].ratedVoltageDC",
+     "when": {
+      "electrical[].subtype": [
+       "commonModeChoke"
+      ]
+     }
+    },
+    {
+     "path": "electrical[].turnsRatios",
+     "when": {
+      "electrical[].subtype": [
+       "transformer"
+      ]
+     }
+    },
+    {
+     "path": "electrical[].leakageInductance",
+     "when": {
+      "electrical[].subtype": [
+       "transformer"
+      ]
+     }
+    },
+    {
+     "path": "electrical[].insulationTestVoltageAC",
+     "when": {
+      "electrical[].subtype": [
+       "transformer"
+      ]
+     }
+    },
+    {
+     "path": "electrical[].impedanceTolerance",
+     "when": {
+      "electrical[].subtype": [
+       "chipBead"
+      ]
+     }
+    },
+    {
+     "path": "electrical[].numberTurns",
+     "when": {
+      "electrical[].subtype": [
+       "cableCore"
+      ]
+     }
+    },
+    {
+     "path": "electrical[].maximumCableOuterDiameter",
+     "when": {
+      "electrical[].subtype": [
+       "cableCore"
+      ]
+     }
+    },
+    {
+     "path": "electrical[].mountingForm",
+     "when": {
+      "electrical[].subtype": [
+       "cableCore"
+      ]
+     }
+    }
+   ],
+   "curves": [
+    {
+     "path": "electrical[].inductancePoints",
+     "when": {
+      "electrical[].subtype": [
+       "inductor"
+      ]
+     }
+    },
+    {
+     "path": "electrical[].impedancePoints",
+     "when": {
+      "electrical[].subtype": [
+       "commonModeChoke",
+       "chipBead",
+       "cableCore"
+      ]
+     }
+    },
+    {
+     "path": "electrical[].commonModeInsertionLossPoints",
+     "when": {
+      "electrical[].subtype": [
+       "commonModeChoke"
+      ]
+     }
+    }
+   ],
+   "curves_missing_in_schema": [
+    "core loss vs B/f/T (only in the separate core/coil body blocks, not a datasheetInfo curve)"
+   ]
+  },
+  "controllers": {
+   "file": "controllers.ndjson",
+   "wrap": [
+    "controller"
+   ],
+   "schema": "https://psma.com/ctas/controller.json",
+   "fields": [
+    "electrical.supplyVoltage",
+    "electrical.quiescentCurrent",
+    "thermal.operatingTemperature",
+    "part.case",
+    {
+     "path": "electrical.referenceVoltage",
+     "when": {
+      "function.category": [
+       "pwmController",
+       "pfcController",
+       "voltageReference"
+      ]
+     }
+    },
+    {
+     "path": "electrical.referenceTolerance",
+     "when": {
+      "function.category": [
+       "voltageReference"
+      ]
+     }
+    },
+    {
+     "path": "electrical.voltageReference.tempco",
+     "when": {
+      "function.category": [
+       "voltageReference"
+      ]
+     }
+    },
+    {
+     "path": "electrical.voltageReference.outputCurrent",
+     "when": {
+      "function.category": [
+       "voltageReference"
+      ]
+     }
+    },
+    {
+     "path": "electrical.switchingFrequencyMax|electrical.switchingFrequencyMin",
+     "when": {
+      "function.category": [
+       "pwmController",
+       "pfcController"
+      ]
+     }
+    },
+    {
+     "path": "electrical.maxDutyCycle",
+     "when": {
+      "function.category": [
+       "pwmController",
+       "pfcController"
+      ]
+     }
+    },
+    {
+     "path": "function.intendedTopologies",
+     "when": {
+      "function.category": [
+       "pwmController",
+       "pfcController"
+      ]
+     }
+    },
+    {
+     "path": "electrical.uvlo[].startThreshold",
+     "when": {
+      "function.category": [
+       "pwmController",
+       "pfcController",
+       "gateDriver",
+       "supervisor"
+      ]
+     }
+    },
+    {
+     "path": "electrical.gateDrive.sourceCurrentPeak",
+     "when": {
+      "function.category": [
+       "gateDriver"
+      ]
+     }
+    },
+    {
+     "path": "electrical.gateDrive.sinkCurrentPeak",
+     "when": {
+      "function.category": [
+       "gateDriver"
+      ]
+     }
+    },
+    {
+     "path": "electrical.gateDrive.propagationDelay",
+     "when": {
+      "function.category": [
+       "gateDriver"
+      ]
+     }
+    },
+    {
+     "path": "electrical.gateDrive.channelConfiguration",
+     "when": {
+      "function.category": [
+       "gateDriver"
+      ]
+     }
+    },
+    {
+     "path": "electrical.gateDrive.riseTime",
+     "when": {
+      "function.category": [
+       "gateDriver"
+      ]
+     }
+    },
+    {
+     "path": "electrical.gateDrive.fallTime",
+     "when": {
+      "function.category": [
+       "gateDriver"
+      ]
+     }
+    },
+    {
+     "path": "electrical.linearRegulator.outputVoltage|electrical.linearRegulator.adjustableRange",
+     "when": {
+      "function.category": [
+       "linearRegulator"
+      ]
+     }
+    },
+    {
+     "path": "electrical.linearRegulator.maxOutputCurrent",
+     "when": {
+      "function.category": [
+       "linearRegulator"
+      ]
+     }
+    },
+    {
+     "path": "electrical.linearRegulator.dropoutVoltage",
+     "when": {
+      "function.category": [
+       "linearRegulator"
+      ]
+     }
+    },
+    {
+     "path": "electrical.linearRegulator.psrr",
+     "when": {
+      "function.category": [
+       "linearRegulator"
+      ]
+     }
+    },
+    {
+     "path": "electrical.hotSwap.currentLimit",
+     "when": {
+      "function.category": [
+       "hotSwapController"
+      ]
+     }
+    },
+    {
+     "path": "electrical.hotSwap.onResistance",
+     "when": {
+      "function.category": [
+       "hotSwapController"
+      ]
+     }
+    },
+    {
+     "path": "electrical.brownOut.threshold",
+     "when": {
+      "function.category": [
+       "supervisor"
+      ]
+     }
+    }
+   ],
+   "curves": [],
+   "curves_missing_in_schema": [
+    "no curve fields in CTAS (e.g. dropout vs load current, PSRR vs frequency, reference drift vs T)"
+   ]
+  },
+  "analog_ics": {
+   "file": "analog_ics.ndjson",
+   "wrap": [
+    "analog",
+    "*"
+   ],
+   "schema": "https://psma.com/aas/{wrap}.json",
+   "fields": [
+    "thermal.operatingTemperature",
+    "part.case|part.package",
+    {
+     "path": "electrical.supply.minimumSupplyVoltage",
+     "when": {
+      "$wrap": [
+       "operationalAmplifier",
+       "comparator",
+       "instrumentationAmplifier",
+       "programmableGainAmplifier",
+       "differenceAmplifier",
+       "buffer",
+       "multiplier",
+       "multiplexer",
+       "analogSwitch"
+      ]
+     }
+    },
+    {
+     "path": "electrical.supply.maximumSupplyVoltage",
+     "when": {
+      "$wrap": [
+       "operationalAmplifier",
+       "comparator",
+       "instrumentationAmplifier",
+       "programmableGainAmplifier",
+       "differenceAmplifier",
+       "buffer",
+       "multiplier",
+       "multiplexer",
+       "analogSwitch"
+      ]
+     }
+    },
+    {
+     "path": "electrical.numberOfChannels",
+     "when": {
+      "$wrap": [
+       "operationalAmplifier",
+       "comparator",
+       "instrumentationAmplifier",
+       "programmableGainAmplifier",
+       "multiplexer",
+       "adc"
+      ]
+     }
+    },
+    {
+     "path": "electrical.supply.quiescentCurrentPerChannel",
+     "when": {
+      "$wrap": [
+       "operationalAmplifier",
+       "comparator",
+       "instrumentationAmplifier",
+       "programmableGainAmplifier"
+      ]
+     }
+    },
+    {
+     "path": "electrical.inputOffsetVoltage",
+     "when": {
+      "$wrap": [
+       "operationalAmplifier",
+       "comparator",
+       "instrumentationAmplifier",
+       "programmableGainAmplifier"
+      ]
+     }
+    },
+    {
+     "path": "electrical.inputBiasCurrent",
+     "when": {
+      "$wrap": [
+       "operationalAmplifier",
+       "comparator",
+       "instrumentationAmplifier"
+      ]
+     }
+    },
+    {
+     "path": "electrical.gainBandwidthProduct",
+     "when": {
+      "$wrap": [
+       "operationalAmplifier"
+      ]
+     }
+    },
+    {
+     "path": "electrical.slewRate",
+     "when": {
+      "$wrap": [
+       "operationalAmplifier",
+       "instrumentationAmplifier",
+       "programmableGainAmplifier"
+      ]
+     }
+    },
+    {
+     "path": "electrical.voltageNoiseDensity",
+     "when": {
+      "$wrap": [
+       "operationalAmplifier",
+       "instrumentationAmplifier"
+      ]
+     }
+    },
+    {
+     "path": "electrical.commonModeRejectionRatio",
+     "when": {
+      "$wrap": [
+       "operationalAmplifier",
+       "instrumentationAmplifier"
+      ]
+     }
+    },
+    {
+     "path": "electrical.outputCurrent",
+     "when": {
+      "$wrap": [
+       "operationalAmplifier"
+      ]
+     }
+    },
+    {
+     "path": "electrical.railToRailInput|electrical.railToRailOutput",
+     "when": {
+      "$wrap": [
+       "operationalAmplifier"
+      ]
+     }
+    },
+    {
+     "path": "electrical.propagationDelay",
+     "when": {
+      "$wrap": [
+       "comparator"
+      ]
+     }
+    },
+    {
+     "path": "electrical.commonModeVoltageRange",
+     "when": {
+      "$wrap": [
+       "comparator"
+      ]
+     }
+    },
+    {
+     "path": "electrical.outputStage",
+     "when": {
+      "$wrap": [
+       "comparator"
+      ]
+     }
+    },
+    {
+     "path": "electrical.minimumGain",
+     "when": {
+      "$wrap": [
+       "instrumentationAmplifier"
+      ]
+     }
+    },
+    {
+     "path": "electrical.maximumGain",
+     "when": {
+      "$wrap": [
+       "instrumentationAmplifier"
+      ]
+     }
+    },
+    {
+     "path": "electrical.resolution",
+     "when": {
+      "$wrap": [
+       "adc",
+       "dac"
+      ]
+     }
+    },
+    {
+     "path": "electrical.architecture",
+     "when": {
+      "$wrap": [
+       "adc",
+       "dac"
+      ]
+     }
+    },
+    {
+     "path": "electrical.sampleRate",
+     "when": {
+      "$wrap": [
+       "adc"
+      ]
+     }
+    },
+    {
+     "path": "electrical.dynamics.signalToNoiseRatio",
+     "when": {
+      "$wrap": [
+       "adc"
+      ]
+     }
+    },
+    {
+     "path": "electrical.dynamics.spuriousFreeDynamicRange",
+     "when": {
+      "$wrap": [
+       "adc"
+      ]
+     }
+    },
+    {
+     "path": "electrical.integralNonlinearity",
+     "when": {
+      "$wrap": [
+       "adc"
+      ]
+     }
+    },
+    {
+     "path": "electrical.settlingTime",
+     "when": {
+      "$wrap": [
+       "dac"
+      ]
+     }
+    },
+    {
+     "path": "electrical.updateRate",
+     "when": {
+      "$wrap": [
+       "dac"
+      ]
+     }
+    },
+    {
+     "path": "electrical.outputType",
+     "when": {
+      "$wrap": [
+       "dac"
+      ]
+     }
+    },
+    {
+     "path": "electrical.onResistance",
+     "when": {
+      "$wrap": [
+       "multiplexer",
+       "analogSwitch"
+      ]
+     }
+    },
+    {
+     "path": "electrical.bandwidth",
+     "when": {
+      "$wrap": [
+       "multiplexer",
+       "analogSwitch"
+      ]
+     }
+    },
+    {
+     "path": "electrical.offLeakageCurrent",
+     "when": {
+      "$wrap": [
+       "multiplexer",
+       "analogSwitch"
+      ]
+     }
+    },
+    {
+     "path": "electrical.turnOnTime",
+     "when": {
+      "$wrap": [
+       "multiplexer",
+       "analogSwitch"
+      ]
+     }
+    },
+    {
+     "path": "electrical.multiplexerConfiguration",
+     "when": {
+      "$wrap": [
+       "multiplexer"
+      ]
+     }
+    },
+    {
+     "path": "electrical.switchConfiguration",
+     "when": {
+      "$wrap": [
+       "analogSwitch"
+      ]
+     }
+    },
+    {
+     "path": "electrical.numberOfSwitches",
+     "when": {
+      "$wrap": [
+       "analogSwitch"
+      ]
+     }
+    }
+   ],
+   "curves": [],
+   "curves_missing_in_schema": [
+    "no curve fields in AAS (e.g. open-loop gain/phase vs f, noise density vs f, ADC INL/DNL plots)"
+   ]
+  },
+  "connectors": {
+   "file": "connectors.ndjson",
+   "wrap": [
+    "connector"
+   ],
+   "schema": "https://psma.com/conas/connector.json",
+   "fields": [
+    "part.series",
+    "environmental.operatingTemperature",
+    "mechanical.mountingStyle",
+    {
+     "path": "electrical.ratedCurrentPerContact",
+     "when": {
+      "familyDetails.family": [
+       "dataInterface",
+       "boardToBoard",
+       "wireToBoard",
+       "pinHeaderSocket",
+       "cardEdge",
+       "circular",
+       "fpcFfc",
+       "terminalBlock",
+       "power",
+       "wireToWire"
+      ]
+     }
+    },
+    "electrical.ratedVoltage",
+    {
+     "path": "electrical.contactResistance",
+     "when": {
+      "familyDetails.family": [
+       "dataInterface",
+       "boardToBoard",
+       "wireToBoard",
+       "pinHeaderSocket",
+       "cardEdge",
+       "circular",
+       "fpcFfc",
+       "terminalBlock",
+       "power",
+       "wireToWire",
+       "rf"
+      ]
+     }
+    },
+    "electrical.dielectricWithstandingVoltage",
+    "electrical.insulationResistance",
+    {
+     "path": "mechanical.positions",
+     "when": {
+      "familyDetails.family": [
+       "dataInterface",
+       "boardToBoard",
+       "wireToBoard",
+       "pinHeaderSocket",
+       "cardEdge",
+       "circular",
+       "fpcFfc",
+       "terminalBlock",
+       "power",
+       "wireToWire"
+      ]
+     }
+    },
+    {
+     "path": "mechanical.pitch",
+     "when": {
+      "familyDetails.family": [
+       "boardToBoard",
+       "wireToBoard",
+       "pinHeaderSocket",
+       "cardEdge",
+       "fpcFfc",
+       "terminalBlock",
+       "wireToWire"
+      ]
+     }
+    },
+    {
+     "path": "mechanical.rows",
+     "when": {
+      "familyDetails.family": [
+       "boardToBoard",
+       "wireToBoard",
+       "pinHeaderSocket"
+      ]
+     }
+    },
+    "mechanical.matingCycles",
+    "mechanical.orientation",
+    {
+     "path": "material.contactPlating",
+     "when": {
+      "familyDetails.family": [
+       "dataInterface",
+       "boardToBoard",
+       "wireToBoard",
+       "pinHeaderSocket",
+       "cardEdge",
+       "circular",
+       "fpcFfc",
+       "terminalBlock",
+       "power",
+       "wireToWire"
+      ]
+     }
+    },
+    {
+     "path": "part.matingPolarity",
+     "when": {
+      "familyDetails.family": [
+       "dataInterface",
+       "boardToBoard",
+       "wireToBoard",
+       "pinHeaderSocket",
+       "cardEdge",
+       "circular",
+       "fpcFfc",
+       "terminalBlock",
+       "power",
+       "wireToWire"
+      ]
+     }
+    },
+    {
+     "path": "familyDetails.characteristicImpedance",
+     "when": {
+      "familyDetails.family": [
+       "rf"
+      ]
+     }
+    },
+    {
+     "path": "familyDetails.frequencyRange",
+     "when": {
+      "familyDetails.family": [
+       "rf"
+      ]
+     }
+    },
+    {
+     "path": "familyDetails.interface",
+     "when": {
+      "familyDetails.family": [
+       "rf"
+      ]
+     }
+    },
+    {
+     "path": "familyDetails.wireGaugeRange",
+     "when": {
+      "familyDetails.family": [
+       "wireToBoard",
+       "terminalBlock",
+       "wireToWire"
+      ]
+     }
+    }
+   ],
+   "curves": [
+    "derating.currentVsAmbient"
+   ],
+   "curves_missing_in_schema": [
+    "insertion loss / return loss vs frequency (S-parameter files are referenced via sParameters[], not a curve)"
+   ]
+  },
+  "connector_accessories": {
+   "file": "connector_accessories.ndjson",
+   "wrap": [
+    "connectorAccessory"
+   ],
+   "schema": "https://psma.com/conas/connectorAccessory.json",
+   "fields": [
+    "part.description",
+    "hostSystem.series",
+    "environmental.operatingTemperature",
+    {
+     "path": "accessoryDetails.cableExit",
+     "when": {
+      "accessoryDetails.kind": [
+       "backshell"
+      ]
+     }
+    },
+    {
+     "path": "accessoryDetails.cableDiameterRange",
+     "when": {
+      "accessoryDetails.kind": [
+       "backshell",
+       "cableEntry"
+      ]
+     }
+    },
+    {
+     "path": "hostSystem.shellSize",
+     "when": {
+      "accessoryDetails.kind": [
+       "backshell"
+      ]
+     }
+    },
+    {
+     "path": "accessoryDetails.wireGaugeRange",
+     "when": {
+      "accessoryDetails.kind": [
+       "contact"
+      ]
+     }
+    },
+    {
+     "path": "accessoryDetails.contactSize",
+     "when": {
+      "accessoryDetails.kind": [
+       "contact"
+      ]
+     }
+    },
+    {
+     "path": "accessoryDetails.terminationStyle",
+     "when": {
+      "accessoryDetails.kind": [
+       "contact"
+      ]
+     }
+    },
+    {
+     "path": "electrical.ratedCurrentPerContact",
+     "when": {
+      "accessoryDetails.kind": [
+       "contact"
+      ]
+     }
+    },
+    {
+     "path": "accessoryDetails.portsWide",
+     "when": {
+      "accessoryDetails.kind": [
+       "transceiverCage"
+      ]
+     }
+    },
+    {
+     "path": "accessoryDetails.portsHigh",
+     "when": {
+      "accessoryDetails.kind": [
+       "transceiverCage"
+      ]
+     }
+    },
+    {
+     "path": "accessoryDetails.sealType",
+     "when": {
+      "accessoryDetails.kind": [
+       "sealGasket"
+      ]
+     }
+    },
+    {
+     "path": "accessoryDetails.hardwareType",
+     "when": {
+      "accessoryDetails.kind": [
+       "mountingHardware"
+      ]
+     }
+    },
+    {
+     "path": "accessoryDetails.interfaceA",
+     "when": {
+      "accessoryDetails.kind": [
+       "rfAdapter"
+      ]
+     }
+    },
+    {
+     "path": "accessoryDetails.interfaceB",
+     "when": {
+      "accessoryDetails.kind": [
+       "rfAdapter"
+      ]
+     }
+    }
+   ],
+   "curves": [],
+   "curves_missing_in_schema": []
+  },
+  "relays": {
+   "file": "relays.ndjson",
+   "wrap": [
+    "relay"
+   ],
+   "schema": "https://psma.com/emas/relay.json",
+   "fields": [
+    "electrical.contacts.form.poles",
+    "electrical.contacts.form.throw",
+    "electrical.contacts.ratedCurrent|electrical.contacts.ratings[].current",
+    "electrical.contacts.ratedVoltage|electrical.contacts.ratings[].voltage",
+    "electrical.input.inputType",
+    "thermal.operatingTemperature",
+    "mechanical.mountingType",
+    {
+     "path": "electrical.input.coilVoltage",
+     "when": {
+      "part.technology": [
+       "electromechanical"
+      ]
+     }
+    },
+    {
+     "path": "electrical.input.coilPower|electrical.input.coilResistance|electrical.input.coilCurrent",
+     "when": {
+      "part.technology": [
+       "electromechanical"
+      ]
+     }
+    },
+    {
+     "path": "electrical.contacts.contactResistance",
+     "when": {
+      "part.technology": [
+       "electromechanical"
+      ]
+     }
+    },
+    {
+     "path": "electrical.contacts.mechanicalLife",
+     "when": {
+      "part.technology": [
+       "electromechanical"
+      ]
+     }
+    },
+    {
+     "path": "electrical.isolation.dielectricStrengthInputToContact",
+     "when": {
+      "part.technology": [
+       "electromechanical",
+       "solidState"
+      ]
+     }
+    },
+    {
+     "path": "electrical.input.controlVoltage|electrical.input.turnOnVoltage|electrical.input.controlCurrent",
+     "when": {
+      "part.technology": [
+       "solidState"
+      ]
+     }
+    }
+   ],
+   "curves": [],
+   "curves_missing_in_schema": [
+    "contact-current derating vs ambient, electrical-life vs load"
+   ]
+  },
+  "switches": {
+   "file": "switches.ndjson",
+   "wrap": [
+    "switch"
+   ],
+   "schema": "https://psma.com/emas/switch.json",
+   "fields": [
+    "electrical.contacts.form.poles",
+    "electrical.contacts.ratedCurrent|electrical.contacts.ratings[].current",
+    "electrical.contacts.ratedVoltage|electrical.contacts.ratings[].voltage",
+    "thermal.operatingTemperature",
+    "mechanical.actuatorType",
+    "electrical.contacts.contactResistance",
+    {
+     "path": "electrical.contacts.form.throw",
+     "when": {
+      "part.technology": [
+       "snapAction",
+       "toggle",
+       "slide",
+       "pushButton",
+       "dipSip",
+       "rocker",
+       "rotary",
+       "tactile"
+      ]
+     }
+    },
+    {
+     "path": "electrical.contacts.mechanicalLife",
+     "when": {
+      "part.technology": [
+       "snapAction",
+       "toggle",
+       "tactile",
+       "slide",
+       "rocker",
+       "rotary",
+       "dipSip",
+       "pushButton"
+      ]
+     }
+    },
+    {
+     "path": "electrical.trip.ratedCurrent",
+     "when": {
+      "part.technology": [
+       "circuitBreaker"
+      ]
+     }
+    },
+    {
+     "path": "electrical.trip.mechanism",
+     "when": {
+      "part.technology": [
+       "circuitBreaker"
+      ]
+     }
+    }
+   ],
+   "curves": [
+    {
+     "path": "electrical.trip.tripCurve",
+     "when": {
+      "part.technology": [
+       "circuitBreaker"
+      ]
+     }
+    }
+   ],
+   "curves_missing_in_schema": []
+  },
+  "timing_devices": {
+   "file": "timing_devices.ndjson",
+   "wrap": [
+    "timeBase",
+    "*"
+   ],
+   "schema": "https://psma.com/tdas/{wrap}.json",
+   "fields": [
+    {
+     "path": "electrical.frequency",
+     "when": {
+      "$wrap": [
+       "oscillator"
+      ]
+     }
+    },
+    {
+     "path": "electrical.frequencyStability",
+     "when": {
+      "$wrap": [
+       "oscillator"
+      ]
+     }
+    },
+    {
+     "path": "thermal.operatingTemperature",
+     "when": {
+      "$wrap": [
+       "oscillator"
+      ]
+     }
+    },
+    {
+     "path": "part.case|part.package",
+     "when": {
+      "$wrap": [
+       "oscillator"
+      ]
+     }
+    },
+    {
+     "path": "mechanical.length",
+     "when": {
+      "$wrap": [
+       "oscillator"
+      ]
+     }
+    },
+    {
+     "path": "mechanical.width",
+     "when": {
+      "$wrap": [
+       "oscillator"
+      ]
+     }
+    },
+    {
+     "path": "mechanical.height",
+     "when": {
+      "$wrap": [
+       "oscillator"
+      ]
+     }
+    },
+    {
+     "path": "electrical.loadCapacitance",
+     "when": {
+      "electrical.technology": [
+       "quartzCrystal"
+      ]
+     }
+    },
+    {
+     "path": "electrical.equivalentSeriesResistance|electrical.resonantImpedance",
+     "when": {
+      "electrical.technology": [
+       "quartzCrystal",
+       "ceramicResonator"
+      ]
+     }
+    },
+    {
+     "path": "electrical.frequencyTolerance",
+     "when": {
+      "electrical.technology": [
+       "quartzCrystal",
+       "ceramicResonator"
+      ]
+     }
+    },
+    {
+     "path": "electrical.supply.minimumSupplyVoltage",
+     "when": {
+      "electrical.technology": [
+       "crystalOscillator",
+       "mems",
+       "tcxo",
+       "ocxo",
+       "vcxo"
+      ]
+     }
+    },
+    {
+     "path": "electrical.supply.maximumSupplyVoltage",
+     "when": {
+      "electrical.technology": [
+       "crystalOscillator",
+       "mems",
+       "tcxo",
+       "ocxo",
+       "vcxo"
+      ]
+     }
+    },
+    {
+     "path": "electrical.supply.currentConsumption",
+     "when": {
+      "electrical.technology": [
+       "crystalOscillator",
+       "mems",
+       "tcxo",
+       "ocxo",
+       "vcxo"
+      ]
+     }
+    },
+    {
+     "path": "electrical.outputType",
+     "when": {
+      "electrical.technology": [
+       "crystalOscillator",
+       "mems",
+       "tcxo",
+       "ocxo",
+       "vcxo"
+      ]
+     }
+    },
+    {
+     "path": "electrical.rmsPhaseJitter",
+     "when": {
+      "electrical.technology": [
+       "crystalOscillator",
+       "mems",
+       "tcxo",
+       "ocxo",
+       "vcxo"
+      ]
+     }
+    },
+    {
+     "path": "electrical.pullRange",
+     "when": {
+      "electrical.technology": [
+       "vcxo"
+      ]
+     }
+    }
+   ],
+   "curves": [],
+   "curves_missing_in_schema": [
+    "phase-noise vs offset, frequency-vs-temperature"
+   ]
+  }
+ },
+ "placeholders": {
+  "magnetics": [
+   {
+    "path": "electrical[].inductance",
+    "value": 1e-09,
+    "when": {
+     "electrical[].subtype": [
+      "chipBead"
+     ]
+    },
+    "note": "minted 1 nH on chip beads (ABT #1104)"
+   }
+  ]
+ },
+ "_decisions": {
+  "2026-10-17": "Alf: weighted checklist 15/25/25/15/10/10; total by part count; quarantine counts 0; graded evidence (1.0 / series 0.6 / distributor 0.8x); contradicted or placeholder field counts -1; curves weighted from day one; near-empty core fields kept; MOSFET gate-charge and RDS(on)-vs-Tj curves kept; impedance points counted once (curve); URL check by rolling sample; coverage = in-scope DSA incl. obsolete, uncrawled manufacturers by sample crawl."
+ }
+}

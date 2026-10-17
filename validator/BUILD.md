@@ -158,3 +158,33 @@ Verdict model: each check emits a `Finding` only when it fires. A part is
 are warnings. Missing input for a check → the check is **skipped** (recorded in
 `v.skipped`), never silently treated as valid. A field that is present but
 malformed (wrong type) raises `MalformedField`.
+
+## tas_metrics — the database quality score
+
+`validator/metrics/` holds the C++ scorer behind `scripts/db_metrics.py` (rules in
+`scripts/metrics_spec.json`). It links against the Blade Runner core and builds with the
+same tree:
+
+```bash
+cmake --build build --target tas_metrics tas_metrics_tests
+./build/tas_metrics_tests            # Catch2, run directly
+```
+
+- `build/tas_metrics.*.so` — Python module (`Scorer.score`, `Scorer.score_file`, `quarantine_counts`)
+- `build/tas_metrics_tests` — C++ unit tests
+
+Browser build (emscripten; the same sources, embind exports `Scorer.score` returning JSON text):
+
+```bash
+source ~/emsdk/emsdk_env.sh
+emcmake cmake -B build-wasm -DBUILD_TAS_VALIDATOR_TESTS=OFF -DCMAKE_BUILD_TYPE=Release
+cmake --build build-wasm --target tas_metrics_wasm   # -> tas_metrics_wasm.js + .wasm
+```
+
+```js
+const M = await require('./tas_metrics_wasm.js')();
+const s = new M.Scorer(specJsonText);
+JSON.parse(s.score(recordJsonText, "mosfets", /*schemaOk*/ true, /*urlAlive*/ 0.8));
+```
+
+JSON-Schema validity is an input, not computed here: there is no draft 2020-12 validator in C++.

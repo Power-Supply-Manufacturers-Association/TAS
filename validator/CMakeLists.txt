@@ -22,7 +22,12 @@ FetchContent_Declare(pybind11
   GIT_REPOSITORY https://github.com/pybind/pybind11.git
   GIT_TAG tags/v2.13.6)
 
-FetchContent_MakeAvailable(json pybind11)
+if(EMSCRIPTEN)
+  # the browser build needs only the C++ cores and embind (see the tas_metrics block below)
+  FetchContent_MakeAvailable(json)
+else()
+  FetchContent_MakeAvailable(json pybind11)
+endif()
 
 find_package(Python3 COMPONENTS Interpreter REQUIRED)
 
@@ -141,11 +146,13 @@ target_include_directories(tas_validator_core PRIVATE
 target_link_libraries(tas_validator_core PUBLIC nlohmann_json::nlohmann_json)
 
 # --- Python module -----------------------------------------------------------
-pybind11_add_module(tas_validator src/bindings.cpp)
-target_link_libraries(tas_validator PRIVATE tas_validator_core)
+if(NOT EMSCRIPTEN)
+  pybind11_add_module(tas_validator src/bindings.cpp)
+  target_link_libraries(tas_validator PRIVATE tas_validator_core)
+endif()
 
 # --- C++ unit tests (Catch2, run the binary directly — no ctest) -------------
-if(BUILD_TAS_VALIDATOR_TESTS)
+if(BUILD_TAS_VALIDATOR_TESTS AND NOT EMSCRIPTEN)
   FetchContent_Declare(Catch2
     GIT_REPOSITORY https://github.com/catchorg/Catch2.git
     GIT_TAG v3.8.1)
@@ -194,4 +201,31 @@ if(BUILD_TAS_VALIDATOR_TESTS)
     TAS_VALIDATOR_SRC_DIR="${CMAKE_CURRENT_SOURCE_DIR}/src"
     TAS_VALIDATOR_FINGERPRINT_SCRIPT="${BUILD_FINGERPRINT_GEN_SCRIPT}"
     TAS_VALIDATOR_ROOT_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
+endif()
+
+# --- tas_metrics: the database QUALITY score (Alf, 2026-10-17) ---------------
+# One C++ implementation of the per-part weighted checklist in
+# scripts/metrics_spec.json, linked against Blade Runner directly. Python gets
+# the pybind11 module `tas_metrics` (scripts/db_metrics.py drives it); the
+# browser gets an emscripten module from the same sources:
+#   emcmake cmake -B build-wasm -DBUILD_TAS_VALIDATOR_TESTS=OFF && cmake --build build-wasm --target tas_metrics_wasm
+add_library(tas_metrics_core STATIC metrics/src/metrics.cpp)
+target_include_directories(tas_metrics_core PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/metrics/include")
+target_link_libraries(tas_metrics_core PUBLIC tas_validator_core)
+
+if(EMSCRIPTEN)
+  add_executable(tas_metrics_wasm metrics/src/bindings_wasm.cpp)
+  target_link_libraries(tas_metrics_wasm PRIVATE tas_metrics_core)
+  target_link_options(tas_metrics_wasm PRIVATE --bind -sMODULARIZE=1 -sEXPORT_NAME=TasMetrics
+                      -sALLOW_MEMORY_GROWTH=1 -sDISABLE_EXCEPTION_CATCHING=0)
+  target_compile_options(tas_metrics_core PRIVATE -fexceptions)
+  target_compile_options(tas_validator_core PRIVATE -fexceptions)
+  target_compile_options(tas_metrics_wasm PRIVATE -fexceptions)
+else()
+  pybind11_add_module(tas_metrics metrics/src/bindings_py.cpp)
+  target_link_libraries(tas_metrics PRIVATE tas_metrics_core)
+  if(BUILD_TAS_VALIDATOR_TESTS)
+    add_executable(tas_metrics_tests metrics/tests/test_metrics.cpp)
+    target_link_libraries(tas_metrics_tests PRIVATE tas_metrics_core Catch2::Catch2WithMain)
+  endif()
 endif()

@@ -38,6 +38,11 @@
 /scripts/*
 !/scripts/validate_topology.py
 !/scripts/validate_db.py
+# Database metrics (quality + coverage), Alf 2026-10-17: the scorer, its spec and the URL sampler.
+!/scripts/db_metrics.py
+!/scripts/metrics_spec.json
+!/scripts/url_alive_sample.py
+!/scripts/manufacturer_aliases.json
 !/scripts/check_component_uris.py
 !/scripts/check_no_fabricated_parts.py
 # External existence oracle: one web search per part, judged strictly by a model.

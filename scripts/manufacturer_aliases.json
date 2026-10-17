@@ -1,0 +1,1319 @@
+{
+ "version": 1,
+ "match": "lowercase, every non-alphanumeric character removed",
+ "manufacturers": [
+  {
+   "name": "TE Connectivity",
+   "aliases": [
+    "Deutsch",
+    "Deutsch ECD",
+    "TE Connectivity Deutsch Connectors",
+    "TE Connectivity Passive Product",
+    "TE-Passive",
+    "TE Connectivity ALCOSWITCH Switches",
+    "ALCOSWITCH",
+    "TE Connectivity AMP Connectors",
+    "Tyco Electronics",
+    "Tyco Electronics AMP",
+    "Raychem",
+    "TE Connectivity / Holsworthy"
+   ],
+   "evidence": [
+    "dsa-shared-listing: Deutsch - DSA slug serves TE-Connectivity's identical listing (total_count 101,828; every sampled row links /datasheet/<mpn>/TE-Connectivity); DSA slug Deutsch lists 49,219; sampled 150 rows, 50 in our 'TE Connectivity' catalogue",
+    "dsa-shared-listing: Deutsch ECD - DSA slug serves TE-Connectivity's identical listing (total_count 101,828; every sampled row links /datasheet/<mpn>/TE-Connectivity); DSA slug Deutsch-ECD lists 19,242; sampled 150 rows, 22 in our 'TE Connectivity' catalogue",
+    "dsa-shared-listing: TE Connectivity Deutsch Connectors - DSA slug serves TE-Connectivity's identical listing (total_count 101,828; every sampled row links /datasheet/<mpn>/TE-Connectivity); DSA slug TE-Connectivity-Deutsch-Connectors lists 127,128; 100,765 unique mpns crawled; 100,765 also in TE-Connectivity crawl; 14,824 in our 'TE Connectivity' catalogue",
+    "dsa-shared-listing: TE Connectivity Passive Product - DSA slug serves TE-Connectivity's identical listing (total_count 101,828; every sampled row links /datasheet/<mpn>/TE-Connectivity); DSA slug TE-Connectivity-Passive-Product lists 41,622; sampled 150 rows, 39 in our 'TE Connectivity' catalogue",
+    "dsa-shared-listing: TE-Passive - DSA slug serves TE-Connectivity's identical listing (total_count 101,828; every sampled row links /datasheet/<mpn>/TE-Connectivity)",
+    "dsa-shared-listing: TE Connectivity ALCOSWITCH Switches - DSA slug serves TE-Connectivity's identical listing (total_count 101,828; every sampled row links /datasheet/<mpn>/TE-Connectivity); DSA slug TE-Connectivity-ALCOSWITCH-Switches lists 3,017; sampled 100 rows, 26 in our 'TE Connectivity' catalogue",
+    "dsa-shared-listing: ALCOSWITCH - DSA slug serves TE-Connectivity's identical listing (total_count 101,828; every sampled row links /datasheet/<mpn>/TE-Connectivity)",
+    "dsa-shared-listing: TE Connectivity AMP Connectors - DSA slug serves TE-Connectivity's identical listing (total_count 101,828; every sampled row links /datasheet/<mpn>/TE-Connectivity); DSA slug TE-Connectivity-AMP-Connectors; 400 unique mpns crawled; 400 also in TE-Connectivity crawl; 0 in our 'TE Connectivity' catalogue; our catalogue has 10 records as 'TE Connectivity AMP Connectors', 0 of 10 mpns also under 'TE Connectivity'",
+    "dsa-shared-listing: Tyco Electronics - DSA slug serves TE-Connectivity's identical listing (total_count 101,828; every sampled row links /datasheet/<mpn>/TE-Connectivity); DSA slug Tyco-Electronics lists 514,874; 100,765 unique mpns crawled; 100,765 also in TE-Connectivity crawl; 14,824 in our 'TE Connectivity' catalogue",
+    "acquisition: Tyco Electronics AMP - Tyco Electronics renamed itself TE Connectivity (2011); AMP (acquired by Tyco 1999) and Raychem (acquired by Tyco 1999) products are sold under the TE brand; DSA slug Tyco-Electronics-AMP lists 9; slug not on disk, overlap not measurable",
+    "acquisition: Raychem - Tyco Electronics renamed itself TE Connectivity (2011); AMP (acquired by Tyco 1999) and Raychem (acquired by Tyco 1999) products are sold under the TE brand; DSA slug Raychem lists 1,411; slug not on disk, overlap not measurable",
+    "spelling: TE Connectivity / Holsworthy - catalogue spelling of a TE site; our catalogue has 1 records as 'TE Connectivity / Holsworthy', 0 of 1 mpns also under 'TE Connectivity'"
+   ]
+  },
+  {
+   "name": "onsemi",
+   "aliases": [
+    "ON Semiconductor",
+    "On-Semiconductor",
+    "Fairchild Semiconductor"
+   ],
+   "evidence": [
+    "spelling: ON Semiconductor - ON Semiconductor is the former name of onsemi (renamed 2021); DSA slug On-Semiconductor; slug not on disk, overlap not measurable",
+    "spelling: On-Semiconductor - ON Semiconductor is the former name of onsemi (renamed 2021); DSA slug On-Semiconductor; slug not on disk, overlap not measurable",
+    "acquisition: Fairchild Semiconductor - Fairchild Semiconductor acquired by ON Semiconductor 2016; Fairchild part numbers are sold as onsemi parts; DSA slug Fairchild-Semiconductor lists 88,677; 60,593 unique mpns crawled; 17 also in onsemi crawl; 1,340 in our 'onsemi' catalogue"
+   ]
+  },
+  {
+   "name": "Infineon",
+   "aliases": [
+    "Infineon Technologies",
+    "International Rectifier",
+    "Cypress Semiconductor"
+   ],
+   "evidence": [
+    "spelling: Infineon Technologies - legal/long name; DSA slug Infineon-Technologies; 39,202 unique mpns crawled; 1,380 in our 'Infineon' catalogue; our catalogue has 2 records as 'Infineon Technologies', 1 of 2 mpns also under 'Infineon'",
+    "acquisition: International Rectifier - acquired by Infineon (International Rectifier Jan 2015, Cypress Apr 2020); parts sold as Infineon; DSA slug International-Rectifier lists 54,792; slug not on disk, overlap not measurable",
+    "acquisition: Cypress Semiconductor - acquired by Infineon (International Rectifier Jan 2015, Cypress Apr 2020); parts sold as Infineon; DSA slug Cypress-Semiconductor lists 54,084; slug not on disk, overlap not measurable"
+   ]
+  },
+  {
+   "name": "Analog Devices",
+   "aliases": [
+    "Maxim Integrated",
+    "Maxim Integrated Products",
+    "Linear Technology",
+    "Linear Technology/Analog Devices",
+    "Analog Devices Inc./Maxim Integrated",
+    "Dallas Semiconductor",
+    "Hittite Microwave",
+    "Precision Monolithics"
+   ],
+   "evidence": [
+    "acquisition: Maxim Integrated - acquired by Analog Devices (Hittite 2014, Linear Technology 2017, Maxim Integrated 2021; Dallas Semiconductor via Maxim 2001; Precision Monolithics 1990); parts sold as ADI; DSA slug Maxim-Integrated; 6,172 unique mpns crawled; 1 also in Analog-Devices crawl; 0 in our 'Analog Devices' catalogue; our catalogue has 451 records as 'Maxim Integrated', 0 of 451 mpns also under 'Analog Devices'",
+    "acquisition: Maxim Integrated Products - acquired by Analog Devices (Hittite 2014, Linear Technology 2017, Maxim Integrated 2021; Dallas Semiconductor via Maxim 2001; Precision Monolithics 1990); parts sold as ADI; DSA slug Maxim-Integrated-Products; 500 unique mpns crawled; 0 also in Analog-Devices crawl; 0 in our 'Analog Devices' catalogue",
+    "acquisition: Linear Technology - acquired by Analog Devices (Hittite 2014, Linear Technology 2017, Maxim Integrated 2021; Dallas Semiconductor via Maxim 2001; Precision Monolithics 1990); parts sold as ADI; DSA slug Linear-Technology lists 50,051; slug not on disk, overlap not measurable",
+    "acquisition: Linear Technology/Analog Devices - acquired by Analog Devices (Hittite 2014, Linear Technology 2017, Maxim Integrated 2021; Dallas Semiconductor via Maxim 2001; Precision Monolithics 1990); parts sold as ADI; DSA slug Linear-Technology/Analog-Devices lists 5,457; slug not on disk, overlap not measurable",
+    "acquisition: Analog Devices Inc./Maxim Integrated - acquired by Analog Devices (Hittite 2014, Linear Technology 2017, Maxim Integrated 2021; Dallas Semiconductor via Maxim 2001; Precision Monolithics 1990); parts sold as ADI; DSA slug Analog-Devices-Inc./Maxim-Integrated lists 1; slug not on disk, overlap not measurable",
+    "acquisition: Dallas Semiconductor - acquired by Analog Devices (Hittite 2014, Linear Technology 2017, Maxim Integrated 2021; Dallas Semiconductor via Maxim 2001; Precision Monolithics 1990); parts sold as ADI; DSA slug Dallas-Semiconductor lists 6,230; sampled 100 rows, 0 in our 'Analog Devices' catalogue",
+    "acquisition: Hittite Microwave - acquired by Analog Devices (Hittite 2014, Linear Technology 2017, Maxim Integrated 2021; Dallas Semiconductor via Maxim 2001; Precision Monolithics 1990); parts sold as ADI; DSA slug Hittite-Microwave lists 2,746; slug not on disk, overlap not measurable",
+    "acquisition: Precision Monolithics - acquired by Analog Devices (Hittite 2014, Linear Technology 2017, Maxim Integrated 2021; Dallas Semiconductor via Maxim 2001; Precision Monolithics 1990); parts sold as ADI; DSA slug Precision-Monolithics lists 102; slug not on disk, overlap not measurable"
+   ]
+  },
+  {
+   "name": "Texas Instruments",
+   "aliases": [
+    "TI",
+    "National Semiconductor",
+    "Burr-Brown",
+    "Unitrode"
+   ],
+   "evidence": [
+    "spelling: TI - abbreviation / long form",
+    "acquisition: National Semiconductor - acquired by Texas Instruments (Unitrode 1999, Burr-Brown 2000, National Semiconductor 2011); parts sold as TI; DSA slug National-Semiconductor lists 93,938; 66,940 unique mpns crawled; 13,984 also in Texas-Instruments crawl; 637 in our 'Texas Instruments' catalogue",
+    "acquisition: Burr-Brown - acquired by Texas Instruments (Unitrode 1999, Burr-Brown 2000, National Semiconductor 2011); parts sold as TI; DSA slug Burr--Brown lists 6,038; slug not on disk, overlap not measurable",
+    "acquisition: Unitrode - acquired by Texas Instruments (Unitrode 1999, Burr-Brown 2000, National Semiconductor 2011); parts sold as TI; DSA slug Unitrode lists 3,835; slug not on disk, overlap not measurable"
+   ]
+  },
+  {
+   "name": "Microchip",
+   "aliases": [
+    "Microchip Technology",
+    "Atmel",
+    "Microsemi",
+    "Microsemi Solutions",
+    "Micrel Semiconductor",
+    "Supertex"
+   ],
+   "evidence": [
+    "spelling: Microchip Technology - long name; DSA slug Microchip-Technology lists 117,115; 89,106 unique mpns crawled; 49 in our 'Microchip' catalogue",
+    "acquisition: Atmel - acquired by Microchip (Supertex 2014, Micrel 2015, Atmel 2016, Microsemi 2018); parts sold as Microchip; DSA slug Atmel lists 45,459; slug not on disk, overlap not measurable",
+    "acquisition: Microsemi - acquired by Microchip (Supertex 2014, Micrel 2015, Atmel 2016, Microsemi 2018); parts sold as Microchip; DSA slug Microsemi lists 120,794; 103,240 unique mpns crawled; 190 also in Microchip-Technology crawl; 203 in our 'Microchip' catalogue; our catalogue has 77 records as 'Microsemi', 0 of 77 mpns also under 'Microchip'",
+    "acquisition: Microsemi Solutions - acquired by Microchip (Supertex 2014, Micrel 2015, Atmel 2016, Microsemi 2018); parts sold as Microchip; DSA slug Microsemi-Solutions lists 106; slug not on disk, overlap not measurable",
+    "acquisition: Micrel Semiconductor - acquired by Microchip (Supertex 2014, Micrel 2015, Atmel 2016, Microsemi 2018); parts sold as Microchip; DSA slug Micrel-Semiconductor lists 17,607; slug not on disk, overlap not measurable",
+    "acquisition: Supertex - acquired by Microchip (Supertex 2014, Micrel 2015, Atmel 2016, Microsemi 2018); parts sold as Microchip; DSA slug Supertex lists 2,696; sampled 100 rows, 0 in our 'Microchip' catalogue"
+   ]
+  },
+  {
+   "name": "Renesas",
+   "aliases": [
+    "Renesas Electronics",
+    "Renesas Electronics America",
+    "Renesas / Intersil",
+    "Renesas Technology",
+    "Intersil",
+    "Intersil Techwell",
+    "Integrated Device Technology"
+   ],
+   "evidence": [
+    "spelling: Renesas Electronics - Renesas Electronics is the company; catalogue shortens it; DSA slug Renesas-Electronics lists 13,517; slug not on disk, overlap not measurable",
+    "spelling: Renesas Electronics America - Renesas Electronics is the company; catalogue shortens it; DSA slug Renesas-Electronics-America lists 3,605; slug not on disk, overlap not measurable",
+    "spelling: Renesas / Intersil - Renesas Electronics is the company; catalogue shortens it; our catalogue has 1 records as 'Renesas / Intersil', 0 of 1 mpns also under 'Renesas'",
+    "dsa-shared-listing: Renesas Technology - DSA slug serves Renesas-Electronics' listing (13,517 entries; sampled rows link /Renesas-Electronics); Renesas Technology merged into Renesas Electronics 2010; DSA slug Renesas-Technology lists 28,185; sampled 150 rows, 0 in our 'Renesas' catalogue",
+    "acquisition: Intersil - acquired by Renesas (Intersil 2017, IDT 2019); parts sold as Renesas; DSA slug Intersil lists 50,172; slug not on disk, overlap not measurable",
+    "acquisition: Intersil Techwell - acquired by Renesas (Intersil 2017, IDT 2019); parts sold as Renesas; DSA slug Intersil-Techwell lists 35; slug not on disk, overlap not measurable",
+    "acquisition: Integrated Device Technology - acquired by Renesas (Intersil 2017, IDT 2019); parts sold as Renesas; DSA slug Integrated-Device-Technology lists 126,059; 114,407 unique mpns crawled; 0 in our 'Renesas' catalogue"
+   ]
+  },
+  {
+   "name": "Eaton",
+   "aliases": [
+    "EATON",
+    "Eaton - Electronics",
+    "Eaton - Electronics Division",
+    "Eaton - Bussmann Electrical",
+    "Eaton - Bussmann Electrical Division",
+    "Bussmann / Eaton",
+    "Cooper Bussmann",
+    "Bussmann",
+    "Cooper Electronic Technologies"
+   ],
+   "evidence": [
+    "spelling: EATON - spelling / division name of Eaton's electronics business; DSA slug EATON; 11,807 unique mpns crawled; 513 in our 'Eaton' catalogue",
+    "spelling: Eaton - Electronics - spelling / division name of Eaton's electronics business; DSA slug Eaton----Electronics lists 1,211; slug not on disk, overlap not measurable",
+    "spelling: Eaton - Electronics Division - spelling / division name of Eaton's electronics business; our catalogue has 22 records as 'Eaton - Electronics Division', 0 of 22 mpns also under 'Eaton'",
+    "spelling: Eaton - Bussmann Electrical - spelling / division name of Eaton's electronics business; DSA slug Eaton----Bussmann-Electrical lists 102; slug not on disk, overlap not measurable",
+    "spelling: Eaton - Bussmann Electrical Division - spelling / division name of Eaton's electronics business; DSA slug Eaton----Bussmann-Electrical-Division lists 43; slug not on disk, overlap not measurable",
+    "spelling: Bussmann / Eaton - spelling / division name of Eaton's electronics business; our catalogue has 4 records as 'Bussmann / Eaton', 0 of 4 mpns also under 'Eaton'",
+    "acquisition: Cooper Bussmann - Cooper Industries (Cooper Bussmann, Cooper Electronic Technologies) acquired by Eaton 2012; Bussmann parts are sold as Eaton; DSA slug Cooper-Bussmann lists 14,454; slug not on disk, overlap not measurable",
+    "acquisition: Bussmann - Cooper Industries (Cooper Bussmann, Cooper Electronic Technologies) acquired by Eaton 2012; Bussmann parts are sold as Eaton; DSA slug Bussmann lists 1,041; slug not on disk, overlap not measurable",
+    "acquisition: Cooper Electronic Technologies - Cooper Industries (Cooper Bussmann, Cooper Electronic Technologies) acquired by Eaton 2012; Bussmann parts are sold as Eaton; DSA slug Cooper-Electronic-Technologies lists 190; slug not on disk, overlap not measurable"
+   ]
+  },
+  {
+   "name": "Littelfuse",
+   "aliases": [
+    "IXYS",
+    "IXYS/Littelfuse"
+   ],
+   "evidence": [
+    "acquisition: IXYS - IXYS acquired by Littelfuse 2018; IXYS parts sold as Littelfuse/IXYS; DSA slug IXYS lists 12,382; sampled 150 rows, 0 in our 'Littelfuse' catalogue; our catalogue has 177 records as 'IXYS', 0 of 177 mpns also under 'Littelfuse'",
+    "acquisition: IXYS/Littelfuse - IXYS acquired by Littelfuse 2018; IXYS parts sold as Littelfuse/IXYS; our catalogue has 5 records as 'IXYS/Littelfuse', 0 of 5 mpns also under 'Littelfuse'"
+   ]
+  },
+  {
+   "name": "Vishay",
+   "aliases": [
+    "Vishay Intertechnology",
+    "Vishay Siliconix",
+    "Siliconix",
+    "Vishay / Dale",
+    "Vishay Dale",
+    "Dale Electronics",
+    "Vishay Dale Thin Film",
+    "Vishay General Semiconductor - Diodes Division",
+    "Vishay General Semiconductor - Diodes",
+    "Vishay Semiconductor Diodes Division",
+    "Vishay Semiconductors",
+    "Vishay Semiconductor Opto Division",
+    "General Semiconductor",
+    "Vishay General Semiconductor",
+    "Vishay Vitramon",
+    "Vishay Sprague",
+    "Vishay BC Components",
+    "Vishay BCcomponents",
+    "Vishay Beyschlag",
+    "BEYSCHLAG",
+    "Vishay Beyschlag/Draloric/BC Components",
+    "Vishay Draloric",
+    "Vishay Sfernice",
+    "Vishay Thin Film",
+    "Vishay Telefunken",
+    "Vishay Electro-Films",
+    "Vishay / Electro-Films"
+   ],
+   "evidence": [
+    "dsa-shared-listing: Vishay Intertechnology - DSA slug serves the exact Vishay listing (confirmed byte-for-byte in todo_parts/aliases.json notes); DSA slug Vishay-Intertechnology; slug not on disk, overlap not measurable",
+    "dsa-shared-listing: Vishay Siliconix - DSA slug serves the exact Vishay listing (confirmed byte-for-byte in todo_parts/aliases.json notes); DSA slug Vishay-Siliconix; slug not on disk, overlap not measurable; our catalogue has 17 records as 'Vishay Siliconix', 0 of 17 mpns also under 'Vishay'",
+    "acquisition: Siliconix - Vishay-owned brand (Vishay acquired it); its parts are sold as Vishay; DSA slug Siliconix lists 2,285; slug not on disk, overlap not measurable",
+    "acquisition: Vishay / Dale - Vishay-owned brand (Vishay acquired it); its parts are sold as Vishay; DSA slug Vishay-Dale; 305,377 unique mpns crawled; 49 also in Vishay crawl; 218,028 in our 'Vishay' catalogue; our catalogue has 354 records as 'Vishay / Dale', 84 of 354 mpns also under 'Vishay'",
+    "acquisition: Vishay Dale - Vishay-owned brand (Vishay acquired it); its parts are sold as Vishay; DSA slug Vishay-Dale; 305,377 unique mpns crawled; 49 also in Vishay crawl; 218,028 in our 'Vishay' catalogue",
+    "acquisition: Dale Electronics - Vishay-owned brand (Vishay acquired it); its parts are sold as Vishay; DSA slug Dale-Electronics lists 781; slug not on disk, overlap not measurable",
+    "acquisition: Vishay Dale Thin Film - Vishay-owned brand (Vishay acquired it); its parts are sold as Vishay; DSA slug Vishay-Dale-Thin-Film lists 7; slug not on disk, overlap not measurable",
+    "acquisition: Vishay General Semiconductor - Diodes Division - Vishay-owned brand (Vishay acquired it); its parts are sold as Vishay; our catalogue has 91 records as 'Vishay General Semiconductor - Diodes Division', 0 of 91 mpns also under 'Vishay'",
+    "acquisition: Vishay General Semiconductor - Diodes - Vishay-owned brand (Vishay acquired it); its parts are sold as Vishay; DSA slug Vishay-General-Semiconductor----Diodes lists 3,292; slug not on disk, overlap not measurable",
+    "acquisition: Vishay Semiconductor Diodes Division - Vishay-owned brand (Vishay acquired it); its parts are sold as Vishay; DSA slug Vishay-Semiconductor-Diodes-Division; 12,934 unique mpns crawled; 1 also in Vishay crawl; 0 also in Vishay-Dale crawl; 4,407 in our 'Vishay' catalogue",
+    "acquisition: Vishay Semiconductors - Vishay-owned brand (Vishay acquired it); its parts are sold as Vishay; DSA slug Vishay-Semiconductors lists 27,808; sampled 150 rows, 0 in our 'Vishay' catalogue",
+    "acquisition: Vishay Semiconductor Opto Division - Vishay-owned brand (Vishay acquired it); its parts are sold as Vishay; DSA slug Vishay-Semiconductor-Opto-Division lists 585; slug not on disk, overlap not measurable",
+    "acquisition: General Semiconductor - Vishay-owned brand (Vishay acquired it); its parts are sold as Vishay; DSA slug General-Semiconductor lists 12,648; slug not on disk, overlap not measurable",
+    "acquisition: Vishay General Semiconductor - Vishay-owned brand (Vishay acquired it); its parts are sold as Vishay; DSA slug Vishay-General-Semiconductor; 7,293 unique mpns crawled; 32 also in Vishay crawl; 0 also in Vishay-Dale crawl; 1,739 in our 'Vishay' catalogue",
+    "acquisition: Vishay Vitramon - Vishay-owned brand (Vishay acquired it); its parts are sold as Vishay; DSA slug Vishay-Vitramon lists 95,686; slug not on disk, overlap not measurable",
+    "acquisition: Vishay BC Components - Vishay-owned brand (Vishay acquired it); its parts are sold as Vishay; DSA slug Vishay-BC-Components lists 54,191; sampled 150 rows, 50 in our 'Vishay' catalogue; DSA slug Vishay-BCcomponents lists 8,895; slug not on disk, overlap not measurable",
+    "acquisition: Vishay BCcomponents - Vishay-owned brand (Vishay acquired it); its parts are sold as Vishay; DSA slug Vishay-BC-Components lists 54,191; sampled 150 rows, 50 in our 'Vishay' catalogue; DSA slug Vishay-BCcomponents lists 8,895; slug not on disk, overlap not measurable",
+    "acquisition: Vishay Beyschlag - Vishay-owned brand (Vishay acquired it); its parts are sold as Vishay; DSA slug Vishay-Beyschlag lists 16,918; slug not on disk, overlap not measurable",
+    "acquisition: BEYSCHLAG - Vishay-owned brand (Vishay acquired it); its parts are sold as Vishay; DSA slug BEYSCHLAG lists 6; slug not on disk, overlap not measurable",
+    "acquisition: Vishay Beyschlag/Draloric/BC Components - Vishay-owned brand (Vishay acquired it); its parts are sold as Vishay; DSA slug Vishay-Beyschlag/Draloric/BC-Components lists 506; slug not on disk, overlap not measurable",
+    "acquisition: Vishay Draloric - Vishay-owned brand (Vishay acquired it); its parts are sold as Vishay; DSA slug Vishay-Draloric lists 2,683; slug not on disk, overlap not measurable",
+    "acquisition: Vishay Sfernice - Vishay-owned brand (Vishay acquired it); its parts are sold as Vishay; DSA slug Vishay-Sfernice lists 6,847; slug not on disk, overlap not measurable",
+    "acquisition: Vishay Thin Film - Vishay-owned brand (Vishay acquired it); its parts are sold as Vishay; DSA slug Vishay-Thin-Film lists 9,210; slug not on disk, overlap not measurable",
+    "acquisition: Vishay Telefunken - Vishay-owned brand (Vishay acquired it); its parts are sold as Vishay; DSA slug Vishay-Telefunken lists 11,583; slug not on disk, overlap not measurable",
+    "acquisition: Vishay Electro-Films - Vishay-owned brand (Vishay acquired it); its parts are sold as Vishay; DSA slug Vishay-Electro--Films lists 149; slug not on disk, overlap not measurable",
+    "acquisition: Vishay / Electro-Films - Vishay-owned brand (Vishay acquired it); its parts are sold as Vishay; DSA slug Vishay-Electro--Films lists 149; slug not on disk, overlap not measurable; our catalogue has 1 records as 'Vishay / Electro-Films', 0 of 1 mpns also under 'Vishay'"
+   ]
+  },
+  {
+   "name": "Diodes Inc.",
+   "aliases": [
+    "Diodes Incorporated",
+    "Zetex Semiconductors"
+   ],
+   "evidence": [
+    "spelling: Diodes Incorporated - long name; DSA slug Diodes-Incorporated; 32,243 unique mpns crawled; 2,414 in our 'Diodes Inc.' catalogue",
+    "acquisition: Zetex Semiconductors - Zetex acquired by Diodes Inc 2008; parts sold as Diodes; DSA slug Zetex-Semiconductors lists 7,641; slug not on disk, overlap not measurable"
+   ]
+  },
+  {
+   "name": "STMicroelectronics",
+   "aliases": [
+    "ST Microelectronics",
+    "SGS-Thomson"
+   ],
+   "evidence": [
+    "spelling: ST Microelectronics - spelling / former name SGS-Thomson Microelectronics (renamed 1998); DSA slug STMicroelectronics; 108,757 unique mpns crawled; 2,230 in our 'STMicroelectronics' catalogue",
+    "spelling: SGS-Thomson - spelling / former name SGS-Thomson Microelectronics (renamed 1998); DSA slug SGS--Thomson lists 8,902; slug not on disk, overlap not measurable"
+   ]
+  },
+  {
+   "name": "NXP",
+   "aliases": [
+    "NXP Semiconductors",
+    "NXP USA",
+    "Philips Semiconductors",
+    "Freescale Semiconductor"
+   ],
+   "evidence": [
+    "spelling: NXP Semiconductors - spelling; DSA slug NXP-Semiconductors lists 59,761; 48,418 unique mpns crawled; 1 in our 'NXP' catalogue",
+    "spelling: NXP USA - spelling; DSA slug NXP-USA lists 5,279; slug not on disk, overlap not measurable",
+    "dsa-shared-listing: Philips Semiconductors - DSA slug serves NXP-Semiconductors' listing (total_count 59,761; every sampled row links /NXP-Semiconductors); Philips Semiconductors became NXP 2006; DSA slug Philips-Semiconductors lists 77,088; 48,418 unique mpns crawled; 48,418 also in NXP-Semiconductors crawl; 1 in our 'NXP' catalogue",
+    "acquisition: Freescale Semiconductor - Freescale acquired by NXP 2015; parts sold as NXP; DSA slug Freescale-Semiconductor lists 22,106; slug not on disk, overlap not measurable"
+   ]
+  },
+  {
+   "name": "Nexperia",
+   "aliases": [
+    "Nexperia USA"
+   ],
+   "evidence": [
+    "spelling: Nexperia USA - US arm of Nexperia; DSA slug Nexperia-USA; 3,984 unique mpns crawled; 0 also in Nexperia crawl; 35 in our 'Nexperia' catalogue"
+   ]
+  },
+  {
+   "name": "Toshiba",
+   "aliases": [
+    "Toshiba America Electronic Components",
+    "Toshiba Semiconductor and Storage",
+    "Toshiba Electronic Devices & Storage"
+   ],
+   "evidence": [
+    "dsa-shared-listing: Toshiba America Electronic Components - DSA slug 'Toshiba' serves the Toshiba America Electronic Components listing (1,129 entries; rows link /Toshiba-America-Electronic-Components); DSA slug Toshiba-America-Electronic-Components lists 1,129; slug not on disk, overlap not measurable",
+    "spelling: Toshiba Semiconductor and Storage - Toshiba Electronic Devices & Storage is the renamed Toshiba Semiconductor & Storage; DSA slug Toshiba-Semiconductor-and-Storage lists 3,116; slug not on disk, overlap not measurable",
+    "spelling: Toshiba Electronic Devices & Storage - Toshiba Electronic Devices & Storage is the renamed Toshiba Semiconductor & Storage; DSA slug Toshiba-Electronic-Devices-&amp;-Storage lists 11; slug not on disk, overlap not measurable"
+   ]
+  },
+  {
+   "name": "ROHM",
+   "aliases": [
+    "Rohm Semiconductor"
+   ],
+   "evidence": [
+    "spelling: Rohm Semiconductor - spelling; ROHM-slug rows link /Rohm-Semiconductor (13,948) and /ROHM-Semiconductor (2,464); DSA slug Rohm-Semiconductor; slug not on disk, overlap not measurable"
+   ]
+  },
+  {
+   "name": "Murata",
+   "aliases": [
+    "muRata",
+    "Murata Manufacturing",
+    "Murata Electronics",
+    "Murata Electronics North America"
+   ],
+   "evidence": [
+    "spelling: muRata - spelling / Murata Manufacturing Co. and its distribution arm; DSA slug muRata; 45,086 unique mpns crawled; 12,300 in our 'Murata' catalogue",
+    "spelling: Murata Manufacturing - spelling / Murata Manufacturing Co. and its distribution arm; DSA slug Murata-Manufacturing lists 5,698; slug not on disk, overlap not measurable",
+    "spelling: Murata Electronics - spelling / Murata Manufacturing Co. and its distribution arm; DSA slug Murata-Electronics lists 18; slug not on disk, overlap not measurable",
+    "spelling: Murata Electronics North America - spelling / Murata Manufacturing Co. and its distribution arm; DSA slug Murata-Electronics-North-America lists 10,517; slug not on disk, overlap not measurable"
+   ]
+  },
+  {
+   "name": "TDK",
+   "aliases": [
+    "TDK-EPC",
+    "EPCOS",
+    "TDK-Epcos",
+    "EPCOS - TDK Electronics",
+    "TDK-Micronas",
+    "TDK Micronas",
+    "TDK InvenSense"
+   ],
+   "evidence": [
+    "spelling: TDK-EPC - TDK Electronics / TDK-EPC is the TDK unit that took over EPCOS; DSA slug TDK--EPC lists 14; slug not on disk, overlap not measurable",
+    "acquisition: EPCOS - EPCOS acquired by TDK 2009 (EPCOS parts now sold as TDK/TDK Electronics); Micronas 2016, InvenSense 2017; DSA slug EPCOS; slug not on disk, overlap not measurable; our catalogue has 3 records as 'EPCOS', 0 of 3 mpns also under 'TDK'",
+    "acquisition: TDK-Epcos - EPCOS acquired by TDK 2009 (EPCOS parts now sold as TDK/TDK Electronics); Micronas 2016, InvenSense 2017; DSA slug TDK-Epcos; 1,370 unique mpns crawled; 0 also in TDK crawl; 373 in our 'TDK' catalogue",
+    "acquisition: EPCOS - TDK Electronics - EPCOS acquired by TDK 2009 (EPCOS parts now sold as TDK/TDK Electronics); Micronas 2016, InvenSense 2017; DSA slug EPCOS----TDK-Electronics; 133 unique mpns crawled; 0 also in TDK crawl; 21 in our 'TDK' catalogue",
+    "acquisition: TDK-Micronas - EPCOS acquired by TDK 2009 (EPCOS parts now sold as TDK/TDK Electronics); Micronas 2016, InvenSense 2017; DSA slug TDK--Micronas lists 194; slug not on disk, overlap not measurable; DSA slug TDK-Micronas lists 31; slug not on disk, overlap not measurable",
+    "acquisition: TDK Micronas - EPCOS acquired by TDK 2009 (EPCOS parts now sold as TDK/TDK Electronics); Micronas 2016, InvenSense 2017; DSA slug TDK--Micronas lists 194; slug not on disk, overlap not measurable; DSA slug TDK-Micronas lists 31; slug not on disk, overlap not measurable",
+    "acquisition: TDK InvenSense - EPCOS acquired by TDK 2009 (EPCOS parts now sold as TDK/TDK Electronics); Micronas 2016, InvenSense 2017; DSA slug TDK-InvenSense lists 123; slug not on disk, overlap not measurable"
+   ]
+  },
+  {
+   "name": "KYOCERA AVX",
+   "aliases": [
+    "AVX",
+    "Kyocera AVX Components",
+    "AVX/Kyocera",
+    "AVX KYOCERA",
+    "AVX-KYOCERA"
+   ],
+   "evidence": [
+    "dsa-shared-listing: AVX - DSA slug 'AVX' serves the KYOCERA-AVX listing (total_count 241; all rows link /KYOCERA-AVX); DSA slug AVX lists 395,418; 241 unique mpns crawled; 0 in our 'KYOCERA AVX' catalogue",
+    "spelling: Kyocera AVX Components - AVX was renamed KYOCERA AVX after Kyocera's 2020 purchase; DSA slug Kyocera-AVX-Components lists 13,635; slug not on disk, overlap not measurable",
+    "spelling: AVX/Kyocera - AVX was renamed KYOCERA AVX after Kyocera's 2020 purchase; DSA slug AVX/Kyocera lists 730; slug not on disk, overlap not measurable; DSA slug AVX-KYOCERA lists 7; slug not on disk, overlap not measurable",
+    "spelling: AVX KYOCERA - AVX was renamed KYOCERA AVX after Kyocera's 2020 purchase; DSA slug AVX/Kyocera lists 730; slug not on disk, overlap not measurable; DSA slug AVX-KYOCERA lists 7; slug not on disk, overlap not measurable",
+    "spelling: AVX-KYOCERA - AVX was renamed KYOCERA AVX after Kyocera's 2020 purchase; DSA slug AVX/Kyocera lists 730; slug not on disk, overlap not measurable; DSA slug AVX-KYOCERA lists 7; slug not on disk, overlap not measurable"
+   ]
+  },
+  {
+   "name": "Panasonic",
+   "aliases": [
+    "Panasonic Industry",
+    "Panasonic Electronic Components",
+    "Panasonic Industrial Company",
+    "Panasonic Industrial Devices",
+    "Panasonic Electronic Devices",
+    "Matsushita Electric Industrial",
+    "Matsushita Electronic Components",
+    "Panasonic Electric Works",
+    "Matsushita Electric Works"
+   ],
+   "evidence": [
+    "spelling: Panasonic Industry - Panasonic Industry is the 2019 name of the Panasonic electronic components business; same company/brand family as Panasonic; our catalogue has 182 records as 'Panasonic Industry', 126 of 182 mpns also under 'Panasonic'",
+    "spelling: Panasonic Electronic Components - Panasonic Industry is the 2019 name of the Panasonic electronic components business; same company/brand family as Panasonic; DSA slug Panasonic-Electronic-Components; 70,816 unique mpns crawled; 3,427 also in Panasonic crawl; 61,905 in our 'Panasonic' catalogue",
+    "spelling: Panasonic Industrial Company - Panasonic Industry is the 2019 name of the Panasonic electronic components business; same company/brand family as Panasonic; DSA slug Panasonic-Industrial-Company lists 528; slug not on disk, overlap not measurable",
+    "spelling: Panasonic Industrial Devices - Panasonic Industry is the 2019 name of the Panasonic electronic components business; same company/brand family as Panasonic; DSA slug Panasonic-Industrial-Devices lists 31; slug not on disk, overlap not measurable",
+    "spelling: Panasonic Electronic Devices - Panasonic Industry is the 2019 name of the Panasonic electronic components business; same company/brand family as Panasonic; DSA slug Panasonic-Electronic-Devices lists 20; slug not on disk, overlap not measurable",
+    "acquisition: Matsushita Electric Industrial - Matsushita renamed Panasonic (2008) and absorbed Panasonic Electric Works (2012); parts sold as Panasonic; DSA slug Matsushita-Electric-Industrial lists 7; slug not on disk, overlap not measurable",
+    "acquisition: Matsushita Electronic Components - Matsushita renamed Panasonic (2008) and absorbed Panasonic Electric Works (2012); parts sold as Panasonic; DSA slug Matsushita-Electronic-Components lists 42; slug not on disk, overlap not measurable",
+    "acquisition: Panasonic Electric Works - Matsushita renamed Panasonic (2008) and absorbed Panasonic Electric Works (2012); parts sold as Panasonic; DSA slug Panasonic-Electric-Works lists 2,558; slug not on disk, overlap not measurable",
+    "acquisition: Matsushita Electric Works - Matsushita renamed Panasonic (2008) and absorbed Panasonic Electric Works (2012); parts sold as Panasonic; DSA slug Matsushita-Electric-Works lists 376; slug not on disk, overlap not measurable"
+   ]
+  },
+  {
+   "name": "YAGEO",
+   "aliases": [
+    "Yageo",
+    "Phycomp",
+    "Phycomp Taiwan"
+   ],
+   "evidence": [
+    "spelling: Yageo - spelling; DSA slug Yageo lists 208,498; 194,303 unique mpns crawled; 39,575 in our 'YAGEO' catalogue",
+    "acquisition: Phycomp - Phycomp acquired by Yageo 2000; parts sold as Yageo; DSA slug Phycomp lists 114; slug not on disk, overlap not measurable",
+    "acquisition: Phycomp Taiwan - Phycomp acquired by Yageo 2000; parts sold as Yageo; DSA slug Phycomp-Taiwan lists 8; slug not on disk, overlap not measurable"
+   ]
+  },
+  {
+   "name": "Würth Elektronik",
+   "aliases": [
+    "Wurth Elektronik",
+    "Wurth Electronics",
+    "WÃ¼rth Elektronik",
+    "Wurth Elektronik iBE",
+    "Wurth Electronics Midcom"
+   ],
+   "evidence": [
+    "spelling: Wurth Elektronik - spelling / ASCII transliteration / mojibake in DSA names; DSA slug Wurth-Elektronik; 9,643 unique mpns crawled; 6,866 in our 'Würth Elektronik' catalogue",
+    "spelling: Wurth Electronics - spelling / ASCII transliteration / mojibake in DSA names; DSA slug Wurth-Electronics lists 7,363; slug not on disk, overlap not measurable",
+    "spelling: WÃ¼rth Elektronik - spelling / ASCII transliteration / mojibake in DSA names; DSA slug WÃ¼rth-Elektronik lists 342; slug not on disk, overlap not measurable",
+    "spelling: Wurth Elektronik iBE - spelling / ASCII transliteration / mojibake in DSA names; DSA slug Wurth-Elektronik-iBE lists 42; slug not on disk, overlap not measurable",
+    "acquisition: Wurth Electronics Midcom - Midcom acquired by Würth Elektronik 2011; sold as Würth Elektronik Midcom; DSA slug Wurth-Electronics-Midcom lists 243; sampled 100 rows, 47 in our 'Würth Elektronik' catalogue"
+   ]
+  },
+  {
+   "name": "Sullins Connector Solutions",
+   "aliases": [
+    "Sullins Electronics"
+   ],
+   "evidence": [
+    "spelling: Sullins Electronics - Sullins Electronics Corp. is the former name; DSA slug Sullins-Electronics lists 122,811; slug not on disk, overlap not measurable"
+   ]
+  },
+  {
+   "name": "CUI Devices",
+   "aliases": [
+    "CUI"
+   ],
+   "evidence": [
+    "spelling: CUI - CUI Inc. brand/former company name; DSA slug CUI lists 20,162; slug not on disk, overlap not measurable"
+   ]
+  },
+  {
+   "name": "ECS Inc.",
+   "aliases": [
+    "ECS",
+    "ECS International"
+   ],
+   "evidence": [
+    "spelling: ECS - spelling; DSA slug ECS lists 6,419; slug not on disk, overlap not measurable",
+    "spelling: ECS International - spelling; DSA slug ECS-International lists 1,099; slug not on disk, overlap not measurable"
+   ]
+  },
+  {
+   "name": "EPSON",
+   "aliases": [
+    "Seiko Epson"
+   ],
+   "evidence": [
+    "spelling: Seiko Epson - Seiko Epson Corporation; DSA slug Seiko-Epson lists 27,870; slug not on disk, overlap not measurable"
+   ]
+  },
+  {
+   "name": "TXC CORPORATION",
+   "aliases": [
+    "TXC"
+   ],
+   "evidence": [
+    "spelling: TXC - spelling; DSA slug TXC lists 7,387; slug not on disk, overlap not measurable"
+   ]
+  },
+  {
+   "name": "Fox",
+   "aliases": [
+    "Fox Electronics"
+   ],
+   "evidence": [
+    "spelling: Fox Electronics - spelling; DSA slug Fox-Electronics lists 11,251; slug not on disk, overlap not measurable"
+   ]
+  },
+  {
+   "name": "AEL Crystals",
+   "aliases": [
+    "AEL"
+   ],
+   "evidence": [
+    "spelling: AEL - catalogue spelling; our catalogue has 3 records as 'AEL', 0 of 3 mpns also under 'AEL Crystals'"
+   ]
+  },
+  {
+   "name": "ILSI",
+   "aliases": [
+    "ILSI America"
+   ],
+   "evidence": [
+    "spelling: ILSI America - US arm; DSA slug ILSI-America lists 820; slug not on disk, overlap not measurable"
+   ]
+  },
+  {
+   "name": "Knowles Syfer",
+   "aliases": [
+    "Syfer Technology"
+   ],
+   "evidence": [
+    "spelling: Syfer Technology - Syfer Technology was renamed Knowles Syfer after Knowles' 2008 purchase; DSA slug Syfer-Technology lists 893; slug not on disk, overlap not measurable"
+   ]
+  },
+  {
+   "name": "Knowles Dielectric Labs",
+   "aliases": [
+    "Dielectric Laboratories"
+   ],
+   "evidence": [
+    "spelling: Dielectric Laboratories - Dielectric Laboratories (DLI) is the pre-Knowles name; DSA slug Dielectric-Laboratories lists 86; slug not on disk, overlap not measurable"
+   ]
+  },
+  {
+   "name": "Knowles Novacap",
+   "aliases": [
+    "Novacap"
+   ],
+   "evidence": [
+    "spelling: Novacap - spelling; DSA slug Novacap lists 38; slug not on disk, overlap not measurable"
+   ]
+  },
+  {
+   "name": "Ferroxcube",
+   "aliases": [
+    "Ferroxcube International Holding BV"
+   ],
+   "evidence": [
+    "spelling: Ferroxcube International Holding BV - legal name; DSA slug Ferroxcube-International-Holding-BV lists 3; slug not on disk, overlap not measurable"
+   ]
+  },
+  {
+   "name": "Laird",
+   "aliases": [
+    "Laird Technologies",
+    "LAIRD"
+   ],
+   "evidence": [
+    "spelling: Laird Technologies - Laird Technologies is the same company; catalogue holds both spellings; DSA slug Laird-Technologies lists 5,943; slug not on disk, overlap not measurable; our catalogue has 20 records as 'Laird Technologies', 0 of 20 mpns also under 'Laird'",
+    "spelling: LAIRD - Laird Technologies is the same company; catalogue holds both spellings; DSA slug LAIRD lists 648; slug not on disk, overlap not measurable"
+   ]
+  },
+  {
+   "name": "SEI Stackpole",
+   "aliases": [
+    "Stackpole Electronics",
+    "SEI Stackpole Electronics"
+   ],
+   "evidence": [
+    "spelling: Stackpole Electronics - Stackpole Electronics Inc. (SEI); DSA slug Stackpole-Electronics lists 131,843; slug not on disk, overlap not measurable",
+    "spelling: SEI Stackpole Electronics - Stackpole Electronics Inc. (SEI); DSA slug SEI-Stackpole-Electronics lists 503; slug not on disk, overlap not measurable"
+   ]
+  },
+  {
+   "name": "KOA Speer",
+   "aliases": [
+    "KOA Speer Electronics"
+   ],
+   "evidence": [
+    "spelling: KOA Speer Electronics - KOA Speer Electronics Inc.; DSA slug KOA-Speer-Electronics lists 255,141; slug not on disk, overlap not measurable"
+   ]
+  },
+  {
+   "name": "Ohmite",
+   "aliases": [
+    "Ohmite Mfg"
+   ],
+   "evidence": [
+    "spelling: Ohmite Mfg - spelling; DSA slug Ohmite-Mfg lists 930; slug not on disk, overlap not measurable"
+   ]
+  },
+  {
+   "name": "Chemi-Con",
+   "aliases": [
+    "Nippon Chemi-Con"
+   ],
+   "evidence": [
+    "spelling: Nippon Chemi-Con - Nippon Chemi-Con / United Chemi-Con sell under the Chemi-Con brand; DSA slug Nippon-Chemi--Con lists 6,950; slug not on disk, overlap not measurable"
+   ]
+  },
+  {
+   "name": "Shenzhen Sunlord Electronics Co., Ltd.",
+   "aliases": [
+    "Sunlord"
+   ],
+   "evidence": [
+    "spelling: Sunlord - spelling; DSA slug Sunlord lists 4,983; slug not on disk, overlap not measurable"
+   ]
+  },
+  {
+   "name": "Walsin Technology Corporation",
+   "aliases": [
+    "Walsin Technology"
+   ],
+   "evidence": [
+    "spelling: Walsin Technology - spelling; DSA slug Walsin-Technology lists 9,632; slug not on disk, overlap not measurable"
+   ]
+  },
+  {
+   "name": "Cyntec",
+   "aliases": [
+    "Delta Electronics/Cyntec"
+   ],
+   "evidence": [
+    "spelling: Delta Electronics/Cyntec - Cyntec is a Delta Electronics company; slug is the combined brand; DSA slug Delta-Electronics/Cyntec lists 24; slug not on disk, overlap not measurable"
+   ]
+  },
+  {
+   "name": "Alpha and Omega",
+   "aliases": [
+    "Alpha & Omega Semiconductor"
+   ],
+   "evidence": [
+    "spelling: Alpha & Omega Semiconductor - spelling; DSA slug Alpha-&amp;-Omega-Semiconductor lists 3,273; slug not on disk, overlap not measurable; our catalogue has 4 records as 'Alpha & Omega Semiconductor', 0 of 4 mpns also under 'Alpha and Omega'"
+   ]
+  },
+  {
+   "name": "Monolithic Power Systems",
+   "aliases": [
+    "MPS"
+   ],
+   "evidence": [
+    "spelling: MPS - abbreviation used by our catalogue; our catalogue has 4 records as 'MPS', 0 of 4 mpns also under 'Monolithic Power Systems'"
+   ]
+  },
+  {
+   "name": "MCC (Micro Commercial Components)",
+   "aliases": [
+    "Micro Commercial Components (MCC)",
+    "Micro Commercial Components"
+   ],
+   "evidence": [
+    "spelling: Micro Commercial Components (MCC) - spelling; our catalogue has 3 records as 'Micro Commercial Components (MCC)', 0 of 3 mpns also under 'MCC (Micro Commercial Components)'",
+    "spelling: Micro Commercial Components - spelling; DSA slug Micro-Commercial-Components lists 12,612; sampled 150 rows, 0 in our 'MCC (Micro Commercial Components)' catalogue; our catalogue has 1 records as 'Micro Commercial Components', 0 of 1 mpns also under 'MCC (Micro Commercial Components)'"
+   ]
+  },
+  {
+   "name": "Skyworks (Silicon Labs)",
+   "aliases": [
+    "Skyworks Solutions",
+    "Alpha Industries"
+   ],
+   "evidence": [
+    "spelling: Skyworks Solutions - company name is Skyworks Solutions; DSA slug Skyworks-Solutions lists 11,879; sampled 150 rows, 0 in our 'Skyworks (Silicon Labs)' catalogue",
+    "acquisition: Alpha Industries - Alpha Industries merged into Skyworks 2002; DSA slug Alpha-Industries lists 3,062; slug not on disk, overlap not measurable"
+   ]
+  },
+  {
+   "name": "Qorvo",
+   "aliases": [
+    "RFMD",
+    "TriQuint Semiconductor"
+   ],
+   "evidence": [
+    "acquisition: RFMD - RFMD and TriQuint merged into Qorvo 2015; DSA slug RFMD lists 360; slug not on disk, overlap not measurable",
+    "acquisition: TriQuint Semiconductor - RFMD and TriQuint merged into Qorvo 2015; DSA slug TriQuint-Semiconductor lists 3,315; slug not on disk, overlap not measurable"
+   ]
+  },
+  {
+   "name": "Broadcom",
+   "aliases": [
+    "Avago Technologies"
+   ],
+   "evidence": [
+    "spelling: Avago Technologies - Avago Technologies renamed itself Broadcom after the 2016 merger; DSA slug Avago-Technologies lists 11,320; slug not on disk, overlap not measurable"
+   ]
+  },
+  {
+   "name": "Silicon Labs",
+   "aliases": [
+    "Silicon Laboratories"
+   ],
+   "evidence": [
+    "spelling: Silicon Laboratories - spelling; DSA slug Silicon-Laboratories lists 28,751; slug not on disk, overlap not measurable"
+   ]
+  },
+  {
+   "name": "Wolfspeed",
+   "aliases": [
+    "Cree",
+    "Cree/Wolfspeed"
+   ],
+   "evidence": [
+    "spelling: Cree - Cree renamed itself Wolfspeed (2021); Cree's SiC/GaN parts are Wolfspeed parts; DSA slug Cree lists 27,491; slug not on disk, overlap not measurable",
+    "spelling: Cree/Wolfspeed - Cree renamed itself Wolfspeed (2021); Cree's SiC/GaN parts are Wolfspeed parts; DSA slug Cree/Wolfspeed lists 312; slug not on disk, overlap not measurable"
+   ]
+  },
+  {
+   "name": "Amphenol CS",
+   "aliases": [
+    "FCI",
+    "Amphenol FCI",
+    "Amphenol ICC (FCI)",
+    "Amphenol ICC (Commercial Products)",
+    "Amphenol Commercial Products",
+    "Amphenol Commercial"
+   ],
+   "evidence": [
+    "acquisition: FCI - FCI acquired by Amphenol 2016 and merged into Amphenol Communications Solutions (ICC/FCI); parts sold as Amphenol; DSA slug FCI lists 59,780; 59,537 unique mpns crawled; 0 also in Amphenol crawl; 13,481 in our 'Amphenol CS' catalogue",
+    "acquisition: Amphenol FCI - FCI acquired by Amphenol 2016 and merged into Amphenol Communications Solutions (ICC/FCI); parts sold as Amphenol; DSA slug Amphenol-FCI lists 14,496; sampled 150 rows, 20 in our 'Amphenol CS' catalogue",
+    "acquisition: Amphenol ICC (FCI) - FCI acquired by Amphenol 2016 and merged into Amphenol Communications Solutions (ICC/FCI); parts sold as Amphenol; DSA slug Amphenol-ICC-(FCI) lists 6; slug not on disk, overlap not measurable",
+    "acquisition: Amphenol ICC (Commercial Products) - FCI acquired by Amphenol 2016 and merged into Amphenol Communications Solutions (ICC/FCI); parts sold as Amphenol; DSA slug Amphenol-ICC-(Commercial-Products) lists 22; slug not on disk, overlap not measurable",
+    "acquisition: Amphenol Commercial Products - FCI acquired by Amphenol 2016 and merged into Amphenol Communications Solutions (ICC/FCI); parts sold as Amphenol; DSA slug Amphenol-Commercial-Products lists 14,630; sampled 150 rows, 26 in our 'Amphenol CS' catalogue",
+    "acquisition: Amphenol Commercial - FCI acquired by Amphenol 2016 and merged into Amphenol Communications Solutions (ICC/FCI); parts sold as Amphenol; DSA slug Amphenol-Commercial lists 435; slug not on disk, overlap not measurable"
+   ]
+  },
+  {
+   "name": "Amphenol RF",
+   "aliases": [
+    "Amphenol RF Division"
+   ],
+   "evidence": [
+    "spelling: Amphenol RF Division - spelling; DSA slug Amphenol-RF-Division lists 1,922; slug not on disk, overlap not measurable"
+   ]
+  },
+  {
+   "name": "Amphenol Aerospace",
+   "aliases": [
+    "Amphenol Aerospace Operations"
+   ],
+   "evidence": [
+    "spelling: Amphenol Aerospace Operations - spelling; DSA slug Amphenol-Aerospace-Operations lists 139,108; 139,102 unique mpns crawled; 25 in our 'Amphenol Aerospace' catalogue"
+   ]
+  },
+  {
+   "name": "Molex",
+   "aliases": [
+    "Molex Connector"
+   ],
+   "evidence": [
+    "spelling: Molex Connector - spelling; DSA slug Molex-Connector lists 793; slug not on disk, overlap not measurable"
+   ]
+  },
+  {
+   "name": "Weidmüller",
+   "aliases": [
+    "Weidmuller",
+    "Weidmuller Interface",
+    "WeidmÃ¼ller"
+   ],
+   "evidence": [
+    "spelling: Weidmuller - ASCII transliteration / mojibake in DSA names; DSA slug Weidmuller lists 2,241; slug not on disk, overlap not measurable",
+    "spelling: Weidmuller Interface - ASCII transliteration / mojibake in DSA names; DSA slug Weidmuller-Interface lists 91; slug not on disk, overlap not measurable",
+    "spelling: WeidmÃ¼ller - ASCII transliteration / mojibake in DSA names; DSA slug WeidmÃ¼ller lists 20,192; slug not on disk, overlap not measurable"
+   ]
+  },
+  {
+   "name": "WAGO",
+   "aliases": [
+    "WAGO Innovative Connections",
+    "WAGO Kontakttechnik"
+   ],
+   "evidence": [
+    "spelling: WAGO Innovative Connections - spelling; DSA slug WAGO-Innovative-Connections lists 16,823; slug not on disk, overlap not measurable",
+    "spelling: WAGO Kontakttechnik - spelling; DSA slug WAGO-Kontakttechnik lists 166; slug not on disk, overlap not measurable"
+   ]
+  },
+  {
+   "name": "JAE",
+   "aliases": [
+    "JAE Electronics",
+    "Japan Aviation Electronics Industry"
+   ],
+   "evidence": [
+    "spelling: JAE Electronics - Japan Aviation Electronics Industry; DSA slug JAE-Electronics lists 2,269; slug not on disk, overlap not measurable",
+    "spelling: Japan Aviation Electronics Industry - Japan Aviation Electronics Industry; DSA slug Japan-Aviation-Electronics-Industry, lists 524; slug not on disk, overlap not measurable; DSA slug Japan-Aviation-Electronics-Industry lists 460; slug not on disk, overlap not measurable"
+   ]
+  },
+  {
+   "name": "JST",
+   "aliases": [
+    "JST Manufacturing"
+   ],
+   "evidence": [
+    "spelling: JST Manufacturing - J.S.T. Mfg.; DSA slug JST-Manufacturing lists 4,937; slug not on disk, overlap not measurable"
+   ]
+  },
+  {
+   "name": "Navitas",
+   "aliases": [
+    "Navitas Semiconductor"
+   ],
+   "evidence": [
+    "spelling: Navitas Semiconductor - spelling; DSA slug Navitas-Semiconductor lists 14; sampled 14 rows, 5 in our 'Navitas' catalogue"
+   ]
+  },
+  {
+   "name": "Powerex Inc.",
+   "aliases": [
+    "Powerex"
+   ],
+   "evidence": [
+    "spelling: Powerex - spelling; DSA slug Powerex lists 9,977; slug not on disk, overlap not measurable"
+   ]
+  },
+  {
+   "name": "Sanken Electric USA Inc.",
+   "aliases": [
+    "Sanken",
+    "Sanken Electric",
+    "Sanken Electric USA"
+   ],
+   "evidence": [
+    "spelling: Sanken - spelling; DSA slug Sanken lists 509; slug not on disk, overlap not measurable",
+    "spelling: Sanken Electric - spelling; DSA slug Sanken-Electric lists 7,411; slug not on disk, overlap not measurable",
+    "spelling: Sanken Electric USA - differs from 'Sanken Electric USA Inc.' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug Sanken-Electric-USA lists 75"
+   ]
+  },
+  {
+   "name": "Adam Tech",
+   "aliases": [
+    "Adam Technologies"
+   ],
+   "evidence": [
+    "spelling: Adam Technologies - spelling; DSA slug Adam-Technologies lists 1,720; slug not on disk, overlap not measurable"
+   ]
+  },
+  {
+   "name": "Fair-Rite",
+   "aliases": [
+    "Fair-Rite Products"
+   ],
+   "evidence": [
+    "spelling: Fair-Rite Products - spelling; DSA slug Fair--Rite-Products lists 1,294; sampled 100 rows, 20 in our 'Fair-Rite' catalogue"
+   ]
+  },
+  {
+   "name": "Ampleon",
+   "aliases": [
+    "Ampleon USA"
+   ],
+   "evidence": [
+    "spelling: Ampleon USA - US arm; DSA slug Ampleon-USA lists 420; sampled 100 rows, 0 in our 'Ampleon' catalogue"
+   ]
+  },
+  {
+   "name": "ABB",
+   "aliases": [
+    "ABB Group"
+   ],
+   "evidence": [
+    "spelling: ABB Group - differs from 'ABB' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug ABB-Group lists 1,012"
+   ]
+  },
+  {
+   "name": "ABLIC",
+   "aliases": [
+    "ABLIC Inc."
+   ],
+   "evidence": [
+    "spelling: ABLIC Inc. - differs from 'ABLIC' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug ABLIC-Inc. lists 12,398"
+   ]
+  },
+  {
+   "name": "Active-Semi",
+   "aliases": [
+    "Active-Semi International"
+   ],
+   "evidence": [
+    "spelling: Active-Semi International - differs from 'Active-Semi' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug Active--Semi-International lists 268"
+   ]
+  },
+  {
+   "name": "Advanced Energy",
+   "aliases": [
+    "Advanced Energy Industries"
+   ],
+   "evidence": [
+    "spelling: Advanced Energy Industries - differs from 'Advanced Energy' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug Advanced-Energy-Industries lists 123,793"
+   ]
+  },
+  {
+   "name": "Aker Technology",
+   "aliases": [
+    "Aker Technology USA"
+   ],
+   "evidence": [
+    "spelling: Aker Technology USA - differs from 'Aker Technology' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug Aker-Technology-USA lists 474"
+   ]
+  },
+  {
+   "name": "Allied Components",
+   "aliases": [
+    "Allied Components International"
+   ],
+   "evidence": [
+    "spelling: Allied Components International - differs from 'Allied Components' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug Allied-Components-International lists 1"
+   ]
+  },
+  {
+   "name": "ams",
+   "aliases": [
+    "ams AG"
+   ],
+   "evidence": [
+    "spelling: ams AG - differs from 'ams' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug ams-AG lists 508"
+   ]
+  },
+  {
+   "name": "Carlo Gavazzi",
+   "aliases": [
+    "Carlo Gavazzi Holding"
+   ],
+   "evidence": [
+    "spelling: Carlo Gavazzi Holding - differs from 'Carlo Gavazzi' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug Carlo-Gavazzi-Holding lists 430"
+   ]
+  },
+  {
+   "name": "Cherry",
+   "aliases": [
+    "Cherry Americas"
+   ],
+   "evidence": [
+    "spelling: Cherry Americas - differs from 'Cherry' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug Cherry-Americas lists 46"
+   ]
+  },
+  {
+   "name": "COSEL",
+   "aliases": [
+    "Cosel USA"
+   ],
+   "evidence": [
+    "spelling: Cosel USA - differs from 'COSEL' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug Cosel-USA lists 11,734"
+   ]
+  },
+  {
+   "name": "COTO Technology",
+   "aliases": [
+    "Coto Technology USA"
+   ],
+   "evidence": [
+    "spelling: Coto Technology USA - differs from 'COTO Technology' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug Coto-Technology-USA lists 88"
+   ]
+  },
+  {
+   "name": "CviLux",
+   "aliases": [
+    "Cvilux USA"
+   ],
+   "evidence": [
+    "spelling: Cvilux USA - differs from 'CviLux' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug Cvilux-USA lists 144"
+   ]
+  },
+  {
+   "name": "Desco",
+   "aliases": [
+    "Desco Industries"
+   ],
+   "evidence": [
+    "spelling: Desco Industries - differs from 'Desco' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug Desco-Industries lists 2,311"
+   ]
+  },
+  {
+   "name": "E Ink",
+   "aliases": [
+    "E Ink Holdings"
+   ],
+   "evidence": [
+    "spelling: E Ink Holdings - differs from 'E Ink' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug E-Ink-Holdings lists 2"
+   ]
+  },
+  {
+   "name": "ELNA",
+   "aliases": [
+    "Elna America"
+   ],
+   "evidence": [
+    "spelling: Elna America - differs from 'ELNA' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug Elna-America lists 93"
+   ]
+  },
+  {
+   "name": "Energizer Battery",
+   "aliases": [
+    "Energizer Battery Company"
+   ],
+   "evidence": [
+    "spelling: Energizer Battery Company - differs from 'Energizer Battery' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug Energizer-Battery-Company lists 31"
+   ]
+  },
+  {
+   "name": "Ethertronics",
+   "aliases": [
+    "Ethertronics Inc USA"
+   ],
+   "evidence": [
+    "spelling: Ethertronics Inc USA - differs from 'Ethertronics' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug Ethertronics-Inc-USA lists 72"
+   ]
+  },
+  {
+   "name": "FDK",
+   "aliases": [
+    "FDK America"
+   ],
+   "evidence": [
+    "spelling: FDK America - differs from 'FDK' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug FDK-America lists 348"
+   ]
+  },
+  {
+   "name": "Fremont Micro Devices",
+   "aliases": [
+    "Fremont Micro Devices (USA)"
+   ],
+   "evidence": [
+    "spelling: Fremont Micro Devices (USA) - differs from 'Fremont Micro Devices' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug Fremont-Micro-Devices-USA lists 46; DSA slug Fremont-Micro-Devices-(USA) lists 45"
+   ]
+  },
+  {
+   "name": "Fujikura",
+   "aliases": [
+    "Fujikura America"
+   ],
+   "evidence": [
+    "spelling: Fujikura America - differs from 'Fujikura' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug Fujikura-America lists 9"
+   ]
+  },
+  {
+   "name": "Insignis Technology",
+   "aliases": [
+    "Insignis Technology Corporation"
+   ],
+   "evidence": [
+    "spelling: Insignis Technology Corporation - differs from 'Insignis Technology' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug Insignis-Technology-Corporation lists 29"
+   ]
+  },
+  {
+   "name": "Jauch Quartz",
+   "aliases": [
+    "Jauch Quartz America"
+   ],
+   "evidence": [
+    "spelling: Jauch Quartz America - differs from 'Jauch Quartz' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug Jauch-Quartz-America lists 154"
+   ]
+  },
+  {
+   "name": "LAPP",
+   "aliases": [
+    "Lapp Group",
+    "Lapp USA"
+   ],
+   "evidence": [
+    "spelling: Lapp Group - differs from 'LAPP' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug Lapp-Group lists 690",
+    "spelling: Lapp USA - differs from 'LAPP' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug Lapp-USA lists 1"
+   ]
+  },
+  {
+   "name": "LEM",
+   "aliases": [
+    "LEM USA"
+   ],
+   "evidence": [
+    "spelling: LEM USA - differs from 'LEM' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug LEM-USA lists 269"
+   ]
+  },
+  {
+   "name": "Macronix",
+   "aliases": [
+    "Macronix International"
+   ],
+   "evidence": [
+    "spelling: Macronix International - differs from 'Macronix' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug Macronix-International lists 5,339"
+   ]
+  },
+  {
+   "name": "Marutsuelec",
+   "aliases": [
+    "Marutsu Elec Company"
+   ],
+   "evidence": [
+    "spelling: Marutsu Elec Company - differs from 'Marutsuelec' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug Marutsu-Elec-Company lists 32"
+   ]
+  },
+  {
+   "name": "Mean Well",
+   "aliases": [
+    "MEAN WELL USA"
+   ],
+   "evidence": [
+    "spelling: MEAN WELL USA - differs from 'Mean Well' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug MEAN-WELL-USA lists 22,581"
+   ]
+  },
+  {
+   "name": "Mitsumi Electric",
+   "aliases": [
+    "Mitsumi Electric Company"
+   ],
+   "evidence": [
+    "spelling: Mitsumi Electric Company - differs from 'Mitsumi Electric' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug Mitsumi-Electric-Company lists 19"
+   ]
+  },
+  {
+   "name": "MORNSUN",
+   "aliases": [
+    "Mornsun America"
+   ],
+   "evidence": [
+    "spelling: Mornsun America - differs from 'MORNSUN' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug Mornsun-America lists 1"
+   ]
+  },
+  {
+   "name": "Mueller Electric",
+   "aliases": [
+    "Mueller Electric Company"
+   ],
+   "evidence": [
+    "spelling: Mueller Electric Company - differs from 'Mueller Electric' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug Mueller-Electric-Company lists 298"
+   ]
+  },
+  {
+   "name": "Newhaven Display",
+   "aliases": [
+    "Newhaven Display International"
+   ],
+   "evidence": [
+    "spelling: Newhaven Display International - differs from 'Newhaven Display' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug Newhaven-Display-International lists 33"
+   ]
+  },
+  {
+   "name": "Nextgen Components",
+   "aliases": [
+    "NextGen Components Group"
+   ],
+   "evidence": [
+    "spelling: NextGen Components Group - differs from 'Nextgen Components' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug NextGen-Components-Group lists 2"
+   ]
+  },
+  {
+   "name": "O.C. White",
+   "aliases": [
+    "OC White Company"
+   ],
+   "evidence": [
+    "spelling: OC White Company - differs from 'O.C. White' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug OC-White-Company lists 4"
+   ]
+  },
+  {
+   "name": "ODU",
+   "aliases": [
+    "ODU-USA"
+   ],
+   "evidence": [
+    "spelling: ODU-USA - differs from 'ODU' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug ODU--USA lists 635"
+   ]
+  },
+  {
+   "name": "Okaya Electric America",
+   "aliases": [
+    "Okaya Electric Industries"
+   ],
+   "evidence": [
+    "spelling: Okaya Electric Industries - differs from 'Okaya Electric America' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug Okaya-Electric-Industries lists 9"
+   ]
+  },
+  {
+   "name": "Optrex",
+   "aliases": [
+    "Optrex America"
+   ],
+   "evidence": [
+    "spelling: Optrex America - differs from 'Optrex' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug Optrex-America lists 79"
+   ]
+  },
+  {
+   "name": "Opulent",
+   "aliases": [
+    "Opulent Americas"
+   ],
+   "evidence": [
+    "spelling: Opulent Americas - differs from 'Opulent' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug Opulent-Americas lists 1,025"
+   ]
+  },
+  {
+   "name": "Panjit",
+   "aliases": [
+    "PanJit Group",
+    "Panjit International"
+   ],
+   "evidence": [
+    "spelling: PanJit Group - differs from 'Panjit' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug PanJit-Group lists 1,167",
+    "spelling: Panjit International - differs from 'Panjit' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug Panjit-International lists 5,421"
+   ]
+  },
+  {
+   "name": "Particle",
+   "aliases": [
+    "Particle Industries"
+   ],
+   "evidence": [
+    "spelling: Particle Industries - differs from 'Particle' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug Particle-Industries lists 32"
+   ]
+  },
+  {
+   "name": "Phihong",
+   "aliases": [
+    "Phihong USA"
+   ],
+   "evidence": [
+    "spelling: Phihong USA - differs from 'Phihong' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug Phihong-USA lists 438"
+   ]
+  },
+  {
+   "name": "Positronic",
+   "aliases": [
+    "Positronic Industries"
+   ],
+   "evidence": [
+    "spelling: Positronic Industries - differs from 'Positronic' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug Positronic-Industries lists 2,455"
+   ]
+  },
+  {
+   "name": "Radiall",
+   "aliases": [
+    "Radiall USA"
+   ],
+   "evidence": [
+    "spelling: Radiall USA - differs from 'Radiall' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug Radiall-USA lists 49"
+   ]
+  },
+  {
+   "name": "RAFI",
+   "aliases": [
+    "RAFI USA"
+   ],
+   "evidence": [
+    "spelling: RAFI USA - differs from 'RAFI' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug RAFI-USA lists 1,852"
+   ]
+  },
+  {
+   "name": "Ramtron",
+   "aliases": [
+    "Ramtron International"
+   ],
+   "evidence": [
+    "spelling: Ramtron International - differs from 'Ramtron' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug Ramtron-International lists 391"
+   ]
+  },
+  {
+   "name": "Sanyo-Denki",
+   "aliases": [
+    "Sanyo Denki America"
+   ],
+   "evidence": [
+    "spelling: Sanyo Denki America - differs from 'Sanyo-Denki' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug Sanyo-Denki-America lists 3,485"
+   ]
+  },
+  {
+   "name": "STEiNEL",
+   "aliases": [
+    "Steinel America"
+   ],
+   "evidence": [
+    "spelling: Steinel America - differs from 'STEiNEL' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug Steinel-America lists 231"
+   ]
+  },
+  {
+   "name": "SunLED",
+   "aliases": [
+    "SunLED Group",
+    "SunLED USA"
+   ],
+   "evidence": [
+    "spelling: SunLED Group - differs from 'SunLED' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug SunLED-Group lists 155",
+    "spelling: SunLED USA - differs from 'SunLED' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug SunLED-USA lists 5,252"
+   ]
+  },
+  {
+   "name": "Sunon",
+   "aliases": [
+    "SUNON USA"
+   ],
+   "evidence": [
+    "spelling: SUNON USA - differs from 'Sunon' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug SUNON-USA lists 90"
+   ]
+  },
+  {
+   "name": "TDK-Lambda",
+   "aliases": [
+    "TDK-Lambda Americas"
+   ],
+   "evidence": [
+    "spelling: TDK-Lambda Americas - differs from 'TDK-Lambda' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug TDK--Lambda-Americas lists 3,241"
+   ]
+  },
+  {
+   "name": "TENSILITY",
+   "aliases": [
+    "Tensility International"
+   ],
+   "evidence": [
+    "spelling: Tensility International - differs from 'TENSILITY' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug Tensility-International lists 2,204"
+   ]
+  },
+  {
+   "name": "TOKO",
+   "aliases": [
+    "TOKO America"
+   ],
+   "evidence": [
+    "spelling: TOKO America - differs from 'TOKO' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug TOKO-America lists 219"
+   ]
+  },
+  {
+   "name": "u-blox",
+   "aliases": [
+    "U-Blox America"
+   ],
+   "evidence": [
+    "spelling: U-Blox America - differs from 'u-blox' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug U--Blox-America lists 112"
+   ]
+  },
+  {
+   "name": "Visual Communications",
+   "aliases": [
+    "Visual Communications Company"
+   ],
+   "evidence": [
+    "spelling: Visual Communications Company - differs from 'Visual Communications' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug Visual-Communications-Company lists 27,184"
+   ]
+  },
+  {
+   "name": "ZMD",
+   "aliases": [
+    "ZMD America"
+   ],
+   "evidence": [
+    "spelling: ZMD America - differs from 'ZMD' only by a corporate/regional suffix (Inc, Corp, USA, America, International, Group ...); DSA slug ZMD-America lists 614"
+   ]
+  }
+ ]
+}
