@@ -60,6 +60,9 @@ FAMILIES = {
     "timing_devices.ndjson": (["timeBase"], "TDAS", "tdas.json", "timeBase"),
     "thermistors.ndjson": (["thermistor"], "RAS", "thermistor.json", "thermistor"),
     "modules.ndjson": (["semiconductor", "module"], "SAS", "module.json", ("semiconductor", "module")),
+    "thyristors.ndjson": (["semiconductor", "thyristor"], "SAS", "thyristor.json", ("semiconductor", "thyristor")),
+    "jfets.ndjson": (["semiconductor", "jfet"], "SAS", "jfet.json", ("semiconductor", "jfet")),
+    "optocouplers.ndjson": (["semiconductor", "optocoupler"], "SAS", "optocoupler.json", ("semiconductor", "optocoupler")),
 }
 
 # circuits.ndjson is not a part catalogue and cannot use FAMILIES: a record is a whole CIAS

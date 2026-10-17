@@ -145,6 +145,9 @@ def part_library_validators():
         ("switches.ndjson",   ["switch"],                  "EMAS", "switch.json"),
         ("protection.ndjson", ["protection"],              "EMAS", "protection.json"),
         ("potentiometers.ndjson", ["potentiometer"],       "RAS", "potentiometer.json"),
+        ("thyristors.ndjson", ["semiconductor", "thyristor"], "SAS", "thyristor.json"),
+        ("jfets.ndjson",      ["semiconductor", "jfet"],   "SAS", "jfet.json"),
+        ("optocouplers.ndjson", ["semiconductor", "optocoupler"], "SAS", "optocoupler.json"),
     ]:
         schema = json.loads((PROTEUS / repo / "schemas" / schema_file).read_text())
         out[fname] = (disc_path, Draft202012Validator(schema, registry=reg))
@@ -198,6 +201,7 @@ def _summarise_failures(fails: list[tuple[int, str]], cap: int = 5) -> str:
     "connectors.ndjson", "timing_devices.ndjson", "thermistors.ndjson", "modules.ndjson",
     "connector_accessories.ndjson", "relays.ndjson", "switches.ndjson",
     "protection.ndjson",
+    "thyristors.ndjson", "jfets.ndjson", "optocouplers.ndjson",
     "potentiometers.ndjson",
 ])
 def test_part_library_records_validate(part_library_validators, fname):
@@ -257,6 +261,7 @@ def _manufacturer_ref(rec):
     "connectors.ndjson", "timing_devices.ndjson", "thermistors.ndjson", "modules.ndjson",
     "connector_accessories.ndjson", "relays.ndjson", "switches.ndjson",
     "protection.ndjson",
+    "thyristors.ndjson", "jfets.ndjson", "optocouplers.ndjson",
     "potentiometers.ndjson",
 ])
 def test_part_library_references_unique(fname):

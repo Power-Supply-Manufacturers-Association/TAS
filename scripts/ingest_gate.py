@@ -432,6 +432,50 @@ _CATALOGUES = [
         Field("insulationResistance", _di("electrical", "insulationResistance"),
               "OHM", bound=1e16),
     ]),
+    # ---- SAS thyristor / jfet / optocoupler kinds (2026-10-18) ---------------
+    # Bounds are catalogue-wide ceilings: discrete thyristors stay below ~10 kV
+    # V_DRM and ~5 kA I_TSM; protector impulse ratings below 20 kA; JFETs below
+    # 2 kV / 100 A (SiC power JFETs). A multi-die record carries these per die,
+    # which the package-level paths below do not reach.
+    Catalogue("thyristors.ndjson", ["semiconductor", "thyristor"], "SAS", "thyristor.json", [
+        Field("repetitivePeakOffStateVoltage",
+              _di("electrical", "repetitivePeakOffStateVoltage"), bound=1e4),
+        Field("rmsOnStateCurrent", _di("electrical", "rmsOnStateCurrent"), bound=1e4),
+        Field("averageOnStateCurrent", _di("electrical", "averageOnStateCurrent"),
+              bound=1e4),
+        Field("surgeOnStateCurrent", _di("electrical", "surgeOnStateCurrent", "*", "current"),
+              bound=1e5),
+        Field("peakPulseCurrent", _di("electrical", "peakPulseCurrents", "*", "current"),
+              bound=2e4),
+        Field("breakoverVoltageMax", _di("electrical", "breakoverVoltage", "maximum"),
+              bound=1e4),
+    ]),
+    Catalogue("jfets.ndjson", ["semiconductor", "jfet"], "SAS", "jfet.json", [
+        Field("drainSourceVoltage", _di("electrical", "drainSourceVoltage"), bound=2e3),
+        Field("gateDrainVoltageMax", _di("electrical", "gateDrainVoltageMax"), bound=2e3),
+        Field("continuousDrainCurrent", _di("electrical", "continuousDrainCurrent"),
+              bound=1e2),
+        Field("onResistance", _di("electrical", "onResistance", "nominal"), "OHM",
+              bound=1e6),
+        Field("inputCapacitance", _di("electrical", "inputCapacitance"), "F", bound=1e-6),
+    ]),
+    Catalogue("optocouplers.ndjson", ["semiconductor", "optocoupler"], "SAS",
+              "optocoupler.json", [
+        # CTR is a FRACTION (100 % = 1.0). The schema cannot tell 100 from 1.0, so
+        # this bound is the percent guard: the highest photodarlington bins reach a
+        # few thousand percent (tens as a fraction); a percent-written phototransistor
+        # bin (50..600) lands past it.
+        Field("currentTransferRatioMax",
+              _di("electrical", "currentTransferRatio", "maximum"), bound=60),
+        Field("currentTransferRatioMin",
+              _di("electrical", "currentTransferRatio", "minimum"), bound=60),
+        Field("isolationWithstandVoltage",
+              _di("electrical", "isolation", "withstandVoltageRms"), bound=1e5),
+        Field("collectorEmitterVoltage", _di("electrical", "collectorEmitterVoltage"),
+              bound=1e4),
+        Field("inputForwardCurrentMax", _di("electrical", "inputForwardCurrentMax"),
+              bound=10),
+    ]),
 ]
 
 CATALOGUES = {c.name: c for c in _CATALOGUES}
