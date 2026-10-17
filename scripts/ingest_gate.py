@@ -292,6 +292,18 @@ _CATALOGUES = [
         Field("ratedImpulseVoltage",
               _di("electrical", "insulationPaths", "*", "ratedImpulseVoltage"),
               bound=1e6),
+        # familyRf (added 2026-10-17 with CONAS draft A): an rf connector may omit
+        # `electrical`, so these three are the only numbers that can carry it. No
+        # `unit`: rule 3 would read a series-wide 50 ohm as a minted constant.
+        # Bounds are ceilings, not typical values -- live rf rows hold 42.5..100
+        # ohm, 0.1..110 GHz and VSWR 1.0..2.6; 50 ohm written in mOhm is 5e4,
+        # 6 GHz written in kHz-as-Hz is 6e12, a return loss in dB stored as VSWR
+        # lands past 10.
+        Field("characteristicImpedance", _di("familyDetails", "characteristicImpedance"),
+              bound=1e4),
+        Field("frequencyMaximum", _di("familyDetails", "frequencyRange", "maximum"),
+              bound=1e12),
+        Field("maxVswr", _di("familyDetails", "maxVswr"), bound=10.0),
     ]),
     Catalogue("igbts.ndjson", ["semiconductor", "igbt"], "SAS", "igbt.json", [
         Field("collectorEmitterVoltage", _di("electrical", "collectorEmitterVoltage"),
@@ -2100,6 +2112,26 @@ def _selftest():
                         tvscheck, [_tvs("TESTTVS1", 2.0e4, 2.0e4)]))
     results.append(_run("5f  TVS clampingCurrent 2e7 A (20 kA written in mA)", "REFUSED",
                         tvscheck, [_tvs("TESTTVS2", 2.0e7, 2.0e4)]))
+
+    # rf connectors: familyRf impedance, band and VSWR are bounded (2026-10-17)
+    def _rfband(pn, **fd):
+        fam = {"family": "rf", "characteristicImpedance": 50.0,
+               "frequencyRange": {"maximum": 6.0e9}, "maxVswr": 1.3}
+        fam.update(fd)
+        return {"connector": {"manufacturerInfo": {
+            "name": "Test", "reference": pn,
+            "datasheetUrl": "https://example.com/datasheet/%s.pdf" % pn,
+            "datasheetInfo": {"part": {"partNumber": pn},
+                              "mechanical": {"positions": 1},
+                              "familyDetails": fam}}}}
+    results.append(_run("5g  rf 50 ohm / 6 GHz / VSWR 1.3, no electrical", "ACCEPTED",
+                        con, [_rfband("TESTRF1")]))
+    results.append(_run("5h  rf impedance 5e4 (50 ohm written in mOhm)", "REFUSED",
+                        con, [_rfband("TESTRF2", characteristicImpedance=5.0e4)]))
+    results.append(_run("5i  rf frequencyRange.maximum 6e12 (6 GHz in kHz-as-Hz)", "REFUSED",
+                        con, [_rfband("TESTRF3", frequencyRange={"maximum": 6.0e12})]))
+    results.append(_run("5j  rf maxVswr 20 (a return loss in dB)", "REFUSED",
+                        con, [_rfband("TESTRF4", maxVswr=20.0)]))
 
     # -- rule 6: schema, with vacuous-required counted as missing -------------
     vacuous = {"magnetic": {"manufacturerInfo": {

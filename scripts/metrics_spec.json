@@ -1369,7 +1369,26 @@
       ]
      }
     },
-    "electrical.ratedVoltage",
+    {
+     "path": "electrical.ratedVoltage",
+     "when": {
+      "familyDetails.family": [
+       "pinHeaderSocket",
+       "boardToBoard",
+       "wireToBoard",
+       "wireToWire",
+       "terminalBlock",
+       "fpcFfc",
+       "cardEdge",
+       "circular",
+       "dataInterface",
+       "power",
+       "busbar",
+       "acInlet",
+       "solderPad"
+      ]
+     }
+    },
     {
      "path": "electrical.contactResistance",
      "when": {
@@ -1388,8 +1407,46 @@
       ]
      }
     },
-    "electrical.dielectricWithstandingVoltage",
-    "electrical.insulationResistance",
+    {
+     "path": "electrical.dielectricWithstandingVoltage",
+     "when": {
+      "familyDetails.family": [
+       "pinHeaderSocket",
+       "boardToBoard",
+       "wireToBoard",
+       "wireToWire",
+       "terminalBlock",
+       "fpcFfc",
+       "cardEdge",
+       "circular",
+       "dataInterface",
+       "power",
+       "busbar",
+       "acInlet",
+       "solderPad"
+      ]
+     }
+    },
+    {
+     "path": "electrical.insulationResistance",
+     "when": {
+      "familyDetails.family": [
+       "pinHeaderSocket",
+       "boardToBoard",
+       "wireToBoard",
+       "wireToWire",
+       "terminalBlock",
+       "fpcFfc",
+       "cardEdge",
+       "circular",
+       "dataInterface",
+       "power",
+       "busbar",
+       "acInlet",
+       "solderPad"
+      ]
+     }
+    },
     {
      "path": "mechanical.positions",
      "when": {
@@ -1949,6 +2006,7 @@
   ]
  },
  "_decisions": {
-  "2026-10-17": "Alf: weighted checklist 15/25/25/15/10/10; total by part count; quarantine counts 0; graded evidence (1.0 / series 0.6 / distributor 0.8x); contradicted or placeholder field counts -1; curves weighted from day one; near-empty core fields kept; MOSFET gate-charge and RDS(on)-vs-Tj curves kept; impedance points counted once (curve); URL check by rolling sample; coverage = in-scope DSA incl. obsolete, uncrawled manufacturers by sample crawl."
+  "2026-10-17": "Alf: weighted checklist 15/25/25/15/10/10; total by part count; quarantine counts 0; graded evidence (1.0 / series 0.6 / distributor 0.8x); contradicted or placeholder field counts -1; curves weighted from day one; near-empty core fields kept; MOSFET gate-charge and RDS(on)-vs-Tj curves kept; impedance points counted once (curve); URL check by rolling sample; coverage = in-scope DSA incl. obsolete, uncrawled manufacturers by sample crawl.",
+  "2026-10-17 conas rf": "Alf approved CONAS draft A (rf connectors may omit electrical): electrical.ratedVoltage, electrical.dielectricWithstandingVoltage and electrical.insulationResistance are scored for every family except rf, whose electrical statement is familyDetails (characteristicImpedance, frequencyRange, interface). contactResistance keeps rf."
  }
 }
