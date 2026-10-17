@@ -250,7 +250,34 @@
      }
     },
     {
+     "path": "electrical.clampingCurrent",
+     "when": {
+      "part.subType": [
+       "tvs",
+       "esd"
+      ]
+     }
+    },
+    {
+     "path": "electrical.clampingWaveform",
+     "when": {
+      "part.subType": [
+       "tvs",
+       "esd"
+      ]
+     }
+    },
+    {
      "path": "electrical.peakPulseCurrent",
+     "when": {
+      "part.subType": [
+       "tvs",
+       "esd"
+      ]
+     }
+    },
+    {
+     "path": "electrical.peakPulseCurrentWaveform",
      "when": {
       "part.subType": [
        "tvs",
@@ -278,6 +305,14 @@
     },
     {
      "path": "electrical.peakPulsePower",
+     "when": {
+      "part.subType": [
+       "tvs"
+      ]
+     }
+    },
+    {
+     "path": "electrical.peakPulsePowerWaveform",
      "when": {
       "part.subType": [
        "tvs"

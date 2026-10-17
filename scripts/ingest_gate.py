@@ -219,6 +219,14 @@ _CATALOGUES = [
         Field("forwardVoltage", _di("electrical", "forwardVoltage")),
         Field("reverseVoltage", _di("electrical", "reverseVoltage")),
         Field("forwardCurrent", _di("electrical", "forwardCurrent")),
+        # TVS/ESD pulse ratings (SAS-RFC 0003). Bounds are physical ceilings for a
+        # single diode package, not typical values: the largest held surge rating
+        # is a 20 kA 8/20 us PTVS, the largest TVS P_PPM tens of kW, and a mOhm/mA
+        # or kA-written-as-A slip lands orders of magnitude past these.
+        Field("peakPulseCurrent", _di("electrical", "peakPulseCurrent"), bound=1e5),
+        Field("peakPulsePower", _di("electrical", "peakPulsePower"), bound=1e7),
+        Field("clampingVoltage", _di("electrical", "clampingVoltage"), bound=1e5),
+        Field("clampingCurrent", _di("electrical", "clampingCurrent"), bound=1e5),
     ]),
     # ---- catalogues added 2026-09-07 ---------------------------------------
     # The gate covered 7 of 15 catalogues, so 8 could not be guarded at all --
@@ -1739,6 +1747,25 @@ def selftest():
                         nocheck, [_ch("TESTP2", "pChannel", 30.0, -5.0)]))
     results.append(_run("5d  N-channel stored -60 V", "REFUSED",
                         nocheck, [_ch("TESTN1", "nChannel", -60.0, 4.0)]))
+
+    # 5e-5f: TVS clamping test current. A 20 kA 8/20 us PTVS is real; the same
+    # rating written in mA (2e7) is not a part.
+    def _tvs(pn, i_c, i_pp):
+        return {"semiconductor": {"diode": {"manufacturerInfo": {
+            "name": "Test", "reference": pn,
+            "datasheetUrl": "https://example.com/datasheet/%s.pdf" % pn,
+            "datasheetInfo": {"part": {"partNumber": pn, "subType": "tvs"},
+                              "electrical": {"standoffVoltage": 22,
+                                             "clampingVoltage": 40,
+                                             "clampingCurrent": i_c,
+                                             "clampingWaveform": "8/20",
+                                             "peakPulseCurrent": i_pp,
+                                             "peakPulseCurrentWaveform": "8/20"}}}}}}
+    tvscheck = lambda: IngestGate("diodes.ndjson", validate=False)
+    results.append(_run("5e  TVS clampingCurrent 20 kA (PTVS20-class, real)", "ACCEPTED",
+                        tvscheck, [_tvs("TESTTVS1", 2.0e4, 2.0e4)]))
+    results.append(_run("5f  TVS clampingCurrent 2e7 A (20 kA written in mA)", "REFUSED",
+                        tvscheck, [_tvs("TESTTVS2", 2.0e7, 2.0e4)]))
 
     # -- rule 6: schema, with vacuous-required counted as missing -------------
     vacuous = {"magnetic": {"manufacturerInfo": {
