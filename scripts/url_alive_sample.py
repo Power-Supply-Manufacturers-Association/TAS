@@ -4,14 +4,16 @@
     python3 scripts/url_alive_sample.py [--per-catalogue 500] [--seed N]
 
 Feeds the `url` check of scripts/db_metrics.py. For each live catalogue it draws a random
-sample of parts that cite a URL (datasheetUrl, else the first provenance sourceUrl), fetches
+sample of parts that cite a URL (the sourceUrl of the strongest provenance entry, i.e. where the
+values are claimed to come from; datasheetUrl only when no entry cites one), fetches
 each URL once (plain User-Agent, at most 1 request/s per host, robots.txt honoured, PDFs read
 with pdftotext) and records:
 
   ok       HTTP 200 and the document text contains the exact part number (normalised:
            spaces, hyphens, underscores and slashes removed, dots kept)
-  series   HTTP 200, part number not in the document, and the row itself claims only a
-           series datasheet (seriesConfirmed) — counts 0.6, as in the quality score
+  series   HTTP 200, part number not in the document, and either the document names the
+           part's series or the row itself claims only a series datasheet (seriesConfirmed)
+           — counts 0.6, as in the quality score
   wrong    HTTP 200 but the part number is not in the document
   dead     404/410, DNS failure, or a soft-404 page
   blocked  403/429/bot challenge or robots.txt disallow — the link's state is UNKNOWN and is
@@ -26,6 +28,7 @@ TAS = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(TAS, 'staging', 'metrics'); os.makedirs(OUT, exist_ok=True)
 UA = 'TAS-catalogue-research/1.0'
 norm = lambda s: re.sub(r'[\s\-_/]', '', s or '').upper()
+RANK = {'valuesReadFromSource': 3, 'partNamed': 3, 'seriesConfirmed': 2, 'existenceConfirmed': 1}
 SKIP = {'circuits.ndjson', 'converters.ndjson', 'quarantine.ndjson', 'fabricated_denylist.ndjson'}
 SOFT404 = re.compile(r'page (?:you requested )?(?:was )?not (?:be )?found|no longer available|404 error|'
                      r'sorry, the page|documentNotFound', re.I)
@@ -54,19 +57,27 @@ def sample(cat, k, rng):
                 continue
             mi = b.get('manufacturerInfo') or {}
             di = mi.get('datasheetInfo') or {}
-            pn = (di.get('part') or {}).get('partNumber') or mi.get('reference')
-            prov = [e for e in di.get('provenance') or [] if isinstance(e, dict)]
-            url = mi.get('datasheetUrl') or next((e.get('sourceUrl') for e in prov if e.get('sourceUrl')), None)
+            part = di.get('part') or {}
+            pn = part.get('partNumber') or mi.get('reference')
+            prov = [e for e in di.get('provenance') or [] if isinstance(e, dict) and e.get('sourceUrl')]
+            # the URL to test is the one the values are claimed to come from (strongest evidence
+            # first); datasheetUrl only when no provenance entry cites one -- a datasheetUrl is
+            # often, and correctly, a series datasheet that never prints the full ordering code
+            prov.sort(key=lambda e: -RANK.get(e.get('verification'), 0))
+            if prov:
+                url, ver = prov[0]['sourceUrl'], prov[0].get('verification')
+            else:
+                url, ver = mi.get('datasheetUrl'), None
             if not pn or not url:
                 continue
-            ver = next((e.get('verification') for e in prov if e.get('sourceUrl') == url), None)
+            item = (pn, url, ver, part.get('series') or '')
             seen += 1
             if len(res) < k:
-                res.append((pn, url, ver))
+                res.append(item)
             else:
                 j = rng.randrange(seen)
                 if j < k:
-                    res[j] = (pn, url, ver)
+                    res[j] = item
     return res, seen
 
 
@@ -130,7 +141,7 @@ def text_of(data, ctype):
     return data.decode('utf-8', 'replace')
 
 
-def classify(pn, url):
+def classify(pn, url, series=''):
     kind, status, data, ctype = fetch(url)
     if kind == 'blocked':
         return 'blocked', status
@@ -149,6 +160,8 @@ def classify(pn, url):
         return 'ok', 200
     if SOFT404.search(txt[:20000]):
         return 'dead', 'soft404'
+    if len(norm(series)) >= 3 and norm(series) in norm(txt):
+        return 'series', 'series named'  # a series datasheet: names the series, not every code
     return 'wrong', 200
 
 
@@ -165,11 +178,11 @@ def main():
     work = []
     for cat in cats:
         s, seen = sample(cat, a.per_catalogue, rng)
-        work += [(cat, pn, url, ver) for pn, url, ver in s]
+        work += [(cat, pn, url, ver, series) for pn, url, ver, series in s]
         print(cat, 'citing rows', seen, 'sampled', len(s), flush=True)
     rng.shuffle(work)  # interleave hosts so per-host delays overlap
-    for cat, pn, url, ver in work:
-        verdict, why = classify(pn, url)
+    for cat, pn, url, ver, series in work:
+        verdict, why = classify(pn, url, series)
         if verdict == 'wrong' and ver == 'seriesConfirmed':
             verdict = 'series'  # a series sheet need not print every orderable code
         log.write(json.dumps({'date': today, 'catalogue': cat, 'pn': pn, 'url': url,
