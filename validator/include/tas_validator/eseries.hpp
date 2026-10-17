@@ -15,6 +15,12 @@ namespace tas::eseries {
 // ~1.16% spacing it is too dense to discriminate fabricated values.
 bool on_grid(double value);
 
+// True if `value` (> 0) lies within `window` (relative) of an official IEC 60063
+// E192 mantissa (the 192-value table, including its 920 exception). On its own
+// E192 is too dense to discriminate fabricated values, so callers gate it on the
+// part's tolerance class (E192 is the series of the <= 0.5 % classes).
+bool on_e192(double value, double window);
+
 // Minimum number of significant figures needed to represent `value` within a
 // 1e-9 relative tolerance (capped at 7). Real preferred values are <= 3 sig figs;
 // a nominal needing 5+ is an over-precision fingerprint of generated data.

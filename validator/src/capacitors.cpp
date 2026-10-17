@@ -47,15 +47,25 @@ double df_ceiling(const std::string& t, std::optional<double> C) {
     if (tech_has(t, "npo") || tech_has(t, "np0") || tech_has(t, "c0g") ||
         tech_has(t, "classi") || tech_has(t, "class1"))
         return thr::CAP_DF_CERAMIC_NPO;
-    if (tech_has(t, "y5v") || tech_has(t, "z5u")) return thr::CAP_DF_CERAMIC_Y5V;
+    // Class-3 (`ceramic-class-3`, or a technology naming Z5U/Y5V/Y5U). Tested
+    // before class-2 so the class-3 string never falls to the generic ceramic
+    // branch, which it used to (it matches neither "z5u" nor "y5v").
+    if (tech_has(t, "class3") || tech_has(t, "y5v") || tech_has(t, "z5u") || tech_has(t, "y5u"))
+        return thr::CAP_DF_CERAMIC_CLASS3;
     if (is_class2_ceramic(t) && C && *C >= thr::CAP_DF_CERAMIC_CLASS2_HIGH_C_GATE)
         return thr::CAP_DF_CERAMIC_CLASS2_HIGH_C;
     if (tech_has(t, "x7r") || tech_has(t, "x5r") || tech_has(t, "mlcc") || tech_has(t, "ceramic"))
-        return thr::CAP_DF_CERAMIC_X7R;
+        return thr::CAP_DF_CERAMIC_CLASS2;
     if (is_wet_tantalum(t)) return thr::CAP_DF_TANTALUM_WET;
+    if (tech_has(t, "tantalum") && tech_has(t, "mno2")) return thr::CAP_DF_TANTALUM_MNO2;
     if (tech_has(t, "tantalum")) return thr::CAP_DF_TANTALUM;
     if (is_aluminum_electrolytic(t) && tech_has(t, "polymer")) return thr::CAP_DF_ALUMINUM_POLYMER;
     if (tech_has(t, "polymer")) return thr::CAP_DF_POLYMER;
+    // Wet aluminium electrolytic: the largest cans (C >= 10 mF) have no
+    // suspicious ceiling, only the IMPOSSIBLE bound; capacitance absent -> the
+    // ordinary ceiling applies.
+    if (is_aluminum_electrolytic(t) && C && *C >= thr::CAP_DF_ELECTROLYTIC_LARGE_CAN_GATE)
+        return thr::CAP_DF_IMP;
     if (tech_has(t, "electrolytic") || tech_has(t, "alum")) return thr::CAP_DF_ELECTROLYTIC;
     if (tech_has(t, "film")) return thr::CAP_DF_FILM;
     return thr::CAP_DF_DEFAULT;
@@ -172,12 +182,12 @@ void check_capacitors(const json& datasheet, const Ctx& ctx, std::vector<Finding
         if (*df < 0)
             emit(out, ctx, "CAP_DF_BOUNDS", Severity::Impossible, *df, 0,
                  fmt("dissipation factor < 0", *df));
-        else if (*df >= 10.0)
-            emit(out, ctx, "CAP_DF_BOUNDS", Severity::Impossible, *df, 10.0,
-                 fmt("dissipation factor implausibly large", *df, 10.0));
+        else if (*df >= thr::CAP_DF_IMP)
+            emit(out, ctx, "CAP_DF_BOUNDS", Severity::Impossible, *df, thr::CAP_DF_IMP,
+                 fmt("dissipation factor implausibly large", *df, thr::CAP_DF_IMP));
         else {
-            // Wet tantalum is the one family whose published ceiling is above 1;
-            // every other family keeps the DF >= 1 flag.
+            // Wet tantalum and the >= 10 mF wet aluminium cans are the families
+            // whose ceiling is above 1; every other family keeps the DF >= 1 flag.
             const double ceil = df_ceiling(tech, C);
             if (*df >= 1.0 && ceil < 1.0)
                 emit(out, ctx, "CAP_DF_BOUNDS", Severity::Suspicious, *df, 1.0,

@@ -9,6 +9,7 @@
 
 #include <algorithm>
 #include <cstdio>
+#include <optional>
 #include <set>
 #include <sstream>
 #include <string>
@@ -330,10 +331,10 @@ TEST_CASE("CapDF: wet tantalum above its ceiling and percent slips still fire",
                                                   {"ratedVoltage", 10.0},
                                                   {"dissipationFactor", 30.0}})),
               "CAP_DF_BOUNDS", Severity::Impossible));
-    // Solid tantalum keeps its own 0.25 ceiling.
+    // Solid MnO2 tantalum keeps its own (lower) 0.85 ceiling.
     CHECK(has(V.validate(cap_rec("tantalum-mno2", {{"capacitance", 100e-6},
                                                    {"ratedVoltage", 10.0},
-                                                   {"dissipationFactor", 0.30}})),
+                                                   {"dissipationFactor", 0.90}})),
               "CAP_DF_BOUNDS", Severity::Suspicious));
 }
 
@@ -382,11 +383,55 @@ TEST_CASE("CapDF: class-2 percent slips and sub-uF class-2 still fire",
                                                      {"ratedVoltage", 25.0},
                                                      {"dissipationFactor", 0.15}})),
               "CAP_DF_BOUNDS", Severity::Suspicious));
-    // Below 1 uF the class-2 ceiling stays 0.025.
+    // Below 1 uF the class-2 ceiling is 0.10 (no high-C allowance).
     CHECK(has(V.validate(cap_rec("ceramic-class-2", {{"capacitance", 100e-9},
                                                      {"ratedVoltage", 50.0},
-                                                     {"dissipationFactor", 0.05}})),
+                                                     {"dissipationFactor", 0.11}})),
               "CAP_DF_BOUNDS", Severity::Suspicious));
+}
+
+// DF ceilings re-set to the largest value the makers print (2026-10-17):
+// KEMET MIL-PRF-55681 C0G 0.15 % / 0.25 %, KEMET C1002 X7R 5 % at < 0.1 uF,
+// KEMET C1005 Y5V 7 %, KEMET T491 30 %, KEMET EDH 35 %, Panasonic ECA0JMH223
+// (22,000 uF) 1.19.
+TEST_CASE("CapDF: printed vendor maxima are quiet", "[capacitors][cap_df_relax]") {
+    auto df_of = [](const char* tech, double c, double df) {
+        return V.validate(cap_rec(tech, {{"capacitance", c}, {"ratedVoltage", 50.0},
+                                         {"dissipationFactor", df}}));
+    };
+    CHECK(!has_code(df_of("ceramic-class-1", 1e-9, 0.0015), "CAP_DF_BOUNDS"));
+    CHECK(!has_code(df_of("ceramic-class-1", 1e-9, 0.0025), "CAP_DF_BOUNDS"));
+    CHECK(!has_code(df_of("ceramic-class-2", 10e-9, 0.05), "CAP_DF_BOUNDS"));
+    CHECK(!has_code(df_of("ceramic-class-2", 220e-9, 0.10), "CAP_DF_BOUNDS"));
+    CHECK(!has_code(df_of("ceramic-class-3", 100e-9, 0.07), "CAP_DF_BOUNDS"));
+    CHECK(!has_code(df_of("ceramic-class-3", 100e-9, 0.10), "CAP_DF_BOUNDS"));
+    CHECK(!has_code(df_of("film-paper", 100e-9, 0.013), "CAP_DF_BOUNDS"));
+    CHECK(!has_code(df_of("film-polypropylene", 100e-9, 0.02), "CAP_DF_BOUNDS"));
+    CHECK(!has_code(df_of("tantalum-mno2", 100e-6, 0.30), "CAP_DF_BOUNDS"));
+    CHECK(!has_code(df_of("tantalum-mno2", 220e-6, 0.80), "CAP_DF_BOUNDS"));
+    CHECK(!has_code(df_of("aluminum-electrolytic-wet", 1000e-6, 0.35), "CAP_DF_BOUNDS"));
+    CHECK(!has_code(df_of("aluminum-electrolytic-wet", 22000e-6, 1.19), "CAP_DF_BOUNDS"));
+}
+
+TEST_CASE("CapDF: 100x slips and over-ceiling values still fire", "[capacitors][cap_df_guard]") {
+    auto df_of = [](const char* tech, double c, double df) {
+        return V.validate(cap_rec(tech, {{"capacitance", c}, {"ratedVoltage", 50.0},
+                                         {"dissipationFactor", df}}));
+    };
+    // KEMET R75L: datasheet prints tan delta in units of 1e-4 ("<= 4"); the
+    // vendor column read it as percent and the row stored 0.04 for 0.0004.
+    CHECK(has(df_of("film-polypropylene", 220e-9, 0.04), "CAP_DF_BOUNDS", Severity::Suspicious));
+    CHECK(has(df_of("ceramic-class-1", 1e-9, 0.005), "CAP_DF_BOUNDS", Severity::Suspicious));
+    CHECK(has(df_of("ceramic-class-3", 100e-9, 0.15), "CAP_DF_BOUNDS", Severity::Suspicious));
+    CHECK(has(df_of("ceramic-class-2", 10e-9, 2.5), "CAP_DF_BOUNDS", Severity::Suspicious));
+    CHECK(has(df_of("aluminum-electrolytic-wet", 1000e-6, 0.65), "CAP_DF_BOUNDS",
+              Severity::Suspicious));
+    // Below the 10 mF gate the DF >= 1 flag stays.
+    CHECK(has(df_of("aluminum-electrolytic-wet", 1000e-6, 1.2), "CAP_DF_BOUNDS",
+              Severity::Suspicious));
+    // A large can keeps the IMPOSSIBLE bound (35 for 35 %).
+    CHECK(has(df_of("aluminum-electrolytic-wet", 22000e-6, 35.0), "CAP_DF_BOUNDS",
+              Severity::Impossible));
 }
 
 // Coin/backup EDLCs: 0.47 F with 40 ohm is 18.8 s; a 25 F cell at 38 mohm is 0.95 s.
@@ -942,11 +987,89 @@ TEST_CASE("AntiSynthesis: EseriesPreferredValueOk", "[antisynthesis]") {
 }
 
 TEST_CASE("AntiSynthesis: EseriesOffGridFlags", "[antisynthesis]") {
+    // 9370 sits off E24, E96 AND E192 (9400 used to serve here, but it is
+    // within 0.3 % of E192 942: with no tolerance it is now recorded as skipped).
     json p = json::parse(R"json({"resistor":{"manufacturerInfo":{"reference":"X",
-      "datasheetInfo":{"electrical":{"resistance":9400.0}}}}})json");
+      "datasheetInfo":{"electrical":{"resistance":9370.0}}}}})json");
     Verdict v = V.validate(p);
     CHECK(has(v, "RES_E_SERIES", Severity::Suspicious));
     CHECK(v.valid);  // anti-synthesis signal must not invalidate
+}
+
+json res_rec(const char* tech, const char* series, const char* pn, double r,
+             std::optional<double> tol) {
+    json p;
+    json& ds = p["resistor"]["manufacturerInfo"]["datasheetInfo"];
+    p["resistor"]["manufacturerInfo"]["reference"] = pn;
+    ds["part"]["technology"] = tech;
+    if (series != nullptr) ds["part"]["series"] = series;
+    ds["part"]["partNumber"] = pn;
+    ds["electrical"]["resistance"] = {{"nominal", r}};
+    if (tol) ds["electrical"]["tolerance"] = *tol;
+    return p;
+}
+
+// E192 for <= 0.5 % parts (Vishay TNPW 28758: "+-0.1 % ... E24; E192"),
+// free-valued wirewound/metal-oxide, and qualified ordering-code series whose
+// stored value equals the value in their own code.
+TEST_CASE("ResESeries: E192, free-valued and code-matched values are quiet",
+          "[resistors][res_eseries_relax]") {
+    // 5.97 kohm (E192, not E96) at 0.1 %.
+    CHECK(!has_code(V.validate(res_rec("thinFilm", nullptr, "NT0603BRD075K97L", 5970.0, 0.001)),
+                    "RES_E_SERIES"));
+    CHECK(!has_code(V.validate(res_rec("thinFilm", nullptr, "X", 98800.0, 0.005)),
+                    "RES_E_SERIES"));
+    // Wirewound / metal oxide at ordering-code values.
+    CHECK(!has_code(V.validate(res_rec("wirewound", "RWR81", "RWR81S3R20BSB12", 3.2, 0.001)),
+                    "RES_E_SERIES"));
+    CHECK(!has_code(V.validate(res_rec("metalOxide", "ROX100", "ROX100157KFKLB", 157000.0, 0.01)),
+                    "RES_E_SERIES"));
+    // CMF558K7150F = 8.715 kohm, CMF60654R30F = 654.3 ohm, at 1 %.
+    CHECK(!has_code(V.validate(res_rec("metalFilm", "CMF55", "CMF558K7150FKEK", 8715.0, 0.01)),
+                    "RES_E_SERIES"));
+    CHECK(!has_code(V.validate(res_rec("metalFilm", "CMF60", "CMF60654R30FLEB", 654.3, 0.01)),
+                    "RES_E_SERIES"));
+    // RN60D3483F = 348 kohm; RN65D12R5F = 12.5 ohm; RLR07C6003G = 600 kohm.
+    CHECK(!has_code(V.validate(res_rec("metalFilm", "RN60", "RN60D3483FB14", 348000.0, 0.01)),
+                    "RES_E_SERIES"));
+    CHECK(!has_code(V.validate(res_rec("metalFilm", "RN65", "RN65D12R5FB14", 12.5, 0.01)),
+                    "RES_E_SERIES"));
+    CHECK(!has_code(V.validate(res_rec("metalFilm", "RLR07", "RLR07C6003GSR36", 600000.0, 0.02)),
+                    "RES_E_SERIES"));
+    // D55342E07B11E2RWS: "11E2" = 11.2 kohm (E = kilohm, 1 % letter set).
+    CHECK(!has_code(V.validate(res_rec("thinFilm", "D55342/07", "D55342E07B11E2RWS", 11200.0, 0.01)),
+                    "RES_E_SERIES"));
+    // TNPW special value at 1 %: 1K45... is E192, but the code matches.
+    CHECK(!has_code(V.validate(res_rec("thinFilm", "TNPW0805", "TNPW08051K45FKEA", 1450.0, 0.01)),
+                    "RES_E_SERIES"));
+}
+
+TEST_CASE("ResESeries: dropped digits and unbacked off-series values still fire",
+          "[resistors][res_eseries_guard]") {
+    // ROHM ESR01MZPF5601: code 5601 = 5.6 kohm, stored 600 (thousands digit lost).
+    CHECK(has(V.validate(res_rec("thickFilm", nullptr, "ESR01MZPF5601", 600.0, 0.01)),
+              "RES_E_SERIES", Severity::Suspicious));
+    // Even with a series named, a ROHM code is not a qualified ordering code.
+    CHECK(has(V.validate(res_rec("thickFilm", "ESR01", "ESR01MZPF5601", 600.0, 0.01)),
+              "RES_E_SERIES", Severity::Suspicious));
+    // Off-series value at 1 % with no code match (code says 8.715 k, stored 8.716 k).
+    CHECK(has(V.validate(res_rec("metalFilm", "CMF55", "CMF558K7150FKEK", 8716.0, 0.01)),
+              "RES_E_SERIES", Severity::Suspicious));
+    CHECK(has(V.validate(res_rec("metalFilm", nullptr, "X", 9400.0, 0.01)),
+              "RES_E_SERIES", Severity::Suspicious));
+    // An E192 value at 1 % is not on E96: E192 needs <= 0.5 %.
+    CHECK(has(V.validate(res_rec("thinFilm", nullptr, "X", 5970.0, 0.01)),
+              "RES_E_SERIES", Severity::Suspicious));
+    // A code that does not decode leaves the check running (M55342 letter 'Z').
+    CHECK(has(V.validate(res_rec("thinFilm", "M55342/06", "M55342K06B94Z0RWS", 9400.0, 0.01)),
+              "RES_E_SERIES", Severity::Suspicious));
+}
+
+TEST_CASE("ResESeries: E192 value without a tolerance is recorded as skipped",
+          "[resistors][res_eseries_relax]") {
+    Verdict v = V.validate(res_rec("thinFilm", nullptr, "X", 5970.0, std::nullopt));
+    CHECK(!has_code(v, "RES_E_SERIES"));
+    CHECK(std::find(v.skipped.begin(), v.skipped.end(), "RES_E_SERIES") != v.skipped.end());
 }
 
 TEST_CASE("AntiSynthesis: EseriesShuntAllowlisted", "[antisynthesis]") {

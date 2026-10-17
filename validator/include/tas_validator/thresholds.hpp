@@ -88,12 +88,44 @@ inline constexpr double CAP_MAGNITUDE_SUS = 1.0;         // non-super: > 1 F sus
 inline constexpr double CAP_MAGNITUDE_SUPER_IMP = 1e5;   // supercap: > 100 kF impossible
 inline constexpr double CAP_MAGNITUDE_SUPER_SUS = 5e3;   // supercap: > 5 kF suspicious
 // Dissipation factor (tan delta) upper bounds by dielectric family.
-inline constexpr double CAP_DF_CERAMIC_NPO = 0.001;
-inline constexpr double CAP_DF_CERAMIC_X7R = 0.025;
-inline constexpr double CAP_DF_CERAMIC_Y5V = 0.05;
-inline constexpr double CAP_DF_FILM = 0.01;
+// These ceilings are a "percent stored as a fraction / 100x slip" tripwire set
+// just above the largest value the makers actually print, NOT a spec limit.
+// Every ceiling below was re-checked (2026-10-17) against the vendor's printed
+// DF on 27,045 catalogue rows that the older, tighter ceilings flagged.
+//
+// Class-1 ceramic (C0G/NP0). KEMET F3101 gives C0G DF 0.10 % typical limit, but
+// the MIL-PRF-55681/-123 styles are specified at 0.15 % and 0.25 % and KEMET
+// CBR RF parts print 0.22-0.24 %; the largest verified printed value is 0.25 %.
+inline constexpr double CAP_DF_CERAMIC_NPO = 0.003;
+// Class-2 ceramic (X7R/X5R/X6S/X7S...), any capacitance. KEMET C1002 X7R SMD,
+// "DF (max %)": < 0.1 uF 5.0 % (< 16 V) / 3.5 % (16-25 V), >= 0.1 uF 10.0 %,
+// > 25 V 2.5 % -- the printed 3.5-10 % applies to small C too.
+inline constexpr double CAP_DF_CERAMIC_CLASS2 = 0.10;
+// Class-3 ceramic (Z5U, Y5V, Y5U), and any part whose technology names Y5V/Z5U.
+// KEMET C1004 Z5U SMD: "DF Maximum Limit at 25 C 4.0 %"; KEMET C1005 Y5V SMD:
+// "10 % (6.3 V and 10 V), 7 % (16 V and 25 V) and 5 % (50 V)".
+inline constexpr double CAP_DF_CERAMIC_CLASS3 = 0.10;
+// Polymer/paper film, DF stated at 1 kHz. KEMET F3087 P278 X1: "Dissipation
+// Factor, Maximum Values at +23 C, 1 kHz: 1.3 %"; KEMET F3065 F611/F612: tan
+// delta max 1.2 % (C > 1.0 uF, 1 kHz). A KEMET R75 value printed in units of
+// 1e-4 but read as percent (0.04 for 0.0004) still lands above this ceiling.
+inline constexpr double CAP_DF_FILM = 0.02;
+// Solid MnO2 tantalum. KEMET T491 (KEM_T2005) prints DF 30.0 % on T491A107M004;
+// Vishay 298D/298W (datasheet 40065) "MAX. DF AT +25 C (%)" reaches 60 and 80 %
+// on the extended-range high-CV codes (298W107X0004M = 60, 298D227X0004Q = 80).
+inline constexpr double CAP_DF_TANTALUM_MNO2 = 0.85;
+// Other solid tantalum (polymer tantalum, unspecified electrolyte): unchanged.
 inline constexpr double CAP_DF_TANTALUM = 0.25;  // solid Ta reaches 0.10-0.25 at 120 Hz
-inline constexpr double CAP_DF_ELECTROLYTIC = 0.30;
+// Wet aluminium electrolytic. KEMET A4049 EDH Table 1 "DF 120 Hz 20 C (tan delta
+// %)": 35 for 220-1000 uF 6.3 V; Panasonic "Tangent of loss angle (max.)"
+// 0.31-1.19 across ECA MH-A / ECEV / EEUF FC-A / EEVT / EETH. tan delta grows
+// with C at fixed voltage, so the largest cans get no suspicious ceiling at all
+// (Panasonic ECA0JMH223, 22,000 uF 6.3 V, prints 1.19): at C >= the gate only
+// the DF >= 10 IMPOSSIBLE bound applies.
+inline constexpr double CAP_DF_ELECTROLYTIC = 0.60;
+inline constexpr double CAP_DF_ELECTROLYTIC_LARGE_CAN_GATE = 10e-3;  // [F]
+// DF at or above this is not a loss tangent of any capacitor (IMPOSSIBLE).
+inline constexpr double CAP_DF_IMP = 10.0;
 inline constexpr double CAP_DF_POLYMER = 0.10;
 inline constexpr double CAP_DF_DEFAULT = 0.5;  // generic upper sanity
 // Wet (sintered-anode, liquid-electrolyte) tantalum. DF at 120 Hz is omega*C*ESR,
@@ -111,8 +143,8 @@ inline constexpr double CAP_DF_TANTALUM_WET = 1.75;
 inline constexpr double CAP_DF_ALUMINUM_POLYMER = 0.20;
 // Class-2 ceramics at C >= 1 uF: high-CV X5R/X7R datasheets state tan delta of
 // 0.035 / 0.05 / 0.10 and up to 0.125 (large values measured at 120 Hz). Not
-// verified against the maker's documents; widened only above the gate so that a
-// sub-uF class-2 part keeps the 0.025 ceiling.
+// verified against the maker's documents; kept as the high-C allowance above
+// the all-C CAP_DF_CERAMIC_CLASS2 ceiling.
 inline constexpr double CAP_DF_CERAMIC_CLASS2_HIGH_C = 0.125;
 inline constexpr double CAP_DF_CERAMIC_CLASS2_HIGH_C_GATE = 1e-6;
 // ESR*C time constant [s]. Bulk electrolytics stay well under 1 s. An EDLC is a
@@ -172,6 +204,14 @@ inline constexpr double RES_FIELD_VPM_IMP = 1e8;
 inline constexpr double RES_TEMPCO_PPM_SUS = 10000.0;
 // Tolerance fraction upper sanity.
 inline constexpr double RES_TOL_MAX_SUS = 0.5;
+// RES_E_SERIES: IEC 60063 puts the 0.5 % / 0.25 % / 0.1 % / 0.05 % tolerance
+// classes on the E192 series. Vishay TNPW e3 (datasheet 28758): "TOLERANCE
+// +-0.5 % / +-0.1 % ... E-SERIES E24; E192" (+-1 % -> "E24; E96"); YAGEO RT/NT
+// (PYu-RT): "Value of E-192 series is on request". E192 membership is accepted
+// only at or below this tolerance [fraction], within the window below (relative
+// distance to the nearest official IEC 60063 E192 mantissa).
+inline constexpr double RES_E192_TOLERANCE_MAX = 0.005;
+inline constexpr double RES_E192_WINDOW = 0.003;
 
 // ---- MOSFETs ----------------------------------------------------------------
 // Charge component sum may exceed total gate charge by at most this factor
