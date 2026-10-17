@@ -1825,6 +1825,80 @@ TEST_CASE("Corpus: 8/20 kA ratings are not a ceiling of a 10/1000 cohort",
     CHECK(flagged(same, "PTVS20", "GEN_COHORT_CEILING"));
 }
 
+// ---- 2026-10-17: varistor peakSurgeCurrent grouped by surgeWaveform ----------
+// RAS varistor.json: peakSurgeCurrent is rated AT surgeWaveform (PEAS enum).
+// Live data mixes '8/20' and '10/350' (Bourns ZOVx Class I) inside one
+// (manufacturer, varistor, technology) cohort. Revert check: restore HEAD's
+// corpus.cpp, rebuild, and the must-stay-quiet CHECKs below go RED.
+namespace {
+json varistor_cohort_row(const std::string& ref, double ipp, const char* wave) {
+    json r = json::parse(R"json({"varistor":{"manufacturerInfo":{"name":"ACME",
+      "reference":"R","datasheetInfo":{"part":{"technology":"metalOxide"},
+      "electrical":{"varistorVoltage":{"nominal":430.0},"clampingVoltage":710.0}}}}})json");
+    auto& mi = r["varistor"]["manufacturerInfo"];
+    mi["reference"] = ref;
+    mi["datasheetInfo"]["electrical"]["peakSurgeCurrent"] = ipp;
+    if (wave != nullptr) mi["datasheetInfo"]["electrical"]["surgeWaveform"] = wave;
+    return r;
+}
+// A tight 8/20 multilayer/small-disc family: 100-400 A.
+const double MOV_820[] = {100.0, 120.0, 150.0, 150.0, 200.0, 200.0,
+                          250.0, 250.0, 300.0, 300.0, 400.0, 400.0};
+std::string message_for(const std::vector<json>& recs, const char* ref, const char* code) {
+    for (const auto& c : validate_corpus(recs))
+        if (c.reference == ref && c.code == code) return c.message;
+    return "";
+}
+}  // namespace
+
+TEST_CASE("Corpus: a 10/350 varistor surge rating is not an outlier of an 8/20 cohort",
+          "[corpus][varistor_waveform]") {
+    std::vector<json> recs;
+    for (double v : MOV_820) recs.push_back(varistor_cohort_row("R", v, "8/20"));
+    recs.push_back(varistor_cohort_row("CLASS1", 2.5e4, "10/350"));
+    CHECK(!flagged(recs, "CLASS1", "GEN_COHORT_OUTLIER"));
+    // Must-fire twin: the same 25 kA stated at 8/20 IS judged against its 8/20
+    // peers -- proving the quiet verdict above comes from the grouping, not from
+    // the value being unremarkable.
+    recs.back() = varistor_cohort_row("CLASS1", 2.5e4, "8/20");
+    CHECK(flagged(recs, "CLASS1", "GEN_COHORT_OUTLIER"));
+}
+
+TEST_CASE("Corpus: a true outlier inside one surge waveform is still flagged",
+          "[corpus][varistor_waveform]") {
+    // 8/20 cohort with a 10/350 group beside it; one 8/20 row at 100 kA.
+    std::vector<json> recs;
+    for (double v : MOV_820) recs.push_back(varistor_cohort_row("R", v, "8/20"));
+    for (double v : {4.0e3, 5.0e3, 6.5e3}) recs.push_back(varistor_cohort_row("Z", v, "10/350"));
+    recs.push_back(varistor_cohort_row("TYPO820", 1.0e5, "8/20"));
+    CHECK(flagged(recs, "TYPO820", "GEN_COHORT_OUTLIER"));
+    std::string m = message_for(recs, "TYPO820", "GEN_COHORT_OUTLIER");
+    CHECK(m.find("surgeWaveform=8/20") != std::string::npos);
+    // ...and a 10/350 cohort large enough to screen catches its own outlier.
+    std::vector<json> c1;
+    for (double v : MOV_820) c1.push_back(varistor_cohort_row("R", v, "8/20"));
+    for (double v : {4.0e3, 4.0e3, 5.0e3, 5.0e3, 5.0e3, 6.5e3, 6.5e3, 6.5e3, 1.25e4})
+        c1.push_back(varistor_cohort_row("Z", v, "10/350"));
+    c1.push_back(varistor_cohort_row("TYPO350", 5.0, "10/350"));
+    CHECK(flagged(c1, "TYPO350", "GEN_COHORT_OUTLIER"));
+    CHECK(message_for(c1, "TYPO350", "GEN_COHORT_OUTLIER").find("surgeWaveform=10/350") !=
+          std::string::npos);
+}
+
+TEST_CASE("Corpus: a varistor with no surgeWaveform is screened only among unstated rows",
+          "[corpus][varistor_waveform]") {
+    std::vector<json> recs;
+    for (double v : MOV_820) recs.push_back(varistor_cohort_row("R", v, "8/20"));
+    recs.push_back(varistor_cohort_row("NOWAVE", 2.5e4, nullptr));
+    CHECK(!flagged(recs, "NOWAVE", "GEN_COHORT_OUTLIER"));  // never defaulted to 8/20
+    std::vector<json> bare;
+    for (double v : MOV_820) bare.push_back(varistor_cohort_row("R", v, nullptr));
+    bare.push_back(varistor_cohort_row("NOWAVE", 2.5e4, nullptr));
+    CHECK(flagged(bare, "NOWAVE", "GEN_COHORT_OUTLIER"));
+    CHECK(message_for(bare, "NOWAVE", "GEN_COHORT_OUTLIER").find("surgeWaveform=unstated") !=
+          std::string::npos);
+}
+
 // ---- 2026-09-04 fabrication-shape checks -------------------------------------
 
 // ABT #531 shape: outputCapacitance = onResistance^2*10^k EXACTLY and

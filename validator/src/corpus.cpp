@@ -92,9 +92,26 @@ bool ceiling_eligible(const std::string& field) {
 // waveform. A present but non-string waveform cannot be placed in any cohort, so
 // that row's value is left out of that field's screen (it is the schema gate's
 // job to reject it; this screen does not guess).
+//
+// Varistors (2026-10-17, RAS b93d64f): RAS varistor.json states peakSurgeCurrent
+// AT surgeWaveform (the same PEAS enum). Live data/varistors.ndjson carries
+// '8/20' on 3,565 rows and '10/350' on 15 (Bourns ZOVA/ZOVH/ZOVS Class I parts,
+// 4-6.5 kA at 10/350, sharing the Bourns|varistor|metalOxide cohort with 894
+// 8/20 rows). A 10/350 lightning-current rating is a far longer, higher-charge
+// pulse than an 8/20 one: the same disc rates several times more current at
+// 8/20, so the two numbers are not comparable. Same rule as the TVS fields:
+// grouped by stated wave, absent = its own "unstated" cohort.
+//
+// Deliberately NOT bound here: varistor energyAbsorption (RAS defines it AT
+// 10/1000 us and carries no waveform field, so the schema itself fixes the
+// condition and there is nothing to group by), and clampingVoltage (diode and
+// varistor) whose condition is a continuous clampingCurrent and, for diodes, a
+// clampingWaveform -- V_C at 1 A vs at I_PP is a different statement, but that
+// is a current class, not an enum cohort; see the 2026-10-17 report.
 const char* waveform_field_for(const std::string& field) {
     if (field == "peakPulseCurrent") return "peakPulseCurrentWaveform";
     if (field == "peakPulsePower") return "peakPulsePowerWaveform";
+    if (field == "peakSurgeCurrent") return "surgeWaveform";  // RAS varistor
     return nullptr;
 }
 
