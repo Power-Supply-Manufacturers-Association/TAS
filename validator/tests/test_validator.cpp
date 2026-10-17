@@ -2551,6 +2551,43 @@ TEST_CASE("Thermistor: percent-as-fraction tolerance impossible", "[thermistor]"
     CHECK(has(V.validate(p), "THERM_TOLERANCE", Severity::Impossible));
 }
 
+namespace {
+// A Murata PRF18-shaped PTC: no beta, 470 Ohm R25, tolerance set by the caller.
+json ptc_with_tolerance(double tol) {
+    json p = good_thermistor();
+    auto& ds = p["thermistor"]["manufacturerInfo"]["datasheetInfo"];
+    ds["part"]["technology"] = "ptc";
+    ds["electrical"].erase("bConstant");
+    ds["electrical"].erase("bConstantTemperatures");
+    ds["electrical"]["resistanceAt25C"]["nominal"] = 470.0;
+    ds["electrical"]["resistanceTolerance"] = tol;
+    return p;
+}
+}  // namespace
+
+// Murata prints +/-50 % R25 tolerance for the PRF18 PTCs (code Q), so exactly 0.5
+// on a PTC is a real, loose grade -- SUSPICIOUS, not IMPOSSIBLE.
+TEST_CASE("Thermistor: PTC at 50% tolerance is suspicious, not impossible", "[thermistor][therm_tol_ptc]") {
+    Verdict v = V.validate(ptc_with_tolerance(0.5));
+    CHECK(has(v, "THERM_TOLERANCE", Severity::Suspicious));
+    CHECK(!has(v, "THERM_TOLERANCE", Severity::Impossible));
+    CHECK(v.valid);
+}
+
+TEST_CASE("Thermistor: PTC beyond 50% tolerance is impossible", "[thermistor][therm_tol_ptc]") {
+    Verdict v = V.validate(ptc_with_tolerance(0.6));
+    CHECK(has(v, "THERM_TOLERANCE", Severity::Impossible));
+    CHECK(!v.valid);
+}
+
+TEST_CASE("Thermistor: NTC at 50% tolerance stays impossible", "[thermistor][therm_tol_ptc]") {
+    json p = good_thermistor();
+    p["thermistor"]["manufacturerInfo"]["datasheetInfo"]["electrical"]["resistanceTolerance"] = 0.5;
+    Verdict v = V.validate(p);
+    CHECK(has(v, "THERM_TOLERANCE", Severity::Impossible));
+    CHECK(!v.valid);
+}
+
 TEST_CASE("Thermistor: PTC carrying a beta is suspicious", "[thermistor]") {
     json p = good_thermistor();
     p["thermistor"]["manufacturerInfo"]["datasheetInfo"]["part"]["technology"] = "ptc";

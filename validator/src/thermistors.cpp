@@ -71,9 +71,20 @@ void check_thermistors(const json& datasheet, const Ctx& ctx, std::vector<Findin
         if (*tol < 0)
             emit(out, ctx, "THERM_POSITIVITY", Severity::Impossible, *tol, 0,
                  "resistanceTolerance < 0");
-        else if (*tol >= thr::THERM_TOL_IMP_HI)
+        // A PTC may print a +/-50 % R25 "special tolerance" (Murata PRF18 code Q):
+        // only beyond 50 % is impossible; exactly 50 % is real but loose.
+        else if (tech == "ptc" && *tol > thr::THERM_TOL_PTC_IMP_HI)
+            emit(out, ctx, "THERM_TOLERANCE", Severity::Impossible, *tol, thr::THERM_TOL_PTC_IMP_HI,
+                 fmt("resistanceTolerance > 50% on a PTC (is it a percent stored as a fraction?)",
+                     *tol, thr::THERM_TOL_PTC_IMP_HI));
+        else if (tech == "ptc" && *tol == thr::THERM_TOL_PTC_IMP_HI)
+            emit(out, ctx, "THERM_TOLERANCE", Severity::Suspicious, *tol, thr::THERM_TOL_PTC_IMP_HI,
+                 fmt("resistanceTolerance = 50% on a PTC, looser than typical (<= 25%) [fraction]",
+                     *tol, thr::THERM_TOL_PTC_IMP_HI));
+        else if (tech != "ptc" && *tol >= thr::THERM_TOL_IMP_HI)
             emit(out, ctx, "THERM_TOLERANCE", Severity::Impossible, *tol, thr::THERM_TOL_IMP_HI,
-                 fmt("resistanceTolerance >= 100% (is it a percent stored as a fraction?)", *tol));
+                 fmt("resistanceTolerance >= 50% (is it a percent stored as a fraction?)", *tol,
+                     thr::THERM_TOL_IMP_HI));
         else if (*tol > thr::THERM_TOL_SUS_HI)
             emit(out, ctx, "THERM_TOLERANCE", Severity::Suspicious, *tol, thr::THERM_TOL_SUS_HI,
                  fmt("resistanceTolerance looser than any real grade [fraction]", *tol,

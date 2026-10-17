@@ -1018,8 +1018,16 @@ inline constexpr double THERM_B_IMP_HI = 7000.0;
 inline constexpr double THERM_B_SUS_LO = 2000.0;
 inline constexpr double THERM_B_SUS_HI = 5500.0;
 // Resistance tolerance (fraction): tightest ~0.001, loosest ~0.2..0.25.
-inline constexpr double THERM_TOL_IMP_HI = 0.5;     // >= 50% is not a tolerance
+inline constexpr double THERM_TOL_IMP_HI = 0.5;     // NTC/other: >= 50% is not a tolerance
 inline constexpr double THERM_TOL_SUS_HI = 0.30;    // above the loosest real grade (25%)
+// PTC exception: a PTC is specified by its switch/sensing temperature, and its R25
+// is often only a loose "special tolerance". Murata's own product pages print
+// "Resistance Value Tolerance (at 25 C) +/-50%" for the PRF18 overheat-sensing
+// POSISTORs (tolerance code Q, e.g. PRF18AR471QS2RB, PRF18BA471QS2RB; checked
+// 2026-10-17 on murata.com productdetail and in Murata's PIM catalogue, where 92 of
+// the 96 PRF parts read +/-50%, the rest +/-20% or +/-30%). So exactly 0.5 on a PTC is
+// real but loose (SUSPICIOUS); only beyond it is IMPOSSIBLE.
+inline constexpr double THERM_TOL_PTC_IMP_HI = 0.5;  // PTC: > 50% impossible, == 50% suspicious
 // Dissipation constant (W/K, still air): micro-bead ~0.3 mW/K; large potted disc ~0.2 W/K.
 // Oil-referenced figures run several x higher, so hard-gate only at 1 W/K (impossible).
 inline constexpr double THERM_DISS_IMP_LO = 1e-5;
