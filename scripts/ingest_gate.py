@@ -510,6 +510,10 @@ def _norm(s):
 # ---------------------------------------------------------------------------
 # known identities -- is a candidate already in the live catalogue/quarantine?
 # ---------------------------------------------------------------------------
+# IDENTITY IS (PART NUMBER, MANUFACTURER) (approved by Alf 2026-10-18). The same
+# part number from another manufacturer is a second source and a separate
+# record (onsemi MURS160 and Vishay MURS160; Infineon and Vishay IRF530N).
+#
 # Every pipeline join key drops whitespace, '-', '_' and '/'. That is a
 # bijection for most vendors and a COLLISION for some: Eaton prints the decimal
 # point of a standoff voltage as a hyphen, so 10BJ6-0A (6.0 V) and 10BJ60A
@@ -518,20 +522,116 @@ def _norm(s):
 # case-insensitive spelling match is a duplicate. A spelling that differs from
 # a known one only by those characters is a SPELLING TWIN: neither admitted nor
 # dropped as a duplicate, but held for review, admitted only once someone has
-# checked that the vendor prints both spellings.
+# checked that the vendor prints both spellings. Both apply only WITHIN one
+# manufacturer: Diodes SMAJ12AQ and Bourns SMAJ12A-Q are two sources, not twins.
+#
+# A known entry WITHOUT a manufacturer name (a quarantined row that never had
+# one; a denylist entry, which records only the id) cannot say whose part it is,
+# so it is compared against every manufacturer -- the strict direction.
 # (This is the catalogue-join key. _norm / _token_pattern above, which match a
 # part number inside DOCUMENT TEXT, are a separate tolerance and unchanged.)
 
 _SPELLING_PUNCT = re.compile(r"[\s\-_/]")
 HELD_TWIN = "1-twin"      # Refusal.rule of a held spelling twin
 ALREADY_KNOWN = "already in live catalogue or quarantine"
-_KNOWN_FIELD_RE = {
-    f: re.compile(r'"%s":\s*"((?:[^"\\]|\\.)*)"' % f) for f in ("partNumber", "reference")}
+
+# Manufacturer names are compared case-insensitively after trimming and
+# collapsing whitespace. Beyond that, ONLY the spellings below are treated as
+# one company: each is a legal-suffix, abbreviation, rename or "Parent / brand"
+# form of the canonical name, as printed in data/*.ndjson on 2026-10-18. A name
+# not listed here is its own manufacturer -- nothing is merged by similarity.
+# Keys and values are already in manufacturer_key form (lower-case).
+MANUFACTURER_ALIASES = {
+    # legal suffix / abbreviation / punctuation
+    "alpha and omega": "alpha & omega semiconductor",
+    "bourns inc.": "bourns",
+    "diodes inc": "diodes incorporated",
+    "diodes inc.": "diodes incorporated",
+    "infineon technologies": "infineon",
+    "keystone electronics": "keystone",
+    "littelfuse inc.": "littelfuse",
+    "micro commercial components (mcc)": "micro commercial components",
+    "mcc (micro commercial components)": "micro commercial components",
+    "microchip technology": "microchip",
+    "microsemi corporation": "microsemi",
+    "monolithic power systems (mps)": "monolithic power systems",
+    "mps": "monolithic power systems",
+    "murata electronics": "murata",
+    "murata power solutions inc.": "murata power solutions",
+    "navitas semiconductor, inc.": "navitas",
+    "nexperia usa inc.": "nexperia",
+    "nxp semiconductors": "nxp",
+    "rohm semiconductor": "rohm",
+    "samtec inc.": "samtec",
+    "sei stackpole": "stackpole electronics",
+    "st": "stmicroelectronics",
+    "sullins connector solutions": "sullins",
+    "ti": "texas instruments",
+    "wurth elektronik": "würth elektronik",
+    "ael crystals": "ael",
+    "laird technologies": "laird",
+    # renames of one legal entity
+    "on semiconductor": "onsemi",
+    "kyocera avx": "avx",
+    # divisions and "Parent / brand" labels printed with the parent's name
+    "eaton - electronics division": "eaton",
+    "eaton electrical": "eaton",
+    "eaton electronics": "eaton",
+    "bussmann / eaton": "eaton",
+    "panasonic electronic components": "panasonic",
+    "panasonic industrial devices": "panasonic",
+    "panasonic industry": "panasonic",
+    "te connectivity / deutsch": "te connectivity",
+    "te connectivity / holsworthy": "te connectivity",
+    "te connectivity / p&b": "te connectivity",
+    "te connectivity / raychem": "te connectivity",
+    "te connectivity / schrack": "te connectivity",
+    "te connectivity amp connectors": "te connectivity",
+    "te connectivity aerospace, defense and marine": "te connectivity",
+    "te connectivity potter & brumfield relays": "te connectivity",
+    "vishay / barry industries": "vishay",
+    "vishay / bc components": "vishay",
+    "vishay / beyschlag": "vishay",
+    "vishay / dale": "vishay",
+    "vishay / draloric": "vishay",
+    "vishay / electro-films": "vishay",
+    "vishay / esta": "vishay",
+    "vishay / huntington": "vishay",
+    "vishay / mcb industrie": "vishay",
+    "vishay / mills": "vishay",
+    "vishay / sfernice": "vishay",
+    "vishay / siliconix": "vishay",
+    "vishay / spectrol": "vishay",
+    "vishay / techno": "vishay",
+    "vishay / thin film": "vishay",
+    "vishay general semiconductor - diodes division": "vishay",
+    "vishay semiconductors": "vishay",
+    "vishay siliconix": "vishay",
+    "renesas electronics": "renesas",
+    "renesas / intersil": "renesas",
+    "ixys integrated circuits": "ixys",
+    "yageo vitrohm": "yageo",
+    "yageo xsemi": "yageo",
+    "samsung electro-mechanics": "samsung",
+}
+
+
+def manufacturer_key(name):
+    """A manufacturer name as compared for identity: trimmed, whitespace
+    collapsed, case-folded, then mapped through MANUFACTURER_ALIASES. None when
+    the name is absent or blank -- never a placeholder string."""
+    if not isinstance(name, str):
+        return None
+    k = " ".join(name.split()).casefold()
+    if not k:
+        return None
+    return MANUFACTURER_ALIASES.get(k, k)
 
 
 def spelling_key(ident):
     """The pipeline's join key: whitespace, '-', '_' and '/' dropped, upper-cased.
-    Two identities with one key are the same part ONLY if exact_spelling agrees."""
+    Two identities with one key are the same part ONLY if exact_spelling agrees
+    AND the manufacturer is the same."""
     return _SPELLING_PUNCT.sub("", ident or "").upper()
 
 
@@ -540,38 +640,98 @@ def exact_spelling(ident):
     return (ident or "").strip().upper()
 
 
+def manufacturer_infos(node):
+    """Every manufacturerInfo object of a record, outermost first, without
+    descending into a body that has one (a magnetic's own manufacturerInfo, not
+    its core's). Works for every wrap, including quarantine rows of any catalogue."""
+    if isinstance(node, dict):
+        mi = node.get("manufacturerInfo")
+        if isinstance(mi, dict):
+            yield mi
+            return
+        for v in node.values():
+            yield from manufacturer_infos(v)
+    elif isinstance(node, list):
+        for v in node:
+            yield from manufacturer_infos(v)
+
+
+def _identity_fields(mi, fields):
+    out = []
+    for f in fields:
+        if f == "partNumber":
+            v = first(mi, ["datasheetInfo", "part", "partNumber"])
+        elif f == "reference":
+            v = mi.get("reference")
+        else:
+            raise ValueError("unknown identity field %r (partNumber | reference)" % f)
+        if isinstance(v, str) and v.strip():
+            out.append(v)
+    return out
+
+
 class KnownSpellings:
-    """Every spelling seen under each spelling_key, with where it was seen."""
+    """Every spelling seen under each (manufacturer, spelling_key), with where it was seen."""
 
     def __init__(self):
-        self._by_key = {}     # key -> {exact spelling: (where, as printed)}
+        # (manufacturer_key or None, spelling_key)
+        #   -> {exact spelling: (where, as printed, manufacturer as printed or None)}
+        self._by_key = {}
 
     def __len__(self):
         return len(self._by_key)
 
-    def add(self, ident, where):
+    def add(self, ident, manufacturer, where):
+        """`manufacturer` is the name as printed; None/blank records an entry that
+        names no manufacturer, which is then compared against every manufacturer."""
         k = spelling_key(ident)
         if k:
-            self._by_key.setdefault(k, {}).setdefault(exact_spelling(ident), (where, ident))
+            m = manufacturer_key(manufacturer)
+            printed = " ".join(manufacturer.split()) if m is not None else None
+            self._by_key.setdefault((m, k), {}).setdefault(
+                exact_spelling(ident), (where, ident, printed))
 
-    def add_file(self, path, where, fields=("partNumber", "reference")):
-        """Index every `fields` string on every line of an NDJSON file (a regex
-        scan, so a 1 GB catalogue indexes in seconds; read-only)."""
-        pats = [_KNOWN_FIELD_RE[f] for f in fields]
-        with open(path, encoding="utf-8", errors="replace") as fh:
-            for line in fh:
-                for p in pats:
-                    for m in p.findall(line):
-                        self.add(json.loads('"%s"' % m), where)
+    def add_file(self, path, where, fields=("partNumber", "reference"), skip=None):
+        """Index the identity (`fields`) and manufacturer name of every record of
+        an NDJSON file (read-only). `skip(ident, manufacturer)` -> True leaves an
+        identity out. A line that is not JSON raises -- an index that silently
+        drops rows would admit their duplicates."""
+        with open(path, "rb") as fh:
+            for n, line in enumerate(fh, 1):
+                if not line.strip():
+                    continue
+                try:
+                    rec = json.loads(line)
+                except ValueError as e:
+                    raise ValueError("%s:%d is not JSON (%s) -- cannot index the "
+                                     "known identities" % (path, n, e))
+                for mi in manufacturer_infos(rec):
+                    mfr = mi.get("name")
+                    for ident in _identity_fields(mi, fields):
+                        if skip is None or not skip(ident, mfr):
+                            self.add(ident, mfr, where)
         return self
 
-    def spellings(self, ident):
-        """{exact spelling: (where, as printed)} under ident's key."""
-        return dict(self._by_key.get(spelling_key(ident), {}))
+    def _known(self, ident, manufacturer):
+        m = manufacturer_key(manufacturer)
+        if m is None:
+            raise ValueError(
+                "identity %r has no manufacturer name -- identity is (part number, "
+                "manufacturer), so it cannot be compared" % (ident,))
+        k = spelling_key(ident)
+        merged = dict(self._by_key.get((None, k), {}))
+        merged.update(self._by_key.get((m, k), {}))
+        return merged
 
-    def verdict(self, ident):
-        """None (unknown) | ("duplicate", where, printed) | ("twin", [(where, printed), ...])."""
-        known = self._by_key.get(spelling_key(ident))
+    def spellings(self, ident, manufacturer):
+        """{exact spelling: (where, as printed, manufacturer)} under ident's key, for this
+        manufacturer (plus entries that name no manufacturer)."""
+        return self._known(ident, manufacturer)
+
+    def verdict(self, ident, manufacturer):
+        """None (unknown) | ("duplicate", where, printed, manufacturer)
+        | ("twin", [(where, printed, manufacturer), ...])."""
+        known = self._known(ident, manufacturer)
         if not known:
             return None
         hit = known.get(exact_spelling(ident))
@@ -579,9 +739,9 @@ class KnownSpellings:
             return ("duplicate",) + hit
         return ("twin", sorted(known.values()))
 
-    def reason(self, ident):
+    def reason(self, ident, manufacturer):
         """The reject reason for `ident`, or None when it is new."""
-        v = self.verdict(ident)
+        v = self.verdict(ident, manufacturer)
         if v is None:
             return None
         if v[0] == "duplicate":
@@ -589,10 +749,16 @@ class KnownSpellings:
         return twin_reason(v[1])
 
 
+def known_label(entry):
+    """'live 10BJ60A (Eaton)' from a (where, printed, manufacturer) entry."""
+    where, printed, mfr = entry
+    return "%s %s%s" % (where, printed, " (%s)" % mfr if mfr else " (no manufacturer named)")
+
+
 def twin_reason(known):
-    return ("spelling twin: differs from %s only by '-', '_', '/' or spaces; "
-            "admit only if the vendor prints both"
-            % ", ".join("%s %s" % wp for wp in known))
+    return ("spelling twin: differs from %s only by '-', '_', '/' or spaces, same "
+            "manufacturer; admit only if the vendor prints both"
+            % ", ".join(known_label(e) for e in known))
 
 
 # ---------------------------------------------------------------------------
@@ -1207,8 +1373,10 @@ class IngestGate:
     def __init__(self, catalogue, validate=True, min_cohort=MIN_COHORT,
                  outlier_overrides=(), median_outliers=False, known=None):
         """`known`: an optional KnownSpellings of the live catalogue and the
-        quarantine. When given, an exact spelling match is refused as a
-        duplicate (rule 1) and a spelling twin is held (rule HELD_TWIN)."""
+        quarantine. When given, an exact spelling match from the same
+        manufacturer is refused as a duplicate (rule 1) and a same-manufacturer
+        spelling twin is held (rule HELD_TWIN). The same part number from another
+        manufacturer is a second source and passes."""
         self.known = known
         if catalogue not in CATALOGUES:
             raise IngestRefused(
@@ -1260,12 +1428,20 @@ class IngestGate:
         refusals = []
         refusals += check_identity(body)
         if self.known is not None and identity_of(body):
-            v = self.known.verdict(identity_of(body))
-            if v is not None and v[0] == "duplicate":
+            mfr = (body.get("manufacturerInfo") or {}).get("name")
+            if manufacturer_key(mfr) is None:
                 refusals.append(Refusal(1, identity_of(body),
-                                        "%s (%s %s)" % (ALREADY_KNOWN, v[1], v[2])))
-            elif v is not None:
-                refusals.append(Refusal(HELD_TWIN, identity_of(body), twin_reason(v[1])))
+                                        "no manufacturerInfo.name -- identity is (part "
+                                        "number, manufacturer), so a row naming no "
+                                        "manufacturer cannot be checked for duplicates"))
+            else:
+                v = self.known.verdict(identity_of(body), mfr)
+                if v is not None and v[0] == "duplicate":
+                    refusals.append(Refusal(1, identity_of(body), "%s (%s)"
+                                            % (ALREADY_KNOWN, known_label(v[1:]))))
+                elif v is not None:
+                    refusals.append(Refusal(HELD_TWIN, identity_of(body),
+                                            twin_reason(v[1])))
         refusals += check_citation(body)
         refusals += check_units(body, self.cat.fields)
         if self.cat.disc == ["semiconductor", "mosfet"]:
@@ -1380,16 +1556,29 @@ class IngestGate:
 
     # rule 1, cross-row
     def _dup_identities(self):
-        seen = {}
+        """Within the batch, identity is (part number, manufacturer) as for the
+        live catalogue: an exact (case-insensitive) repeat from one manufacturer
+        is a duplicate, a punctuation-only variant from one manufacturer is a held
+        spelling twin, and the same number from two manufacturers is two parts."""
+        seen = KnownSpellings()
         out = []
-        for ident, mfr, series, _desc, _body in self.rows:
-            key = (mfr, series, ident)
-            if key in seen:
+        for ident, _mfr, _series, _desc, body in self.rows:
+            name = (body.get("manufacturerInfo") or {}).get("name")
+            if manufacturer_key(name) is None:
                 out.append(Refusal(1, ident,
-                                   "duplicate identity within manufacturer %r series "
-                                   "%r -- two rows cannot be the same part"
-                                   % (mfr, series)))
-            seen[key] = True
+                                   "no manufacturerInfo.name -- identity is (part "
+                                   "number, manufacturer), so a row naming no "
+                                   "manufacturer cannot be checked for duplicates"))
+                continue
+            v = seen.verdict(ident, name)
+            if v is not None and v[0] == "duplicate":
+                out.append(Refusal(1, ident,
+                                   "duplicate identity within manufacturer %r -- two "
+                                   "rows cannot be the same part (%s)"
+                                   % (name, known_label(v[1:]))))
+            elif v is not None:
+                out.append(Refusal(HELD_TWIN, ident, twin_reason(v[1])))
+            seen.add(ident, name, "earlier batch row")
         return out
 
     # rule 2, cross-row: the same document standing in for many different parts
@@ -2273,17 +2462,24 @@ def _selftest():
     # part under the same hyphen-blind key. The known index is read from temp
     # NDJSON files so add_file's regex scan is exercised too.
     import tempfile
+    def _by(pn, mfr):
+        r = _mos(pn)
+        r["semiconductor"]["mosfet"]["manufacturerInfo"]["name"] = mfr
+        return r
+
     with tempfile.TemporaryDirectory(prefix="gate_selftest_known_") as kd:
         live_f, quar_f = Path(kd, "diodes.ndjson"), Path(kd, "quarantine.ndjson")
-        live_f.write_text(json.dumps(_mos("10BJ60A")) + "\n" + json.dumps(_mos("SMBJ5.0A")) + "\n")
+        live_f.write_text("".join(json.dumps(r) + "\n" for r in (
+            _mos("10BJ60A"), _mos("SMBJ5.0A"), _by("SMAJ12AQ", "Diodes Inc."),
+            _by("MURS160", "Vishay / Dale"))))
         quar_f.write_text(json.dumps(_mos("10BJ7-5A")) + "\n")
         known = KnownSpellings()
         known.add_file(live_f, "live")
         known.add_file(quar_f, "quarantined")
     kgate = lambda: IngestGate("mosfets.ndjson", validate=False, known=known)  # noqa: E731
 
-    def _known_case(name, expect, pn):
-        refusals = kgate().offer(_mos(pn))
+    def _known_case(name, expect, pn, rec=None):
+        refusals = kgate().offer(rec or _mos(pn))
         got = ("HELD" if any(r.rule == HELD_TWIN for r in refusals)
                else "REFUSED" if refusals else "ACCEPTED")
         ok = got == expect
@@ -2303,6 +2499,43 @@ def _selftest():
     results.append(_known_case("1k  unrelated part 10BJ33A", "ACCEPTED", "10BJ33A"))
     results.append(_known_case("1l  a dot is identity: SMBJ50A is not a twin of SMBJ5.0A",
                                "ACCEPTED", "SMBJ50A"))
+    # identity is (part number, manufacturer): Alf 2026-10-18
+    results.append(_known_case("1m  same pn, other manufacturer: Bourns SMAJ12AQ is a second "
+                               "source of live Diodes SMAJ12AQ", "ACCEPTED", "SMAJ12AQ",
+                               _by("SMAJ12AQ", "Bourns")))
+    results.append(_known_case("1n  same pn, same manufacturer spelled 'Diodes Incorporated'",
+                               "REFUSED", "SMAJ12AQ", _by("SMAJ12AQ", "diodes incorporated ")))
+    results.append(_known_case("1o  twin, same manufacturer: Diodes SMAJ12A-Q", "HELD",
+                               "SMAJ12A-Q", _by("SMAJ12A-Q", "Diodes Inc")))
+    results.append(_known_case("1p  twin, other manufacturer: Bourns SMAJ12A-Q", "ACCEPTED",
+                               "SMAJ12A-Q", _by("SMAJ12A-Q", "Bourns")))
+    results.append(_known_case("1q  alias: Vishay MURS160 duplicates live 'Vishay / Dale'",
+                               "REFUSED", "MURS160", _by("MURS160", "Vishay")))
+    results.append(_known_case("1r  same pn, other manufacturer: onsemi MURS160", "ACCEPTED",
+                               "MURS160", _by("MURS160", "onsemi")))
+    nameless = _mos("10BJ33A")
+    del nameless["semiconductor"]["mosfet"]["manufacturerInfo"]["name"]
+    results.append(_known_case("1s  no manufacturer name: cannot be dedup-checked", "REFUSED",
+                               "10BJ33A", nameless))
+    # an entry naming no manufacturer (the denylist) is compared against every one
+    wild = KnownSpellings()
+    wild.add("IRF530N", None, "denylisted")
+    ok = (wild.verdict("IRF530N", "Infineon")[0] == "duplicate"
+          and wild.verdict("IRF-530N", "Vishay")[0] == "twin"
+          and wild.verdict("IRF530", "Vishay") is None)
+    print("%-4s %s" % ("PASS" if ok else "FAIL",
+                       "1t  a known entry naming no manufacturer matches every manufacturer"))
+    results.append(ok)
+    # within one batch
+    plain = lambda: IngestGate("mosfets.ndjson", validate=False)  # noqa: E731
+    results.append(_run("1u  batch: same pn from two manufacturers", "ACCEPTED", plain,
+                        [_by("MURS160", "onsemi"), _by("MURS160", "Vishay")]))
+    results.append(_run("1v  batch: same pn, same manufacturer (alias + case)", "REFUSED", plain,
+                        [_by("MURS160", "Vishay"), _by("murs160", "Vishay Semiconductors")]))
+    results.append(_run("1w  batch: twin from one manufacturer", "REFUSED", plain,
+                        [_by("SMAJ12AQ", "Diodes Inc."), _by("SMAJ12A-Q", "Diodes Inc.")]))
+    results.append(_run("1x  batch: twin from two manufacturers", "ACCEPTED", plain,
+                        [_by("SMAJ12AQ", "Diodes Inc."), _by("SMAJ12A-Q", "Bourns")]))
 
     print("\n%d/%d counter-checks behaved as specified" % (sum(results), len(results)))
     return 0 if all(results) else 1
