@@ -384,6 +384,42 @@ _CATALOGUES = [
         Field("contactResistance",
               _di("electrical", "contacts", "contactResistance"), "OHM", bound=1e6),
     ]),
+    Catalogue("protection.ndjson", ["protection"], "EMAS", "protection.json", [
+        # One catalogue for every protection family (EMAS protection, part.family
+        # pins the electrical block). A path a family does not have is skipped, so
+        # the fields fan out across families. Bounds are catalogue-wide ceilings:
+        # the largest NH / semiconductor fuse links are ~10 kA class, medium-voltage
+        # fuses reach ~38 kV, Type 1 SPD I_imp / I_max stay below 1 MA, GDT 8/20
+        # ratings below 200 kA. Only resistances carry a unit: rule 3 can parse
+        # ohms from a description, not amperes or volts.
+        Field("ratedCurrent", _di("electrical", "ratedCurrent"), bound=2e4),
+        Field("ratedVoltageAc", _di("electrical", "ratedVoltageAc"), bound=4e4),
+        Field("ratedVoltageDc", _di("electrical", "ratedVoltageDc"), bound=4e4),
+        Field("breakingCapacity", _di("electrical", "breakingCapacities", "*", "current"),
+              bound=1e6),
+        Field("coldResistance", _di("electrical", "coldResistance"), "OHM", bound=1e4),
+        Field("holdCurrent", _di("electrical", "holdCurrent"), bound=1e3),
+        Field("tripCurrent", _di("electrical", "tripCurrent"), bound=1e3),
+        Field("pptcMaximumVoltage", _di("electrical", "maximumVoltage"), bound=1e4),
+        Field("pptcMinimumResistance", _di("electrical", "minimumResistance"), "OHM",
+              bound=1e3),
+        Field("dcSparkoverVoltage", _di("electrical", "dcSparkoverVoltage", "nominal"),
+              bound=1e5),
+        Field("impulseDischargeCurrent",
+              _di("electrical", "impulseDischargeCurrents", "*", "current"), bound=2e5),
+        Field("spdImax", _di("electrical", "maximumDischargeCurrent", "current"),
+              bound=1e6),
+        Field("spdUc", _di("electrical", "maximumContinuousOperatingVoltage"), bound=4e4),
+        # fuse holders: contact resistance in ohms (milliohm class)
+        Field("holderContactResistance", _di("electrical", "contactResistance"), "OHM",
+              bound=1.0),
+        # thermal cut-offs, in Celsius: commercial T_f spans ~60-300 degC and T_m
+        # stays below ~500 degC
+        Field("ratedFunctioningTemperature",
+              _di("electrical", "ratedFunctioningTemperature"), bound=500),
+        Field("maximumTemperatureLimit", _di("electrical", "maximumTemperatureLimit"),
+              bound=1e3),
+    ]),
     Catalogue("potentiometers.ndjson", ["potentiometer"], "RAS", "potentiometer.json", [
         # totalResistance, NOT resistance: the potentiometer schema declares no bare
         # `resistance` property, which is the structural guard that stops a fixed

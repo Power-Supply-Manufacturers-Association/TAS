@@ -28,6 +28,9 @@
 !/data/relays.ndjson
 !/data/switches.ndjson
 !/data/potentiometers.ndjson
+# EMAS protection (fuses, PPTCs, GDTs, spark gaps, SPDs, fuse holders, thermal
+# cut-offs), added 2026-10-18 with the PEAS `protection` discriminator.
+!/data/protection.ndjson
 # The single consolidated quarantine sink. Per-catalogue quarantine files
 # (*.quarantine_*.ndjson), backups, vendor dumps and staging live local-only.
 !/data/quarantine.ndjson
