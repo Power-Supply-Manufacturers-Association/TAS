@@ -5470,10 +5470,59 @@ TEST_CASE("MOS_AMB_MONOTONE_TA: P-channel (signed) currents compare by magnitude
 TEST_CASE("MOS_AMB_PD_THERMAL: a timed P_D off (Tjmax-T_A)/R_th(j-a),max is suspicious",
           "[mosfet][ambient]") {
     json p = si4896dy();
-    amb(p, 0)["points"][0]["powerDissipation"] = 3.6;  // 125/40 = 3.125
+    // 20% above the closest candidate, 125/33 (typical R_th) = 3.79, and far from
+    // 125/40 = 3.125 and every 1-2 significant-figure rounding of either. (Was 3.6,
+    // which is now within 5% of the typical-R_th candidate and correctly passes.)
+    amb(p, 0)["points"][0]["powerDissipation"] = 4.55;
     Verdict v = V.validate(p);
-    CHECK(has(v, "MOS_AMB_PD_THERMAL", Severity::Suspicious));
+    const Finding* f = find_code(v, "MOS_AMB_PD_THERMAL");
+    REQUIRE(f != nullptr);
+    CHECK(f->severity == Severity::Suspicious);
+    CHECK(std::fabs(f->threshold - 125.0 / 33) < 1e-9);  // the closest candidate is reported
+    CHECK(f->message.find("R_th(j-a),typ") != std::string::npos);
     CHECK(v.valid);
+}
+TEST_CASE("MOS_AMB_PD_THERMAL: a P_D 20% below every candidate still fires",
+          "[mosfet][ambient]") {
+    json p = si4896dy();
+    amb(p, 0)["points"][0]["powerDissipation"] = 2.5;  // 125/40 = 3.125 -> -20%
+    CHECK(has(V.validate(p), "MOS_AMB_PD_THERMAL", Severity::Suspicious));
+}
+TEST_CASE("MOS_AMB_PD_THERMAL: P_D computed from the typical R_th(j-a) passes",
+          "[mosfet][ambient]") {
+    json p = si4896dy();
+    amb(p, 0)["points"][0]["powerDissipation"] = 3.79;  // 125/33; 125/40 = 3.125 is 21% off
+    CHECK_FALSE(has_code(V.validate(p), "MOS_AMB_PD_THERMAL"));
+}
+TEST_CASE("MOS_AMB_PD_THERMAL: a 175 C part's P_D computed at Tj = 150 C passes",
+          "[mosfet][ambient]") {
+    json p = si4896dy();
+    mos_ds(p)["thermal"]["junctionTemperatureMax"] = 175.0;
+    // Printed 3.1 / 2.0 / 1.56 / 1.0 are (150 - T_A)/R_th,max; at 175 C the 25 C
+    // transient row would be 150/40 = 3.75 (17% off).
+    CHECK_FALSE(has_code(V.validate(p), "MOS_AMB_PD_THERMAL"));
+}
+TEST_CASE("MOS_AMB_PD_THERMAL: a point with its own junctionTemperature is not re-based "
+          "to 150 C",
+          "[mosfet][ambient][junction]") {
+    json p = si4896dy();
+    mos_ds(p)["thermal"]["junctionTemperatureMax"] = 175.0;
+    amb(p, 0)["points"][0]["junctionTemperature"] = 175.0;  // states 175: 3.1 vs 3.75
+    Verdict v = V.validate(p);
+    const Finding* f = find_code(v, "MOS_AMB_PD_THERMAL");
+    REQUIRE(f != nullptr);
+    CHECK(f->message.find("T_A=25") != std::string::npos);
+}
+TEST_CASE("MOS_AMB_PD_THERMAL: vendor rounding to 1 or 2 significant figures passes",
+          "[mosfet][ambient]") {
+    json p = si4896dy();
+    // Steady column with only R_th,max = 90: 125/90 = 1.39 printed "1" (1 s.f., 28%
+    // off) and 80/90 = 0.889 printed "0.89" (2 s.f.). Two-figure rounding is never
+    // more than 5% off, so only the 1 s.f. rule is decisive here.
+    amb(p, 1)["thermalResistanceJunctionAmbient"] = {{"maximum", 90}};
+    amb(p, 1)["points"][0]["powerDissipation"] = 1.0;
+    amb(p, 1)["points"][1]["powerDissipation"] = 0.89;
+    CHECK_FALSE(has_code(V.validate(p), "MOS_AMB_PD_THERMAL"));
 }
 TEST_CASE("MOS_AMB_PD_THERMAL: Si4896DY's four printed P_D match their R_th(j-a)",
           "[mosfet][ambient]") {
@@ -5517,6 +5566,23 @@ TEST_CASE("MOS_AMB_DERATING_SHAPE: Si4896DY and Si3440DV derate on the sqrt law"
           "[mosfet][ambient]") {
     CHECK_FALSE(has_code(V.validate(si4896dy()), "MOS_AMB_DERATING_SHAPE"));
     CHECK_FALSE(has_code(V.validate(si3440dv()), "MOS_AMB_DERATING_SHAPE"));
+}
+TEST_CASE("MOS_AMB_DERATING_SHAPE: a ratio ABOVE sqrt (capped cool I_D) is not flagged",
+          "[mosfet][ambient]") {
+    json p = si4896dy();
+    // 9.0/9.5 = 0.947 vs sqrt(80/125) = 0.80, +18%: the 25 C figure is a package cap,
+    // the hot one thermal -- legitimate (PMXB56EN 0.875 vs 0.632).
+    amb(p, 0)["points"][1]["continuousDrainCurrent"] = 9.0;
+    Verdict v = V.validate(p);
+    CHECK_FALSE(has_code(v, "MOS_AMB_DERATING_SHAPE"));
+    CHECK_FALSE(has_code(v, "MOS_AMB_MONOTONE_TA"));
+}
+TEST_CASE("MOS_AMB_DERATING_SHAPE: the message names the low side", "[mosfet][ambient]") {
+    json p = si4896dy();
+    amb(p, 0)["points"][1]["continuousDrainCurrent"] = 5.0;
+    const Finding* f = find_code(V.validate(p), "MOS_AMB_DERATING_SHAPE");
+    REQUIRE(f != nullptr);
+    CHECK(f->message.find("BELOW sqrt") != std::string::npos);
 }
 
 // CHECK 5
@@ -5564,9 +5630,16 @@ TEST_CASE("junctionTemperature fixture: CSD13302W raises no ambient finding",
     REQUIRE(mos_ds(p)["thermal"]["junctionTemperatureMax"] == 150);
     Verdict v = V.validate(p);
     for (const char* c : AMB_CODES) {
+        if (std::string(c) == "MOS_AMB_PD_UNTIMED") continue;  // INFO, checked below
         INFO(c);
         CHECK_FALSE(has_code(v, c));
     }
+    // The untimed P_D 1.8 W is (150-25)/70 on the TYPICAL R_th(j-a) -- the only R_th
+    // TI prints -- so the INFO note names that condition.
+    const Finding* f = find_code(v, "MOS_AMB_PD_UNTIMED");
+    REQUIRE(f != nullptr);
+    CHECK(f->severity == Severity::Ok);
+    CHECK(f->message.find("matches (Tj-T_A)/R_th(j-a) of ambientRatings[1]") != std::string::npos);
     CHECK(v.valid);
 }
 

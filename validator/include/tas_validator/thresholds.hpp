@@ -228,12 +228,16 @@ inline constexpr double MOS_PTHERMAL_RATIO_SUS = 3.0;
 // electrical.ambientRatings[] (SAS e2586d7). P_D vs (Tjmax - T_A)/R_th(j-a),max of
 // the same condition: datasheets compute P_D from exactly that and round to two or
 // three figures (Si4896DY 125/40 = 3.125 printed 3.1, 0.8%), so 5% is rounding
-// with room, not a model error band. Also the check-7 match band (census.py).
+// with room, not a model error band. Check 3 applies it to every vendor
+// convention (R_th max or typical; Tj effective or 150 C on >150 C parts) and
+// separately accepts 1-2 significant-figure rounding -- the band itself stays 5%.
+// Also the check-7 match band (census.py).
 inline constexpr double MOS_AMB_PD_THERMAL_TOL = 0.05;
 // I_D(T_A2)/I_D(T_A1) vs sqrt((Tj-T_A2)/(Tj-T_A1)): the sqrt law holds at fixed
 // R_DS(on); the hot-R_DS(on) rise between the two rows and two-figure rounding
 // stay inside 15% (Si4896DY 7.6/9.5 = 0.800 vs 0.800; Si3440DV 0.8/1.2 = 0.667 vs
-// 0.721, -7.5%).
+// 0.721, -7.5%). ONE-SIDED: only a ratio more than 15% BELOW sqrt fires; a
+// ratio above it is a cool I_D capped below its thermal limit (package/bond wire).
 inline constexpr double MOS_AMB_DERATING_TOL = 0.15;
 // A rated continuous drain current that the record's OWN thermal path cannot
 // carry (ABT #500: TO-247 records built from a sibling package's thermal table).

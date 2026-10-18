@@ -12,10 +12,12 @@
 
 #include <cctype>
 #include <cmath>
+#include <limits>
 #include <optional>
 #include <regex>
 #include <sstream>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace tas {
@@ -127,6 +129,60 @@ bool same_tj(const AmbPoint& a, const AmbPoint& b, std::optional<double> tjmax) 
 
 // Strictly greater beyond float noise (both operands are printed datasheet figures).
 bool exceeds(double a, double b) { return a > b + 1e-9 * std::max(1.0, std::fabs(b)); }
+
+// x rounded to n significant figures (n >= 1).
+double round_sig(double x, int n) {
+    if (x == 0.0 || !std::isfinite(x)) return x;
+    const double p = std::pow(10.0, std::floor(std::log10(std::fabs(x))) - n + 1);
+    return std::round(x / p) * p;
+}
+
+// Check 3: does a printed P_D match P_D = (Tj - T_A)/R_th(j-a) of condition c under any
+// convention vendors actually print with? Candidates:
+//   R_th(j-a): the maximum OR the nominal (typical) -- sheets compute from either;
+//   Tj: the point's effective Tj (own junctionTemperature, else T_j(max)), OR 150 C
+//       when T_j(max) > 150 and the point states no Tj of its own (vendors compute
+//       175 C parts' P_D at 150 C); a point that names its own Tj is never re-based;
+//   match: within MOS_AMB_PD_THERMAL_TOL, OR the expectation rounded to 1 or 2
+//       significant figures equals the printed P_D (vendor rounding).
+// `best` is the candidate closest to the printed value (for the message).
+struct PdMatch {
+    bool ok = false;
+    bool any = false;      // at least one candidate could be formed
+    double expect = 0;     // closest candidate
+    std::string how;       // its R_th / Tj description
+};
+PdMatch pd_match(const AmbPoint& a, const AmbEntry& c, std::optional<double> tjmax) {
+    PdMatch r;
+    if (!a.pd) return r;
+    std::vector<std::pair<double, std::string>> tjs;
+    if (const auto t = tj_eff(a, tjmax)) tjs.emplace_back(*t, a.tj ? "own Tj" : "Tjmax");
+    if (!a.tj && tjmax && *tjmax > 150.0) tjs.emplace_back(150.0, "Tj=150 C");
+    std::vector<std::pair<double, std::string>> rths;
+    if (c.rth_max && *c.rth_max > 0) rths.emplace_back(*c.rth_max, "R_th(j-a),max");
+    if (c.rth_nom && *c.rth_nom > 0) rths.emplace_back(*c.rth_nom, "R_th(j-a),typ");
+    double best_dev = std::numeric_limits<double>::max();
+    for (const auto& [tj, tjl] : tjs) {
+        if (!(tj > a.ta)) continue;
+        for (const auto& [rth, rl] : rths) {
+            const double expect = (tj - a.ta) / rth;
+            const double dev = std::fabs(*a.pd / expect - 1.0);
+            bool ok = dev <= thr::MOS_AMB_PD_THERMAL_TOL;
+            for (int n : {1, 2}) {
+                const double rr = round_sig(expect, n);
+                ok = ok || std::fabs(*a.pd - rr) <= 1e-9 * std::max(1.0, std::fabs(rr));
+            }
+            r.any = true;
+            r.ok = r.ok || ok;
+            if (dev < best_dev) {
+                best_dev = dev;
+                r.expect = expect;
+                r.how = rl + ", " + tjl;
+            }
+        }
+    }
+    return r;
+}
 
 std::vector<AmbEntry> parse_ambient_ratings(const json& elec, const std::string& where) {
     std::vector<AmbEntry> entries;
@@ -305,12 +361,16 @@ void check_ambient_ratings(const json& elec, std::optional<double> tc_idc,
             return *tj - q.ta;
         };
 
-        // CHECK 4 (SUSPICIOUS): derating shape. At a fixed R_DS(on), I^2 R = (Tj -
-        // T_A)/R_th, so I_D scales as sqrt(Tj - T_A). Hot-R_DS(on) curvature and
-        // rounding stay inside +/-15%; outside it one of the rows is another
-        // condition's figure or a typo. Reference = the coolest row of each V_GS and
-        // junction condition: R_DS(on) at 105 C is not R_DS(on) at 150 C, so rows
-        // held at different junction temperatures are never compared.
+        // CHECK 4 (SUSPICIOUS): derating shape, ONE-SIDED. At a fixed R_DS(on), I^2 R =
+        // (Tj - T_A)/R_th, so I_D scales as sqrt(Tj - T_A) -- but only when BOTH rows
+        // are thermally limited. A sheet that caps the cool I_D below its thermal limit
+        // (package or bond-wire rating) makes I_D(hot)/I_D(cool) LARGER than the sqrt
+        // law, which is legitimate (PMXB56EN, IRF7380). So this fires only when the
+        // ratio falls more than 15% BELOW sqrt: the hot current drops faster than heat
+        // explains, i.e. a typo or another condition's figure. Hot-R_DS(on) curvature
+        // and rounding stay inside the 15%. Reference = the coolest row of each V_GS and
+        // junction condition: R_DS(on) at 105 C is not R_DS(on) at 150 C, so rows held
+        // at different junction temperatures are never compared.
         for (const auto& a : e.points) {
             const auto ha = headroom(a);
             if (!a.id || *a.id == 0.0 || !ha) continue;
@@ -326,17 +386,22 @@ void check_ambient_ratings(const json& elec, std::optional<double> tc_idc,
                 if (!hb) continue;
                 double ratio = std::fabs(*b.id) / std::fabs(*a.id);
                 double expect = std::sqrt(*hb / *ha);
-                if (std::fabs(ratio / expect - 1.0) > thr::MOS_AMB_DERATING_TOL)
+                if (ratio < expect * (1.0 - thr::MOS_AMB_DERATING_TOL))
                     emit(out, ctx, "MOS_AMB_DERATING_SHAPE", Severity::Suspicious, ratio, expect,
                          fmt(where + amb_label(e) + " I_D(T_A=" + std::to_string(b.ta) +
                                  ")/I_D(T_A=" + std::to_string(a.ta) +
-                                 ") departs from sqrt((Tj-T_A2)/(Tj-T_A1)) by more than 15%",
+                                 ") is more than 15% BELOW sqrt((Tj-T_A2)/(Tj-T_A1)): the hot current "
+                                 "falls faster than heat explains (typo or another condition's "
+                                 "figure; a ratio above sqrt is a capped cool I_D and is not "
+                                 "flagged)",
                              ratio, expect));
             }
         }
 
-        // CHECK 3: P_D = (Tj - T_A) / R_th(j-a),max of the same condition, +/-5%, with
-        // Tj the point's effective junction temperature.
+        // CHECK 3: P_D = (Tj - T_A) / R_th(j-a) of the same condition, +/-5%, under any
+        // vendor convention pd_match() accepts (R_th max or typical; Tj the point's
+        // effective Tj, or 150 C on a >150 C part whose point states no Tj; vendor
+        // rounding to 1-2 significant figures). The tolerance itself is not widened.
         // SUSPICIOUS for a timed condition. For an UNTIMED one (no timeBase: the
         // datasheet prints a single column without saying which R_th it used) it is
         // only an INFO note naming which condition's R_th(j-a) the P_D matches -- a
@@ -346,23 +411,22 @@ void check_ambient_ratings(const json& elec, std::optional<double> tc_idc,
             bool any_pd = false;
             std::vector<std::string> matches;
             for (const auto& c : entries) {
-                if (!c.rth_max || *c.rth_max <= 0) continue;
                 bool all = true, tested = false;
                 for (const auto& a : e.points) {
-                    const auto h = headroom(a);
-                    if (!a.pd || !h) continue;
+                    if (!a.pd || !headroom(a)) continue;
+                    const auto m = pd_match(a, c, tjmax);
+                    if (!m.any) continue;
                     any_pd = tested = true;
-                    double expect = *h / *c.rth_max;
-                    if (std::fabs(*a.pd / expect - 1.0) > thr::MOS_AMB_PD_THERMAL_TOL) all = false;
+                    if (!m.ok) all = false;
                 }
                 if (tested && all) matches.push_back(amb_label(c));
             }
             if (any_pd) {
                 std::string m = where + amb_label(e) + " has no timeBase; its powerDissipation ";
                 if (matches.empty()) {
-                    m += "matches (Tj-T_A)/R_th(j-a),max of no condition on the record";
+                    m += "matches (Tj-T_A)/R_th(j-a) of no condition on the record";
                 } else {
-                    m += "matches (Tj-T_A)/R_th(j-a),max of ";
+                    m += "matches (Tj-T_A)/R_th(j-a) of ";
                     for (size_t i = 0; i < matches.size(); ++i)
                         m += (i ? ", " : "") + matches[i];
                 }
@@ -371,24 +435,24 @@ void check_ambient_ratings(const json& elec, std::optional<double> tc_idc,
             }
             continue;
         }
-        if (!e.rth_max || *e.rth_max <= 0) {
+        if (!(e.rth_max && *e.rth_max > 0) && !(e.rth_nom && *e.rth_nom > 0)) {
             bool has_pd = false;
             for (const auto& a : e.points) has_pd = has_pd || a.pd.has_value();
             if (has_pd) skipped.push_back("MOS_AMB_PD_THERMAL");
             continue;
         }
         for (const auto& a : e.points) {
-            const auto h = headroom(a);
-            if (!a.pd || !h) continue;
-            double expect = *h / *e.rth_max;
-            if (std::fabs(*a.pd / expect - 1.0) > thr::MOS_AMB_PD_THERMAL_TOL)
-                emit(out, ctx, "MOS_AMB_PD_THERMAL", Severity::Suspicious, *a.pd, expect,
-                     fmt(where + amb_label(e) + " powerDissipation at T_A=" +
-                             std::to_string(a.ta) +
-                             " C departs from (Tj-T_A)/R_th(j-a),max of the same condition "
-                             "(Tj = the point's junctionTemperature, else Tjmax) by more than "
-                             "5% [W]",
-                         *a.pd, expect));
+            if (!a.pd || !headroom(a)) continue;
+            const auto m = pd_match(a, e, tjmax);
+            if (!m.any || m.ok) continue;
+            emit(out, ctx, "MOS_AMB_PD_THERMAL", Severity::Suspicious, *a.pd, m.expect,
+                 fmt(where + amb_label(e) + " powerDissipation at T_A=" +
+                         std::to_string(a.ta) +
+                         " C matches (Tj-T_A)/R_th(j-a) of the same condition under no vendor "
+                         "convention (R_th max or typ; Tj = the point's Tj, else Tjmax, or 150 C "
+                         "on a >150 C part; 5% or 1-2 significant-figure rounding); closest "
+                         "candidate uses " + m.how + " [W]",
+                     *a.pd, m.expect));
         }
     }
 }
