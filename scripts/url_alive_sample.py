@@ -228,7 +228,7 @@ def fake_url(pat, form, pn, fake):
     return pat.replace('{PN}', enc)
 
 
-CANT_FIND = re.compile(r"can'?t find|cannot find|no (?:results|data|parts?) (?:found|available)|not found|page doesn'?t exist", re.I)
+CANT_FIND = re.compile(r"can'?t find|cannot find|did(?:n'?t| not) find|\b0 results|no match|no (?:results|data|parts?) (?:found|available)|not found|page doesn'?t exist", re.I)
 CHROMIUM = [os.environ.get('TAS_CHROMIUM', '')] + sorted(
     __import__('glob').glob(os.path.expanduser('~/.cache/ms-playwright/chromium-*/chrome-linux*/chrome')), reverse=True)
 _BR = {}
@@ -259,7 +259,7 @@ def rendered_names(pn, url):
         time.sleep(wait)
     LAST[host] = time.time()
     try:
-        pg.goto(url, wait_until='networkidle', timeout=60000); pg.wait_for_timeout(1500)
+        pg.goto(url, wait_until='domcontentloaded', timeout=45000); pg.wait_for_timeout(5000)  # networkidle never settles on busy shops
         txt = pg.inner_text('body')
     except Exception:
         return None
