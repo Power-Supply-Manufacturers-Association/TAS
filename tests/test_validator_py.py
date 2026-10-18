@@ -127,7 +127,11 @@ def test_sample_validates_without_crashing(name):
             continue
         assert isinstance(v.valid, bool)
         for f in v.findings:
-            assert f.severity in ("SUSPICIOUS", "IMPOSSIBLE")
+            # "OK" is an INFO note, not a defect: MOS_AMB_PD_UNTIMED names which
+            # condition's R_th(j-a) an untimed ambient P_D column matches.
+            assert f.severity in ("OK", "SUSPICIOUS", "IMPOSSIBLE")
+            if f.severity == "OK":
+                assert f.code == "MOS_AMB_PD_UNTIMED", f.code
     if seen:
         # Sanity: a healthy catalog should not be (almost) entirely malformed.
         assert malformed < seen, f"{name}: {malformed}/{seen} records malformed"

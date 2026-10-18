@@ -9,6 +9,7 @@
 
 #include <algorithm>
 #include <cstdio>
+#include <fstream>
 #include <optional>
 #include <set>
 #include <sstream>
@@ -5359,4 +5360,255 @@ TEST_CASE("THM_FAN_SPEED_NONPOSITIVE: a zero minimum speed fires", "[thermal]") 
 }
 TEST_CASE("THM_FAN_SPEED_NONPOSITIVE: 7470/8300/9130 rpm stays quiet", "[thermal]") {
     CHECK_FALSE(has_code(V.validate(good_thm_fan()), "THM_FAN_SPEED_NONPOSITIVE"));
+}
+
+// --- electrical.ambientRatings[] (SAS e2586d7) ---------------------------------
+// Fixtures are the three SAS worked examples, read from the sibling SAS checkout
+// (the same PSMA layout every TAS schema test already requires). A missing file
+// FAILS the test -- it never skips.
+namespace {
+
+json sas_example(const std::string& file) {
+    const std::string path = std::string(TAS_VALIDATOR_ROOT_DIR) + "/../../SAS/examples/" + file;
+    std::ifstream in(path);
+    INFO("SAS example fixture: " << path);
+    REQUIRE(in.good());
+    json doc = json::parse(in);
+    REQUIRE(doc.contains("mosfet"));
+    return json{{"semiconductor", doc}};
+}
+json si4896dy() { return sas_example("13_mosfet_ambient_only_si4896dy.json"); }
+json si3440dv() { return sas_example("14_mosfet_ambient_single_column_si3440dv.json"); }
+json si7450dp() { return sas_example("15_mosfet_case_and_ambient_si7450dp.json"); }
+json& mos_ds(json& p) { return p["semiconductor"]["mosfet"]["manufacturerInfo"]["datasheetInfo"]; }
+json& mos_el(json& p) { return mos_ds(p)["electrical"]; }
+json& amb(json& p, size_t i) { return mos_el(p)["ambientRatings"][i]; }
+
+const Finding* find_code(const Verdict& v, const std::string& code) {
+    for (const auto& f : v.findings)
+        if (f.code == code) return &f;
+    return nullptr;
+}
+
+}  // namespace
+
+TEST_CASE("ambientRatings fixtures: the three SAS examples raise no ambient finding",
+          "[mosfet][ambient]") {
+    for (json p : {si4896dy(), si3440dv(), si7450dp()}) {
+        Verdict v = V.validate(p);
+        for (const char* c : {"MOS_AMB_STEADY_VS_TRANSIENT", "MOS_AMB_MONOTONE_TA",
+                              "MOS_AMB_PD_THERMAL", "MOS_AMB_DERATING_SHAPE",
+                              "MOS_AMB_ABOVE_CASE", "MOS_TA_IN_TC_FIELD"})
+            CHECK_FALSE(has_code(v, c));
+        CHECK(v.valid);
+    }
+}
+
+// Core-field scoring: an ambient-only part's drain-current rating is an ambient point.
+TEST_CASE("GEN completeness: an ambient-only MOSFET's I_D counts from ambientRatings",
+          "[mosfet][ambient][completeness]") {
+    json p = si4896dy();
+    REQUIRE_FALSE(mos_el(p).contains("continuousDrainCurrent"));
+    CHECK(V.validate(p).completeness == 1.0);
+    CHECK(V.validate(si7450dp()).completeness == 1.0);
+}
+TEST_CASE("GEN completeness: ambient points with only P_D do not stand in for I_D",
+          "[mosfet][ambient][completeness]") {
+    json p = si4896dy();
+    for (auto& e : mos_el(p)["ambientRatings"])
+        for (auto& pt : e["points"]) pt.erase("continuousDrainCurrent");
+    CHECK(V.validate(p).completeness == 0.75);
+}
+
+// CHECK 1
+TEST_CASE("MOS_AMB_STEADY_VS_TRANSIENT: steady-state I_D above the 10 s I_D is impossible",
+          "[mosfet][ambient]") {
+    json p = si4896dy();
+    amb(p, 1)["points"][0]["continuousDrainCurrent"] = 10.0;  // 10 s column says 9.5
+    CHECK(has(V.validate(p), "MOS_AMB_STEADY_VS_TRANSIENT", Severity::Impossible));
+}
+TEST_CASE("MOS_AMB_STEADY_VS_TRANSIENT: steady-state R_th(j-a) below the transient one",
+          "[mosfet][ambient]") {
+    json p = si4896dy();
+    amb(p, 1)["thermalResistanceJunctionAmbient"] = {{"nominal", 30}, {"maximum", 35}};
+    CHECK(has(V.validate(p), "MOS_AMB_STEADY_VS_TRANSIENT", Severity::Impossible));
+}
+TEST_CASE("MOS_AMB_STEADY_VS_TRANSIENT: a different mounting is not compared",
+          "[mosfet][ambient]") {
+    json p = si4896dy();
+    amb(p, 1)["points"][0]["continuousDrainCurrent"] = 10.0;
+    amb(p, 1)["mounting"] = "Device mounted on 1 in^2 2 oz copper";
+    CHECK_FALSE(has_code(V.validate(p), "MOS_AMB_STEADY_VS_TRANSIENT"));
+}
+
+// CHECK 2
+TEST_CASE("MOS_AMB_MONOTONE_TA: I_D rising with T_A is impossible", "[mosfet][ambient]") {
+    json p = si4896dy();
+    amb(p, 0)["points"][1]["continuousDrainCurrent"] = 9.8;  // 70 C above the 25 C 9.5
+    CHECK(has(V.validate(p), "MOS_AMB_MONOTONE_TA", Severity::Impossible));
+}
+TEST_CASE("MOS_AMB_MONOTONE_TA: P_D rising with T_A is impossible", "[mosfet][ambient]") {
+    json p = si4896dy();
+    amb(p, 0)["points"][1]["powerDissipation"] = 3.5;
+    CHECK(has(V.validate(p), "MOS_AMB_MONOTONE_TA", Severity::Impossible));
+}
+TEST_CASE("MOS_AMB_MONOTONE_TA: P-channel (signed) currents compare by magnitude",
+          "[mosfet][ambient]") {
+    json p = si4896dy();
+    for (auto& e : mos_el(p)["ambientRatings"])
+        for (auto& pt : e["points"])
+            for (const char* k : {"continuousDrainCurrent", "bodyDiodeContinuousCurrent"})
+                if (pt.contains(k)) pt[k] = -pt[k].get<double>();
+    Verdict v = V.validate(p);
+    CHECK_FALSE(has_code(v, "MOS_AMB_MONOTONE_TA"));
+    CHECK_FALSE(has_code(v, "MOS_AMB_STEADY_VS_TRANSIENT"));
+    CHECK_FALSE(has_code(v, "MOS_AMB_DERATING_SHAPE"));
+}
+
+// CHECK 3
+TEST_CASE("MOS_AMB_PD_THERMAL: a timed P_D off (Tjmax-T_A)/R_th(j-a),max is suspicious",
+          "[mosfet][ambient]") {
+    json p = si4896dy();
+    amb(p, 0)["points"][0]["powerDissipation"] = 3.6;  // 125/40 = 3.125
+    Verdict v = V.validate(p);
+    CHECK(has(v, "MOS_AMB_PD_THERMAL", Severity::Suspicious));
+    CHECK(v.valid);
+}
+TEST_CASE("MOS_AMB_PD_THERMAL: Si4896DY's four printed P_D match their R_th(j-a)",
+          "[mosfet][ambient]") {
+    json p = si4896dy();
+    Verdict v = V.validate(p);
+    CHECK_FALSE(has_code(v, "MOS_AMB_PD_THERMAL"));
+    CHECK_FALSE(has_code(v, "MOS_AMB_PD_UNTIMED"));
+}
+TEST_CASE("MOS_AMB_PD_UNTIMED: no timeBase gives an INFO note naming the matching R_th",
+          "[mosfet][ambient]") {
+    Verdict v = V.validate(si3440dv());
+    const Finding* f = find_code(v, "MOS_AMB_PD_UNTIMED");
+    REQUIRE(f != nullptr);
+    CHECK(f->severity == Severity::Ok);
+    CHECK(f->message.find("ambientRatings[2](steadyState)") != std::string::npos);
+    CHECK_FALSE(has_code(v, "MOS_AMB_PD_THERMAL"));
+}
+TEST_CASE("MOS_AMB_PD_UNTIMED: an untimed P_D that matches nothing is still only INFO",
+          "[mosfet][ambient]") {
+    json p = si3440dv();
+    amb(p, 0)["points"][0]["powerDissipation"] = 1.6;
+    Verdict v = V.validate(p);
+    const Finding* f = find_code(v, "MOS_AMB_PD_UNTIMED");
+    REQUIRE(f != nullptr);
+    CHECK(f->severity == Severity::Ok);
+    CHECK(f->message.find("no condition") != std::string::npos);
+    CHECK_FALSE(has_code(v, "MOS_AMB_PD_THERMAL"));
+    CHECK(v.valid);
+}
+
+// CHECK 4
+TEST_CASE("MOS_AMB_DERATING_SHAPE: I_D derating off the sqrt law is suspicious",
+          "[mosfet][ambient]") {
+    json p = si4896dy();
+    amb(p, 0)["points"][1]["continuousDrainCurrent"] = 5.0;  // 0.53 vs sqrt(80/125)=0.80
+    Verdict v = V.validate(p);
+    CHECK(has(v, "MOS_AMB_DERATING_SHAPE", Severity::Suspicious));
+    CHECK_FALSE(has_code(v, "MOS_AMB_MONOTONE_TA"));
+}
+TEST_CASE("MOS_AMB_DERATING_SHAPE: Si4896DY and Si3440DV derate on the sqrt law",
+          "[mosfet][ambient]") {
+    CHECK_FALSE(has_code(V.validate(si4896dy()), "MOS_AMB_DERATING_SHAPE"));
+    CHECK_FALSE(has_code(V.validate(si3440dv()), "MOS_AMB_DERATING_SHAPE"));
+}
+
+// CHECK 5
+TEST_CASE("MOS_AMB_ABOVE_CASE: an ambient I_D above the T_C rating is impossible",
+          "[mosfet][ambient]") {
+    json p = si7450dp();
+    mos_el(p)["continuousDrainCurrent"] = 5.0;  // the 10 s T_A=25 C row is 5.3
+    CHECK(has(V.validate(p), "MOS_AMB_ABOVE_CASE", Severity::Impossible));
+}
+TEST_CASE("MOS_AMB_ABOVE_CASE: signed P-channel currents compare by magnitude",
+          "[mosfet][ambient]") {
+    json p = si7450dp();
+    mos_el(p)["continuousDrainCurrent"] = -19.8;
+    for (auto& e : mos_el(p)["ambientRatings"])
+        for (auto& pt : e["points"])
+            if (pt.contains("continuousDrainCurrent"))
+                pt["continuousDrainCurrent"] = -pt["continuousDrainCurrent"].get<double>();
+    CHECK_FALSE(has_code(V.validate(p), "MOS_AMB_ABOVE_CASE"));
+    mos_el(p)["continuousDrainCurrent"] = -5.0;
+    CHECK(has(V.validate(p), "MOS_AMB_ABOVE_CASE", Severity::Impossible));
+}
+
+// CHECK 7
+namespace {
+// Si4896DY as the live catalogue stores it today: the T_A = 25 C, 10 s figures in
+// the case-referred fields, no ambientRatings.
+json si4896dy_flattened() {
+    json p = si4896dy();
+    mos_el(p).erase("ambientRatings");
+    mos_el(p)["continuousDrainCurrent"] = 9.5;
+    mos_el(p)["powerDissipation"] = 3.1;
+    mos_ds(p)["thermal"]["thermalResistanceJunctionAmbient"] = 40;
+    return p;
+}
+}  // namespace
+TEST_CASE("MOS_TA_IN_TC_FIELD: an SO-8 whose P_D is the R_th(j-a) figure is suspicious",
+          "[mosfet][ambient]") {
+    json p = si4896dy_flattened();
+    Verdict v = V.validate(p);
+    CHECK(has(v, "MOS_TA_IN_TC_FIELD", Severity::Suspicious));
+    CHECK(v.valid);  // never blocking
+}
+TEST_CASE("MOS_TA_IN_TC_FIELD: with no case, the Vishay DY suffix names the SO-8",
+          "[mosfet][ambient]") {
+    json p = si4896dy_flattened();
+    mos_ds(p)["part"].erase("case");
+    p["semiconductor"]["mosfet"]["manufacturerInfo"]["name"] = "Vishay Siliconix";
+    mos_ds(p)["part"]["partNumber"] = "Si4896DY";
+    CHECK(has(V.validate(p), "MOS_TA_IN_TC_FIELD", Severity::Suspicious));
+}
+TEST_CASE("MOS_TA_IN_TC_FIELD: quiet on case-rated, exposed-pad, migrated and mismatched rows",
+          "[mosfet][ambient]") {
+    for (const char* pkg : {"TO-220AB", "PowerPAK SO-8", "DPAK"}) {
+        json p = si4896dy_flattened();
+        mos_ds(p)["part"]["case"] = pkg;
+        INFO(pkg);
+        CHECK_FALSE(has_code(V.validate(p), "MOS_TA_IN_TC_FIELD"));
+    }
+    json mismatch = si4896dy_flattened();
+    mos_el(mismatch)["powerDissipation"] = 5.0;  // not 125/40
+    CHECK_FALSE(has_code(V.validate(mismatch), "MOS_TA_IN_TC_FIELD"));
+    json migrated = si4896dy_flattened();
+    json pristine = si4896dy();
+    mos_el(migrated)["ambientRatings"] = mos_el(pristine)["ambientRatings"];
+    CHECK_FALSE(has_code(V.validate(migrated), "MOS_TA_IN_TC_FIELD"));
+}
+
+// D5
+namespace {
+json power_module(bool with_ambient) {
+    json sw = {{"drainSourceVoltage", 1200}, {"continuousDrainCurrent", 300},
+               {"onResistance", 0.0042}, {"gateThresholdVoltage", {{"nominal", 3.0}}}};
+    if (with_ambient)
+        sw["ambientRatings"] = json::parse(R"json([{"timeBase":"steadyState",
+            "points":[{"ambientTemperature":25,"continuousDrainCurrent":12}]}])json");
+    return {{"semiconductor",
+             {{"module",
+               {{"manufacturerInfo",
+                 {{"name", "Example"}, {"reference", "MOD-TEST-1"},
+                  {"datasheetInfo",
+                   {{"part", {{"partNumber", "MOD-TEST-1"}, {"technology", "SiC"}}},
+                    {"electrical", {{"topology", "halfBridge"},
+                                    {"switchTechnology", "sicMosfet"},
+                                    {"switch", sw}}}}}}}}}}}};
+}
+}  // namespace
+TEST_CASE("MOD_SWITCH_AMBIENT_RATINGS: a power-module switch with ambientRatings is suspicious",
+          "[module][ambient]") {
+    Verdict v = V.validate(power_module(true));
+    CHECK(has(v, "MOD_SWITCH_AMBIENT_RATINGS", Severity::Suspicious));
+    CHECK(v.valid);
+}
+TEST_CASE("MOD_SWITCH_AMBIENT_RATINGS: a power-module switch without them is quiet",
+          "[module][ambient]") {
+    CHECK_FALSE(has_code(V.validate(power_module(false)), "MOD_SWITCH_AMBIENT_RATINGS"));
 }

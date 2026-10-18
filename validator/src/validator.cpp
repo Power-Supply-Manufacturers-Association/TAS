@@ -32,7 +32,7 @@ void check_family_coherence(const json& ds, const Ctx& ctx, std::vector<Finding>
         desc += static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
     auto group = [](const std::string& c) -> std::string {
         if (c == "mosfet" || c == "diode" || c == "igbt" || c == "bjt" || c == "thyristor" ||
-            c == "jfet" || c == "optocoupler")
+            c == "jfet" || c == "optocoupler" || c == "module")
             return "semiconductor";
         // A connector ACCESSORY is named after the connector it fits -- that is
         // what an accessory is. "Backshell for ... Connector", "Connector Cap",
@@ -588,8 +588,17 @@ const std::vector<std::string>* core_fields(const std::string& c, const json& da
         // is only real if the manifest can see every spelling of the field.
         {"capacitor", {"capacitance", "ratedVoltage|voltageRatedAcMax"}},
         {"resistor", {"resistance", "powerRating", "tolerance"}},
+        // The drain-current rating has two homes since SAS e2586d7: the case-referred
+        // continuousDrainCurrent (T_C = 25 C), or -- for a part whose datasheet rates
+        // it only board-mounted at an ambient temperature (SO-8, SOT-23, TSOP-6) --
+        // a point under electrical.ambientRatings[]. Counting only the T_C spelling
+        // would score every faithfully-migrated T_A-only part 0.75, the same
+        // second-spelling blindness as `ratedVoltage|voltageRatedAcMax` above. The
+        // `[]` path form walks the arrays inside `electrical`.
         {"mosfet",
-         {"onResistance", "drainSourceVoltage", "continuousDrainCurrent", "gateThresholdVoltage"}},
+         {"onResistance", "drainSourceVoltage",
+          "continuousDrainCurrent|ambientRatings[].points[].continuousDrainCurrent",
+          "gateThresholdVoltage"}},
         // "diode" is not in this map: it is scored per part.subType by
         // diode_core_fields() above, which core_fields() dispatches to first.
         {"igbt",
@@ -754,6 +763,25 @@ double sparse_floor(const std::string& c) {
     return 0.60;                       // cap / res / mosfet / varistor / connector (real min 1.0)
 }
 
+// Does `node` carry a non-null value at an array-walking path inside it,
+// "a[].b[].c": a segment ending in "[]" names an array whose elements are each
+// searched for the rest of the path. True as soon as ONE element carries it.
+bool array_path_present(const json& node, const std::string& path) {
+    const size_t dot = path.find('.');
+    std::string seg = path.substr(0, dot);
+    const std::string rest = dot == std::string::npos ? std::string() : path.substr(dot + 1);
+    const bool walk = seg.size() > 2 && seg.compare(seg.size() - 2, 2, "[]") == 0;
+    if (walk) seg.resize(seg.size() - 2);
+    if (!node.is_object() || !node.contains(seg) || node[seg].is_null()) return false;
+    const json& child = node[seg];
+    if (rest.empty()) return !walk || (child.is_array() && !child.empty());
+    if (!walk) return array_path_present(child, rest);
+    if (!child.is_array()) return false;
+    for (const auto& el : child)
+        if (array_path_present(el, rest)) return true;
+    return false;
+}
+
 // Fraction of the family's core fields present in datasheetInfo.electrical (or
 // electrical[0] for the magnetics array). Returns -1 if no manifest exists.
 double compute_completeness(const std::string& component, const json& datasheet) {
@@ -772,8 +800,10 @@ double compute_completeness(const std::string& component, const json& datasheet)
     // outside `electrical` (connectorAccessory), where an absent electrical object
     // says nothing about the record.
     bool any_path = false;
+    // An `[]` alternative walks arrays INSIDE electrical, so it is no section path.
     for (const auto& f : *core)
-        if (f.find('.') != std::string::npos) any_path = true;
+        if (f.find('.') != std::string::npos && f.find("[]") == std::string::npos)
+            any_path = true;
     if (obj == nullptr && !any_path) return 0.0;
     int present = 0;
     for (const auto& f : *core) {
@@ -785,7 +815,10 @@ double compute_completeness(const std::string& component, const json& datasheet)
                 f.substr(start, bar == std::string::npos ? std::string::npos : bar - start);
             if (!name.empty()) {
                 const size_t dot = name.find('.');
-                if (dot == std::string::npos) {
+                if (name.find("[]") != std::string::npos) {
+                    // "a[].b[].c" -- an array walk inside electrical.
+                    if (obj != nullptr && array_path_present(*obj, name)) found = true;
+                } else if (dot == std::string::npos) {
                     if (obj != nullptr && obj->contains(name) && !(*obj)[name].is_null())
                         found = true;
                 } else {
@@ -926,10 +959,12 @@ Verdict PartValidator::validate(const json& part) const {
         else if (semi.contains("jfet")) run("jfet", semi["jfet"], &check_jfets);
         else if (semi.contains("optocoupler"))
             run("optocoupler", semi["optocoupler"], &check_optocouplers);
+        else if (semi.contains("module"))
+            run("module", semi["module"], &check_power_modules);
         else
             throw std::invalid_argument(
-                "semiconductor record has no mosfet/diode/igbt/bjt/thyristor/jfet/optocoupler "
-                "sub-object");
+                "semiconductor record has no mosfet/diode/igbt/bjt/thyristor/jfet/optocoupler/"
+                "module sub-object");
     } else {
         // AAS analog ICs. The subtype (operationalAmplifier / comparator / analogSwitch /
         // multiplexer / adc / dac / ...) is the discriminator. It appears either at the top

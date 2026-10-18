@@ -162,6 +162,9 @@ void check_magnetics(const json& datasheet, const Ctx&, std::vector<Finding>&, s
 void check_capacitors(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
 void check_resistors(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
 void check_mosfets(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
+// SAS power module (semiconductor.module): screens the per-switch block, which
+// reuses the discrete mosfet/igbt electrical shape -- see mosfets.cpp.
+void check_power_modules(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
 void check_diodes(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
 void check_igbts(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
 void check_bjts(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
