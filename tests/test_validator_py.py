@@ -128,10 +128,12 @@ def test_sample_validates_without_crashing(name):
         assert isinstance(v.valid, bool)
         for f in v.findings:
             # "OK" is an INFO note, not a defect: MOS_AMB_PD_UNTIMED names which
-            # condition's R_th(j-a) an untimed ambient P_D column matches.
+            # condition's R_th(j-a) an untimed ambient P_D column matches;
+            # MOS_AMB_TJ_AT_TJMAX notes an ambient point whose stated junction
+            # temperature equals T_j(max).
             assert f.severity in ("OK", "SUSPICIOUS", "IMPOSSIBLE")
             if f.severity == "OK":
-                assert f.code == "MOS_AMB_PD_UNTIMED", f.code
+                assert f.code in ("MOS_AMB_PD_UNTIMED", "MOS_AMB_TJ_AT_TJMAX"), f.code
     if seen:
         # Sanity: a healthy catalog should not be (almost) entirely malformed.
         assert malformed < seen, f"{name}: {malformed}/{seen} records malformed"

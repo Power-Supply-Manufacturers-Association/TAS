@@ -5380,6 +5380,7 @@ json sas_example(const std::string& file) {
 json si4896dy() { return sas_example("13_mosfet_ambient_only_si4896dy.json"); }
 json si3440dv() { return sas_example("14_mosfet_ambient_single_column_si3440dv.json"); }
 json si7450dp() { return sas_example("15_mosfet_case_and_ambient_si7450dp.json"); }
+json csd13302w() { return sas_example("16_mosfet_junction_held_csd13302w.json"); }
 json& mos_ds(json& p) { return p["semiconductor"]["mosfet"]["manufacturerInfo"]["datasheetInfo"]; }
 json& mos_el(json& p) { return mos_ds(p)["electrical"]; }
 json& amb(json& p, size_t i) { return mos_el(p)["ambientRatings"][i]; }
@@ -5536,6 +5537,162 @@ TEST_CASE("MOS_AMB_ABOVE_CASE: signed P-channel currents compare by magnitude",
     CHECK_FALSE(has_code(V.validate(p), "MOS_AMB_ABOVE_CASE"));
     mos_el(p)["continuousDrainCurrent"] = -5.0;
     CHECK(has(V.validate(p), "MOS_AMB_ABOVE_CASE", Severity::Impossible));
+}
+
+// --- ambientRatingPoint.junctionTemperature (SAS b00d8fe) ----------------------
+// A point that states its own junction temperature is checked against THAT Tj, not
+// T_j(max). Fixture: TI CSD13302W (SAS example 16), whose I_D is printed "at a
+// device temperature of 105 C" under T_A = 25 C. Revert check per rule:
+//     TAS_VALIDATOR_SUPPRESS=<CODE> ./build/tas_validator_tests_revert "[junction]"
+// for the new codes; the effective-Tj changes to checks 1-4 were reverted by hand.
+namespace {
+const char* const AMB_CODES[] = {"MOS_AMB_STEADY_VS_TRANSIENT", "MOS_AMB_MONOTONE_TA",
+                                 "MOS_AMB_PD_THERMAL",          "MOS_AMB_DERATING_SHAPE",
+                                 "MOS_AMB_ABOVE_CASE",          "MOS_TA_IN_TC_FIELD",
+                                 "MOS_AMB_TJ_NOT_ABOVE_TA",     "MOS_AMB_TJ_ABOVE_TJMAX",
+                                 "MOS_AMB_TJ_AT_TJMAX",         "MOS_AMB_PD_UNTIMED"};
+json& jpoint(json& p) { return amb(p, 0)["points"][0]; }  // T_A 25, Tj 105, I_D 1.6
+bool skipped_has(const Verdict& v, const std::string& code) {
+    return std::find(v.skipped.begin(), v.skipped.end(), code) != v.skipped.end();
+}
+}  // namespace
+
+TEST_CASE("junctionTemperature fixture: CSD13302W raises no ambient finding",
+          "[mosfet][ambient][junction]") {
+    json p = csd13302w();
+    REQUIRE(jpoint(p)["junctionTemperature"] == 105);
+    REQUIRE(mos_ds(p)["thermal"]["junctionTemperatureMax"] == 150);
+    Verdict v = V.validate(p);
+    for (const char* c : AMB_CODES) {
+        INFO(c);
+        CHECK_FALSE(has_code(v, c));
+    }
+    CHECK(v.valid);
+}
+
+// The case the field exists for: an I_D held at 105 C beside T_j(max) rows at the
+// same T_A. Without matching on the effective Tj each of checks 1, 2 and 4 fires.
+TEST_CASE("junctionTemperature: a 105 C I_D beside a Tj(max) I_D at the same T_A is no finding",
+          "[mosfet][ambient][junction]") {
+    json p = csd13302w();
+    mos_el(p)["ambientRatings"] = json::parse(R"json([
+        {"timeBase": "transient", "duration": 10,
+         "points": [{"ambientTemperature": 25, "junctionTemperature": 105, "continuousDrainCurrent": 1.6},
+                    {"ambientTemperature": 25, "continuousDrainCurrent": 2.6},
+                    {"ambientTemperature": 70, "continuousDrainCurrent": 2.0}]},
+        {"timeBase": "steadyState",
+         "points": [{"ambientTemperature": 25, "continuousDrainCurrent": 2.0}]}])json");
+    Verdict v = V.validate(p);
+    CHECK_FALSE(has_code(v, "MOS_AMB_STEADY_VS_TRANSIENT"));  // steady 2.0 vs the 105 C 1.6
+    CHECK_FALSE(has_code(v, "MOS_AMB_MONOTONE_TA"));          // 2.0 at 70 C vs the 105 C 1.6
+    CHECK_FALSE(has_code(v, "MOS_AMB_DERATING_SHAPE"));       // 2.0/1.6 vs sqrt(80/125)
+    CHECK(v.valid);
+    // ... while the same rows with one junction condition still fire.
+    mos_el(p)["ambientRatings"][0]["points"][0].erase("junctionTemperature");
+    mos_el(p)["ambientRatings"][0]["points"][1]["continuousDrainCurrent"] = 1.7;
+    Verdict w = V.validate(p);
+    CHECK(has(w, "MOS_AMB_STEADY_VS_TRANSIENT", Severity::Impossible));
+    CHECK(has(w, "MOS_AMB_MONOTONE_TA", Severity::Impossible));
+}
+TEST_CASE("junctionTemperature: rows at the same stated Tj are still compared",
+          "[mosfet][ambient][junction]") {
+    json p = csd13302w();
+    amb(p, 0)["points"].push_back(
+        {{"ambientTemperature", 70}, {"junctionTemperature", 105}, {"continuousDrainCurrent", 1.7}});
+    CHECK(has(V.validate(p), "MOS_AMB_MONOTONE_TA", Severity::Impossible));
+    amb(p, 0)["points"][1]["continuousDrainCurrent"] = 0.6;  // sqrt(35/80)*1.6 = 1.06
+    Verdict v = V.validate(p);
+    CHECK_FALSE(has_code(v, "MOS_AMB_MONOTONE_TA"));
+    CHECK(has(v, "MOS_AMB_DERATING_SHAPE", Severity::Suspicious));
+    amb(p, 0)["points"][1]["continuousDrainCurrent"] = 1.06;
+    CHECK_FALSE(has_code(V.validate(p), "MOS_AMB_DERATING_SHAPE"));
+}
+
+// CHECK 3 with the point's own Tj: P_D = (Tj - T_A) / R_th(j-a),max.
+namespace {
+json csd_pd(double pd) {
+    json p = csd13302w();
+    mos_el(p)["ambientRatings"] = json::array();
+    mos_el(p)["ambientRatings"].push_back(
+        {{"timeBase", "steadyState"},
+         {"thermalResistanceJunctionAmbient", {{"maximum", 70}}},
+         {"points", {{{"ambientTemperature", 25}, {"junctionTemperature", 105},
+                      {"continuousDrainCurrent", 1.6}, {"powerDissipation", pd}}}}});
+    return p;
+}
+}  // namespace
+TEST_CASE("MOS_AMB_PD_THERMAL: a point with its own Tj uses (Tj-T_A)/R_th",
+          "[mosfet][ambient][junction]") {
+    CHECK_FALSE(has_code(V.validate(csd_pd(80.0 / 70)), "MOS_AMB_PD_THERMAL"));  // 1.14 W
+    CHECK(has(V.validate(csd_pd(1.8)), "MOS_AMB_PD_THERMAL", Severity::Suspicious));
+}
+TEST_CASE("MOS_AMB_PD_THERMAL: a point with its own Tj is checkable without Tj(max)",
+          "[mosfet][ambient][junction]") {
+    json p = csd_pd(1.8);
+    mos_ds(p)["thermal"].erase("junctionTemperatureMax");
+    Verdict v = V.validate(p);
+    CHECK(has(v, "MOS_AMB_PD_THERMAL", Severity::Suspicious));
+    CHECK_FALSE(skipped_has(v, "MOS_AMB_PD_THERMAL"));
+    CHECK(skipped_has(v, "MOS_AMB_TJ_ABOVE_TJMAX"));
+    // a point that needs Tj(max) still skips
+    json q = si4896dy();
+    mos_ds(q)["thermal"].erase("junctionTemperatureMax");
+    CHECK(skipped_has(V.validate(q), "MOS_AMB_PD_THERMAL"));
+}
+TEST_CASE("MOS_AMB_PD_UNTIMED: an untimed P_D with its own Tj is matched on (Tj-T_A)/R_th",
+          "[mosfet][ambient][junction]") {
+    json p = csd13302w();
+    jpoint(p)["powerDissipation"] = 80.0 / 70;  // (105-25)/70; T_j(max) gives 1.79
+    amb(p, 1)["thermalResistanceJunctionAmbient"] = {{"maximum", 70}};
+    Verdict v = V.validate(p);
+    const Finding* f = nullptr;
+    for (const auto& x : v.findings)
+        if (x.code == "MOS_AMB_PD_UNTIMED" && x.message.rfind("ambientRatings[0]", 0) == 0) f = &x;
+    REQUIRE(f != nullptr);
+    CHECK(f->severity == Severity::Ok);
+    CHECK(f->message.find("ambientRatings[1]") != std::string::npos);
+}
+
+// CHECK 8
+TEST_CASE("MOS_AMB_TJ_NOT_ABOVE_TA: a junction at or below the ambient is impossible",
+          "[mosfet][ambient][junction]") {
+    for (double tj : {20.0, 25.0}) {
+        json p = csd13302w();
+        jpoint(p)["junctionTemperature"] = tj;
+        INFO(tj);
+        Verdict v = V.validate(p);
+        CHECK(has(v, "MOS_AMB_TJ_NOT_ABOVE_TA", Severity::Impossible));
+        CHECK_FALSE(v.valid);
+    }
+    json q = csd13302w();
+    jpoint(q)["junctionTemperature"] = 25.5;
+    CHECK_FALSE(has_code(V.validate(q), "MOS_AMB_TJ_NOT_ABOVE_TA"));
+}
+TEST_CASE("MOS_AMB_TJ_ABOVE_TJMAX: a junction above the part's own limit is impossible",
+          "[mosfet][ambient][junction]") {
+    json p = csd13302w();
+    jpoint(p)["junctionTemperature"] = 175;
+    Verdict v = V.validate(p);
+    CHECK(has(v, "MOS_AMB_TJ_ABOVE_TJMAX", Severity::Impossible));
+    CHECK_FALSE(v.valid);
+    mos_ds(p)["thermal"].erase("junctionTemperatureMax");
+    Verdict w = V.validate(p);
+    CHECK_FALSE(has_code(w, "MOS_AMB_TJ_ABOVE_TJMAX"));
+    CHECK(skipped_has(w, "MOS_AMB_TJ_ABOVE_TJMAX"));
+}
+TEST_CASE("MOS_AMB_TJ_AT_TJMAX: Tj equal to Tj(max) is only an INFO note",
+          "[mosfet][ambient][junction]") {
+    json p = csd13302w();
+    jpoint(p)["junctionTemperature"] = 150;
+    Verdict v = V.validate(p);
+    const Finding* f = find_code(v, "MOS_AMB_TJ_AT_TJMAX");
+    REQUIRE(f != nullptr);
+    CHECK(f->severity == Severity::Ok);
+    CHECK_FALSE(has_code(v, "MOS_AMB_TJ_ABOVE_TJMAX"));
+    CHECK(v.valid);
+    // stated T_j(max) is the same condition as an absent junctionTemperature
+    amb(p, 0)["points"].push_back({{"ambientTemperature", 70}, {"continuousDrainCurrent", 1.7}});
+    CHECK(has(V.validate(p), "MOS_AMB_MONOTONE_TA", Severity::Impossible));
 }
 
 // CHECK 7

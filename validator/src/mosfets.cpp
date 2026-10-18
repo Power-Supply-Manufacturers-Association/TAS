@@ -85,6 +85,10 @@ bool is_isolated_power_package(const std::string& pkg_norm) {
 struct AmbPoint {
     double ta = 0;
     std::optional<double> vgs, id, pd, is;
+    // junctionTemperature (SAS b00d8fe): the junction temperature this row's
+    // ratings assume, where the datasheet states one (TI chip-scale NexFET: I_D
+    // "at a device temperature of 105 C"). Absent = T_j(max).
+    std::optional<double> tj;
 };
 struct AmbEntry {
     size_t index = 0;
@@ -104,6 +108,21 @@ std::string amb_label(const AmbEntry& e) {
 bool same_vgs(const AmbPoint& a, const AmbPoint& b) {
     if (a.vgs.has_value() != b.vgs.has_value()) return false;
     return !a.vgs || std::fabs(*a.vgs - *b.vgs) < 1e-9;
+}
+
+// The junction temperature a point's ratings assume: its own junctionTemperature,
+// else the part's T_j(max). Empty when neither is known.
+std::optional<double> tj_eff(const AmbPoint& q, std::optional<double> tjmax) {
+    return q.tj ? q.tj : tjmax;
+}
+
+// Two points rate the part under the same junction condition. Both unstated means
+// both assume T_j(max), which is the same condition even when T_j(max) itself is
+// not on the record; one stated and the other unknown cannot be compared.
+bool same_tj(const AmbPoint& a, const AmbPoint& b, std::optional<double> tjmax) {
+    const auto ea = tj_eff(a, tjmax), eb = tj_eff(b, tjmax);
+    if (!ea && !eb) return true;
+    return ea && eb && std::fabs(*ea - *eb) < 1e-9;
 }
 
 // Strictly greater beyond float noise (both operands are printed datasheet figures).
@@ -139,6 +158,7 @@ std::vector<AmbEntry> parse_ambient_ratings(const json& elec, const std::string&
                 q.id = scalar_at(p, {"continuousDrainCurrent"});
                 q.pd = scalar_at(p, {"powerDissipation"});
                 q.is = scalar_at(p, {"bodyDiodeContinuousCurrent"});
+                q.tj = scalar_at(p, {"junctionTemperature"});
                 a.points.push_back(q);
             }
         }
@@ -176,7 +196,9 @@ void check_ambient_ratings(const json& elec, std::optional<double> tc_idc,
                          *rss, *rtr));
             for (const auto& a : ss.points)
                 for (const auto& b : tr.points) {
-                    if (std::fabs(a.ta - b.ta) > 1e-9 || !same_vgs(a, b)) continue;
+                    if (std::fabs(a.ta - b.ta) > 1e-9 || !same_vgs(a, b) ||
+                        !same_tj(a, b, tjmax))
+                        continue;
                     struct Q { const char* name; std::optional<double> s, t; };
                     for (const Q& q : {Q{"continuousDrainCurrent", a.id, b.id},
                                        Q{"powerDissipation", a.pd, b.pd},
@@ -197,9 +219,11 @@ void check_ambient_ratings(const json& elec, std::optional<double> tc_idc,
     for (const auto& e : entries) {
         // CHECK 2 (IMPOSSIBLE): within one condition, I_D and P_D cannot rise as the
         // ambient gets hotter -- the junction has less headroom (Tj - T_A) to spend.
+        // Only rows that hold the junction at the same temperature are compared: an
+        // I_D held at Tj = 105 C at T_A = 25 C may sit below a T_j(max) row at 70 C.
         for (const auto& a : e.points)
             for (const auto& b : e.points) {
-                if (!(b.ta > a.ta) || !same_vgs(a, b)) continue;
+                if (!(b.ta > a.ta) || !same_vgs(a, b) || !same_tj(a, b, tjmax)) continue;
                 if (a.id && b.id && exceeds(std::fabs(*b.id), std::fabs(*a.id)))
                     emit(out, ctx, "MOS_AMB_MONOTONE_TA", Severity::Impossible,
                          std::fabs(*b.id), std::fabs(*a.id),
@@ -227,26 +251,81 @@ void check_ambient_ratings(const json& elec, std::optional<double> tc_idc,
                                  " C exceeds the case-referred (T_C=25 C) continuousDrainCurrent",
                              std::fabs(*a.id), std::fabs(*tc_idc)));
 
-        if (!tjmax) {
-            skipped.push_back("MOS_AMB_PD_THERMAL");
-            skipped.push_back("MOS_AMB_DERATING_SHAPE");
-            continue;
+        // CHECK 8: a stated junction temperature against the row's T_A and the
+        // part's own limit.
+        //  (a) IMPOSSIBLE: Tj <= T_A -- no heat can flow out of the junction, so the
+        //      rating would be zero.
+        //  (b) IMPOSSIBLE: Tj > T_j(max) -- the rating would run the part above its
+        //      own limit.
+        //  (c) OK note (INFO, the validator has no INFO severity): Tj == T_j(max)
+        //      says what absence already says. Valid when the sheet prints it.
+        for (const auto& a : e.points) {
+            if (!a.tj) continue;
+            if (!exceeds(*a.tj, a.ta))
+                emit(out, ctx, "MOS_AMB_TJ_NOT_ABOVE_TA", Severity::Impossible, *a.tj, a.ta,
+                     fmt(where + amb_label(e) + " junctionTemperature at T_A=" +
+                             std::to_string(a.ta) +
+                             " C is not above the ambient: no heat can leave the junction "
+                             "and the rating would be zero [C]",
+                         *a.tj, a.ta));
+            if (!tjmax) {
+                skipped.push_back("MOS_AMB_TJ_ABOVE_TJMAX");
+            } else if (exceeds(*a.tj, *tjmax)) {
+                emit(out, ctx, "MOS_AMB_TJ_ABOVE_TJMAX", Severity::Impossible, *a.tj, *tjmax,
+                     fmt(where + amb_label(e) + " junctionTemperature at T_A=" +
+                             std::to_string(a.ta) +
+                             " C exceeds thermal.junctionTemperatureMax: the rating would "
+                             "run the part above its own limit [C]",
+                         *a.tj, *tjmax));
+            } else if (std::fabs(*a.tj - *tjmax) < 1e-9) {
+                emit(out, ctx, "MOS_AMB_TJ_AT_TJMAX", Severity::Ok, *a.tj, *tjmax,
+                     where + amb_label(e) + " junctionTemperature at T_A=" +
+                         std::to_string(a.ta) +
+                         " C equals thermal.junctionTemperatureMax, which an absent "
+                         "junctionTemperature already means (INFO, not a defect)");
+            }
         }
+
+        // Checks 3 and 4 use each point's effective junction temperature (its own
+        // junctionTemperature, else T_j(max)). A point that needs T_j(max) when the
+        // record has none cannot be checked; points with their own Tj still can.
+        if (!tjmax) {
+            bool needs_tjmax = false;
+            for (const auto& a : e.points) needs_tjmax = needs_tjmax || !a.tj;
+            if (needs_tjmax) {
+                skipped.push_back("MOS_AMB_PD_THERMAL");
+                skipped.push_back("MOS_AMB_DERATING_SHAPE");
+            }
+        }
+        // A point is checkable when its effective Tj is known and above its T_A
+        // (Tj <= T_A is check 8's finding, not a thermal-law one).
+        auto headroom = [&](const AmbPoint& q) -> std::optional<double> {
+            const auto tj = tj_eff(q, tjmax);
+            if (!tj || !(*tj > q.ta)) return std::nullopt;
+            return *tj - q.ta;
+        };
 
         // CHECK 4 (SUSPICIOUS): derating shape. At a fixed R_DS(on), I^2 R = (Tj -
         // T_A)/R_th, so I_D scales as sqrt(Tj - T_A). Hot-R_DS(on) curvature and
         // rounding stay inside +/-15%; outside it one of the rows is another
-        // condition's figure or a typo. Reference = the coolest row of each V_GS.
+        // condition's figure or a typo. Reference = the coolest row of each V_GS and
+        // junction condition: R_DS(on) at 105 C is not R_DS(on) at 150 C, so rows
+        // held at different junction temperatures are never compared.
         for (const auto& a : e.points) {
-            if (!a.id || *a.id == 0.0 || a.ta >= *tjmax) continue;
+            const auto ha = headroom(a);
+            if (!a.id || *a.id == 0.0 || !ha) continue;
             bool coolest = true;
             for (const auto& c : e.points)
-                if (c.id && same_vgs(a, c) && c.ta < a.ta) coolest = false;
+                if (c.id && same_vgs(a, c) && same_tj(a, c, tjmax) && c.ta < a.ta)
+                    coolest = false;
             if (!coolest) continue;
             for (const auto& b : e.points) {
-                if (!b.id || !(b.ta > a.ta) || b.ta >= *tjmax || !same_vgs(a, b)) continue;
+                if (!b.id || !(b.ta > a.ta) || !same_vgs(a, b) || !same_tj(a, b, tjmax))
+                    continue;
+                const auto hb = headroom(b);
+                if (!hb) continue;
                 double ratio = std::fabs(*b.id) / std::fabs(*a.id);
-                double expect = std::sqrt((*tjmax - b.ta) / (*tjmax - a.ta));
+                double expect = std::sqrt(*hb / *ha);
                 if (std::fabs(ratio / expect - 1.0) > thr::MOS_AMB_DERATING_TOL)
                     emit(out, ctx, "MOS_AMB_DERATING_SHAPE", Severity::Suspicious, ratio, expect,
                          fmt(where + amb_label(e) + " I_D(T_A=" + std::to_string(b.ta) +
@@ -256,7 +335,8 @@ void check_ambient_ratings(const json& elec, std::optional<double> tc_idc,
             }
         }
 
-        // CHECK 3: P_D = (Tjmax - T_A) / R_th(j-a),max of the same condition, +/-5%.
+        // CHECK 3: P_D = (Tj - T_A) / R_th(j-a),max of the same condition, +/-5%, with
+        // Tj the point's effective junction temperature.
         // SUSPICIOUS for a timed condition. For an UNTIMED one (no timeBase: the
         // datasheet prints a single column without saying which R_th it used) it is
         // only an INFO note naming which condition's R_th(j-a) the P_D matches -- a
@@ -269,9 +349,10 @@ void check_ambient_ratings(const json& elec, std::optional<double> tc_idc,
                 if (!c.rth_max || *c.rth_max <= 0) continue;
                 bool all = true, tested = false;
                 for (const auto& a : e.points) {
-                    if (!a.pd || a.ta >= *tjmax) continue;
+                    const auto h = headroom(a);
+                    if (!a.pd || !h) continue;
                     any_pd = tested = true;
-                    double expect = (*tjmax - a.ta) / *c.rth_max;
+                    double expect = *h / *c.rth_max;
                     if (std::fabs(*a.pd / expect - 1.0) > thr::MOS_AMB_PD_THERMAL_TOL) all = false;
                 }
                 if (tested && all) matches.push_back(amb_label(c));
@@ -279,9 +360,9 @@ void check_ambient_ratings(const json& elec, std::optional<double> tc_idc,
             if (any_pd) {
                 std::string m = where + amb_label(e) + " has no timeBase; its powerDissipation ";
                 if (matches.empty()) {
-                    m += "matches (Tjmax-T_A)/R_th(j-a),max of no condition on the record";
+                    m += "matches (Tj-T_A)/R_th(j-a),max of no condition on the record";
                 } else {
-                    m += "matches (Tjmax-T_A)/R_th(j-a),max of ";
+                    m += "matches (Tj-T_A)/R_th(j-a),max of ";
                     for (size_t i = 0; i < matches.size(); ++i)
                         m += (i ? ", " : "") + matches[i];
                 }
@@ -297,14 +378,16 @@ void check_ambient_ratings(const json& elec, std::optional<double> tc_idc,
             continue;
         }
         for (const auto& a : e.points) {
-            if (!a.pd || a.ta >= *tjmax) continue;
-            double expect = (*tjmax - a.ta) / *e.rth_max;
+            const auto h = headroom(a);
+            if (!a.pd || !h) continue;
+            double expect = *h / *e.rth_max;
             if (std::fabs(*a.pd / expect - 1.0) > thr::MOS_AMB_PD_THERMAL_TOL)
                 emit(out, ctx, "MOS_AMB_PD_THERMAL", Severity::Suspicious, *a.pd, expect,
                      fmt(where + amb_label(e) + " powerDissipation at T_A=" +
                              std::to_string(a.ta) +
-                             " C departs from (Tjmax-T_A)/R_th(j-a),max of the same condition "
-                             "by more than 5% [W]",
+                             " C departs from (Tj-T_A)/R_th(j-a),max of the same condition "
+                             "(Tj = the point's junctionTemperature, else Tjmax) by more than "
+                             "5% [W]",
                          *a.pd, expect));
         }
     }
