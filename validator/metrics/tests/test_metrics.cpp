@@ -187,6 +187,32 @@ TEST_CASE("relative_field and normalise_pn", "[metrics]") {
     CHECK(normalise_pn(" ab-c_d/e.1 ") == "ABCDE.1");
 }
 
+// The catalogue writes list indices both ways: electrical[0].inductance and
+// electrical.0.inductance (1,868 magnetics provenance entries use the dotted form).
+TEST_CASE("indexed provenance field electrical.0.inductance traces the inductance", "[metrics][indexed_field]") {
+    CHECK(relative_field("datasheetInfo.electrical.0.inductance") == "electrical.inductance");
+    CHECK(relative_field("electrical.12.inductance.nominal") == "electrical.inductance.nominal");
+    CHECK(relative_field("electrical.x2.inductance") == "electrical.x2.inductance");  // not an index
+
+    const Scorer s(kSpec);
+    auto inductor = [](const char* field) {
+        return json{{"magnetic",
+                     {{"manufacturerInfo",
+                       {{"name", "X"},
+                        {"reference", "L1"},
+                        {"datasheetInfo",
+                         {{"electrical", json::array({{{"subtype", "inductor"}, {"inductance", 2.2e-6}}})},
+                          {"provenance", json::array({provenance("valuesReadFromSource", "manufacturer",
+                                                                 {field})})}}}}}}}};
+    };
+    CHECK(s.score(inductor("electrical.0.inductance"), "magnetics", true, 0.0)->checks.traced == Approx(1.0));
+    CHECK(s.score(inductor("datasheetInfo.electrical.0.inductance"), "magnetics", true, 0.0)->checks.traced ==
+          Approx(1.0));
+    // A different field, indexed or not, still traces nothing.
+    CHECK(s.score(inductor("electrical.0.leakageInductance"), "magnetics", true, 0.0)->checks.traced ==
+          Approx(0.0));
+}
+
 TEST_CASE("manufacturer aliases collapse identities", "[metrics]") {
     const json aliases = json::parse(R"({"manufacturers": [
         {"name": "Example Semiconductor", "aliases": ["Example Semi", "EXSEMI"]}]})");

@@ -7,6 +7,7 @@
 #include "tas_validator/thresholds.hpp"
 #include "tas_validator/validator.hpp"
 
+#include <algorithm>
 #include <cctype>
 #include <cmath>
 #include <sstream>
@@ -57,8 +58,90 @@ bool dcr_pairs_with_inductance(const json& pt) {
     return true;
 }
 
+// The part number a magnetic is ordered by: manufacturerInfo.reference, else
+// datasheetInfo.part.partNumber. Upper-cased for the value-code decoders.
+std::string part_number(const json& datasheet, const Ctx& ctx) {
+    std::string pn = ctx.reference;
+    if (pn.empty())
+        if (const json* p = at(datasheet, "part", "partNumber"); p != nullptr && p->is_string())
+            pn = p->get<std::string>();
+    for (char& c : pn) c = static_cast<char>(std::toupper(static_cast<unsigned char>(c)));
+    return pn;
+}
+
+// Is `lnom` [H] exactly the inductance the part number spells? Two code styles:
+// R as the decimal point in microhenries (CDRH5D28NP-5R3NC = 5.3 uH, the token
+// being the whole digit run around the R), and a separator-delimited three-digit
+// code, two significant figures and an exponent, in nanohenries (Coilcraft
+// XAL1580-452ME = 45e2 nH = 4.5 uH) or microhenries (the EIA convention, "101" =
+// 100 uH). Only an exact decode accepts: a value merely near the coded nominal
+// (a measured or typical L printed beside it) still fires.
+bool inductance_code_matches(const std::string& pn, double lnom) {
+    for (const double v : eseries::letter_point_values(pn, "R", /*cut_digit_run=*/false))
+        if (eseries::same_value(v * 1e-6, lnom)) return true;
+    for (const double v : eseries::three_digit_code_values(pn))
+        if (eseries::same_value(v * 1e-9, lnom) || eseries::same_value(v * 1e-6, lnom)) return true;
+    return false;
+}
+
+// Does a provenance entry of evidence 1.0 vouch for the inductance of operating
+// point `idx`? Evidence 1.0 is verification partNamed or valuesReadFromSource
+// from a non-distributor source (the metrics scorer's credit; a distributor read
+// is 0.8). The entry must list the inductance in `fields`: electrical.inductance,
+// its .nominal, or the whole electrical block, in any spelling the catalogue
+// uses -- bracketed (electrical[].inductance), prefixed
+// (manufacturerInfo.datasheetInfo.), or indexed (electrical.0.inductance, which
+// vouches for op 0 only). A missing `fields` list is not a claim about L.
+bool provenance_reads_inductance(const json& datasheet, int idx) {
+    const json* prov = at(datasheet, "provenance");
+    if (prov == nullptr || !prov->is_array()) return false;
+    for (const auto& e : *prov) {
+        if (!e.is_object()) continue;
+        const auto v = e.find("verification");
+        if (v == e.end() || !v->is_string()) continue;
+        const std::string& ver = v->get_ref<const std::string&>();
+        if (ver != "partNamed" && ver != "valuesReadFromSource") continue;
+        const auto src = e.find("source");
+        if (src != e.end() && src->is_string() && src->get_ref<const std::string&>() == "distributor")
+            continue;
+        const auto fs = e.find("fields");
+        if (fs == e.end() || !fs->is_array()) continue;
+        for (const auto& f : *fs) {
+            if (!f.is_string()) continue;
+            std::string flat;
+            int depth = 0;
+            for (char c : f.get_ref<const std::string&>()) {
+                if (c == '[') ++depth;
+                else if (c == ']') depth = std::max(depth - 1, 0);
+                else if (depth == 0) flat.push_back(c);
+            }
+            std::vector<std::string> segs;
+            std::stringstream ss(flat);
+            for (std::string seg; std::getline(ss, seg, '.');) segs.push_back(seg);
+            std::size_t i = 0;
+            if (i < segs.size() && segs[i] == "manufacturerInfo") ++i;
+            if (i < segs.size() && segs[i] == "datasheetInfo") ++i;
+            if (i >= segs.size() || segs[i] != "electrical") continue;
+            ++i;
+            if (i < segs.size() && !segs[i].empty() &&
+                segs[i].size() <= 6 &&
+                std::all_of(segs[i].begin(), segs[i].end(),
+                            [](char c) { return std::isdigit(static_cast<unsigned char>(c)); })) {
+                if (std::stoi(segs[i]) != idx) continue;
+                ++i;
+            }
+            const std::size_t rest = segs.size() - i;
+            if (rest == 0 || (segs[i] == "inductance" &&
+                              (rest == 1 || (rest == 2 && segs[i + 1] == "nominal"))))
+                return true;
+        }
+    }
+    return false;
+}
+
 void check_point(const json& pt, int idx, const json& dims, const std::string& material,
-                 const Ctx& ctx, std::vector<Finding>& out, std::vector<std::string>& skipped) {
+                 const json& datasheet, const Ctx& ctx, std::vector<Finding>& out,
+                 std::vector<std::string>& skipped) {
     const std::string tag = "[op " + std::to_string(idx) + "] ";
     std::string subtype;
     if (pt.contains("subtype") && pt["subtype"].is_string())
@@ -120,6 +203,13 @@ void check_point(const json& pt, int idx, const json& dims, const std::string& m
     // CHECK (anti-synthesis): power-inductor inductance should be an E-series
     // preferred value (gated to L >= 1 uH; sub-uH ferrite beads / RF chip inductors
     // are characterised by impedance, not a preferred L). SUSPICIOUS only.
+    //
+    // Inductors only (subtype "inductor"): a transformer's magnetizing inductance,
+    // a common-mode choke's or a coupled inductor's L is a design figure, not a
+    // value picked from a preferred-value series, and 1,425 of 2,695 flagged rows
+    // were those (Alf, 2026-10-18). An off-grid inductor value is accepted when it
+    // is exactly what its own part number spells, or when an evidence-1.0
+    // provenance entry names the inductance as read from the vendor's source.
     if (*L >= 1e-6 && pt.contains("inductance")) {
         const json& lf = pt["inductance"];
         std::optional<double> lnom;
@@ -128,7 +218,9 @@ void check_point(const json& pt, int idx, const json& dims, const std::string& m
         else if (lf.is_object() && lf.contains("nominal") && lf["nominal"].is_number())
             lnom = lf["nominal"].get<double>();
         if (lnom && *lnom > 0) {
-            if (!eseries::on_grid(*lnom))
+            if (subtype == "inductor" && !eseries::on_grid(*lnom) &&
+                !inductance_code_matches(part_number(datasheet, ctx), *lnom) &&
+                !provenance_reads_inductance(datasheet, idx))
                 emit(out, ctx, "MAG_E_SERIES", Severity::Suspicious, *lnom, 0,
                      tag + fmt("inductance is not an E-series preferred value [H]", *lnom));
             if (eseries::sig_figs(*lnom) > 4)
@@ -440,7 +532,7 @@ void check_magnetics(const json& datasheet, const Ctx& ctx, std::vector<Finding>
     int idx = 0;
     for (const auto& pt : *elec) {
         if (pt.is_object()) {
-            check_point(pt, idx, dims, material, ctx, out, skipped);
+            check_point(pt, idx, dims, material, datasheet, ctx, out, skipped);
             check_dissipation_density(pt, idx, dims, desc_lower, ctx, out);
         }
         ++idx;

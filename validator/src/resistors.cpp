@@ -111,6 +111,27 @@ std::optional<double> ordering_code_value(const json& datasheet) {
     return std::nullopt;
 }
 
+// Is `rnom` exactly the resistance the part's own ordering code spells? First the
+// qualified ordering-code series above (each with its own layout); then, for any
+// series, an R/K/M letter-point token anywhere in the part number: Vishay
+// PTF6511K600 = 11.6 kohm, Yageo RL0805FR-070R6L = 0.6 ohm, Bourns
+// PWR220T-20-8R00F = 8 ohm. The token must end at a non-digit and parse
+// completely (decode_letter_point's grammar: digits, one multiplier letter,
+// digits), and the stored value must equal it exactly -- a token that does not
+// spell the stored value accepts nothing, so the check still fires.
+bool ordering_code_matches(const json& datasheet, const std::string& reference, double rnom) {
+    if (const auto coded = ordering_code_value(datasheet); coded && eseries::same_value(*coded, rnom))
+        return true;
+    std::string pn = upper_of(at(datasheet, "part", "partNumber"));
+    if (pn.empty()) {
+        pn = reference;
+        for (char& c : pn) c = static_cast<char>(std::toupper(static_cast<unsigned char>(c)));
+    }
+    for (const double v : eseries::letter_point_values(pn, "RKM", /*cut_digit_run=*/true))
+        if (eseries::same_value(v, rnom)) return true;
+    return false;
+}
+
 }  // namespace
 
 void check_resistors(const json& datasheet, const Ctx& ctx, std::vector<Finding>& out,
@@ -220,10 +241,9 @@ void check_resistors(const json& datasheet, const Ctx& ctx, std::vector<Finding>
             // E192 is the series of the <= 0.5 % classes; it needs the tolerance.
             const bool e192 = eseries::on_e192(*rnom, thr::RES_E192_WINDOW);
             const auto tol = scalar_at(*elec, {"tolerance"});
-            // A qualified ordering-code series is accepted only when the stored
-            // value is exactly the value its own ordering code encodes.
-            const auto coded = ordering_code_value(datasheet);
-            const bool code_match = coded && std::fabs(*coded - *rnom) <= 1e-9 * *rnom;
+            // An ordering-code value is accepted only when the stored value is
+            // exactly the value the part's own ordering code encodes.
+            const bool code_match = ordering_code_matches(datasheet, ctx.reference, *rnom);
             if (code_match || (e192 && tol && *tol <= thr::RES_E192_TOLERANCE_MAX)) {
                 // accepted
             } else if (e192 && !tol) {

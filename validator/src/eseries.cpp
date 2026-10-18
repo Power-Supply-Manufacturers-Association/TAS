@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 #include "tas_validator/eseries.hpp"
 
+#include <cctype>
 #include <cmath>
 
 namespace tas::eseries {
@@ -81,6 +82,50 @@ int sig_figs(double value) {
         if (std::fabs(rounded - value) <= value * 1e-9) return k;
     }
     return 7;
+}
+
+namespace {
+bool is_digit(char c) { return std::isdigit(static_cast<unsigned char>(c)) != 0; }
+bool is_alnum(char c) { return std::isalnum(static_cast<unsigned char>(c)) != 0; }
+}  // namespace
+
+std::vector<double> letter_point_values(const std::string& code, const std::string& letters,
+                                        bool cut_digit_run) {
+    std::vector<double> out;
+    for (std::size_t p = 1; p < code.size(); ++p) {
+        const char letter = static_cast<char>(std::toupper(static_cast<unsigned char>(code[p])));
+        if (letters.find(letter) == std::string::npos || !is_digit(code[p - 1])) continue;
+        double mult = 0.0;
+        if (letter == 'R') mult = 1.0;
+        else if (letter == 'K') mult = 1e3;
+        else if (letter == 'M') mult = 1e6;
+        else continue;
+        std::size_t a = p;
+        while (a > 0 && is_digit(code[a - 1])) --a;
+        std::size_t b = p + 1;
+        while (b < code.size() && is_digit(code[b])) ++b;
+        const std::string frac = code.substr(p + 1, b - p - 1);
+        const std::size_t last_start = cut_digit_run ? p - 1 : a;
+        for (std::size_t s = a; s <= last_start; ++s)
+            out.push_back(std::stod("0" + code.substr(s, p - s) + "." + frac + "0") * mult);
+    }
+    return out;
+}
+
+std::vector<double> three_digit_code_values(const std::string& code) {
+    std::vector<double> out;
+    for (std::size_t a = 1; a + 3 <= code.size(); ++a) {
+        if (is_alnum(code[a - 1])) continue;
+        if (!is_digit(code[a]) || !is_digit(code[a + 1]) || !is_digit(code[a + 2])) continue;
+        if (a + 3 < code.size() && is_digit(code[a + 3])) continue;
+        const double sig = (code[a] - '0') * 10.0 + (code[a + 1] - '0');
+        out.push_back(sig * std::pow(10.0, code[a + 2] - '0'));
+    }
+    return out;
+}
+
+bool same_value(double a, double b) {
+    return std::isfinite(a) && std::isfinite(b) && std::fabs(a - b) <= 1e-9 * std::fabs(b);
 }
 
 }  // namespace tas::eseries

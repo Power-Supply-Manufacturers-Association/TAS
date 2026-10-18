@@ -231,7 +231,17 @@ std::string manufacturer_key(const std::string& name) {
 }
 
 std::string relative_field(const std::string& path) {
-    std::string p = drop_brackets(path);
+    // Brackets and numeric index segments both name an element of a list, and the spec
+    // paths address every element: electrical[0].inductance, electrical[].inductance and
+    // electrical.0.inductance all mean electrical.inductance.
+    std::string p;
+    for (const auto& seg : split(drop_brackets(path), '.')) {
+        if (!seg.empty() && std::all_of(seg.begin(), seg.end(),
+                                        [](char c) { return std::isdigit(static_cast<unsigned char>(c)) != 0; }))
+            continue;
+        if (!p.empty()) p.push_back('.');
+        p += seg;
+    }
     for (const char* prefix : {"manufacturerInfo.datasheetInfo.", "datasheetInfo."}) {
         const std::string pre(prefix);
         if (p.compare(0, pre.size(), pre) == 0) return p.substr(pre.size());

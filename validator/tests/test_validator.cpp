@@ -1067,6 +1067,43 @@ TEST_CASE("ResESeries: dropped digits and unbacked off-series values still fire"
               "RES_E_SERIES", Severity::Suspicious));
 }
 
+// Alf 2026-10-18: any series, an R/K/M letter-point token in the part number that
+// spells the stored value exactly (Vishay PTF65 glues the value to the series
+// digits, Yageo to its "-07" packaging code).
+TEST_CASE("ResESeries: letter-point token in the part number accepts its exact value",
+          "[resistors][res_eseries_token]") {
+    CHECK(!has_code(V.validate(res_rec("metalFilm", "PTF65", "PTF6511K600AZBF", 11600.0, 0.0005)),
+                    "RES_E_SERIES"));
+    CHECK(!has_code(V.validate(res_rec("metalFilm", "PTF65", "PTF65125R00AXBF", 125.0, 0.01)),
+                    "RES_E_SERIES"));
+    CHECK(!has_code(V.validate(res_rec("thickFilm", nullptr, "RL0805FR-070R6L", 0.6, 0.01)),
+                    "RES_E_SERIES"));
+    CHECK(!has_code(V.validate(res_rec("thickFilm", "PWR220T-20", "PWR220T-20-8R00F", 8.0, 0.01)),
+                    "RES_E_SERIES"));
+    CHECK(!has_code(V.validate(res_rec("thinFilm", nullptr, "RT0603BRE078KL", 8000.0, 0.01)),
+                    "RES_E_SERIES"));
+    // No part.partNumber: the reference is decoded instead.
+    json p = res_rec("metalFilm", nullptr, "PTF6512R500BZEB", 12.5, 0.01);
+    p["resistor"]["manufacturerInfo"]["datasheetInfo"]["part"].erase("partNumber");
+    CHECK(!has_code(V.validate(p), "RES_E_SERIES"));
+}
+
+TEST_CASE("ResESeries: a token that does not spell the stored value still fires",
+          "[resistors][res_eseries_token]") {
+    // 11K600 spells 11.6 kohm; 11.7 kohm is not it.
+    CHECK(has(V.validate(res_rec("metalFilm", "PTF65", "PTF6511K600AZBF", 11700.0, 0.01)),
+              "RES_E_SERIES", Severity::Suspicious));
+    // 8R00 spells 8 ohm, not 80 (a dropped/added digit is not a decode).
+    CHECK(has(V.validate(res_rec("thickFilm", "PWR220T-20", "PWR220T-20-8R00F", 80.0, 0.01)),
+              "RES_E_SERIES", Severity::Suspicious));
+    // A series prefix is not a token: "PWR235T" is not R235 = 0.235 ohm (off-grid).
+    CHECK(has(V.validate(res_rec("thickFilm", nullptr, "PWR235T", 0.235, 0.01)),
+              "RES_E_SERIES", Severity::Suspicious));
+    // Letters other than R/K/M are not decimal points: "8L6" is not 8.6.
+    CHECK(has(V.validate(res_rec("thickFilm", nullptr, "AB-8L6", 8.6, 0.01)),
+              "RES_E_SERIES", Severity::Suspicious));
+}
+
 TEST_CASE("ResESeries: E192 value without a tolerance is recorded as skipped",
           "[resistors][res_eseries_relax]") {
     Verdict v = V.validate(res_rec("thinFilm", nullptr, "X", 5970.0, std::nullopt));
@@ -5985,4 +6022,96 @@ TEST_CASE("CONN: a 353 A power terminal is within the per-contact current range"
     CHECK(has(V.validate(p), "CONN_CURRENT_RANGE", Severity::Suspicious));
     d["electrical"]["ratedCurrentPerContact"] = 5000.0;
     CHECK(has(V.validate(p), "CONN_CURRENT_RANGE", Severity::Impossible));
+}
+
+// ---------------------------------------------------------------------------
+// MAG_E_SERIES (Alf 2026-10-18): inductors only; an off-grid value is accepted
+// when the part number spells it exactly or an evidence-1.0 provenance entry
+// names the inductance.
+namespace {
+json mag_rec(const char* subtype, const char* ref, double L, json prov = json::array()) {
+    json p;
+    json& mi = p["magnetic"]["manufacturerInfo"];
+    mi["name"] = "Example Magnetics";
+    mi["reference"] = ref;
+    json& ds = mi["datasheetInfo"];
+    ds["electrical"] = json::array({{{"subtype", subtype}, {"inductance", {{"nominal", L}}}}});
+    ds["provenance"] = std::move(prov);
+    return p;
+}
+json prov_entry(const char* verification, const char* source, json fields) {
+    json e = {{"source", source}, {"verification", verification}};
+    if (!fields.is_null()) e["fields"] = std::move(fields);
+    return json::array({e});
+}
+}  // namespace
+
+TEST_CASE("MagESeries: transformers, chokes and coupled inductors are exempt",
+          "[magnetics][mag_eseries]") {
+    for (const char* sub : {"transformer", "commonModeChoke", "coupledInductor"})
+        CHECK(!has_code(V.validate(mag_rec(sub, "XFMR-1", 4.37e-3)), "MAG_E_SERIES"));
+    // The same off-grid, non-decoding, unsourced value on a plain inductor fires.
+    CHECK(has(V.validate(mag_rec("inductor", "XFMR-1", 4.37e-3)), "MAG_E_SERIES",
+              Severity::Suspicious));
+}
+
+TEST_CASE("MagESeries: the part number's own value code accepts its exact value",
+          "[magnetics][mag_eseries]") {
+    // R as decimal point in uH, and Coilcraft's three-digit nH code.
+    CHECK(!has_code(V.validate(mag_rec("inductor", "CDRH5D28NP-5R3NC", 5.3e-6)), "MAG_E_SERIES"));
+    CHECK(!has_code(V.validate(mag_rec("inductor", "XAL1580-452ME", 4.5e-6)), "MAG_E_SERIES"));
+    CHECK(!has_code(V.validate(mag_rec("inductor", "4513TC-495XGLD", 4.9e-3)), "MAG_E_SERIES"));
+    // EIA three-digit code in uH: -451 = 450 uH.
+    CHECK(!has_code(V.validate(mag_rec("inductor", "PFC3125ER-451K", 450e-6)), "MAG_E_SERIES"));
+}
+
+TEST_CASE("MagESeries: near-but-not-exact codes and non-codes still fire",
+          "[magnetics][mag_eseries]") {
+    // Coded nominal 2.9 mH, stored 2.89 mH (a measured value beside it): not exact.
+    CHECK(has(V.validate(mag_rec("inductor", "4308RV-295XGLD", 2.89e-3)), "MAG_E_SERIES",
+              Severity::Suspicious));
+    // 5R3 = 5.3 uH; 5.4 uH is not it.
+    CHECK(has(V.validate(mag_rec("inductor", "CDRH5D28NP-5R3NC", 5.4e-6)), "MAG_E_SERIES",
+              Severity::Suspicious));
+    // A three-digit run glued to a letter, or at the start of the part number, is a
+    // series number, not a value code: "453" would spell 45 uH (off-grid).
+    CHECK(has(V.validate(mag_rec("inductor", "CDEP453NP", 45e-6)), "MAG_E_SERIES",
+              Severity::Suspicious));
+    CHECK(has(V.validate(mag_rec("inductor", "453-XY", 45e-6)), "MAG_E_SERIES",
+              Severity::Suspicious));
+    // ...while the same run behind a separator is one.
+    CHECK(!has_code(V.validate(mag_rec("inductor", "CDEP-453NP", 45e-6)), "MAG_E_SERIES"));
+}
+
+TEST_CASE("MagESeries: evidence-1.0 provenance naming the inductance skips the check",
+          "[magnetics][mag_eseries]") {
+    const double L = 4.37e-3;
+    for (const char* f : {"electrical.inductance", "electrical[].inductance", "electrical.0.inductance",
+                          "datasheetInfo.electrical.0.inductance",
+                          "manufacturerInfo.datasheetInfo.electrical.inductance",
+                          "electrical.inductance.nominal", "electrical"}) {
+        INFO(f);
+        CHECK(!has_code(V.validate(mag_rec("inductor", "X-1", L,
+                                           prov_entry("valuesReadFromSource", "manufacturerDatasheet",
+                                                      json::array({f})))),
+                        "MAG_E_SERIES"));
+    }
+    CHECK(!has_code(V.validate(mag_rec("inductor", "X-1", L,
+                                       prov_entry("partNamed", "manufacturerDatabase",
+                                                  json::array({"electrical.0.inductance"})))),
+                    "MAG_E_SERIES"));
+    // Not evidence 1.0, not the inductance, another op's index, or no field list: fires.
+    const json nope[] = {
+        prov_entry("seriesConfirmed", "manufacturerDatasheet", json::array({"electrical.inductance"})),
+        prov_entry("sourceUnreachable", "manufacturerDatasheet", json::array({"electrical.inductance"})),
+        prov_entry("valuesReadFromSource", "distributor", json::array({"electrical.inductance"})),
+        prov_entry("valuesReadFromSource", "manufacturerDatasheet",
+                   json::array({"electrical.inductance.tolerance", "electrical.leakageInductance"})),
+        prov_entry("valuesReadFromSource", "manufacturerDatasheet", json::array({"electrical.1.inductance"})),
+        prov_entry("valuesReadFromSource", "manufacturerDatasheet", nullptr),
+    };
+    for (const auto& pr : nope) {
+        INFO(pr.dump());
+        CHECK(has(V.validate(mag_rec("inductor", "X-1", L, pr)), "MAG_E_SERIES", Severity::Suspicious));
+    }
 }

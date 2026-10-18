@@ -134,8 +134,9 @@ std::map<std::string, std::size_t> quarantine_counts(const std::string& path);
 std::string normalise_pn(const std::string& pn);
 
 // A provenance field path reduced to its datasheetInfo-relative form with every bracket
-// group dropped: "manufacturerInfo.datasheetInfo.electrical[0].inductance" ->
-// "electrical.inductance".
+// group and every numeric index segment dropped:
+// "manufacturerInfo.datasheetInfo.electrical[0].inductance" and
+// "datasheetInfo.electrical.0.inductance" -> "electrical.inductance".
 std::string relative_field(const std::string& path);
 
 }  // namespace tas::metrics
