@@ -39,6 +39,7 @@ class BladeGate:
         self.disc = (discriminator,) if isinstance(discriminator, str) else tuple(discriminator)
         self.impossible = collections.Counter()
         self.suspicious = collections.Counter()
+        self.info = collections.Counter()   # OK-severity notes (e.g. MOS_AMB_PD_UNTIMED): not findings
         self.checked = 0
         self.blocked = 0
         if _VALIDATOR_BUILD not in sys.path:
@@ -72,8 +73,10 @@ class BladeGate:
             if "IMPOSSIBLE" in str(f.severity).upper():
                 self.impossible[f.code] += 1
                 worst = worst or f
-            else:
+            elif "SUSPICIOUS" in str(f.severity).upper():
                 self.suspicious[f.code] += 1
+            else:
+                self.info[f.code] += 1
         if worst is not None:
             self.blocked += 1
             return False, f"{worst.code}: {getattr(worst, 'message', '')[:120]}"
@@ -87,4 +90,7 @@ class BladeGate:
         if self.suspicious:
             parts.append("  suspicious (not blocking): " + ", ".join(
                 f"{c}x{n}" for c, n in self.suspicious.most_common(5)))
+        if self.info:
+            parts.append("  info: " + ", ".join(
+                f"{c}x{n}" for c, n in self.info.most_common(5)))
         return "\n".join(parts)
