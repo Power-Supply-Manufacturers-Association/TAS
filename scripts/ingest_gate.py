@@ -747,6 +747,29 @@ def exact_spelling(ident):
     return (ident or "").strip().upper()
 
 
+# Ordering-code suffixes that name the SAME part in another packaging or finish. A vendor
+# prints the device once (Si7942DP) and orders it as Si7942DP-T1-E3 / -T1-GE3; storing both
+# is one part twice. Found 2026-10-18: a vendor-pull agent stored the ordering code for 18
+# Vishay MOSFETs that were live under the bare name, and the exact-spelling check passed them.
+# Per manufacturer key, anchored at the end, and only grammars the vendor documents: Vishay
+# Siliconix ordering information spells -T1 (tape and reel), -E3 (lead-free), -GE3
+# (halogen-free), -BE3. A hyphen elsewhere is identity (Eaton 10BJ6-0A is not 10BJ60A).
+ORDERING_SUFFIXES = {
+    "vishay": re.compile(r"(?:-T\d)?-[GB]?E3$|-T\d$", re.IGNORECASE),
+}
+
+
+def ordering_base(ident, manufacturer):
+    """`ident` without its documented ordering-code suffix, upper-cased, or None when the
+    manufacturer has no suffix grammar or the identity carries none."""
+    rx = ORDERING_SUFFIXES.get(manufacturer_key(manufacturer))
+    if rx is None or not isinstance(ident, str):
+        return None
+    s = exact_spelling(ident)
+    base = rx.sub("", s)
+    return base if base and base != s else None
+
+
 def manufacturer_infos(node):
     """Every manufacturerInfo object of a record, outermost first, without
     descending into a body that has one (a magnetic's own manufacturerInfo, not
@@ -797,6 +820,7 @@ class KnownSpellings:
             printed = " ".join(manufacturer.split()) if m is not None else None
             self._by_key.setdefault((m, k), {}).setdefault(
                 exact_spelling(ident), (where, ident, printed))
+            self._ordering = None
 
     def add_file(self, path, where, fields=("partNumber", "reference"), skip=None):
         """Index the identity (`fields`) and manufacturer name of every record of
@@ -845,6 +869,25 @@ class KnownSpellings:
         if hit:
             return ("duplicate",) + hit
         return ("twin", sorted(known.values()))
+
+    def ordering_variants(self, ident, manufacturer):
+        """Known entries that are the same part as `ident` up to a documented ordering-code
+        suffix (Si7942DP vs Si7942DP-T1-E3, either way round), same manufacturer, exact
+        spelling otherwise. [(where, printed, manufacturer), ...]; [] when none."""
+        m = manufacturer_key(manufacturer)
+        if m is None or m not in ORDERING_SUFFIXES:
+            return []
+        if getattr(self, "_ordering", None) is None:
+            self._ordering = {}
+            for (mk, _k), entries in self._by_key.items():
+                if mk not in ORDERING_SUFFIXES:
+                    continue
+                for exact, entry in entries.items():
+                    base = ordering_base(exact, entry[2]) or exact
+                    self._ordering.setdefault((mk, base), {})[exact] = entry
+        me = exact_spelling(ident)
+        base = ordering_base(ident, manufacturer) or me
+        return sorted(e for exact, e in self._ordering.get((m, base), {}).items() if exact != me)
 
     def reason(self, ident, manufacturer):
         """The reject reason for `ident`, or None when it is new."""
