@@ -44,7 +44,7 @@ def _build_full_registry() -> Registry:
     pure $ref schemas (e.g. CAS/utils.json -> PEAS/utils.json)."""
     by_id: dict[str, dict] = {}
     by_path: dict[Path, dict] = {}
-    for repo_name in ("PEAS", "SAS", "CAS", "RAS", "MAS", "CTAS", "CONAS", "AAS", "TDAS", "EMAS"):
+    for repo_name in ("PEAS", "SAS", "CAS", "RAS", "MAS", "CTAS", "CONAS", "AAS", "TDAS", "EMAS", "TMAS"):
         repo_dir = PROTEUS / repo_name / "schemas"
         if not repo_dir.is_dir():
             continue
@@ -94,7 +94,7 @@ def _build_tas_registry() -> Registry:
         schemas[s["$id"]] = s
     # peas.json's oneOf reaches every component family: load ALL siblings so bricks
     # with inline PEAS atoms (resistor/capacitor/magnetic/...) resolve.
-    for repo in ("PEAS", "MAS", "CAS", "SAS", "RAS", "AAS", "CTAS", "CONAS", "TDAS", "EMAS", "COAS"):
+    for repo in ("PEAS", "MAS", "CAS", "SAS", "RAS", "AAS", "CTAS", "CONAS", "TDAS", "EMAS", "TMAS", "COAS"):
         sdir = REPO.parent / repo / "schemas"
         assert sdir.is_dir(), f"sibling repo {repo} missing — PSMA workspace layout required"
         for path in sdir.rglob("*.json"):
@@ -148,6 +148,7 @@ def part_library_validators():
         ("thyristors.ndjson", ["semiconductor", "thyristor"], "SAS", "thyristor.json"),
         ("jfets.ndjson",      ["semiconductor", "jfet"],   "SAS", "jfet.json"),
         ("optocouplers.ndjson", ["semiconductor", "optocoupler"], "SAS", "optocoupler.json"),
+        ("thermal_management.ndjson", ["thermalManagement"], "TMAS", "thermalManagement.json"),
     ]:
         schema = json.loads((PROTEUS / repo / "schemas" / schema_file).read_text())
         out[fname] = (disc_path, Draft202012Validator(schema, registry=reg))
@@ -202,6 +203,7 @@ def _summarise_failures(fails: list[tuple[int, str]], cap: int = 5) -> str:
     "connector_accessories.ndjson", "relays.ndjson", "switches.ndjson",
     "protection.ndjson",
     "thyristors.ndjson", "jfets.ndjson", "optocouplers.ndjson",
+    "thermal_management.ndjson",
     "potentiometers.ndjson",
 ])
 def test_part_library_records_validate(part_library_validators, fname):
@@ -262,6 +264,7 @@ def _manufacturer_ref(rec):
     "connector_accessories.ndjson", "relays.ndjson", "switches.ndjson",
     "protection.ndjson",
     "thyristors.ndjson", "jfets.ndjson", "optocouplers.ndjson",
+    "thermal_management.ndjson",
     "potentiometers.ndjson",
 ])
 def test_part_library_references_unique(fname):

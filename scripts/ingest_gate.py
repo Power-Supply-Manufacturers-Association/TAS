@@ -420,6 +420,33 @@ _CATALOGUES = [
         Field("maximumTemperatureLimit", _di("electrical", "maximumTemperatureLimit"),
               bound=1e3),
     ]),
+    Catalogue("thermal_management.ndjson", ["thermalManagement"], "TMAS",
+              "thermalManagement.json", [
+        # One catalogue for every TMAS family (heatsink, thermalInterfaceMaterial,
+        # fan, heatsinkAccessory; the family is the pinned `family` const in the
+        # record). A path a family does not have is skipped. The bounds are unit
+        # traps, not physics: the smallest clip-on heatsink stays below ~100 K/W, so
+        # 1e3 K/W is a K/mW slip; graphite sheets reach ~1900 W/(m K) in-plane; an
+        # impedance written in degC in^2/W instead of K m^2/W is ~1550x too large
+        # and lands far past 1e-2; airflow in CFM is ~2119x too large in m^3/s and
+        # the largest axial fans move ~3 m^3/s; static pressure in mmH2O or inH2O
+        # stays far below 1e4 Pa for any electronics fan; speed is rpm.
+        Field("heatsinkNaturalConvectionRth",
+              _di("thermal", "naturalConvection", "thermalResistance"), bound=1e3),
+        Field("heatsinkRthVsAirVelocity",
+              _di("thermal", "thermalResistanceVsAirVelocity", "yData", "*"), bound=1e3),
+        Field("timThermalConductivity", _di("thermal", "thermalConductivity"), bound=2e3),
+        Field("timThermalImpedance",
+              _di("thermal", "thermalImpedanceVsPressure", "yData", "*"), bound=1e-2),
+        Field("timPackageThermalResistance",
+              _di("thermal", "packageThermalResistance", "*", "thermalResistanceVsPressure",
+                  "yData", "*"), bound=1e3),
+        Field("fanMaximumAirflow", _di("performance", "maximumAirflow"), bound=5.0),
+        Field("fanMaximumStaticPressure", _di("performance", "maximumStaticPressure"),
+              bound=1e4),
+        Field("fanSpeedNominal", _di("performance", "speed", "nominal"), bound=1e5),
+        Field("fanSpeedMaximum", _di("performance", "speed", "maximum"), bound=1e5),
+    ]),
     Catalogue("potentiometers.ndjson", ["potentiometer"], "RAS", "potentiometer.json", [
         # totalResistance, NOT resistance: the potentiometer schema declares no bare
         # `resistance` property, which is the structural guard that stops a fixed
@@ -1379,7 +1406,7 @@ def _build_registry():
 
     by_id, by_path = {}, {}
     for repo_name in ("PEAS", "SAS", "CAS", "RAS", "MAS", "CTAS", "CONAS", "AAS",
-                      "TDAS", "EMAS"):
+                      "TDAS", "EMAS", "TMAS"):
         d = PROTEUS / repo_name / "schemas"
         if not d.is_dir():
             continue

@@ -66,7 +66,10 @@ FAMILIES = {
     "connector_accessories.ndjson": (["connectorAccessory"], "CONAS", "connectorAccessory.json", "connectorAccessory"),
     "relays.ndjson": (["relay"], "EMAS", "relay.json", "relay"),
     "switches.ndjson": (["switch"], "EMAS", "switch.json", "switch"),
+    "protection.ndjson": (["protection"], "EMAS", "protection.json", "protection"),
     "potentiometers.ndjson": (["potentiometer"], "RAS", "potentiometer.json", "potentiometer"),
+    "thermal_management.ndjson": (["thermalManagement"], "TMAS", "thermalManagement.json",
+                                  "thermalManagement"),
 }
 
 # circuits.ndjson is not a part catalogue and cannot use FAMILIES: a record is a whole CIAS
@@ -82,7 +85,8 @@ CIRCUITS = "circuits.ndjson"
 # being swallowed by a bare try/except.
 BLADE_DISCRIMINATORS = {"magnetic", "capacitor", "resistor", "varistor", "connector",
                         "thermistor", "semiconductor", "analog", "controller", "timeBase",
-                        "connectorAccessory", "relay", "switch", "potentiometer"}
+                        "connectorAccessory", "relay", "switch", "protection", "potentiometer",
+                        "thermalManagement"}
 PEAS_NATIVE_ATOMS = {"behavioral", "transmissionLine"}
 
 
@@ -91,7 +95,7 @@ def build_registry():
     from referencing.jsonschema import DRAFT202012
     by_id = {}
     for repo in ("PEAS", "SAS", "CAS", "RAS", "MAS", "CTAS", "AAS", "CONAS", "TDAS",
-                 "CIAS", "EMAS"):
+                 "CIAS", "EMAS", "TMAS"):
         d = PSMA / repo / "schemas"
         if not d.is_dir():
             continue

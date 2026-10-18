@@ -31,6 +31,14 @@
 # EMAS protection (fuses, PPTCs, GDTs, spark gaps, SPDs, fuse holders, thermal
 # cut-offs), added 2026-10-18 with the PEAS `protection` discriminator.
 !/data/protection.ndjson
+# SAS thyristors, JFETs and optocouplers, added 2026-10-18 as SAS device kinds.
+!/data/thyristors.ndjson
+!/data/jfets.ndjson
+!/data/optocouplers.ndjson
+# TMAS thermal management (heatsinks, thermal interface materials, fans,
+# heatsink mounting hardware), added 2026-10-18 with the PEAS `thermalManagement`
+# discriminator.
+!/data/thermal_management.ndjson
 # The single consolidated quarantine sink. Per-catalogue quarantine files
 # (*.quarantine_*.ndjson), backups, vendor dumps and staging live local-only.
 !/data/quarantine.ndjson
