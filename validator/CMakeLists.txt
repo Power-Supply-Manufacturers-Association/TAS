@@ -131,6 +131,9 @@ add_library(tas_validator_core STATIC
   src/relays.cpp
   src/switches.cpp
   src/protection.cpp
+  src/thyristor.cpp
+  src/jfet.cpp
+  src/optocoupler.cpp
   src/potentiometers.cpp
   src/connector_accessories.cpp
   src/thermistors.cpp

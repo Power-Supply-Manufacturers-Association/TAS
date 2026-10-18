@@ -1097,6 +1097,18 @@ inline constexpr double REL_TIME_IMP_HI = 3600.0;
 // absent (the datasheet's nominal short-time value) or at most this limit.
 inline constexpr double PRT_I2T_ADIABATIC_TIME_S = 0.010;
 
+// ---- Thyristors (SAS thyristor.json, thyristor.cpp) -------------------------
+// THY_SURGE_VS_CONTINUOUS compares a non-repetitive surge rating I_TSM (a PEAK
+// current) with the continuous on-state ratings only for surges no longer than
+// one full 50 Hz cycle: the 8.3 ms / 10 ms half sines and 16.7 ms / 20 ms full
+// sines every SCR and triac datasheet prints (BT151-500R: 120 A at 10 ms vs
+// I_T(RMS) 12 A; BTA16-600B: 160 A at 20 ms vs 16 A). In that window the
+// junction's thermal mass carries the surge and the peak is many times the
+// continuous rating. Longer "surge" lines are a different rating -- Bourns'
+// TISP prints 2.1 A for 1000 s of 50 Hz -- which approaches the continuous
+// rating from above along a curve no record states, so they are not compared.
+inline constexpr double THY_SURGE_CYCLE_MAX_S = 0.020;
+
 // ---- Potentiometers (RAS potentiometer.json) --------------------------------
 // Commercial tracks run 10 Ohm .. 10 MOhm (the catalogue's own span is
 // 10 Ohm .. 1 MOhm). Below 1 Ohm the wiper contact resistance alone dominates

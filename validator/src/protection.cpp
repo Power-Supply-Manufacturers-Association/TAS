@@ -29,33 +29,6 @@ namespace tas {
 
 namespace {
 
-// An array field: nullptr when absent; MalformedField when present but not an array.
-const json* array_at(const json& obj, const char* key, const std::string& label) {
-    const json* a = at(obj, key);
-    if (a == nullptr || a->is_null()) return nullptr;
-    if (!a->is_array()) throw MalformedField(label + " is not an array");
-    return a;
-}
-
-// A string field: nullopt when absent; MalformedField when present but not a string.
-std::optional<std::string> string_at(const json& obj, const char* key, const std::string& label) {
-    const json* s = at(obj, key);
-    if (s == nullptr || s->is_null()) return std::nullopt;
-    if (!s->is_string()) throw MalformedField(label + " is not a string");
-    return s->get<std::string>();
-}
-
-// One explicit end of a {nominal, minimum, maximum} object. The band checks below
-// compare the ends the datasheet PRINTS, so this deliberately does not collapse
-// the object to a scalar (no resolver): an absent end is absent, never inferred
-// from the others.
-std::optional<double> band_end(const json* dim, const char* end, const std::string& label) {
-    if (dim == nullptr || dim->is_null()) return std::nullopt;
-    if (dim->is_number()) return std::nullopt;  // a bare number has no printed ends
-    if (!dim->is_object()) throw MalformedField(label + " is neither a number nor an object");
-    return scalar(at(*dim, end), label + "." + end);
-}
-
 // ---------------------------------------------------------------- fuse
 void check_fuse(const json& e, const Ctx& ctx, std::vector<Finding>& out,
                 std::vector<std::string>& skipped) {

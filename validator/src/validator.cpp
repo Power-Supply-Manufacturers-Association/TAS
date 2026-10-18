@@ -31,7 +31,9 @@ void check_family_coherence(const json& ds, const Ctx& ctx, std::vector<Finding>
     for (char c : d->get<std::string>())
         desc += static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
     auto group = [](const std::string& c) -> std::string {
-        if (c == "mosfet" || c == "diode" || c == "igbt" || c == "bjt") return "semiconductor";
+        if (c == "mosfet" || c == "diode" || c == "igbt" || c == "bjt" || c == "thyristor" ||
+            c == "jfet" || c == "optocoupler")
+            return "semiconductor";
         // A connector ACCESSORY is named after the connector it fits -- that is
         // what an accessory is. "Backshell for ... Connector", "Connector Cap",
         // "Connector Marker Strip": 3,796 of the 18,227 live accessory rows say
@@ -915,9 +917,15 @@ Verdict PartValidator::validate(const json& part) const {
         else if (semi.contains("diode")) run("diode", semi["diode"], &check_diodes);
         else if (semi.contains("igbt")) run("igbt", semi["igbt"], &check_igbts);
         else if (semi.contains("bjt")) run("bjt", semi["bjt"], &check_bjts);
+        else if (semi.contains("thyristor"))
+            run("thyristor", semi["thyristor"], &check_thyristors);
+        else if (semi.contains("jfet")) run("jfet", semi["jfet"], &check_jfets);
+        else if (semi.contains("optocoupler"))
+            run("optocoupler", semi["optocoupler"], &check_optocouplers);
         else
             throw std::invalid_argument(
-                "semiconductor record has no mosfet/diode/igbt/bjt sub-object");
+                "semiconductor record has no mosfet/diode/igbt/bjt/thyristor/jfet/optocoupler "
+                "sub-object");
     } else {
         // AAS analog ICs. The subtype (operationalAmplifier / comparator / analogSwitch /
         // multiplexer / adc / dac / ...) is the discriminator. It appears either at the top

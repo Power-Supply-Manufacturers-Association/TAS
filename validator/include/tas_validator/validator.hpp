@@ -165,6 +165,12 @@ void check_mosfets(const json& datasheet, const Ctx&, std::vector<Finding>&, std
 void check_diodes(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
 void check_igbts(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
 void check_bjts(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
+// SAS thyristor (scr/triac/sidac/diac/surgeProtector), jfet and optocoupler kinds;
+// each reads the package electrical block or every dies[] block -- see thyristor.cpp,
+// jfet.cpp, optocoupler.cpp.
+void check_thyristors(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
+void check_jfets(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
+void check_optocouplers(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
 void check_varistors(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
 void check_connectors(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
 // Electromechanical (EMAS) and the two families that were previously undispatchable.

@@ -229,4 +229,41 @@ std::optional<double> thermal_power_ceiling(const json& datasheet) {
     return ceiling;
 }
 
+const json* array_at(const json& obj, const char* key, const std::string& label) {
+    const json* a = at(obj, key);
+    if (a == nullptr || a->is_null()) return nullptr;
+    if (!a->is_array()) throw MalformedField(label + " is not an array");
+    return a;
+}
+
+std::optional<std::string> string_at(const json& obj, const char* key,
+                                     const std::string& label) {
+    const json* s = at(obj, key);
+    if (s == nullptr || s->is_null()) return std::nullopt;
+    if (!s->is_string()) throw MalformedField(label + " is not a string");
+    return s->get<std::string>();
+}
+
+std::optional<double> band_end(const json* dim, const char* end, const std::string& label) {
+    if (dim == nullptr || dim->is_null()) return std::nullopt;
+    if (dim->is_number()) return std::nullopt;  // a bare number has no printed ends
+    if (!dim->is_object()) throw MalformedField(label + " is neither a number nor an object");
+    return scalar(at(*dim, end), label + "." + end);
+}
+
+std::vector<std::pair<std::string, double>> printed_ends(const json* dim,
+                                                        const std::string& label) {
+    std::vector<std::pair<std::string, double>> out;
+    if (dim == nullptr || dim->is_null()) return out;
+    if (dim->is_number()) {
+        out.emplace_back("value", *scalar(dim, label));
+        return out;
+    }
+    for (const char* end : {"minimum", "nominal", "maximum"})
+        if (const auto v = band_end(dim, end, label)) out.emplace_back(end, *v);
+    return out;
+}
+
 }  // namespace tas
+
+

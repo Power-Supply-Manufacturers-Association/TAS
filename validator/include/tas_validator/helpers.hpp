@@ -15,6 +15,7 @@
 #include <optional>
 #include <stdexcept>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace tas {
@@ -119,5 +120,30 @@ bool has_search_query_citation(const json& datasheet, const json* component_obj)
 // Only a Pd that contradicts the record's own j-c path by a wide margin can then
 // fire.
 std::optional<double> thermal_power_ceiling(const json& datasheet);
+
+// An array field: nullptr when absent or JSON null; MalformedField when present but
+// not an array. `label` names the field in the error.
+const json* array_at(const json& obj, const char* key, const std::string& label);
+
+// A string field: nullopt when absent or JSON null; MalformedField when present but
+// not a string.
+std::optional<std::string> string_at(const json& obj, const char* key,
+                                     const std::string& label);
+
+// One explicit end ("minimum" / "nominal" / "maximum") of a dimensionWithTolerance.
+// Band and ordering checks compare the ends the datasheet PRINTS, so this
+// deliberately does not collapse the object to a scalar the way scalar() does: an
+// absent end is absent, never inferred from the others, and a bare number has no
+// printed ends (nullopt). MalformedField when the field is neither a number nor an
+// object, or the end is present but not a finite number.
+std::optional<double> band_end(const json* dim, const char* end, const std::string& label);
+
+// Every value a dimensionWithTolerance PRINTS, as {end, value} pairs: a bare number
+// yields one pair named "value"; an object yields one pair per present end
+// (minimum, nominal, maximum, in that order). Empty when the field is absent or
+// JSON null. For sign and positivity checks that hold for every printed figure, so
+// no end is preferred over another. MalformedField as band_end().
+std::vector<std::pair<std::string, double>> printed_ends(const json* dim,
+                                                        const std::string& label);
 
 }  // namespace tas

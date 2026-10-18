@@ -4294,6 +4294,305 @@ TEST_CASE("PRT_TCO_TM_VS_TF: T_m 150 degC over T_f 73 degC stays quiet", "[prote
     CHECK_FALSE(has_code(V.validate(good_prot_tco()), "PRT_TCO_TM_VS_TF"));
 }
 
+// --- SAS thyristor / jfet / optocoupler (SAS 9c20cec) ----------------------
+// The good records are SAS examples 08-12, verbatim, wrapped in the PEAS
+// semiconductor discriminator the way TAS/data stores them.
+json good_scr() {  // SAS examples/08_thyristor_scr_bt151_500r.json, verbatim, PEAS-wrapped
+    return json::parse(R"json({"semiconductor":{"thyristor":{"manufacturerInfo":{"name":"WeEn Semiconductors","reference":"BT151-500R","status":"production","description":"SCR, 500 V, 12 A RMS, TO-220AB","datasheetUrl":"https://www.ween-semi.com/datasheet/BT151-500R.pdf","datasheetInfo":{"part":{"partNumber":"BT151-500R","technology":"Si","subType":"scr","case":"TO-220AB","package":"SOT78"},"electrical":{"conductionDirection":"unidirectional","repetitivePeakOffStateVoltage":500,"repetitivePeakReverseVoltage":500,"averageOnStateCurrent":7.5,"rmsOnStateCurrent":12,"onStateCurrentTemperature":109,"onStateCurrentTemperatureReference":"case","surgeOnStateCurrent":[{"current":120,"duration":0.01,"shape":"halfSine"},{"current":132,"duration":0.0083,"shape":"halfSine"}],"currentSquaredTime":72,"currentSquaredTimeDuration":0.01,"criticalRateOfRiseOnStateCurrent":50000000.0,"criticalRateOfRiseOffStateVoltage":{"minimum":50000000.0,"nominal":130000000.0},"criticalRateOfRiseOffStateVoltageTemperature":125,"gateTriggerCurrent":{"nominal":0.002,"maximum":0.015},"latchingCurrent":{"nominal":0.01,"maximum":0.04},"holdingCurrent":{"nominal":0.007,"maximum":0.02},"gateTriggerVoltage":{"nominal":0.6,"maximum":1.5},"peakGateCurrent":2,"peakGateReverseVoltage":5,"peakGatePower":5,"averageGatePower":0.5,"onStateVoltage":{"nominal":1.4,"maximum":1.75},"onStateVoltageCurrent":23,"offStateCurrent":[{"current":{"nominal":0.0001,"maximum":0.0005},"voltage":500,"temperature":125}],"gateControlledTurnOnTime":2e-06,"circuitCommutatedTurnOffTime":7e-05},"thermal":{"thermalResistanceJunctionCase":1.3,"thermalResistanceJunctionAmbient":60,"junctionTemperatureMax":125},"mechanical":{"case":"TO-220AB","pinout":[{"pin":"1","name":"K","function":"cathode"},{"pin":"2","name":"A","function":"anode"},{"pin":"3","name":"G","function":"gate"},{"pin":"mb","name":"A","function":"anode"}]},"provenance":[{"source":"manufacturerDatasheet","sourceName":"WeEn BT151-500R product data sheet (22 February 2018)","sourceUrl":"https://www.ween-semi.com/datasheet/BT151-500R.pdf","retrievedDate":"2026-10-18","verification":"valuesReadFromSource","verificationDate":"2026-10-18","verificationMethod":"Rth(j-mb) recorded as junction-case; dVD/dt gate open, Tj 125 C"}]}}}}})json");
+}
+json good_triac() {  // SAS examples/09_thyristor_triac_bta16_600b.json, verbatim, PEAS-wrapped
+    return json::parse(R"json({"semiconductor":{"thyristor":{"manufacturerInfo":{"name":"WeEn Semiconductors","reference":"BTA16-600B","status":"production","description":"4Q triac, 600 V, 16 A RMS, isolated TO-220","datasheetUrl":"https://www.ween-semi.com/datasheet/BTA16-600B.pdf","datasheetInfo":{"part":{"partNumber":"BTA16-600B","technology":"Si","subType":"triac","case":"TO-220","package":"IITO220"},"electrical":{"conductionDirection":"bidirectional","repetitivePeakOffStateVoltage":600,"rmsOnStateCurrent":16,"onStateCurrentTemperature":112,"onStateCurrentTemperatureReference":"case","surgeOnStateCurrent":[{"current":160,"duration":0.02,"shape":"fullSine"},{"current":176,"duration":0.0167,"shape":"fullSine"}],"currentSquaredTime":128,"currentSquaredTimeDuration":0.01,"criticalRateOfRiseOnStateCurrent":50000000.0,"criticalRateOfRiseOffStateVoltage":{"minimum":500000000.0},"criticalRateOfRiseOffStateVoltageTemperature":125,"criticalRateOfChangeCommutatingCurrent":2000,"quadrantRatings":[{"quadrant":"Q1","gateTriggerCurrent":{"minimum":0.01,"maximum":0.05},"latchingCurrent":{"maximum":0.06}},{"quadrant":"Q2","gateTriggerCurrent":{"minimum":0.01,"maximum":0.05},"latchingCurrent":{"maximum":0.09}},{"quadrant":"Q3","gateTriggerCurrent":{"minimum":0.01,"maximum":0.05},"latchingCurrent":{"maximum":0.06}},{"quadrant":"Q4","gateTriggerCurrent":{"minimum":0.01,"maximum":0.07},"latchingCurrent":{"maximum":0.09}}],"holdingCurrent":{"maximum":0.06},"gateTriggerVoltage":{"nominal":0.7,"maximum":1.0},"peakGateCurrent":2,"peakGatePower":5,"averageGatePower":0.5,"onStateVoltage":{"nominal":1.22,"maximum":1.5},"onStateVoltageCurrent":20,"offStateCurrent":[{"current":{"maximum":5e-06},"voltage":600,"temperature":25},{"current":{"nominal":0.0004,"maximum":0.002},"voltage":600,"temperature":150}],"isolationVoltage":2500,"isolationCapacitance":1e-11},"thermal":{"thermalResistanceJunctionAmbient":60,"junctionTemperatureMax":150},"mechanical":{"case":"TO-220","pinout":[{"pin":"1","name":"T1","function":"mainTerminal1"},{"pin":"2","name":"T2","function":"mainTerminal2"},{"pin":"3","name":"G","function":"gate"},{"pin":"mb","name":"n.c.","function":"mechanical"}]},"provenance":[{"source":"manufacturerDatasheet","sourceName":"WeEn BTA16-600B product data sheet Rev.02 (30 May 2023)","sourceUrl":"https://www.ween-semi.com/datasheet/BTA16-600B.pdf","retrievedDate":"2026-10-18","verification":"valuesReadFromSource","verificationDate":"2026-10-18","verificationMethod":"IGT/IL per quadrant at VD 12 V, Tj 25 C; dVD/dt gate open; Rth(j-h) 1.9 K/W not recorded (heatsink, not case)"}]},"orderCode":"BTA16-600BQ"}}}})json");
+}
+json good_tspd() {  // SAS examples/10_thyristor_protector_tisp4350h3bj.json, verbatim, PEAS-wrapped
+    return json::parse(R"json({"semiconductor":{"thyristor":{"manufacturerInfo":{"name":"Bourns","reference":"TISP4350H3BJ","status":"production","description":"Bidirectional thyristor overvoltage protector, VDRM 275 V, V(BO) 350 V, SMB","datasheetUrl":"https://www.bourns.com/docs/Product-Datasheets/tisp4xxxh3bj.pdf","datasheetInfo":{"part":{"partNumber":"TISP4350H3BJ","series":"TISP4xxxH3BJ","technology":"Si","subType":"surgeProtector","case":"SMB","package":"SMBJ"},"electrical":{"conductionDirection":"bidirectional","repetitivePeakOffStateVoltage":275,"breakoverVoltage":{"maximum":350},"breakoverVoltageRampRate":750000.0,"impulseBreakoverVoltage":{"maximum":362},"impulseBreakoverVoltageRampRate":1000000000.0,"impulseBreakoverCurrentRampRate":20000000.0,"breakoverCurrent":{"minimum":0.15,"maximum":0.6},"holdingCurrent":{"minimum":0.15,"maximum":0.6},"onStateVoltage":{"maximum":3},"onStateVoltageCurrent":5,"offStateCurrent":[{"current":{"maximum":5e-06},"voltage":275,"temperature":25},{"current":{"maximum":1e-05},"voltage":275,"temperature":85}],"criticalRateOfRiseOffStateVoltage":{"minimum":5000000000.0},"criticalRateOfRiseOnStateCurrent":400000000.0,"peakPulseCurrents":[{"current":500,"waveform":"2/10"},{"current":300,"waveform":"8/20"},{"current":250,"waveform":"10/160"},{"current":220,"waveform":"5/200"},{"current":200,"waveform":"0.2/310"},{"current":200,"waveform":"5/310"},{"current":160,"waveform":"10/560"},{"current":100,"waveform":"10/1000"}],"surgeOnStateCurrent":[{"current":55,"duration":0.02,"shape":"fullSine"},{"current":60,"duration":0.0167,"shape":"fullSine"},{"current":2.1,"duration":1000,"shape":"fullSine"}],"offStateCapacitance":[{"capacitance":{"nominal":5.5e-11,"maximum":6.2e-11},"biasVoltage":-2,"frequency":100000.0},{"capacitance":{"nominal":2.4e-11,"maximum":2.8e-11},"biasVoltage":-50,"frequency":100000.0}]},"thermal":{"thermalResistanceJunctionAmbient":113,"junctionTemperatureMin":-40,"junctionTemperatureMax":150},"mechanical":{"case":"SMB","pinout":[{"pin":"1","name":"R (B)","function":"mainTerminal1"},{"pin":"2","name":"T (A)","function":"mainTerminal2"}]},"provenance":[{"source":"manufacturerDatasheet","sourceName":"Bourns TISP4xxxH3BJ Overvoltage Protector Series data sheet (Nov 1997, rev. Mar 2021)","sourceUrl":"https://www.bourns.com/docs/Product-Datasheets/tisp4xxxh3bj.pdf","retrievedDate":"2026-10-18","verification":"valuesReadFromSource","verificationDate":"2026-10-18","verificationMethod":"V(BO) at dv/dt 750 V/ms, Rsource 300 ohm; impulse V(BO) at dv/dt <= 1000 V/us, di/dt 20 A/us; Coff at f 100 kHz, Vd 1 V rms"}]}}}}})json");
+}
+json good_opto() {  // SAS examples/11_optocoupler_vo617a_3.json, verbatim, PEAS-wrapped
+    return json::parse(R"json({"semiconductor":{"optocoupler":{"manufacturerInfo":{"name":"Vishay","reference":"VO617A-3","status":"production","description":"Optocoupler, phototransistor output, 5300 VRMS, CTR 100-200 %, DIP-4","datasheetUrl":"https://www.vishay.com/docs/83430/vo617a.pdf","datasheetInfo":{"part":{"partNumber":"VO617A-3","series":"VO617A","technology":"Si","subType":"phototransistor","case":"DIP-4"},"electrical":{"numberOfChannels":1,"inputForwardCurrentMax":0.06,"inputReverseVoltageMax":6,"inputSurgeCurrent":1.5,"inputSurgeCurrentDuration":1e-05,"inputPowerDissipation":0.07,"inputForwardVoltage":{"minimum":1.0,"nominal":1.35,"maximum":1.65},"inputForwardVoltageCurrent":0.06,"collectorEmitterVoltage":80,"emitterCollectorVoltage":7,"collectorCurrent":0.05,"collectorPeakCurrent":0.1,"collectorDarkCurrent":{"nominal":5e-09,"maximum":1e-07},"collectorDarkCurrentVce":10,"saturationVoltage":{"nominal":0.25,"maximum":0.4},"saturationVoltageForwardCurrent":0.005,"saturationVoltageCollectorCurrent":0.001,"currentTransferRatio":{"minimum":1.0,"maximum":2.0},"currentTransferRatioForwardCurrent":0.005,"currentTransferRatioVce":5,"outputPowerDissipation":0.15,"totalPowerDissipation":0.2,"riseTime":{"nominal":2e-06},"fallTime":{"nominal":2e-06},"turnOnTime":{"nominal":3e-06},"turnOffTime":{"nominal":2.3e-06},"switchingLoadResistance":75,"switchingSaturated":false,"cutoffFrequency":190000.0,"isolation":{"withstandVoltageRms":5300,"withstandVoltageDuration":60,"workingVoltage":890,"transientVoltage":8000,"barrierCapacitance":4e-13,"creepage":0.007,"clearance":0.007,"distanceThroughInsulation":0.0004,"comparativeTrackingIndex":175,"materialGroup":"IIIa","pollutionDegree":"PD2"}},"mechanical":{"case":"DIP-4","pinout":[{"pin":"1","name":"A","function":"anode"},{"pin":"2","name":"C","function":"cathode"},{"pin":"3","name":"E","function":"emitter"},{"pin":"4","name":"C","function":"collector"}]},"provenance":[{"source":"manufacturerDatasheet","sourceName":"Vishay VO617A data sheet, document 83430 Rev. 2.8 (22-Jan-2025)","sourceUrl":"https://www.vishay.com/docs/83430/vo617a.pdf","retrievedDate":"2026-10-18","verification":"valuesReadFromSource","verificationDate":"2026-10-18","verificationMethod":"CTR at IF 5 mA, VCE 5 V; non-saturated switching at IF 5 mA, VCC 5 V, RL 75 ohm; RIO given only at 115 C and 175 C"}]}}}}})json");
+}
+json good_jfet() {  // SAS examples/12_jfet_jfe150.json, verbatim, PEAS-wrapped
+    return json::parse(R"json({"semiconductor":{"jfet":{"manufacturerInfo":{"name":"Texas Instruments","reference":"JFE150","status":"production","description":"Ultra-low-noise n-channel JFET with integrated gate clamp diodes, SOT-23-5","datasheetUrl":"https://www.ti.com/lit/ds/symlink/jfe150.pdf","datasheetInfo":{"part":{"partNumber":"JFE150","technology":"Si","subType":"nChannel","case":"SOT-23-5","package":"DBV"},"electrical":{"drainSourceVoltage":40,"gateSourceVoltageMax":40,"gateDrainVoltageMax":40,"gateForwardCurrentMax":0.02,"continuousDrainCurrent":0.05,"saturationDrainCurrent":{"minimum":0.024,"nominal":0.035,"maximum":0.046},"saturationDrainCurrentVds":10,"gateSourceCutoffVoltage":{"minimum":-1.5,"nominal":-1.2,"maximum":-0.9},"cutoffDrainCurrent":1e-07,"cutoffDrainSourceVoltage":10,"transconductance":[{"transconductance":{"minimum":0.055,"nominal":0.068,"maximum":0.08},"gateSourceVoltage":0,"drainSourceVoltage":10},{"transconductance":{"nominal":0.018},"drainCurrent":0.002,"drainSourceVoltage":10}],"gateLeakageCurrent":{"nominal":2e-13,"maximum":1e-11},"gateLeakageVoltage":-0.7,"inputCapacitance":2.4e-11,"reverseTransferCapacitance":7e-12,"outputCapacitance":8e-12,"voltageNoiseDensity":9e-10,"voltageNoiseDensityFrequency":1000,"voltageNoiseDensityDrainCurrent":0.002,"currentNoiseDensity":1.8e-15,"currentNoiseDensityFrequency":1000},"thermal":{"thermalResistanceJunctionAmbient":183.8,"junctionTemperatureMin":-55,"junctionTemperatureMax":150},"mechanical":{"case":"SOT-23-5","pinout":[{"pin":"1","name":"VCH","function":"other"},{"pin":"2","name":"VCL","function":"other"},{"pin":"3","name":"G","function":"gate"},{"pin":"4","name":"S","function":"source"},{"pin":"5","name":"D","function":"drain"}]},"provenance":[{"source":"manufacturerDatasheet","sourceName":"Texas Instruments JFE150 data sheet SLPS732B (June 2021, rev. April 2023)","sourceUrl":"https://www.ti.com/lit/ds/symlink/jfe150.pdf","retrievedDate":"2026-10-18","verification":"valuesReadFromSource","verificationDate":"2026-10-18","verificationMethod":"IDSS and GFS at VDS 10 V, VGS 0; IG at VDS 2 V, VGS -0.7 V; capacitances at VDS 5 V (Crss at VDS 0); en at IDS 2 mA, VDS 5 V"}]},"orderCode":"JFE150DBVR"}}}})json");
+}
+
+json& sas_ds(json& p, const char* kind) {
+    return p["semiconductor"][kind]["manufacturerInfo"]["datasheetInfo"];
+}
+json& thy_el(json& p) { return sas_ds(p, "thyristor")["electrical"]; }
+json& jf_el(json& p) { return sas_ds(p, "jfet")["electrical"]; }
+json& op_el(json& p) { return sas_ds(p, "optocoupler")["electrical"]; }
+
+TEST_CASE("SAS thyristor/jfet/optocoupler: the five datasheet examples carry no IMPOSSIBLE finding",
+          "[thyristor][jfet][optocoupler]") {
+    for (const json& p : {good_scr(), good_triac(), good_tspd(), good_opto(), good_jfet()}) {
+        const Verdict v = V.validate(p);
+        CHECK(v.valid);
+        for (const auto& f : v.findings) {
+            INFO(f.code << ": " << f.message);
+            CHECK(f.severity != Severity::Impossible);
+        }
+    }
+}
+
+TEST_CASE("SAS: a semiconductor record with no known kind is unjudgeable, not skipped",
+          "[thyristor][jfet][optocoupler]") {
+    json p = json::parse(R"json({"semiconductor":{"photodiode":{}}})json");
+    CHECK_THROWS_AS(V.validate(p), std::invalid_argument);
+}
+
+TEST_CASE("thyristor: a subType outside the SAS enum is malformed, not skipped", "[thyristor]") {
+    json p = good_scr();
+    sas_ds(p, "thyristor")["part"]["subType"] = "gto";
+    CHECK_THROWS_AS(V.validate(p), MalformedField);
+}
+
+TEST_CASE("thyristor: a die subType outside the SAS enum is malformed", "[thyristor]") {
+    json p = good_tspd();
+    json& ds = sas_ds(p, "thyristor");
+    json die = {{"name", "A"}, {"subType", "trisil"}, {"electrical", ds["electrical"]}};
+    ds["dies"] = json::array({die});
+    ds.erase("electrical");
+    CHECK_THROWS_AS(V.validate(p), MalformedField);
+}
+
+// THY_DIRECTION_SUBTYPE
+TEST_CASE("THY_DIRECTION_SUBTYPE: a bidirectional SCR fires", "[thyristor]") {
+    json p = good_scr();
+    thy_el(p)["conductionDirection"] = "bidirectional";
+    CHECK(has(V.validate(p), "THY_DIRECTION_SUBTYPE", Severity::Impossible));
+}
+TEST_CASE("THY_DIRECTION_SUBTYPE: a unidirectional triac fires", "[thyristor]") {
+    json p = good_triac();
+    thy_el(p)["conductionDirection"] = "unidirectional";
+    CHECK(has(V.validate(p), "THY_DIRECTION_SUBTYPE", Severity::Impossible));
+}
+TEST_CASE("THY_DIRECTION_SUBTYPE: a unidirectional surge protector stays quiet", "[thyristor]") {
+    json p = good_tspd();
+    thy_el(p)["conductionDirection"] = "unidirectional";  // TISP4xxxL unidirectional parts exist
+    CHECK_FALSE(has_code(V.validate(p), "THY_DIRECTION_SUBTYPE"));
+    CHECK_FALSE(has_code(V.validate(good_scr()), "THY_DIRECTION_SUBTYPE"));
+}
+
+// THY_BLOCKING_POSITIVE
+TEST_CASE("THY_BLOCKING_POSITIVE: a zero V_RRM fires", "[thyristor]") {
+    json p = good_scr();
+    thy_el(p)["repetitivePeakReverseVoltage"] = 0;
+    CHECK(has(V.validate(p), "THY_BLOCKING_POSITIVE", Severity::Impossible));
+}
+TEST_CASE("THY_BLOCKING_POSITIVE: a negative V_DRM fires", "[thyristor]") {
+    json p = good_triac();
+    thy_el(p)["repetitivePeakOffStateVoltage"] = -600;
+    CHECK(has(V.validate(p), "THY_BLOCKING_POSITIVE", Severity::Impossible));
+}
+TEST_CASE("THY_BLOCKING_POSITIVE: 500 V V_DRM / V_RRM stays quiet", "[thyristor]") {
+    CHECK_FALSE(has_code(V.validate(good_scr()), "THY_BLOCKING_POSITIVE"));
+}
+
+// THY_AV_VS_RMS
+TEST_CASE("THY_AV_VS_RMS: an average on-state current above the RMS fires", "[thyristor]") {
+    json p = good_scr();
+    thy_el(p)["averageOnStateCurrent"] = 13;  // I_T(RMS) 12 A
+    CHECK(has(V.validate(p), "THY_AV_VS_RMS", Severity::Impossible));
+}
+TEST_CASE("THY_AV_VS_RMS: 7.5 A average under 12 A RMS stays quiet", "[thyristor]") {
+    CHECK_FALSE(has_code(V.validate(good_scr()), "THY_AV_VS_RMS"));
+}
+
+// THY_SURGE_VS_CONTINUOUS
+TEST_CASE("THY_SURGE_VS_CONTINUOUS: a 10 ms surge below I_T(RMS) fires", "[thyristor]") {
+    json p = good_scr();
+    thy_el(p)["surgeOnStateCurrent"][0]["current"] = 10;  // I_T(RMS) 12 A
+    CHECK(has(V.validate(p), "THY_SURGE_VS_CONTINUOUS", Severity::Impossible));
+}
+TEST_CASE("THY_SURGE_VS_CONTINUOUS: a 20 ms surge below I_T(AV) on an AV-only SCR fires",
+          "[thyristor]") {
+    json p = good_scr();
+    thy_el(p).erase("rmsOnStateCurrent");
+    thy_el(p)["surgeOnStateCurrent"] =
+        json::array({{{"current", 7}, {"duration", 0.02}, {"shape", "fullSine"}}});  // I_T(AV) 7.5
+    CHECK(has(V.validate(p), "THY_SURGE_VS_CONTINUOUS", Severity::Impossible));
+}
+TEST_CASE("THY_SURGE_VS_CONTINUOUS: 120 A / 132 A surges over 12 A stay quiet", "[thyristor]") {
+    CHECK_FALSE(has_code(V.validate(good_scr()), "THY_SURGE_VS_CONTINUOUS"));
+}
+TEST_CASE("THY_SURGE_VS_CONTINUOUS: a 1000 s line below the RMS rating is not compared",
+          "[thyristor]") {
+    json p = good_tspd();
+    thy_el(p)["rmsOnStateCurrent"] = 5;  // the TISP's 2.1 A line is 1000 s of 50 Hz
+    CHECK_FALSE(has_code(V.validate(p), "THY_SURGE_VS_CONTINUOUS"));
+}
+
+// THY_GATE_TRIGGER_SIGN
+TEST_CASE("THY_GATE_TRIGGER_SIGN: a zero typical I_GT fires", "[thyristor]") {
+    json p = good_scr();
+    thy_el(p)["gateTriggerCurrent"]["nominal"] = 0;
+    CHECK(has(V.validate(p), "THY_GATE_TRIGGER_SIGN", Severity::Impossible));
+}
+TEST_CASE("THY_GATE_TRIGGER_SIGN: a negative I_GT in the G+ quadrant Q1 fires", "[thyristor]") {
+    json p = good_triac();
+    thy_el(p)["quadrantRatings"][0]["gateTriggerCurrent"]["minimum"] = -0.01;
+    CHECK(has(V.validate(p), "THY_GATE_TRIGGER_SIGN", Severity::Impossible));
+}
+TEST_CASE("THY_GATE_TRIGGER_SIGN: a zero V_GT in Q3 fires", "[thyristor]") {
+    json p = good_triac();
+    thy_el(p)["quadrantRatings"][2]["gateTriggerVoltage"] = {{"maximum", 0}};
+    CHECK(has(V.validate(p), "THY_GATE_TRIGGER_SIGN", Severity::Impossible));
+}
+TEST_CASE("THY_GATE_TRIGGER_SIGN: a signed Q3 figure (gate driven negative) stays quiet",
+          "[thyristor]") {
+    json p = good_triac();
+    thy_el(p)["quadrantRatings"][2]["gateTriggerCurrent"] = {{"minimum", -0.05},
+                                                             {"maximum", -0.01}};
+    CHECK_FALSE(has_code(V.validate(p), "THY_GATE_TRIGGER_SIGN"));
+    CHECK_FALSE(has_code(V.validate(good_scr()), "THY_GATE_TRIGGER_SIGN"));
+}
+
+// THY_HOLD_VS_LATCH
+TEST_CASE("THY_HOLD_VS_LATCH: a typical I_H above the maximum I_L fires", "[thyristor]") {
+    json p = good_scr();
+    thy_el(p)["holdingCurrent"]["nominal"] = 0.05;  // I_L max 40 mA
+    CHECK(has(V.validate(p), "THY_HOLD_VS_LATCH", Severity::Impossible));
+}
+TEST_CASE("THY_HOLD_VS_LATCH: a triac's minimum I_H above every quadrant's maximum I_L fires",
+          "[thyristor]") {
+    json p = good_triac();
+    thy_el(p)["holdingCurrent"] = {{"minimum", 0.1}};  // largest quadrant I_L max 90 mA
+    CHECK(has(V.validate(p), "THY_HOLD_VS_LATCH", Severity::Impossible));
+}
+TEST_CASE("THY_HOLD_VS_LATCH: 7 mA typical I_H under 40 mA maximum I_L stays quiet",
+          "[thyristor]") {
+    CHECK_FALSE(has_code(V.validate(good_scr()), "THY_HOLD_VS_LATCH"));
+}
+TEST_CASE("THY_HOLD_VS_LATCH: two loose maxima are not compared", "[thyristor]") {
+    json p = good_scr();
+    thy_el(p)["holdingCurrent"] = {{"maximum", 0.08}};  // I_L max 40 mA
+    CHECK_FALSE(has_code(V.validate(p), "THY_HOLD_VS_LATCH"));
+}
+
+// THY_BREAKOVER_VS_STANDOFF
+TEST_CASE("THY_BREAKOVER_VS_STANDOFF: a maximum breakover below the stand-off fires",
+          "[thyristor]") {
+    json p = good_tspd();
+    thy_el(p)["breakoverVoltage"]["maximum"] = 250;  // V_DRM 275 V
+    CHECK(has(V.validate(p), "THY_BREAKOVER_VS_STANDOFF", Severity::Impossible));
+}
+TEST_CASE("THY_BREAKOVER_VS_STANDOFF: a violating die of a dual protector fires", "[thyristor]") {
+    json p = good_tspd();
+    json& ds = sas_ds(p, "thyristor");
+    json bad = ds["electrical"];
+    bad["breakoverVoltage"] = {{"maximum", 200}};
+    ds["part"]["dieConfiguration"] = "dual";
+    ds["dies"] = json::array({{{"name", "A"}, {"electrical", ds["electrical"]}},
+                              {{"name", "B"}, {"electrical", bad}}});
+    ds.erase("electrical");
+    const Verdict v = V.validate(p);
+    REQUIRE(has(v, "THY_BREAKOVER_VS_STANDOFF", Severity::Impossible));
+    for (const auto& f : v.findings)
+        if (f.code == "THY_BREAKOVER_VS_STANDOFF")
+            CHECK(f.message.find("dies[1]") != std::string::npos);
+}
+TEST_CASE("THY_BREAKOVER_VS_STANDOFF: 350 V breakover over 275 V stand-off stays quiet",
+          "[thyristor]") {
+    CHECK_FALSE(has_code(V.validate(good_tspd()), "THY_BREAKOVER_VS_STANDOFF"));
+}
+
+// jfet
+TEST_CASE("jfet: a subType outside the SAS enum is malformed, not skipped", "[jfet]") {
+    json p = good_jfet();
+    sas_ds(p, "jfet")["part"]["subType"] = "depletion";
+    CHECK_THROWS_AS(V.validate(p), MalformedField);
+}
+
+TEST_CASE("JFET_IDSS_POSITIVE: a zero minimum I_DSS fires", "[jfet]") {
+    json p = good_jfet();
+    jf_el(p)["saturationDrainCurrent"]["minimum"] = 0;
+    CHECK(has(V.validate(p), "JFET_IDSS_POSITIVE", Severity::Impossible));
+}
+TEST_CASE("JFET_IDSS_POSITIVE: 24..46 mA stays quiet", "[jfet]") {
+    CHECK_FALSE(has_code(V.validate(good_jfet()), "JFET_IDSS_POSITIVE"));
+}
+
+TEST_CASE("JFET_VGSOFF_SIGN: an n-channel cut-off stored as a magnitude fires", "[jfet]") {
+    json p = good_jfet();
+    jf_el(p)["gateSourceCutoffVoltage"] = {{"minimum", 0.9}, {"maximum", 1.5}};
+    CHECK(has(V.validate(p), "JFET_VGSOFF_SIGN", Severity::Impossible));
+}
+TEST_CASE("JFET_VGSOFF_SIGN: a p-channel part with a negative cut-off fires", "[jfet]") {
+    json p = good_jfet();
+    sas_ds(p, "jfet")["part"]["subType"] = "pChannel";
+    CHECK(has(V.validate(p), "JFET_VGSOFF_SIGN", Severity::Impossible));
+}
+TEST_CASE("JFET_VGSOFF_SIGN: n-channel -1.5..-0.9 V and p-channel +0.9..+1.5 V stay quiet",
+          "[jfet]") {
+    CHECK_FALSE(has_code(V.validate(good_jfet()), "JFET_VGSOFF_SIGN"));
+    json p = good_jfet();
+    sas_ds(p, "jfet")["part"]["subType"] = "pChannel";
+    jf_el(p)["gateSourceCutoffVoltage"] = {{"minimum", 0.9}, {"nominal", 1.2}, {"maximum", 1.5}};
+    CHECK_FALSE(has_code(V.validate(p), "JFET_VGSOFF_SIGN"));
+}
+
+TEST_CASE("JFET_VGSOFF_VS_VGSS: a cut-off beyond the gate-source rating fires", "[jfet]") {
+    json p = good_jfet();
+    jf_el(p)["gateSourceVoltageMax"] = 1.0;  // |V_GS(off)| up to 1.5 V
+    CHECK(has(V.validate(p), "JFET_VGSOFF_VS_VGSS", Severity::Impossible));
+}
+TEST_CASE("JFET_VGSOFF_VS_VGSS: 1.5 V cut-off under a 40 V rating stays quiet", "[jfet]") {
+    CHECK_FALSE(has_code(V.validate(good_jfet()), "JFET_VGSOFF_VS_VGSS"));
+}
+
+// optocoupler
+TEST_CASE("optocoupler: a subType outside the SAS enum is malformed, not skipped",
+          "[optocoupler]") {
+    json p = good_opto();
+    sas_ds(p, "optocoupler")["part"]["subType"] = "photoTriac";
+    CHECK_THROWS_AS(V.validate(p), MalformedField);
+}
+
+TEST_CASE("OPT_CTR_ORDER: an inverted CTR bin fires", "[optocoupler]") {
+    json p = good_opto();
+    op_el(p)["currentTransferRatio"] = {{"minimum", 2.0}, {"maximum", 1.0}};
+    CHECK(has(V.validate(p), "OPT_CTR_ORDER", Severity::Impossible));
+}
+TEST_CASE("OPT_CTR_ORDER: a typical above the maximum fires", "[optocoupler]") {
+    json p = good_opto();
+    op_el(p)["currentTransferRatio"]["nominal"] = 2.5;  // bin 1.0..2.0
+    CHECK(has(V.validate(p), "OPT_CTR_ORDER", Severity::Impossible));
+}
+TEST_CASE("OPT_CTR_ORDER: the 100..200 % bin stays quiet", "[optocoupler]") {
+    CHECK_FALSE(has_code(V.validate(good_opto()), "OPT_CTR_ORDER"));
+}
+
+TEST_CASE("OPT_ISOLATION_POSITIVE: a zero isolation voltage fires", "[optocoupler]") {
+    json p = good_opto();
+    op_el(p)["isolation"]["withstandVoltageRms"] = 0;
+    CHECK(has(V.validate(p), "OPT_ISOLATION_POSITIVE", Severity::Impossible));
+}
+TEST_CASE("OPT_ISOLATION_POSITIVE: 5300 V RMS stays quiet", "[optocoupler]") {
+    CHECK_FALSE(has_code(V.validate(good_opto()), "OPT_ISOLATION_POSITIVE"));
+}
+
+TEST_CASE("OPT_LED_CURRENT_POSITIVE: a zero LED forward-current rating fires", "[optocoupler]") {
+    json p = good_opto();
+    op_el(p)["inputForwardCurrentMax"] = 0;
+    CHECK(has(V.validate(p), "OPT_LED_CURRENT_POSITIVE", Severity::Impossible));
+}
+TEST_CASE("OPT_LED_CURRENT_POSITIVE: 60 mA stays quiet", "[optocoupler]") {
+    CHECK_FALSE(has_code(V.validate(good_opto()), "OPT_LED_CURRENT_POSITIVE"));
+}
+
+// The new kinds are semiconductors for the family-noun screen: a phototransistor
+// coupler says "transistor", which is its own family's noun.
+TEST_CASE("GEN_FAMILY_MISMATCH: a phototransistor optocoupler stays quiet",
+          "[optocoupler][general]") {
+    json p = good_opto();
+    sas_ds(p, "optocoupler")["part"]["description"] = "Optocoupler, Phototransistor Output";
+    CHECK_FALSE(has_code(V.validate(p), "GEN_FAMILY_MISMATCH"));
+}
+TEST_CASE("GEN_FAMILY_MISMATCH: an optocoupler described as a CAPACITOR still fires",
+          "[optocoupler][general]") {
+    json p = good_opto();
+    sas_ds(p, "optocoupler")["part"]["description"] = "Multilayer Ceramic Capacitor, 100 nF";
+    CHECK(has(V.validate(p), "GEN_FAMILY_MISMATCH", Severity::Suspicious));
+}
+
 // --- potentiometers --------------------------------------------------------
 
 TEST_CASE("POT_VOLTAGE_POWER: 200 V across a 10 k track rated 0.5 W fires",
