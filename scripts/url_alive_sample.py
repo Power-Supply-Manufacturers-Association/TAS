@@ -173,7 +173,28 @@ def text_of(data, ctype):
     return data.decode('utf-8', 'replace')
 
 
-def classify_static(pn, url, series=''):
+def visible_text(html):
+    """text a reader would see in static HTML: scripts, styles and tags removed"""
+    h = re.sub(r'(?is)<(script|style|noscript)\b.*?</\1>', ' ', html)
+    return re.sub(r'\s+', ' ', re.sub(r'(?s)<[^>]+>', ' ', h)).strip()
+
+
+SHELL_ROOT = re.compile(r'<div[^>]+id=["\'](?:root|app|__next|__nuxt|app-root|react-root|main-app)["\']', re.I)
+
+
+def is_shell(pn, html):
+    """True when the static page of a 200 reply looks like a JS shell that fills itself in the browser: tiny body
+    text, an empty script-root div, or no trace of the part number (not even its first characters)"""
+    vis = visible_text(html)
+    if len(vis) < 800:
+        return True
+    if SHELL_ROOT.search(html) and '<script' in html.lower():
+        return True
+    return norm(pn)[:5] not in norm(vis)
+
+
+def classify_static(pn, url, series='', info=None):
+    """info (optional dict) receives shell=True when a `wrong` verdict came from a JS-shell page"""
     kind, status, data, ctype = fetch(url)
     if kind == 'blocked':
         return 'blocked', status
@@ -198,6 +219,8 @@ def classify_static(pn, url, series=''):
         return 'dead', 'soft404'
     if len(norm(series)) >= 3 and norm(series) in norm(txt):
         return 'series', 'series named'  # a series datasheet: names the series, not every code
+    if info is not None and not txt.startswith('%PDF') and is_shell(pn, txt):
+        info['shell'] = True
     return 'wrong', 200
 
 
@@ -232,6 +255,8 @@ CANT_FIND = re.compile(r"can'?t find|cannot find|did(?:n'?t| not) find|\b0 resul
 CHROMIUM = [os.environ.get('TAS_CHROMIUM', '')] + sorted(
     __import__('glob').glob(os.path.expanduser('~/.cache/ms-playwright/chromium-*/chrome-linux*/chrome')), reverse=True)
 _BR = {}
+MAX_RENDERS = int(os.environ.get('TAS_MAX_RENDERS', '300'))  # rendering budget per run (each render is ~6 s)
+RENDERS = {'used': 0, 'denied': 0}
 
 
 def rendered_names(pn, url):
@@ -250,6 +275,9 @@ def rendered_names(pn, url):
     pg = _BR['pg']
     if pg is None:
         return None
+    if RENDERS['used'] >= MAX_RENDERS:
+        RENDERS['denied'] += 1
+        return None
     ok, delay = allowed(url)
     if not ok:
         return None
@@ -258,6 +286,7 @@ def rendered_names(pn, url):
     if wait > 0:
         time.sleep(wait)
     LAST[host] = time.time()
+    RENDERS['used'] += 1
     try:
         pg.goto(url, wait_until='domcontentloaded', timeout=45000); pg.wait_for_timeout(5000)  # networkidle never settles on busy shops
         txt = pg.inner_text('body')
@@ -284,7 +313,24 @@ RENDER_CONTROL = {}
 
 def classify_cited(pn, url, series=''):
     """classify() plus the echo control"""
-    verdict, why = classify_static(pn, url, series)
+    info = {}
+    verdict, why = classify_static(pn, url, series, info)
+    if verdict == 'wrong' and info.get('shell'):
+        # a JS shell never names the part statically: ok only if the rendered page does, and the same-shaped fake
+        # does not render as found too (echo control, once per pattern)
+        pat, form = pn_pattern(pn, url)
+        if pat is not None:
+            if pat not in RENDER_CONTROL:
+                fake = fake_pn(pn)
+                RENDER_CONTROL[pat] = rendered_names(fake, fake_url(pat, form, pn, fake))
+            if RENDER_CONTROL[pat] is True:
+                return 'wrong', 'echo pattern, unverifiable'
+            if RENDER_CONTROL[pat] is None:
+                return verdict, why  # no browser or budget spent: stays as the static verdict
+        r = rendered_names(pn, url)
+        if r:
+            return 'ok', 'rendered SPA'
+        return ('wrong', 'SPA rendered, page does not name the part') if r is False else (verdict, why)
     if verdict != 'ok' or not echoes(pn, url):
         return verdict, why
     # the static page names any part number in this pattern: only a rendered page can tell
@@ -353,6 +399,7 @@ def main():
         out[cat] = {'alive_rate': (c['ok'] + 0.6 * c['series']) / known if known else 0.0, 'counts': dict(c), 'since': cutoff}
     json.dump(out, open(os.path.join(out_dir, 'url_alive.json'), 'w'), indent=1)
     print(json.dumps(out, indent=1))
+    print(f"renders used {RENDERS['used']} of budget {MAX_RENDERS}; denied by budget {RENDERS['denied']}", flush=True)
     if _BR.get('pw'):
         _BR['pw'].stop()
 

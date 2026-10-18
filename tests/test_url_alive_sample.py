@@ -67,3 +67,61 @@ def test_discriminating_pattern_stays_static_ok(monkeypatch):
     net(monkeypatch, {real: (200, b'REAL123 datasheet', 'text/html')})  # fake PN -> 404
     monkeypatch.setattr(u, 'rendered_names', lambda pn, url: 1 / 0)  # must not be needed
     assert u.classify_cited('REAL123', real) == ('ok', 200)
+
+
+SPA = 'https://pim.example.com/products/{}'
+SHELL = b'<html><body><div id="root"></div><script src="/app.js"></script></body></html>'
+
+
+def spa_net(monkeypatch, render):
+    """every URL serves the same JS shell; `render` stands in for headless Chromium"""
+    net(monkeypatch, {})
+    monkeypatch.setattr(u, 'fetch', lambda url: ('http', 200, SHELL, 'text/html'))
+    monkeypatch.setattr(u, 'RENDERS', {'used': 0, 'denied': 0})
+    monkeypatch.setattr(u, 'rendered_names', render)
+
+
+def test_spa_shell_that_renders_the_pn_is_ok(monkeypatch):
+    spa_net(monkeypatch, lambda pn, url: pn == 'GRM155R71C104KA88D')  # the fake renders "not found"
+    pn = 'GRM155R71C104KA88D'
+    assert u.classify_cited(pn, SPA.format(pn))[0] == 'ok'
+
+
+def test_spa_shell_that_renders_not_found_is_wrong(monkeypatch):
+    spa_net(monkeypatch, lambda pn, url: False)
+    pn = 'GRM155R71C104KA88D'
+    v, why = u.classify_cited(pn, SPA.format(pn))
+    assert v == 'wrong' and 'echo' not in why
+
+
+def test_spa_echo_pattern_still_scores_zero(monkeypatch):
+    spa_net(monkeypatch, lambda pn, url: True)  # the fake "renders found" as well
+    pn = 'GRM155R71C104KA88D'
+    v, why = u.classify_cited(pn, SPA.format(pn))
+    assert v == 'wrong' and 'echo' in why
+
+
+def test_real_content_page_is_not_a_shell_and_is_not_rendered(monkeypatch):
+    page = ('<html><body><p>' + 'lorem ipsum dolor sit amet ' * 60 + 'other part</p></body></html>').encode()
+    net(monkeypatch, {SPA.format('GRM155R71C104KA88D'): (200, page, 'text/html')})
+    monkeypatch.setattr(u, 'rendered_names', lambda pn, url: 1 / 0)
+    # names the first characters of the PN: genuine wrong, not a shell
+    page2 = page.replace(b'other part', b'GRM155 only')
+    net(monkeypatch, {SPA.format('GRM155R71C104KA88D'): (200, page2, 'text/html')})
+    assert u.classify_cited('GRM155R71C104KA88D', SPA.format('GRM155R71C104KA88D'))[0] == 'wrong'
+
+
+def test_render_budget_is_capped(monkeypatch):
+    monkeypatch.setattr(u, 'MAX_RENDERS', 0)
+    monkeypatch.setattr(u, 'RENDERS', {'used': 0, 'denied': 0})
+    monkeypatch.setitem(u._BR, 'pg', object())
+    assert u.rendered_names('X1', 'https://a.example/X1') is None and u.RENDERS['denied'] == 1
+
+
+def test_shell_detection_criteria():
+    pn = 'GRM155R71C104KA88D'
+    long = 'lorem ipsum dolor sit amet ' * 60
+    assert u.is_shell(pn, '<html><body>GRM155 Loading</body></html>')                              # tiny body text
+    assert u.is_shell(pn, '<div id="app"></div><script src=x></script><p>' + long + pn + '</p>')  # script-root div
+    assert u.is_shell(pn, '<p>' + long + '</p>')                                              # no trace of the PN
+    assert not u.is_shell(pn, '<p>' + long + 'GRM155 series</p>')
