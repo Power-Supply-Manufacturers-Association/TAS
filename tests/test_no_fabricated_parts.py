@@ -300,6 +300,70 @@ def test_mid_string_single_quantity_ladder_is_the_stated_gap(tmp_path):
     assert ladder_findings(tmp_path, rows) == []
 
 
+# ── 2026-10-18: the vendor witness reads both description slots and RKM codes ─
+# TE's Neohm CPF 2-1614895-0..9 step 9.54k -> 9.72k in exact 20 ohm increments at a
+# fixed 0.1 %, 0.1 W, 25 ppm: the ladder signature, and real (TE confirms all ten).
+# Nine rows restate their value in part.description ("9.54K ohm, Thin Film, ...");
+# -3 came from TE's current API with only manufacturerInfo.description
+# "CPF 0805 9K6 0.1% 25PPM 1K RL". Reading one slot, and not knowing 9K6 = 9.6k,
+# condemned the whole cohort.
+
+def cpf_record(i, description=None, short=None):
+    ohms = 9540.0 + 20 * i
+    rec = {"resistor": {"manufacturerInfo": {
+        "name": "TE Connectivity", "reference": f"2-1614895-{i}",
+        "datasheetInfo": {
+            "part": {"partNumber": f"2-1614895-{i}"},
+            "electrical": {"resistance": {"nominal": ohms}, "tolerance": 0.001,
+                           "powerRating": 0.1, "temperatureCoefficient": 25.0},
+            "provenance": [{"source": "manufacturerParametric",
+                            "sourceUrl": f"https://www.te.com/en/product-2-1614895-{i}.html"}]}}}}
+    mi = rec["resistor"]["manufacturerInfo"]
+    if description:
+        mi["datasheetInfo"]["part"]["description"] = description.format(k=f"{ohms / 1000:g}")
+    if short:
+        mi["description"] = short
+    return rec
+
+
+LONG = "{k}K ohm, Thin Film, Precision Resistor, .1 %, 0805, .1 W, ±25 ppm/°C, NEOHM CPF"
+
+
+def test_vendor_restated_ladder_with_one_rkm_short_description_is_not_flagged(tmp_path):
+    """The live TE cohort: nine long descriptions, one RKM short line in the other slot."""
+    rows = [cpf_record(i, description=LONG) for i in range(10) if i != 3]
+    rows.insert(3, cpf_record(3, short="CPF 0805 9K6 0.1% 25PPM 1K RL"))
+    assert ladder_findings(tmp_path, rows, name="resistors.ndjson") == []
+
+
+def test_ladder_whose_descriptions_do_not_state_the_values_is_still_flagged(tmp_path):
+    """Descriptions in both slots that never print the stepped value witness nothing."""
+    rows = [cpf_record(i, description="Thin Film, Precision Resistor, .1 %, 0805",
+                       short="CPF 0805 0.1% 25PPM 1K RL") for i in range(10)]
+    found = ladder_findings(tmp_path, rows, name="resistors.ndjson")
+    assert len(found) == 10, found
+
+
+def test_rkm_code_for_a_neighbouring_value_is_not_a_witness(tmp_path):
+    """9K6 states 9.6k only: a row worth 9.62k whose text says 9K6 stays unwitnessed."""
+    rows = [cpf_record(i, short="CPF 0805 9K6 0.1% 25PPM 1K RL") for i in range(10)]
+    found = ladder_findings(tmp_path, rows, name="resistors.ndjson")
+    assert len(found) == 10, found
+
+
+@pytest.mark.parametrize("value,text,expected", [
+    (9600.0, "CPF 0805 9K6 0.1%", True),
+    (9600.0, "CPF 0805 9K66 0.1%", False),
+    (4.7, "MF 4R7 1%", True),
+    (0.47, "R47 shunt", True),
+    (2.2e6, "2M2 5%", True),
+    (4.7e-9, "4n7 X7R", True),
+    (4.7, "SN4R7", False),
+])
+def test_states_value_reads_rkm_codes(value, text, expected):
+    assert guard._states_value(value, text) is expected
+
+
 def test_mid_string_real_family_is_not_flagged(tmp_path):
     """The widened key must not start condemning families the old key never saw.
 

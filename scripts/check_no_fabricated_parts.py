@@ -501,7 +501,30 @@ def _states_value(value, text):
                 if re.search(r"(?<![\d.])" + re.escape(form) + r"\s*" + re.escape(prefix)
                              + r"(?![\d])", text):
                     return True
-    return False
+    return any(re.search(r"(?<![\dA-Za-z.])" + re.escape(code) + r"(?![\d])", text)
+               for code in _rkm_codes(value))
+
+
+# RKM / IEC 60062 value codes, where the multiplier letter stands in for the decimal
+# point: 9K6 = 9.6 k, 4R7 = 4.7, R47 = 0.47, 2M2 = 2.2 M, 4n7 = 4.7 n. Vendors print
+# them in short descriptions ("CPF 0805 9K6 0.1% 25PPM 1K RL").
+_RKM_LETTERS = (("R", 1.0), ("K", 1e3), ("k", 1e3), ("M", 1e6), ("G", 1e9),
+                ("p", 1e-12), ("n", 1e-9), ("u", 1e-6), ("µ", 1e-6), ("m", 1e-3))
+
+
+def _rkm_codes(value):
+    """Every RKM spelling of `value` that carries a decimal digit (9K6, R47), or none."""
+    codes = set()
+    for letter, mult in _RKM_LETTERS:
+        scaled = value / mult
+        if not (0.01 <= abs(scaled) < 1000):
+            continue
+        rendered = f"{abs(scaled):.10g}"
+        if "e" in rendered or "." not in rendered:
+            continue                      # "10K" is the plain spelling, matched above
+        whole, frac = rendered.split(".")
+        codes.add(("" if whole == "0" else whole) + letter + frac)
+    return codes
 
 
 def _vendor_corroborates(members, ladder_fields):
@@ -618,11 +641,18 @@ def part_ids(info):
 
 
 def _part_description(info):
-    """The vendor's own description string for this part, or ""."""
+    """The vendor's own description text for this part, or "".
+
+    Both slots hold vendor text and the catalogue uses both: TE's older pages gave
+    "9.54K ohm, Thin Film, ..." (stored as part.description), its current API only the
+    short line "CPF 0805 9K6 0.1% 25PPM 1K RL" (stored as manufacturerInfo.description).
+    Reading one slot left a row with the other unwitnessed, and that single row condemned
+    the TE CPF 2-1614895-0..9 cohort on 2026-10-18 although TE confirms all ten.
+    """
     datasheet = info.get("datasheetInfo") if isinstance(info.get("datasheetInfo"), dict) else {}
     part = datasheet.get("part") if isinstance(datasheet.get("part"), dict) else {}
-    description = part.get("description")
-    return description if isinstance(description, str) else ""
+    texts = [t for t in (part.get("description"), info.get("description")) if isinstance(t, str) and t]
+    return " | ".join(texts)
 
 
 def iter_parts(record, _nested=False):
