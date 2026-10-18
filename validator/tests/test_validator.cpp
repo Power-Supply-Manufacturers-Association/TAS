@@ -6,6 +6,7 @@
 #include "tas_validator/validator.hpp"
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_approx.hpp>
 
 #include <algorithm>
 #include <cstdio>
@@ -4940,8 +4941,10 @@ TEST_CASE("completeness: an rf connector is scored on its characteristic impedan
     CHECK(rf.completeness == 1.0);
     CHECK_FALSE(has_code(rf, "GEN_SPARSE"));
 
-    // The same record without the impedance has nothing in that slot.
-    CHECK(V.validate(conn("rf", "")).completeness == 0.5);
+    // The same record without the impedance has nothing in its only slot: rf is
+    // scored on impedance alone (2026-10-18), so a working voltage does not
+    // stand in for it.
+    CHECK(V.validate(conn("rf", "")).completeness == 0.0);
 
     // And a contacted family cannot fill the slot with an impedance: the
     // manifest follows the declared family, not whatever the record carries.
@@ -5841,4 +5844,145 @@ TEST_CASE("MOD_SWITCH_AMBIENT_RATINGS: a power-module switch with ambientRatings
 TEST_CASE("MOD_SWITCH_AMBIENT_RATINGS: a power-module switch without them is quiet",
           "[module][ambient]") {
     CHECK_FALSE(has_code(V.validate(power_module(false)), "MOD_SWITCH_AMBIENT_RATINGS"));
+}
+
+// ---------------------------------------------------------------------------
+// Connector rule changes approved by Alf 2026-10-18 after
+// staging/cleanup/connector_findings/REPORT.md. Each rule has a quiet case and a
+// still-fires case; the quiet case is the one that fails when the rule is reverted.
+// ---------------------------------------------------------------------------
+
+// GEN_SPARSE: the connector voltage slot counts ANY published voltage rating.
+// Sullins drawing C10909 prints a 1800 VAC DWV and no working voltage at all.
+TEST_CASE("GEN_SPARSE: a connector with only a DWV has its voltage slot filled",
+          "[connector][completeness]") {
+    json p = good_connector();
+    auto& e = p["connector"]["manufacturerInfo"]["datasheetInfo"]["electrical"];
+    e.erase("ratedVoltage");
+    e["dielectricWithstandingVoltage"] = 1800.0;
+    Verdict v = V.validate(p);
+    CHECK(v.completeness == 1.0);
+    CHECK_FALSE(has_code(v, "GEN_SPARSE"));
+}
+
+TEST_CASE("GEN_SPARSE: a connector with only an insulation path working voltage is filled",
+          "[connector][completeness]") {
+    json p = good_connector();
+    auto& e = p["connector"]["manufacturerInfo"]["datasheetInfo"]["electrical"];
+    e.erase("ratedVoltage");
+    e["insulationPaths"] = json::parse(
+        R"json([{"from": "a", "to": "b", "ratedImpulseVoltage": 4000.0},
+                {"from": "a", "to": "shell", "workingVoltage": 250.0}])json");
+    Verdict v = V.validate(p);
+    CHECK(v.completeness == 1.0);
+    CHECK_FALSE(has_code(v, "GEN_SPARSE"));
+}
+
+TEST_CASE("GEN_SPARSE: a connector with no voltage rating of any kind still fires",
+          "[connector][completeness]") {
+    json p = good_connector();
+    auto& e = p["connector"]["manufacturerInfo"]["datasheetInfo"]["electrical"];
+    e.erase("ratedVoltage");
+    // An insulation path without a working voltage does not fill the slot.
+    e["insulationPaths"] = json::parse(
+        R"json([{"from": "a", "to": "b", "ratedImpulseVoltage": 4000.0}])json");
+    Verdict v = V.validate(p);
+    CHECK(v.completeness == 0.5);
+    CHECK(has(v, "GEN_SPARSE", Severity::Suspicious));
+}
+
+// rf: impedance alone defines a coax interface (U.FL/X.FL publish no voltage).
+TEST_CASE("GEN_SPARSE: an rf connector with impedance and no voltage is not sparse",
+          "[connector][completeness]") {
+    json p = good_connector();
+    auto& d = p["connector"]["manufacturerInfo"]["datasheetInfo"];
+    d["familyDetails"] = json::parse(R"json({"family": "rf", "characteristicImpedance": 50.0})json");
+    d["electrical"].erase("ratedVoltage");
+    d["electrical"].erase("ratedCurrentPerContact");
+    Verdict v = V.validate(p);
+    CHECK(v.completeness == 1.0);
+    CHECK_FALSE(has_code(v, "GEN_SPARSE"));
+}
+
+TEST_CASE("GEN_SPARSE: an rf connector with a voltage but no impedance fires",
+          "[connector][completeness]") {
+    json p = good_connector();
+    auto& d = p["connector"]["manufacturerInfo"]["datasheetInfo"];
+    d["familyDetails"] = json::parse(R"json({"family": "rf"})json");
+    d["electrical"].erase("ratedCurrentPerContact");
+    Verdict v = V.validate(p);
+    CHECK(v.completeness == 0.0);
+    CHECK(has(v, "GEN_SPARSE", Severity::Suspicious));
+}
+
+// CONN_CONTACT_VOLTAGE: a {maximum}-only resistance is a guaranteed limit, so
+// only the melting tier applies. Sullins: 3 A x 30 mOhm MAX on gold = 0.09 V,
+// past gold's 0.08 V softening and far below its 0.43 V melting voltage.
+TEST_CASE("CONN: a max-only contact resistance is not tested against softening",
+          "[connector]") {
+    json p = good_connector();
+    auto& e = p["connector"]["manufacturerInfo"]["datasheetInfo"]["electrical"];
+    e["ratedCurrentPerContact"] = 3.0;
+    e["contactResistance"] = json::parse(R"json({"maximum": 0.03})json");
+    CHECK_FALSE(has_code(V.validate(p), "CONN_CONTACT_VOLTAGE"));
+    // The same 30 mOhm stated as the contact's nominal resistance still softens.
+    e["contactResistance"] = json::parse(R"json({"nominal": 0.03})json");
+    Verdict v = V.validate(p);
+    CHECK(has(v, "CONN_CONTACT_VOLTAGE", Severity::Suspicious));
+}
+
+TEST_CASE("CONN: a max-only contact resistance past the melting voltage still fires",
+          "[connector]") {
+    json p = good_connector();
+    auto& e = p["connector"]["manufacturerInfo"]["datasheetInfo"]["electrical"];
+    e["ratedCurrentPerContact"] = 3.0;
+    e["contactResistance"] = json::parse(R"json({"maximum": 0.15})json");  // 0.45 V >= gold 0.43
+    Verdict v = V.validate(p);
+    REQUIRE(has(v, "CONN_CONTACT_VOLTAGE", Severity::Suspicious));
+    for (const auto& f : v.findings)
+        if (f.code == "CONN_CONTACT_VOLTAGE") CHECK(f.threshold == Catch::Approx(0.43));
+}
+
+// CONN_CURRENT_DENSITY: the post side scales with pitch below 2.54 mm.
+TEST_CASE("CONN: fine-pitch vendor ratings sit inside the pitch-scaled density limit",
+          "[connector]") {
+    json p = good_connector();
+    auto& d = p["connector"]["manufacturerInfo"]["datasheetInfo"];
+    // Hirose BM28: 0.35 mm pitch, 5 A on its power contacts.
+    d["mechanical"]["pitch"] = 0.00035;
+    d["electrical"]["ratedCurrentPerContact"] = 5.0;
+    CHECK_FALSE(has_code(V.validate(p), "CONN_CURRENT_DENSITY"));
+    // Samtec QSH: 0.5 mm pitch, 2 A per pin (older sheet).
+    d["mechanical"]["pitch"] = 0.0005;
+    d["electrical"]["ratedCurrentPerContact"] = 2.0;
+    CHECK_FALSE(has_code(V.validate(p), "CONN_CURRENT_DENSITY"));
+}
+
+TEST_CASE("CONN: an absurd fine-pitch current density still fires", "[connector]") {
+    json p = good_connector();
+    auto& d = p["connector"]["manufacturerInfo"]["datasheetInfo"];
+    d["mechanical"]["pitch"] = 0.00035;
+    d["electrical"]["ratedCurrentPerContact"] = 9.0;  // limit at 0.35 mm is ~5.6 A
+    Verdict v = V.validate(p);
+    CHECK(has(v, "CONN_CURRENT_DENSITY", Severity::Suspicious));
+    // pitch/4 is unchanged at and above 2.54 mm.
+    CHECK(thr::conn_pin_side(0.00254) == Catch::Approx(0.25 * 0.00254));
+    CHECK(thr::conn_pin_side(0.005) == Catch::Approx(0.25 * 0.005));
+}
+
+// CONN_CURRENT_RANGE: WAGO 285-1185 POWER CAGE CLAMP is a real 353 A terminal.
+TEST_CASE("CONN: a 353 A power terminal is within the per-contact current range",
+          "[connector]") {
+    json p = good_connector();
+    auto& d = p["connector"]["manufacturerInfo"]["datasheetInfo"];
+    d["familyDetails"] = json::parse(R"json({"family": "terminalBlock"})json");
+    d["mechanical"].erase("pitch");
+    d["electrical"].erase("contactResistance");
+    d["electrical"]["ratedCurrentPerContact"] = 353.0;
+    d["electrical"]["ratedVoltage"] = 1000.0;
+    CHECK_FALSE(has_code(V.validate(p), "CONN_CURRENT_RANGE"));
+    d["electrical"]["ratedCurrentPerContact"] = 1600.0;
+    CHECK(has(V.validate(p), "CONN_CURRENT_RANGE", Severity::Suspicious));
+    d["electrical"]["ratedCurrentPerContact"] = 5000.0;
+    CHECK(has(V.validate(p), "CONN_CURRENT_RANGE", Severity::Impossible));
 }

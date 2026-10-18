@@ -149,10 +149,16 @@ void check_connectors(const json& datasheet, const Ctx& ctx, std::vector<Finding
     if (mech == nullptr) skipped.push_back("CONN_MECHANICAL_*");
 
     std::optional<double> I, V, Rc, clearance, creepage, dwv;
+    bool rc_limit_only = false;
     if (elec != nullptr) {
         I = scalar_at(*elec, {"ratedCurrentPerContact"});
         V = scalar_at(*elec, {"ratedVoltage"});
         Rc = scalar_at(*elec, {"contactResistance"});
+        // A {maximum}-only resistance is a guaranteed LIMIT (the "30 MILLIOHMS
+        // MAX" of a vendor drawing), not the contact's operating resistance.
+        if (const json* rc = at(*elec, "contactResistance"))
+            rc_limit_only = rc->is_object() && rc->contains("maximum") &&
+                            !rc->contains("nominal") && !rc->contains("minimum");
         clearance = scalar_at(*elec, {"clearance"});
         creepage = scalar_at(*elec, {"creepage"});
         dwv = scalar_at(*elec, {"dielectricWithstandingVoltage"});
@@ -319,6 +325,17 @@ void check_connectors(const json& datasheet, const Ctx& ctx, std::vector<Finding
     // the part's own contact resistance exceeds the melting voltage of the
     // part's own plating, the two specifications describe different physical
     // objects. Fires on 464 / 46,927 = 0.99% of parts carrying both fields.
+    //
+    // A {maximum}-only contactResistance is tested against the MELTING tier
+    // only, never the softening tier (approved by Alf 2026-10-18,
+    // staging/cleanup/connector_findings/REPORT.md section 2). A guaranteed
+    // maximum times the full rated current is an UPPER BOUND on U, not an
+    // estimate of it, and 28,827 of the 28,893 CONN_CONTACT_VOLTAGE fires were
+    // exactly that product crossing a softening voltage by 10-30% (Sullins:
+    // 3 A x 30 mOhm max = 0.09 V vs gold 0.08 V, both values verified against
+    // drawings C10909 / C10436 / C11432). An upper bound past the WELD voltage
+    // is still inconsistent, so the melting tier, the no-plating tungsten
+    // ceiling and the IMPOSSIBLE tier all keep evaluating it.
     if (I && Rc && *I > 0 && *Rc > 0) {
         const double u_contact = *I * *Rc;
         const double u_any = thr::CONN_UMELT_MAX_ANY;
@@ -348,7 +365,7 @@ void check_connectors(const json& datasheet, const Ctx& ctx, std::vector<Finding
                              "voltage of the stated plating — at the rated current this contact "
                              "would weld [V]",
                              u_contact, hv.melting));
-                else if (u_contact >= hv.softening)
+                else if (!rc_limit_only && u_contact >= hv.softening)
                     emit(out, ctx, "CONN_CONTACT_VOLTAGE", Severity::Suspicious, u_contact,
                          hv.softening,
                          fmt("ratedCurrentPerContact * contactResistance exceeds the Holm SOFTENING "
@@ -411,9 +428,10 @@ void check_connectors(const json& datasheet, const Ctx& ctx, std::vector<Finding
 
         // CHECK: current density through the contact cross-section the pitch
         // allows. SUSPICIOUS only — see the threshold comment for why a hybrid
-        // power+signal connector legitimately exceeds it. Fires on 0.74%.
+        // power+signal connector legitimately exceeds it. The post side scales
+        // with pitch (thr::conn_pin_side), not a fixed pitch/4.
         if (I && pitch && *I > 0 && *pitch > 0) {
-            const double side = thr::CONN_PIN_SIDE_PER_PITCH * *pitch;
+            const double side = thr::conn_pin_side(*pitch);
             const double j = *I / (side * side);
             if (j > thr::CONN_CURRENT_DENSITY_SUS)
                 emit(out, ctx, "CONN_CURRENT_DENSITY", Severity::Suspicious, j,

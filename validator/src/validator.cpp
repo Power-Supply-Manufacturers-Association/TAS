@@ -549,16 +549,29 @@ const std::vector<std::string>* diode_core_fields(const json& datasheet) {
 // next family whose published rating differs is one line here, the same way a
 // diode subtype is.
 //
-// ratedVoltage stays required of every family, rf included. The other eleven
-// fill it thinly (pinHeaderSocket 24.8%, circular 25.3%, power 35.0%) and that
-// is a real sourcing gap, not a vocabulary mismatch; so is the 4,182 rf rows'
-// missing working voltage. Note the PATH: characteristicImpedance lives under
-// familyDetails, not under electrical.
+// The voltage slot is "has ANY published voltage rating" (approved by Alf
+// 2026-10-18 after staging/cleanup/connector_findings/REPORT.md): ratedVoltage
+// OR electrical.dielectricWithstandingVoltage OR any
+// electrical.insulationPaths[].workingVoltage. CONAS requires none of the three,
+// and a vendor drawing often prints only one: Sullins drawing C10909 (a 61k-row
+// pattern) states "DIELECTRIC WITHSTANDING VOLTAGE: 1800 VAC" and no working
+// voltage at all, so 70,396 of the 118,512 rows the old {ratedVoltage} slot
+// called sparse carried a voltage rating of another kind. This is completeness
+// SCORING only: a DWV is a proof voltage, not a working voltage, and nothing
+// copies one field into another or reads the DWV as a working voltage. The
+// alternation follows the capacitor `ratedVoltage|voltageRatedAcMax` precedent;
+// rows that publish no voltage of any kind still score 0.5 and still fire.
+//
+// rf is scored on characteristicImpedance ALONE. A voltage is not what defines
+// a coax interface and is rarely published for U.FL/X.FL micro-coax (4,487 rf
+// rows lacked one), the same reason CONAS exempts rf from the per-contact
+// current. Note the PATH: characteristicImpedance lives under familyDetails,
+// not under electrical.
 const std::vector<std::string>* connector_core_fields(const json& datasheet) {
-    static const std::vector<std::string> RF = {"ratedVoltage",
-                                                "familyDetails.characteristicImpedance"};
-    static const std::vector<std::string> CONTACTED = {"ratedVoltage",
-                                                       "ratedCurrentPerContact"};
+    static const std::vector<std::string> RF = {"familyDetails.characteristicImpedance"};
+    static const std::vector<std::string> CONTACTED = {
+        "ratedVoltage|dielectricWithstandingVoltage|insulationPaths[].workingVoltage",
+        "ratedCurrentPerContact"};
     const json* fam = at(datasheet, "familyDetails", "family");
     if (fam != nullptr && fam->is_string() && fam->get<std::string>() == "rf") return &RF;
     return &CONTACTED;

@@ -12,6 +12,9 @@
 // J/cm^3 figures for capacitor energy density.
 #pragma once
 
+#include <algorithm>
+#include <cmath>
+
 namespace tas::thr {
 
 // ---- Magnetics --------------------------------------------------------------
@@ -545,8 +548,15 @@ inline constexpr double VAR_SURGE_SUS = 1.5e5, VAR_SURGE_IMP = 1.0e6;
 inline constexpr double VAR_ENERGY_SUS = 1.0e4, VAR_ENERGY_IMP = 1.0e5;
 
 // ---- Connectors -------------------------------------------------------------
-// Rated current per contact [A]: signal mA up to busbar power contacts ~hundreds A.
-inline constexpr double CONN_CURRENT_SUS = 250.0, CONN_CURRENT_IMP = 2000.0;
+// Rated current per contact [A]: signal mA up to heavy-conductor power terminals
+// and busbar contacts. SUSPICIOUS above 1500 A (raised from 250 A on 2026-10-18,
+// approved by Alf; staging/cleanup/connector_findings/REPORT.md section 4): the
+// 250 A ceiling sat below the catalogue's real heavy-conductor products --
+// WAGO 285-1185 POWER CAGE CLAMP is 353 A (185 mm^2, IEC 60947-7-1, WAGO's own
+// page), the 269/353/380/520 A rows are the IEC ampacity series of 95-300 mm^2
+// cable, and Amphenol BarKlip BK600-BK1200 busbar contacts reach 1250 A. 1500 A
+// clears the largest verified product with margin; IMPOSSIBLE stays at 2000 A.
+inline constexpr double CONN_CURRENT_SUS = 1500.0, CONN_CURRENT_IMP = 2000.0;
 // Rated voltage [V]: HV connectors reach tens of kV.
 inline constexpr double CONN_VOLTAGE_SUS = 5.0e4, CONN_VOLTAGE_IMP = 1.0e5;
 // Rated IMPULSE withstand voltage [V] of one insulation path
@@ -625,14 +635,37 @@ inline constexpr double CONN_UMELT_MAX_ANY = 1.10;         // W, the ceiling ove
 inline constexpr double CONN_UCONTACT_IMP_FACTOR = 5.0;    // x CONN_UMELT_MAX_ANY -> IMPOSSIBLE
 
 // Current density [A/m^2] through the contact cross-section implied by the pitch.
-// Both standard fine-pitch conventions put the square post at exactly pitch/4
-// (2.54 mm -> 0.64 mm sq; 2.00 mm -> 0.50 mm sq), so A_contact ~ (pitch/4)^2.
 // 100 A/mm^2 continuous is beyond any solid contact (busbar design runs 1-3
 // A/mm^2). SUSPICIOUS only, never IMPOSSIBLE: on a HYBRID connector the rated
 // current belongs to a wide power blade while the pitch belongs to the signal
 // field, so a legitimate part can exceed this (verified: Hirose BM50U, 15 A
-// power contacts in a 0.35 mm signal pitch). Fires on 1,829 / 246,344 = 0.74%.
+// power contacts in a 0.35 mm signal pitch).
+//
+// Post side vs pitch (rule changed 2026-10-18, approved by Alf;
+// staging/cleanup/connector_findings/REPORT.md section 3):
+//     side = 0.25 * max(pitch, sqrt(pitch * 2.54 mm))
+// At and above 2.54 mm this is the old pitch/4 square post (2.54 mm -> 0.64 mm
+// sq, the convention it was calibrated on; 2.00 mm -> 0.56 mm vs the 0.50 mm
+// standard post, 27% more area). Below 2.54 mm the side shrinks as sqrt(pitch)
+// rather than in proportion: a fine-pitch contact does not shrink with the
+// pitch, because the insulating wall between contacts and the stamped contact
+// both run into process minimums, and the high per-contact ratings published at
+// fine pitch come from wider power contacts and ground planes in the same
+// housing. Fixed pitch/4 put a 0.5 mm part's post at 0.125 mm and fired on 883
+// rows, 90% at pitch <= 0.5 mm and overwhelmingly on vendor-published ratings.
+// The sqrt law is the simplest scaling that is continuous with the 2.54 mm
+// calibration and admits the report's vendor evidence:
+//   Hirose BM28, 0.35 mm, 5 A on its power contacts -> limit 5.6 A (quiet)
+//   Samtec QSH, 0.5 mm, 2 A per pin (older sheet)    -> limit 7.9 A (quiet)
+//   TE/AMP board-to-board power, 0.8 mm, 9.5 A        -> limit 12.7 A (quiet)
+// while 20 A at 0.5 mm (2.5x) or the TE Buchanan 300 A-at-5 mm voltage-in-the-
+// current-field rows (1.9x) still fire.
 inline constexpr double CONN_PIN_SIDE_PER_PITCH = 0.25;
+inline constexpr double CONN_PIN_SIDE_REF_PITCH_M = 2.54e-3;
+inline double conn_pin_side(double pitch_m) {
+    return CONN_PIN_SIDE_PER_PITCH *
+           std::max(pitch_m, std::sqrt(pitch_m * CONN_PIN_SIDE_REF_PITCH_M));
+}
 inline constexpr double CONN_CURRENT_DENSITY_SUS = 1.0e8;  // A/m^2
 
 // Where a per-contact rating stops being a contact of the stated pitch (ABT #486).

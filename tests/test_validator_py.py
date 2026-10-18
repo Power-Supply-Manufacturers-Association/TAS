@@ -714,25 +714,40 @@ def test_rf_connectors_score_on_characteristic_impedance():
     assert v.completeness == 1.0
     assert not [f for f in v.findings if f.code == "GEN_SPARSE"]
 
-    # Without the impedance there is nothing in the current-rating slot at all.
+    # Without the impedance there is nothing in rf's only slot: a working
+    # voltage does not stand in for it.
     no_z = _connector("rf", {"ratedVoltage": 500.0})
-    assert tas_validator.validate(no_z).completeness == pytest.approx(0.5)
+    assert tas_validator.validate(no_z).completeness == 0.0
 
 
-def test_rf_connectors_still_need_a_rated_voltage():
-    """The alternation must not silence the working-voltage gap it does not cover."""
+def test_rf_connectors_do_not_need_a_rated_voltage():
+    """rf is scored on impedance alone (approved 2026-10-18): U.FL/X.FL micro-coax
+    rarely publish a working voltage, and a voltage is not what defines a coax
+    interface -- the same reason CONAS exempts rf from the per-contact current."""
     v = tas_validator.validate(_connector("rf", {}, impedance=50.0))
-    assert v.completeness == pytest.approx(0.5)
-    assert [f for f in v.findings if f.code == "GEN_SPARSE"]
+    assert v.completeness == 1.0
+    assert not [f for f in v.findings if f.code == "GEN_SPARSE"]
+
+
+def test_connector_voltage_slot_accepts_any_voltage_rating():
+    """ratedVoltage | dielectricWithstandingVoltage | insulationPaths[].workingVoltage
+    all fill the voltage slot (completeness scoring only; nothing is copied)."""
+    dwv = _connector("pinHeaderSocket",
+                     {"ratedCurrentPerContact": 3.0, "dielectricWithstandingVoltage": 1800.0})
+    assert tas_validator.validate(dwv).completeness == 1.0
+    wv = _connector("pinHeaderSocket",
+                    {"ratedCurrentPerContact": 3.0,
+                     "insulationPaths": [{"from": "a", "to": "b", "workingVoltage": 250.0}]})
+    assert tas_validator.validate(wv).completeness == 1.0
 
 
 def test_non_rf_connector_sparseness_is_untouched():
-    """The eleven other families are scored exactly as before."""
+    """A non-rf connector with no voltage rating of any kind is still sparse."""
     thin = _connector("pinHeaderSocket", {"ratedCurrentPerContact": 3.0})
     v = tas_validator.validate(thin)
     assert v.completeness == pytest.approx(0.5)
     assert [f for f in v.findings if f.code == "GEN_SPARSE"], (
-        "a non-rf connector missing ratedVoltage is a real sourcing gap and must "
+        "a non-rf connector with no voltage rating of any kind is a real sourcing gap and must "
         "stay reported"
     )
     full = _connector("pinHeaderSocket",
