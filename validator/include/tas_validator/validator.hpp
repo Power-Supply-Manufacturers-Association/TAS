@@ -181,6 +181,9 @@ void check_switches(const json& datasheet, const Ctx&, std::vector<Finding>&, st
 void check_protection(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
 void check_potentiometers(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
 void check_connector_accessories(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
+// TMAS thermal management: dispatches on the pinned `family` of the
+// thermalManagement object (read from ctx.component_obj) -- see thermal.cpp.
+void check_thermal_management(const json& datasheet, const Ctx&, std::vector<Finding>&, std::vector<std::string>& skipped);
 // Shared by relays AND switches: EMAS models both families' switched circuit
 // with the same contactSet/isolation types, so the contact physics lives once
 // (contacts.cpp) instead of being mirrored into two files. Takes the family's

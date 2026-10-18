@@ -5231,3 +5231,132 @@ TEST_CASE("GEN: the same suffixes in other vendors' grammars, and real onsemi IG
     CHECK(!has_code(V.validate(ic("ROHM", "SCT4013DR")), "GEN_FOREIGN_ORDER_SUFFIX"));
     CHECK(!has_code(V.validate(ic("STMicroelectronics", "STGW30H65FB")), "GEN_FOREIGN_ORDER_SUFFIX"));
 }
+
+// --- thermal management (TMAS thermalManagement.json) ------------------------
+// The good records are four TMAS examples, verbatim (TMAS/examples 01, 02, 03, 05:
+// Boyd/Aavid 577202B00000G heatsink, Henkel BERGQUIST SP900S pad, Same Sky
+// CFM-4010-13-22 fan, TE 1367646-1 clip). The family is the pinned const on the
+// thermalManagement object, not inside datasheetInfo.
+namespace {
+json good_thm_hs() {
+    return json::parse(R"json({"thermalManagement":{"family":"heatsink","manufacturerInfo":{"name":"Boyd","reference":"577202B00000G","family":"Aavid","series":"5772","description":"Slim, low cost channel style heat sink with no solderable tabs","datasheetUrl":"https://info.boydcorp.com/hubfs/Thermal/Air-Cooling/Boyd-Board-Level-Heatsinks-Catalog.pdf","datasheetInfo":{"part":{"partNumber":"577202B00000G","series":"5772","description":"Slim, low cost channel style heat sink with no solderable tabs","mountingLevel":"boardLevel","packageFit":["TO-220"],"devicesPerHeatsink":1},"thermal":{"naturalConvection":{"thermalResistance":24.4,"temperatureRise":75},"temperatureRiseVsPower":{"xLabel":"Heat dissipated [W]","xData":[0.525,1.025,2.025,3.025,4.025],"yLabel":"Mounting surface temperature rise above ambient [K]","yData":[15.5,28.0,51.2,72.1,90.3],"conditions":{"cooling":"natural convection"}},"thermalResistanceVsAirVelocity":{"xLabel":"Air velocity [m/s]","xData":[0.5334,1.016,2.032,3.048,4.064,5.08],"yLabel":"Thermal resistance, mounting surface to ambient [K/W]","yData":[13.0,9.6,6.8,6.4,6.1,6.0],"conditions":{"cooling":"forced convection"}}},"mechanical":{"length":{"nominal":0.01905},"width":{"nominal":0.01321},"height":{"nominal":0.0127},"material":"aluminium","materialThickness":0.00127,"finish":"blackAnodized","attachment":["screwOrBolt"],"solderTabCount":0,"mountingHoleDiameter":0.00381},"provenance":[{"source":"manufacturerDatasheet","sourceName":"Boyd Board Level Heat Sinks catalog, p.34-35","sourceUrl":"https://info.boydcorp.com/hubfs/Thermal/Air-Cooling/Boyd-Board-Level-Heatsinks-Catalog.pdf","retrievedDate":"2026-10-18","verification":"valuesReadFromSource","verificationDate":"2026-10-18","verificationMethod":"Natural-convection thermal resistance stated at a 75 C mounting-surface rise; dimensions from the 5770/5771/5772 outline drawing, 'A' dim = 12.70 mm, mounting hole 3.81 mm thru, 1.27 mm thick aluminum, black anodize","fields":["part","thermal.naturalConvection","mechanical"]},{"source":"manufacturerDatasheet","sourceName":"Aavid 577202B00000G product sheet","sourceUrl":"https://store.comet.bg/download-file.php?id=17103","retrievedDate":"2026-10-18","verification":"valuesReadFromSource","verificationDate":"2026-10-18","verificationMethod":"Both curves read from the datasheet figure, not tabulated: thermal resistance within +-0.2 K/W at 105-1000 ft/min (converted x 0.00508 m/s), temperature rise within +-1 K","fields":["thermal.temperatureRiseVsPower","thermal.thermalResistanceVsAirVelocity"]}]}}}})json");
+}
+json good_thm_tim() {
+    return json::parse(R"json({"thermalManagement":{"family":"thermalInterfaceMaterial","manufacturerInfo":{"name":"Henkel","reference":"SP900S-0.009-00-43","family":"BERGQUIST SIL PAD","series":"SIL PAD TSP 1600S","description":"Thermal pad, TO-220 cut, 0.229 mm, pink (also sold as SIL-PAD 900S)","datasheetUrl":"https://datasheets.tdx.henkel.com/BERGQUIST-SIL-PAD-TSP-1600S-en_GL.pdf","datasheetInfo":{"part":{"partNumber":"SP900S-0.009-00-43","series":"SIL PAD TSP 1600S","form":"insulatorPad","technology":"silicone","carrier":"fiberglass","configuration":"dieCut","packageFit":["TO-220"],"electricallyInsulating":true},"thermal":{"operatingTemperature":{"minimum":-60,"maximum":180},"thermalConductivity":1.6,"thermalConductivityTestMethod":"astmD5470","thermalImpedanceVsPressure":{"xLabel":"Mounting pressure [Pa]","xData":[68947.6,172369.0,344738.0,689476.0,1378950.0],"yLabel":"Thermal impedance [K m^2/W]","yData":[0.000612902,0.00048387,0.000393548,0.000303225,0.000264516]},"packageThermalResistance":[{"package":"TO-220","thermalResistanceVsPressure":{"xLabel":"Mounting pressure [Pa]","xData":[68947.6,172369.0,344738.0,689476.0,1378950.0],"yLabel":"Thermal resistance, case to sink [K/W]","yData":[3.96,3.41,2.9,2.53,2.32]}}]},"electrical":{"breakdownVoltage":5500,"breakdownVoltageType":"ac","dielectricConstant":6.0,"dielectricConstantFrequency":1000,"volumeResistivity":10000000000.0},"mechanical":{"length":{"nominal":0.01905},"width":{"nominal":0.0127},"thickness":{"nominal":0.000229},"hardness":{"value":92,"scale":"shoreA"},"tensileStrength":9000000.0,"flammabilityRating":"V-0","colour":"Pink"},"provenance":[{"source":"manufacturerDatasheet","sourceName":"Henkel TDS BERGQUIST SIL PAD TSP 1600S, November 2018","sourceUrl":"https://datasheets.tdx.henkel.com/BERGQUIST-SIL-PAD-TSP-1600S-en_GL.pdf","retrievedDate":"2026-10-18","verification":"valuesReadFromSource","verificationDate":"2026-10-18","verificationMethod":"Typical values. Thermal impedance per ASTM D5470 including interfacial resistance, tabulated at 10/25/50/100/200 psi in C-in2/W (converted x 6.4516e-4 K m2/W, x 6894.757 Pa); breakdown ASTM D149 Vac; dielectric constant ASTM D150 at 1000 Hz; volume resistivity ASTM D257; hardness ASTM D2240; tensile ASTM D412","fields":["part.form","part.technology","part.carrier","part.electricallyInsulating","thermal","electrical","mechanical.thickness","mechanical.hardness","mechanical.tensileStrength","mechanical.flammabilityRating","mechanical.colour"]},{"source":"distributor","sourceName":"DigiKey","sourceUrl":"https://www.digikey.com/en/products/detail/bergquist/SP900S-0-009-00-43/307796","retrievedDate":"2026-10-18","verification":"valuesReadFromSource","verificationDate":"2026-10-18","fields":["part.partNumber","part.configuration","part.packageFit","mechanical.length","mechanical.width"]}]}},"distributorsInfo":[{"name":"DigiKey","reference":"BER174-ND","link":"https://www.digikey.com/en/products/detail/bergquist/SP900S-0-009-00-43/307796"}]}})json");
+}
+json good_thm_fan() {
+    return json::parse(R"json({"thermalManagement":{"family":"fan","manufacturerInfo":{"name":"Same Sky","reference":"CFM-4010-13-22","series":"CFM-40","description":"DC axial fan, 40 x 40 x 10.6 mm, 12 Vdc, tachometer and PWM control","datasheetUrl":"https://www.cuidevices.com/product/resource/cfm-40.pdf","datasheetInfo":{"part":{"partNumber":"CFM-4010-13-22","series":"CFM-40","fanType":"axial","bearing":"ball","motor":"brushlessDc","motorPoles":4,"rotation":"counterClockwise"},"electrical":{"supplyType":"dc","voltage":{"minimum":6,"nominal":12,"maximum":13.8},"startingVoltage":6,"current":{"nominal":0.1,"maximum":0.13},"power":{"nominal":1.2,"maximum":1.56},"insulationResistance":10000000.0,"dielectricWithstandVoltage":500},"performance":{"speed":{"minimum":7470,"nominal":8300,"maximum":9130},"maximumAirflow":0.00471947,"maximumStaticPressure":72.2358,"pressureVsAirflow":{"xLabel":"Airflow [m^3/s]","xData":[0.0,0.000471947,0.00141584,0.00235974,0.00330363,0.00424753,0.00471947],"yLabel":"Static pressure [Pa]","yData":[70.6079,63.1548,49.7197,28.6354,20.692,8.04145,0.0],"conditions":{"voltage":12}},"acousticNoise":{"nominal":35.5,"maximum":37.0},"acousticNoiseDistance":1.0},"signals":{"tachometer":true,"pwmControl":true,"lockedRotorProtection":"autoRestart"},"reliability":{"lifeExpectancy":70000,"lifeTemperature":45,"lifeCriterion":"notStated"},"thermal":{"operatingTemperature":{"minimum":-10,"maximum":70},"storageTemperature":{"minimum":-40,"maximum":70}},"mechanical":{"length":{"nominal":0.04},"width":{"nominal":0.04},"height":{"nominal":0.0106},"weight":0.0142,"frameMaterial":"PBT","flammabilityRating":"V-0","connection":"leadWires","leadWireGauge":28},"provenance":[{"source":"manufacturerDatasheet","sourceName":"Same Sky CFM-40 series datasheet, rev 1.05, 2024-09-12","sourceUrl":"https://www.cuidevices.com/product/resource/cfm-40.pdf","retrievedDate":"2026-10-18","verification":"valuesReadFromSource","verificationDate":"2026-10-18","verificationMethod":"12 Vdc model. Speed at 25 C after 10 minutes; airflow at 0 inH2O; static pressure at 0 CFM (0.29 inH2O x 249.0889 Pa); noise at 1 m; insulation resistance min at 500 Vdc frame to positive terminal; dielectric strength 500 Vac 60 Hz 1 minute, 5 mA max; life at 45 C, 15-65% RH, survival criterion not stated. Bearing: specification table says ball bearing, feature list says dual ball bearing","fields":["part","electrical","performance.speed","performance.maximumAirflow","performance.maximumStaticPressure","performance.acousticNoise","performance.acousticNoiseDistance","signals","reliability","thermal","mechanical"]},{"source":"manufacturerDatasheet","sourceName":"Same Sky CFM-40 series datasheet, rev 1.05, 2024-09-12","sourceUrl":"https://www.cuidevices.com/product/resource/cfm-40.pdf","retrievedDate":"2026-10-18","verification":"valuesReadFromSource","verificationDate":"2026-10-18","verificationMethod":"P-Q curve read from the performance-curve figure, not tabulated: within +-0.15 mmH2O at 0/1/3/5/7/9/10 CFM (converted x 4.719474e-4 m3/s, x 9.80665 Pa); the figure shows about 7.2 mmH2O at 0 CFM against the table's 0.29 inH2O (7.37 mmH2O)","fields":["performance.pressureVsAirflow"]}]}}}})json");
+}
+json good_thm_acc() {
+    return json::parse(R"json({"thermalManagement":{"family":"heatsinkAccessory","manufacturerInfo":{"name":"TE Connectivity","reference":"1367646-1","description":"HEATSINK CLIP STAMPED AND FORMED","datasheetInfo":{"part":{"partNumber":"1367646-1","description":"HEATSINK CLIP STAMPED AND FORMED","kind":"clip","construction":"stampedAndFormed"},"provenance":[{"source":"scrape","sourceName":"datasheetarchive.com part listing","sourceUrl":"https://www.datasheetarchive.com/datasheet/1367646-1/TE-Connectivity?version=1","retrievedDate":"2026-09-24","fields":["part.kind","part.construction"],"verification":"notAttempted"}]}}}})json");
+}
+json& thm_ds(json& p) { return p["thermalManagement"]["manufacturerInfo"]["datasheetInfo"]; }
+}  // namespace
+
+TEST_CASE("thermalManagement: the four TMAS examples carry no IMPOSSIBLE finding",
+          "[thermal]") {
+    for (const json& p : {good_thm_hs(), good_thm_tim(), good_thm_fan(), good_thm_acc()}) {
+        const Verdict v = V.validate(p);
+        CHECK(v.valid);
+        for (const auto& f : v.findings) {
+            INFO(f.code << ": " << f.message);
+            CHECK(f.severity != Severity::Impossible);
+        }
+    }
+}
+
+TEST_CASE("thermalManagement: a family outside the TMAS enum is malformed, not skipped",
+          "[thermal]") {
+    json p = good_thm_hs();
+    p["thermalManagement"]["family"] = "coldPlate";
+    CHECK_THROWS_AS(V.validate(p), MalformedField);
+}
+
+TEST_CASE("thermalManagement: a record without family is skipped, never judged valid by a check",
+          "[thermal]") {
+    json p = good_thm_hs();
+    p["thermalManagement"].erase("family");
+    const Verdict v = V.validate(p);
+    CHECK(std::find(v.skipped.begin(), v.skipped.end(), "THM_*") != v.skipped.end());
+}
+
+TEST_CASE("thermalManagement: heatsink mounting hardware has no physics check and says so",
+          "[thermal]") {
+    const Verdict v = V.validate(good_thm_acc());
+    CHECK(std::find(v.skipped.begin(), v.skipped.end(), "THM_ACC_*") != v.skipped.end());
+}
+
+TEST_CASE("thermalManagement: a record with two discriminators fires GEN_MULTI_DISCRIMINATOR",
+          "[thermal]") {
+    json p = good_thm_fan();
+    p["varistor"] = json::object();
+    CHECK(has(V.validate(p), "GEN_MULTI_DISCRIMINATOR", Severity::Impossible));
+}
+
+// heatsink
+TEST_CASE("THM_HS_RTH_NONPOSITIVE: a zero natural-convection resistance fires", "[thermal]") {
+    json p = good_thm_hs();
+    thm_ds(p)["thermal"]["naturalConvection"]["thermalResistance"] = 0.0;
+    CHECK(has(V.validate(p), "THM_HS_RTH_NONPOSITIVE", Severity::Impossible));
+}
+TEST_CASE("THM_HS_RTH_NONPOSITIVE: a negative point on the Rth-vs-air-velocity curve fires",
+          "[thermal]") {
+    json p = good_thm_hs();
+    thm_ds(p)["thermal"]["thermalResistanceVsAirVelocity"]["yData"][3] = -6.4;
+    CHECK(has(V.validate(p), "THM_HS_RTH_NONPOSITIVE", Severity::Impossible));
+}
+TEST_CASE("THM_HS_RTH_NONPOSITIVE: 24.4 K/W and a 13-6 K/W curve stay quiet", "[thermal]") {
+    CHECK_FALSE(has_code(V.validate(good_thm_hs()), "THM_HS_RTH_NONPOSITIVE"));
+}
+
+// thermal interface material
+TEST_CASE("THM_TIM_K_NONPOSITIVE: a zero thermal conductivity fires", "[thermal]") {
+    json p = good_thm_tim();
+    thm_ds(p)["thermal"]["thermalConductivity"] = 0.0;
+    CHECK(has(V.validate(p), "THM_TIM_K_NONPOSITIVE", Severity::Impossible));
+}
+TEST_CASE("THM_TIM_K_NONPOSITIVE: 1.6 W/(m K) stays quiet", "[thermal]") {
+    CHECK_FALSE(has_code(V.validate(good_thm_tim()), "THM_TIM_K_NONPOSITIVE"));
+}
+TEST_CASE("THM_TIM_IMPEDANCE_NONPOSITIVE: a negative impedance point fires", "[thermal]") {
+    json p = good_thm_tim();
+    thm_ds(p)["thermal"]["thermalImpedanceVsPressure"]["yData"][0] = -1e-4;
+    CHECK(has(V.validate(p), "THM_TIM_IMPEDANCE_NONPOSITIVE", Severity::Impossible));
+}
+TEST_CASE("THM_TIM_IMPEDANCE_NONPOSITIVE: the SP900S impedance curve stays quiet", "[thermal]") {
+    CHECK_FALSE(has_code(V.validate(good_thm_tim()), "THM_TIM_IMPEDANCE_NONPOSITIVE"));
+}
+TEST_CASE("THM_TIM_THICKNESS_NONPOSITIVE: a zero minimum thickness fires", "[thermal]") {
+    json p = good_thm_tim();
+    thm_ds(p)["mechanical"]["thickness"]["minimum"] = 0.0;
+    CHECK(has(V.validate(p), "THM_TIM_THICKNESS_NONPOSITIVE", Severity::Impossible));
+}
+TEST_CASE("THM_TIM_THICKNESS_NONPOSITIVE: 0.229 mm stays quiet", "[thermal]") {
+    CHECK_FALSE(has_code(V.validate(good_thm_tim()), "THM_TIM_THICKNESS_NONPOSITIVE"));
+}
+
+// fan
+TEST_CASE("THM_FAN_AIRFLOW_NONPOSITIVE: a zero free-delivery airflow fires", "[thermal]") {
+    json p = good_thm_fan();
+    thm_ds(p)["performance"]["maximumAirflow"] = 0.0;
+    CHECK(has(V.validate(p), "THM_FAN_AIRFLOW_NONPOSITIVE", Severity::Impossible));
+}
+TEST_CASE("THM_FAN_AIRFLOW_NONPOSITIVE: 10 CFM stays quiet", "[thermal]") {
+    CHECK_FALSE(has_code(V.validate(good_thm_fan()), "THM_FAN_AIRFLOW_NONPOSITIVE"));
+}
+TEST_CASE("THM_FAN_PRESSURE_NONPOSITIVE: a negative shut-off pressure fires", "[thermal]") {
+    json p = good_thm_fan();
+    thm_ds(p)["performance"]["maximumStaticPressure"] = -72.2;
+    CHECK(has(V.validate(p), "THM_FAN_PRESSURE_NONPOSITIVE", Severity::Impossible));
+}
+TEST_CASE("THM_FAN_PRESSURE_NONPOSITIVE: 0.29 inH2O stays quiet", "[thermal]") {
+    CHECK_FALSE(has_code(V.validate(good_thm_fan()), "THM_FAN_PRESSURE_NONPOSITIVE"));
+}
+TEST_CASE("THM_FAN_SPEED_NONPOSITIVE: a zero minimum speed fires", "[thermal]") {
+    json p = good_thm_fan();
+    thm_ds(p)["performance"]["speed"]["minimum"] = 0.0;
+    CHECK(has(V.validate(p), "THM_FAN_SPEED_NONPOSITIVE", Severity::Impossible));
+}
+TEST_CASE("THM_FAN_SPEED_NONPOSITIVE: 7470/8300/9130 rpm stays quiet", "[thermal]") {
+    CHECK_FALSE(has_code(V.validate(good_thm_fan()), "THM_FAN_SPEED_NONPOSITIVE"));
+}

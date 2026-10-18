@@ -136,6 +136,7 @@ add_library(tas_validator_core STATIC
   src/optocoupler.cpp
   src/potentiometers.cpp
   src/connector_accessories.cpp
+  src/thermal.cpp
   src/thermistors.cpp
   src/analog.cpp
   src/controllers.cpp

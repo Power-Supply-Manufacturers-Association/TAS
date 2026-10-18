@@ -822,7 +822,7 @@ Verdict PartValidator::validate(const json& part) const {
     static const char* DISCRIMINATORS[] = {
         "magnetic", "capacitor", "resistor", "varistor", "thermistor", "connector", "controller",
         "semiconductor", "timeBase", "relay", "switch", "protection", "potentiometer",
-        "connectorAccessory",
+        "connectorAccessory", "thermalManagement",
         "operationalAmplifier", "comparator", "instrumentationAmplifier", "differenceAmplifier",
         "programmableGainAmplifier", "buffer", "sampleHold", "analogSwitch", "multiplexer",
         "adc", "dac", "multiplier", "integrator", "summer"};
@@ -885,6 +885,10 @@ Verdict PartValidator::validate(const json& part) const {
         run("potentiometer", part["potentiometer"], &check_potentiometers);
     } else if (part.contains("connectorAccessory")) {
         run("connectorAccessory", part["connectorAccessory"], &check_connector_accessories);
+    } else if (part.contains("thermalManagement")) {
+        // TMAS: one discriminator for every family; the family is the pinned
+        // `family` const inside the object, read by check_thermal_management.
+        run("thermalManagement", part["thermalManagement"], &check_thermal_management);
     } else if (part.contains("controller")) {
         run("controller", part["controller"], &check_controllers);
     } else if (part.contains("timeBase")) {
@@ -965,6 +969,7 @@ Verdict PartValidator::validate(const json& part) const {
             throw std::invalid_argument(
                 "no known component discriminator (magnetic/capacitor/resistor/varistor/"
                 "connector/thermistor/relay/switch/protection/potentiometer/connectorAccessory/"
+                "thermalManagement/"
                 "semiconductor/analog-AAS)");
     }
 
