@@ -243,6 +243,25 @@ void check_point(const json& pt, int idx, const json& dims, const std::string& m
         DCR.reset();
     }
     auto Isat = scalar_at(pt, {"saturationCurrentPeak"});
+    // Isat for the two bounds that grow with it (CHECK 3 Isat^2*DCR, CHECK 5
+    // 1/2 L Isat^2 / volume). A part whose datasheet gives Isat at explicit
+    // inductance-drop criteria stores it in the saturationCurrents table and
+    // omits the scalar (MAS: "use saturationCurrents instead"). Reading only the
+    // scalar left those parts unexamined without a trace: Coilcraft SLC1175-*MEC
+    // carry a DCR stored 1000x too large (0.228 ohm for a printed 0.24 mOhm) and
+    // 80-100 A in saturationCurrents, i.e. ~2 kW of Isat^2*DCR, and passed.
+    // The SMALLEST current in the table is used: for upper bounds it is the
+    // conservative choice, so a finding is never produced by picking a lenient
+    // drop criterion. CHECK 7 (rated vs Isat) is a lower bound on Isat and keeps
+    // the scalar only.
+    std::optional<double> IsatBound = Isat;
+    if (!IsatBound && pt.contains("saturationCurrents") && pt["saturationCurrents"].is_array()) {
+        for (const auto& sc : pt["saturationCurrents"]) {
+            if (!sc.is_object()) continue;
+            auto i = scalar_at(sc, {"current"});
+            if (i && *i > 0 && (!IsatBound || *i < *IsatBound)) IsatBound = i;
+        }
+    }
     auto srf = scalar_at(pt, {"selfResonantFrequency"});
 
     double L_uH = *L * 1e6;
@@ -300,8 +319,8 @@ void check_point(const json& pt, int idx, const json& dims, const std::string& m
     }
 
     // CHECK 3: Isat^2 * DCR peak dissipation.
-    if (Isat && DCR) {
-        double p = (*Isat) * (*Isat) * (*DCR);
+    if (IsatBound && DCR) {
+        double p = (*IsatBound) * (*IsatBound) * (*DCR);
         if (p > thr::MAG_ISAT_POWER_IMP)
             emit(out, ctx, "MAG_ISAT_POWER", Severity::Impossible, p, thr::MAG_ISAT_POWER_IMP,
                  tag + fmt("Isat^2*DCR impossibly high [W]", p, thr::MAG_ISAT_POWER_IMP));
@@ -333,8 +352,8 @@ void check_point(const json& pt, int idx, const json& dims, const std::string& m
     }
 
     // CHECK 5 (NEW): stored-energy density E = 1/2 L Isat^2 over device volume.
-    if (Isat && vol && *vol > 0) {
-        double energy = 0.5 * (*L) * (*Isat) * (*Isat);
+    if (IsatBound && vol && *vol > 0) {
+        double energy = 0.5 * (*L) * (*IsatBound) * (*IsatBound);
         double density = energy / *vol;  // J/m^3
         double sus = tech_has(material, "powder") || tech_has(material, "metal") ||
                              tech_has(material, "alloy") || tech_has(material, "iron")

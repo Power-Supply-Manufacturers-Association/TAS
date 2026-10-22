@@ -117,6 +117,45 @@ TEST_CASE("Magnetics: EnergyDensityImpossible", "[magnetics]") {
     CHECK(!v.valid);
 }
 
+TEST_CASE("Magnetics: Isat stored only in saturationCurrents still feeds MAG_ISAT_POWER",
+          "[magnetics][isat_table]") {
+    // Live shape of Coilcraft SLC1175-121MEC: Coilcraft prints Isat at 10/20/30 %
+    // drop (80/84/88 A), stored in saturationCurrents with no scalar; the DCR was
+    // stored as 0.228 ohm for a printed 0.24 mOhm (1000x). 80^2 * 0.228 = 1.46 kW.
+    json p = json::parse(R"json({"magnetic": {"manufacturerInfo": {"name": "Coilcraft",
+      "reference": "SLC1175-121MEC", "datasheetInfo": {
+        "electrical": [{"subtype": "inductor", "inductance": {"nominal": 1.2e-07},
+                        "dcResistance": {"nominal": 0.228},
+                        "saturationCurrents": [
+                          {"percentInductanceDrop": 10.0, "current": 80.0},
+                          {"percentInductanceDrop": 20.0, "current": 84.0},
+                          {"percentInductanceDrop": 30.0, "current": 88.0}]}]}}}})json");
+    Verdict v = V.validate(p);
+    CHECK(has(v, "MAG_ISAT_POWER", Severity::Impossible));
+    CHECK(!v.valid);
+
+    // The same part with the DCR the sheet prints (0.24 mOhm): 80^2 * 2.4e-4 = 1.5 W.
+    auto& e = p["magnetic"]["manufacturerInfo"]["datasheetInfo"]["electrical"][0];
+    e["dcResistance"] = {{"nominal", 0.00024}};
+    Verdict ok = V.validate(p);
+    CHECK(!has_code(ok, "MAG_ISAT_POWER"));
+
+    // The smallest table current is the one used (conservative for an upper bound):
+    // 10 A at 10 % drop with 4 ohm is 400 W (< 500 W IMPOSSIBLE), even though the
+    // 30 % row (100 A) alone would be 40 kW.
+    e["dcResistance"] = {{"nominal", 4.0}};
+    e["saturationCurrents"] = json::array({{{"percentInductanceDrop", 30.0}, {"current", 100.0}},
+                                           {{"percentInductanceDrop", 10.0}, {"current", 10.0}}});
+    Verdict lo = V.validate(p);
+    CHECK(has(lo, "MAG_ISAT_POWER", Severity::Suspicious));
+    CHECK(!has(lo, "MAG_ISAT_POWER", Severity::Impossible));
+
+    // A scalar Isat, when present, is still the one judged.
+    e["saturationCurrentPeak"] = 1.0;
+    Verdict sc = V.validate(p);
+    CHECK(!has_code(sc, "MAG_ISAT_POWER"));
+}
+
 TEST_CASE("Magnetics: SubtypeMismatchCmcAsInductor", "[magnetics]") {
     // The ABT #279 shape: description says common-mode choke, subtype says inductor.
     json p = good_magnetic();
