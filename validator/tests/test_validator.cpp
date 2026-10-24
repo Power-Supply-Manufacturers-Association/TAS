@@ -769,6 +769,39 @@ TEST_CASE("Recalibration: ZeroOhmJumperValid", "[recalibration]") {
     CHECK(!has(v, "RES_R_RANGE", Severity::Impossible));
 }
 
+// A 0-ohm jumper has a maximum resistance, not a tolerance: TE prints NEOHM
+// CRG0805ZR (1623401-1) as "0 ohm ... 0 %". tolerance 0 on a 0-ohm nominal must
+// not be RES_TOLERANCE IMPOSSIBLE, with or without a stated resistance.maximum;
+// tolerance 0 on a non-zero part, and a negative tolerance, still are.
+TEST_CASE("Recalibration: ZeroOhmJumperZeroTolerance", "[recalibration][res_tolerance]") {
+    json te = json::parse(R"json({"resistor":{"manufacturerInfo":{"reference":"1623401-1",
+      "datasheetInfo":{"part":{"partNumber":"1623401-1","technology":"thickFilm"},
+      "electrical":{"resistance":{"nominal":0.0},"tolerance":0.0,"powerRating":0.125,
+                    "temperatureCoefficient":200.0}}}}})json");
+    Verdict vte = V.validate(te);
+    CHECK(!has_code(vte, "RES_TOLERANCE"));
+    CHECK(vte.valid);
+
+    json withMax = json::parse(R"json({"resistor":{"manufacturerInfo":{"reference":"J",
+      "datasheetInfo":{"electrical":{"resistance":{"nominal":0.0,"maximum":0.05},
+                    "tolerance":0.0,"powerRating":0.125}}}}})json");
+    Verdict vmax = V.validate(withMax);
+    CHECK(!has_code(vmax, "RES_TOLERANCE"));
+    CHECK(vmax.valid);
+
+    json nonZero = json::parse(R"json({"resistor":{"manufacturerInfo":{"reference":"X",
+      "datasheetInfo":{"electrical":{"resistance":{"nominal":1000.0},"tolerance":0.0,
+                    "powerRating":0.125}}}}})json");
+    Verdict vnz = V.validate(nonZero);
+    CHECK(has(vnz, "RES_TOLERANCE", Severity::Impossible));
+    CHECK(!vnz.valid);
+
+    json negJumper = json::parse(R"json({"resistor":{"manufacturerInfo":{"reference":"X",
+      "datasheetInfo":{"electrical":{"resistance":{"nominal":0.0},"tolerance":-0.01,
+                    "powerRating":0.125}}}}})json");
+    CHECK(has(V.validate(negJumper), "RES_TOLERANCE", Severity::Impossible));
+}
+
 TEST_CASE("Recalibration: NegativeResistanceImpossible", "[recalibration]") {
     json p = json::parse(R"json({"resistor":{"manufacturerInfo":{"reference":"X",
       "datasheetInfo":{"electrical":{"resistance":-5.0}}}}})json");

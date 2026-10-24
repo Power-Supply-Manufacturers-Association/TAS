@@ -210,9 +210,15 @@ void check_resistors(const json& datasheet, const Ctx& ctx, std::vector<Finding>
                  fmt("|temperatureCoefficient| very large [ppm/C]", *tc, thr::RES_TEMPCO_PPM_SUS));
     }
 
-    // CHECK (NEW): tolerance band.
+    // CHECK (NEW): tolerance band. A 0-ohm jumper/link (nominal resistance exactly
+    // 0) has no tolerance band: its rating is a MAXIMUM resistance (resistance.
+    // maximum, e.g. 50 mohm) plus a rated current, and vendors print its tolerance
+    // as "0 %" (TE NEOHM CRG0805ZR) or as the ordering-code letter. RAS requires a
+    // tolerance number, so 0 is the faithful value there. Only a non-zero part
+    // with tolerance <= 0 (or any negative tolerance) is impossible.
+    const bool zero_ohm = R && *R == 0.0;
     if (auto tol = scalar_at(*elec, {"tolerance"})) {
-        if (*tol <= 0)
+        if (*tol < 0 || (*tol == 0 && !zero_ohm))
             emit(out, ctx, "RES_TOLERANCE", Severity::Impossible, *tol, 0, "tolerance <= 0");
         else if (*tol > thr::RES_TOL_MAX_SUS)
             emit(out, ctx, "RES_TOLERANCE", Severity::Suspicious, *tol, thr::RES_TOL_MAX_SUS,
