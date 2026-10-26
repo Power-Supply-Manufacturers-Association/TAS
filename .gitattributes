@@ -1,1 +1,4 @@
 *.ndjson filter=lfs diff=lfs merge=lfs -text
+# Contributor submissions (incoming/, see incoming/README.md) are small plain-text files in
+# a pull request. Outside contributors cannot write to the LFS store, so LFS is off there.
+incoming/** !filter !diff !merge text

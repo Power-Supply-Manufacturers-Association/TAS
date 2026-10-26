@@ -129,6 +129,21 @@
 .playwright-mcp/
 .pytest_cache/
 
+# ── .claude/ — only the public contributor skill (tas-contribute) ─────────────
+# It is how outside contributors add parts through a pull request; it ships the gate
+# wrappers they must run. Local agent settings and every other skill stay untracked.
+/.claude/*
+!/.claude/skills/
+/.claude/skills/*
+!/.claude/skills/tas-contribute/
+
+# ── incoming/ — contributor submissions, one dated dir per pull request ───────
+# incoming/<YYYY-MM-DD>-<github-handle>-<topic>/ (see incoming/README.md). A maintainer
+# re-gates and ingests them into data/; nothing else may live here.
+/incoming/*
+!/incoming/README.md
+!/incoming/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]-*/
+
 # ── loose scratch at the repo root ────────────────────────────────────────────
 /*.py
 /*.json
