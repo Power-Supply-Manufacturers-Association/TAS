@@ -1036,6 +1036,50 @@ TEST_CASE("AntiSynthesis: DiodeLeakageUnitsSuspicious", "[antisynthesis]") {
     CHECK(!has_code(V.validate(no_if), "DIO_LEAKAGE_VS_IF"));
 }
 
+// 2026-10-30 local-model pilot: Ministral 3 8B stored zener test currents in mA
+// (PLZ39A 5 for 0.005) or from the I_ZK column, and a TVS clamp from the I_PP column
+// (SM8S11A 363 V on a 13.5 V breakdown). Every existing check accepted them.
+TEST_CASE("AntiSynthesis: ZenerTestPowerAndTvsClampRatio", "[antisynthesis]") {
+    auto zener = [](double vz, double izt, double pd) {
+        json p = json::parse(R"json({"semiconductor":{"diode":{"manufacturerInfo":{
+          "reference":"X","datasheetInfo":{"provenance":[{"source":"manufacturerDatasheet"}],
+          "part":{"subType":"zener","technology":"Si"},"electrical":{}}}}}})json");
+        json& e = p["semiconductor"]["diode"]["manufacturerInfo"]["datasheetInfo"]["electrical"];
+        e["breakdownVoltage"] = {{"minimum", vz * 0.95}, {"maximum", vz * 1.05}};
+        e["zenerTestCurrent"] = izt;
+        e["powerDissipation"] = pd;
+        return p;
+    };
+    // PLZ39A: 5 (mA left as A) on a 0.5 W part; SMPZ3921B: I_ZK 1 instead of 0.0551.
+    CHECK(has(V.validate(zener(36.5, 5.0, 0.5)), "DIO_ZENER_TEST_POWER", Severity::Suspicious));
+    CHECK(has(V.validate(zener(7.1, 1.0, 1.5)), "DIO_ZENER_TEST_POWER", Severity::Suspicious));
+    // The real values are silent, and so is the catalogue's own top (1.5x: a 5 mA
+    // test on a small-package 51 V part).
+    CHECK(!has_code(V.validate(zener(36.5, 0.005, 0.5)), "DIO_ZENER_TEST_POWER"));
+    CHECK(!has_code(V.validate(zener(7.1, 0.0551, 1.5)), "DIO_ZENER_TEST_POWER"));
+    CHECK(!has_code(V.validate(zener(51.0, 0.005, 0.17)), "DIO_ZENER_TEST_POWER"));
+    // Flag only, never condemn.
+    CHECK(!has(V.validate(zener(36.5, 5.0, 0.5)), "DIO_ZENER_TEST_POWER", Severity::Impossible));
+
+    auto tvs = [](double vbr, double vc) {
+        json p = json::parse(R"json({"semiconductor":{"diode":{"manufacturerInfo":{
+          "reference":"X","datasheetInfo":{"provenance":[{"source":"manufacturerDatasheet"}],
+          "part":{"subType":"tvs","technology":"Si"},"electrical":{"standoffVoltage":11.0}}}}}})json");
+        json& e = p["semiconductor"]["diode"]["manufacturerInfo"]["datasheetInfo"]["electrical"];
+        e["breakdownVoltage"] = {{"minimum", vbr * 0.9}, {"maximum", vbr}};
+        e["clampingVoltage"] = vc;
+        return p;
+    };
+    // SM8S11A: the I_PP column (363) stored as the clamp.
+    CHECK(has(V.validate(tvs(13.5, 363.0)), "DIO_TVS_CLAMP_RATIO", Severity::Suspicious));
+    // Its real 18.2 V clamp, and the catalogue maximum (Bourns CDSOD323-T03C, 19 V
+    // on 4 V), are silent.
+    CHECK(!has_code(V.validate(tvs(13.5, 18.2)), "DIO_TVS_CLAMP_RATIO"));
+    CHECK(!has_code(V.validate(tvs(4.0, 19.0)), "DIO_TVS_CLAMP_RATIO"));
+    // Littelfuse SP2502LBTG, the esd-array top: 20 V on a 3.3 V minimum breakdown.
+    CHECK(!has_code(V.validate(tvs(3.3, 20.0)), "DIO_TVS_CLAMP_RATIO"));
+}
+
 // ABT #507: the wave-2 SiC-diode ladder generator's MPN template.
 TEST_CASE("AntiSynthesis: Wave2SicDiodeLadderMpn", "[antisynthesis]") {
     auto ref = [](const char* r) {

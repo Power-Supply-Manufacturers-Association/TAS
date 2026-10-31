@@ -170,6 +170,44 @@ void check_diodes(const json& datasheet, const Ctx& ctx, std::vector<Finding>& o
                  fmt(esd_array ? "clampingVoltage < breakdownVoltage (esd array: "
                                  "a forward-VF clamp sits below reverse breakdown)"
                                : "clampingVoltage < breakdownVoltage", *vcl, *vbr));
+        // CHECK (NEW, 2026-10-30): the clamp's CEILING. At its rated pulse an
+        // avalanche TVS clamps at ~1.3-1.6x breakdown (catalogue p99 1.55) and the
+        // low-voltage ESD parts with large dynamic resistance reach 4.75x (Bourns
+        // CDSOD323-T03C, 19 V on 4 V; esd array SP2502LBTG 6.06x on a minimum
+        // breakdown); nothing real is beyond that. A local-model
+        // extraction stored SM8S11A's I_PP column (363 A) as its clamp: 27x an
+        // 13.5 V breakdown, which the ordering checks above all accept.
+        if (vbr && vcl && *vbr > 0 && *vcl > *vbr * thr::DIO_TVS_CLAMP_VBR_SUS)
+            emit(out, ctx, "DIO_TVS_CLAMP_RATIO", Severity::Suspicious, *vcl / *vbr,
+                 thr::DIO_TVS_CLAMP_VBR_SUS,
+                 fmt("clampingVoltage / breakdownVoltage above any real clamp (catalogue "
+                     "max 6.06): the clamp is another column's value",
+                     *vcl / *vbr, thr::DIO_TVS_CLAMP_VBR_SUS));
+    }
+
+    // CHECK (NEW, 2026-10-30): DIO_ZENER_TEST_POWER. V_Z is specified at I_ZT, so
+    // the part dissipates V_Z x I_ZT during its own test; vendors pick I_ZT at a
+    // fraction of the rating (PLZ: 5 mA x 39 V = 0.2 W on a 0.5 W part). Across
+    // the 4,156 catalogue zeners carrying all three fields the ratio tops out at
+    // 1.5 (small SOD-523 parts tested at 5 mA). A test current left in mA (5 for
+    // 0.005) or read from the I_ZK / I_ZM column lands at 2x-800x. SUSPICIOUS:
+    // the product says the three values disagree, not which one is wrong.
+    if (tech_has(tech, "zener")) {
+        auto vz = scalar_at(*elec, {"breakdownVoltage"});
+        auto izt = scalar_at(*elec, {"zenerTestCurrent"});
+        auto pd = scalar_at(*elec, {"powerDissipation"});
+        if (vz && izt && pd && *vz > 0 && *izt > 0 && *pd > 0) {
+            double ratio = (*vz) * (*izt) / (*pd);
+            if (ratio > thr::DIO_ZENER_TEST_POWER_SUS)
+                emit(out, ctx, "DIO_ZENER_TEST_POWER", Severity::Suspicious, ratio,
+                     thr::DIO_ZENER_TEST_POWER_SUS,
+                     fmt("breakdownVoltage x zenerTestCurrent / powerDissipation: the "
+                         "part's own V_Z test would dissipate more than twice its rating "
+                         "(test current in mA, or the I_ZK/I_ZM column)",
+                         ratio, thr::DIO_ZENER_TEST_POWER_SUS));
+        } else {
+            skipped.push_back("DIO_ZENER_TEST_POWER");
+        }
     }
 
     // ---- TVS pulse ratings and their stated waveforms (2026-10-17) ----------

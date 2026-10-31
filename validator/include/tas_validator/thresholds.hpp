@@ -425,6 +425,21 @@ inline constexpr double DIO_VFIF_RATIO_SUS = 2.0;
 // grade. Promote only once ABT #550 lands and a real failure is traced here.
 inline constexpr double DIO_LEAK_IF_SUS = 0.02;
 
+// DIO_TVS_CLAMP_RATIO: clampingVoltage / breakdownVoltage ceiling (2026-10-30).
+// Measured on the 12,588 catalogue TVS rows carrying both: p50 1.32, p99 1.55,
+// p99.9 2.63, max 4.75 (Bourns CDSOD323-T03/-T03C, low-voltage ESD parts with a
+// large dynamic resistance). The 171 esd-subType rows reach 6.06 (Littelfuse
+// SP2502LBTG, 20 V clamp on a 3.3 V MINIMUM breakdown: steering array at 75 A).
+// 8 clears every row of both; a value from a current column (SM8S11A: 363 on a
+// 13.5 V breakdown, 27x) is far beyond it.
+inline constexpr double DIO_TVS_CLAMP_VBR_SUS = 8.0;
+
+// DIO_ZENER_TEST_POWER: V_Z x I_ZT / P_D ceiling (2026-10-30). Measured on the
+// 4,156 catalogue zeners carrying all three: 3,755 below 0.5, 26 in 1-1.5 (Diodes
+// Inc. / Bourns small-package parts tested at 5 mA), none above 1.5. A mA test
+// current stored as amps is ~1000x the real ratio.
+inline constexpr double DIO_ZENER_TEST_POWER_SUS = 2.0;
+
 // 4H-SiC Schottky forward voltage vs the metal-semiconductor BARRIER (adversarial
 // physics review, 2026-09-04). The Ni/Ti-on-4H-SiC barrier height is 1.0-1.35 eV,
 // so a SiC Schottky cannot conduct its rated current at a drop below the barrier
