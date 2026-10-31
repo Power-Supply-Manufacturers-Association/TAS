@@ -27,6 +27,7 @@ pull request; a maintainer re-runs the gates and ingests them.
    manufacturer's own product page, parametric table or datasheet is evidence. Polite
    fetching: robots.txt, one fetcher per host, about one request per 2 s, the generic
    User-Agent `TAS-catalogue-research/1.0`, no personal data in any request.
+   Per-manufacturer routes, bot gates, robots limits and traps: [references/vendors.md](references/vendors.md).
 4. **Build records** -- [references/data-rules.md](references/data-rules.md). Copy the shape
    of live records of the same family. SI units, the discriminator wrapper, provenance as a
    reference (`{source, sourceName, sourceUrl, retrievedDate, fields, verification,
