@@ -42,6 +42,9 @@
 # The single consolidated quarantine sink. Per-catalogue quarantine files
 # (*.quarantine_*.ndjson), backups, vendor dumps and staging live local-only.
 !/data/quarantine.ndjson
+# Real TE parts outside every catalogue scope (sensors, passive components, valves, antennas),
+# moved out of the connector quarantine 2026-11-01 so they stop counting as broken connectors. Kept, not deleted.
+!/data/out_of_scope_te.ndjson
 
 # ── scripts/ — only the validation entry points ───────────────────────────────
 # Everything else in scripts/ is one-off ETL: vendor scraping/import, data repair,
