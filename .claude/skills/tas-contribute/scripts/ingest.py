@@ -48,7 +48,7 @@ with open(live + '.lock', 'w') as lk:
         for line in f:
             h.update(line); n_old += 1
     pre = h.hexdigest()
-    ids = KnownSpellings().add_file(live, 'live', fields=('partNumber',))
+    ids = KnownSpellings().add_file(live, 'live', fields=('partNumber', 'reference'))
     rows, skipped, twins, allowed_used = [], 0, [], set()
     for l in open(src):
         r = json.loads(l)
@@ -56,7 +56,7 @@ with open(live + '.lock', 'w') as lk:
         if 'manufacturerInfo' not in body: body = next(iter(body.values()))
         mi = body['manufacturerInfo']
         if mi.get('name') in rename: mi['name'] = rename[mi['name']]
-        pn = mi['datasheetInfo']['part']['partNumber']
+        pn = mi['datasheetInfo'].get('part', {}).get('partNumber') or mi['reference']  # cableCore records carry only reference
         if manufacturer_key(mi.get('name')) is None:
             sys.exit('INGEST REFUSED -- %s names no manufacturer; identity is (partNumber, '
                      'manufacturer); nothing was written' % pn)
