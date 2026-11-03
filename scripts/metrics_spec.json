@@ -1,5 +1,5 @@
 {
- "version": "2",
+ "version": "2.1",
  "weights": {
   "existence": 15,
   "traced": 25,
@@ -1648,7 +1648,15 @@
     }
    ],
    "curves": [
-    "derating.currentVsAmbient"
+    {
+     "path": "derating.currentVsAmbient",
+     "when": {
+      "familyDetails.family": [
+       "terminalBlock",
+       "power"
+      ]
+     }
+    }
    ],
    "curves_missing_in_schema": [
     "insertion loss / return loss vs frequency (S-parameter files are referenced via sParameters[], not a curve)"
