@@ -70,6 +70,15 @@ TEST_CASE("weighted checklist of a datasheet-traced part", "[metrics]") {
     CHECK(p->identity_mfr == "examplesemi");
 }
 
+TEST_CASE("a digitised graph is 0.8 evidence", "[metrics]") {
+    const Scorer s(kSpec);
+    const auto dig = s.score(
+        diode(json::array({provenance("digitizedFromGraph", "manufacturer", {"electrical.forwardCurrent"})})),
+        "diodes", true, 0.0);
+    REQUIRE(dig);
+    CHECK(dig->checks.existence == Approx(0.8));
+}
+
 TEST_CASE("series datasheet 0.6, distributor 0.8x, existence-only counts for existence", "[metrics]") {
     const Scorer s(kSpec);
     const auto series = s.score(diode(json::array({provenance("seriesConfirmed", "distributor", nullptr)})), "diodes",

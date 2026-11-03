@@ -14,13 +14,14 @@ namespace tas::metrics {
 
 namespace {
 
-// Evidence credit (Alf, 2026-10-17): exact part + values read = 1.0; series datasheet = 0.6;
+// Evidence credit (Alf, 2026-10-17): exact part + values read = 1.0; digitised graph = 0.8; series datasheet = 0.6;
 // existence confirmed without values counts for existence only; anything else 0.
 double evidence(const json& e) {
     const auto it = e.find("verification");
     if (it == e.end() || !it->is_string()) return 0.0;
     const auto& v = it->get_ref<const std::string&>();
     if (v == "valuesReadFromSource" || v == "partNamed") return 1.0;
+    if (v == "digitizedFromGraph") return 0.8;  // curve points read off the part's own graph (Alf, 2026-11-03)
     if (v == "seriesConfirmed") return 0.6;
     return 0.0;
 }

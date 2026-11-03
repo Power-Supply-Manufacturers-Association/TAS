@@ -71,7 +71,7 @@ SCRAPE_NARRATIVE = re.compile(r'(https?://|\bhttp\b|\bGET\b|\bcurl\b|pdftotext|s
                               r'extract|regex|match(ed|ing)?\b|wayback|archive|playwright|browser|\.py\b|'
                               r'\bscript|\bagent\b|\bticket\b|#\d{2,}|staging|export|api\b|imported|pipeline)', re.I)
 PROV_SOURCES = {'manufacturerParametric', 'manufacturerDatasheet', 'manufacturerDatabase', 'derived'}
-PROV_VERIFICATIONS = {'partNamed', 'valuesReadFromSource', 'seriesConfirmed', 'existenceConfirmed'}
+PROV_VERIFICATIONS = {'partNamed', 'valuesReadFromSource', 'digitizedFromGraph', 'seriesConfirmed', 'existenceConfirmed'}
 # Aggregators and archives are leads, never evidence for a value or a part.
 AGGREGATOR_HOSTS = ('datasheetarchive.com', 'alldatasheet', 'datasheet4u', 'datasheetspdf',
                     'datasheetpdf', 'datasheetcatalog', 'datasheets360', 'octopart.com',

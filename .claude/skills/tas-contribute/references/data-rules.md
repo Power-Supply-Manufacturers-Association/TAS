@@ -115,7 +115,9 @@ is rejected.
 
 - `source`: `manufacturerParametric` | `manufacturerDatasheet` | `manufacturerDatabase` | `derived`.
 - `verification`: `partNamed` (the cited document prints the exact part number),
-  `valuesReadFromSource` (you read the stored values of `fields` from it), `seriesConfirmed`
+  `valuesReadFromSource` (you read the stored values of `fields` from it), `digitizedFromGraph`
+  (the curve points in `fields` were read off a plotted graph in it, only when the manufacturer
+  publishes those values in no numeric form), `seriesConfirmed`
   (the document covers the series, not this exact code), `existenceConfirmed` (an
   authoritative vendor catalogue confirms the part exists, no values read). Never claim more
   than you did.
