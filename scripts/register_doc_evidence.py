@@ -44,7 +44,7 @@ from ingest_gate import (  # noqa: E402
     DOC_EVIDENCE_DIR,
     DocEvidenceError,
     DocEvidenceStore,
-    SEARCH_RE,
+    search_shaped,
     text_names_part,
 )
 
@@ -107,7 +107,7 @@ def register_one(store, spec, dry_run=False, replace=False):
     url = (spec.get("url") or "").strip()
     if not url:
         raise DocEvidenceError("entry has no url: %r" % spec)
-    if SEARCH_RE.search(url):
+    if search_shaped(url):
         raise DocEvidenceError("%s is a search-shaped URL; the gate never consults the "
                                "store for one (a results page echoes its query)" % url)
     if spec.get("docfetch"):

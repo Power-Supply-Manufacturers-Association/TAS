@@ -984,6 +984,22 @@ SEARCH_RE = re.compile(
     r"(?:[?&](?:q|query|keyword|keywords|search|searchterm|term|text|filter)=)"
     r"|/search(?:/|\?|$)|/find(?:/|\?|$)|/parametric|/results?(?:/|\?|$)"
     r"|selectionmodel|/productsearch", re.I)
+# A vendor's parametric CATEGORY list is a document, not a results page: TI's
+# selectionmodel result-list is addressed by a numeric category id
+# (destinationId), never by a typed part number, and returns every part of that
+# category. It cannot echo a query, so its stored text may testify that it
+# prints the part (Alf 2026-11-06). Anything else under selectionmodel stays
+# SEARCH-shaped.
+PARAMETRIC_LIST_RE = re.compile(
+    r"^https://www\.ti\.com/selectionmodel/api/gpn/result-list\?destinationId=\d+"
+    r"&destinationType=GPT&mode=parametric&locale=[a-z]{2}-[A-Z]{2}$")
+
+
+def search_shaped(url):
+    """True for a URL whose page may only echo a query (see SEARCH_RE)."""
+    return bool(url) and bool(SEARCH_RE.search(url)) and not PARAMETRIC_LIST_RE.match(url)
+
+
 DOCID_RE = re.compile(
     r"/(?:docs?|documents?|datasheets?|pdfs?|download|getfile|media)/[^/?#]*\d{3,}",
     re.I)
@@ -1259,7 +1275,7 @@ def stored_document_names_part(url, ident):
     prints `ident` as a whole token. A search-shaped URL is never consulted: a
     results page echoes the query it was given, which is not a document naming
     the part (see SEARCH_PARAM_VALUE)."""
-    if not url or SEARCH_RE.search(url):
+    if not url or search_shaped(url):
         return False
     store = evidence_store()
     if url.strip() not in store:
