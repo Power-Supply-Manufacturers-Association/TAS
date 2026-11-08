@@ -31,8 +31,11 @@ per line by content hash so a nightly run re-validates only rows that changed, a
 report.
 
 COVERAGE (0-100 %). Distinct live parts per catalogue divided by the estimated number of
-in-scope parts the Datasheet Archive serves (current + obsolete; entries it lists but never
-serves are excluded, Alf 2026-10-17), from staging/coverage/coverage_estimate.json. Both sides
+in-scope ORDERABLE CODES (current + obsolete), from staging/coverage/coverage_estimate_v2.json
+(Alf 2026-11-09: v2 counts the universe in the numerator's unit, orderable codes, by scaling the
+Datasheet Archive universe with each vendor's complete code list and adding listed-but-unserved
+brands; staging/coverage/REESTIMATE.md). The v1 universe (DSA-served entries only, 2026-10-17)
+stays in coverage_estimate.json for comparison. Both sides
 key a part on (canonical manufacturer, normalised mpn), the canonical name coming from
 scripts/manufacturer_aliases.json. Quarantined parts are not counted as covered.
 
@@ -160,7 +163,7 @@ def main():
     W = spec['weights']
     alive_f = os.path.join(TAS, 'staging', 'metrics', 'url_alive.json')
     alive = json.load(open(alive_f)) if os.path.exists(alive_f) else {}
-    cov_f = os.path.join(TAS, 'staging', 'coverage', 'coverage_estimate.json')
+    cov_f = os.path.join(TAS, 'staging', 'coverage', 'coverage_estimate_v2.json')
     cov = json.load(open(cov_f)) if os.path.exists(cov_f) else None
     fp = schema_fingerprint()
 
