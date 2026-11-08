@@ -226,7 +226,8 @@ const json* find_component(const json& part, std::string& comp) {
     static const char* AAS[] = {"operationalAmplifier", "comparator", "instrumentationAmplifier",
                                 "differenceAmplifier", "programmableGainAmplifier", "buffer",
                                 "sampleHold", "analogSwitch", "multiplexer", "adc", "dac",
-                                "multiplier", "integrator", "summer", "digitalIsolator"};
+                                "multiplier", "integrator", "summer", "digitalIsolator",
+                                "digitalPotentiometer", "currentSensor"};
     const json& aas =
         part.contains("analog") && part["analog"].is_object() ? part["analog"] : part;
     for (const char* k : AAS)

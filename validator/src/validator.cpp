@@ -871,7 +871,8 @@ Verdict PartValidator::validate(const json& part) const {
         "connectorAccessory", "thermalManagement",
         "operationalAmplifier", "comparator", "instrumentationAmplifier", "differenceAmplifier",
         "programmableGainAmplifier", "buffer", "sampleHold", "analogSwitch", "multiplexer",
-        "adc", "dac", "multiplier", "integrator", "summer", "digitalIsolator"};
+        "adc", "dac", "multiplier", "integrator", "summer", "digitalIsolator",
+        "digitalPotentiometer", "currentSensor"};
     int disc_count = 0;
     for (const char* k : DISCRIMINATORS)
         if (part.contains(k)) ++disc_count;
@@ -988,7 +989,7 @@ Verdict PartValidator::validate(const json& part) const {
             "operationalAmplifier", "comparator", "instrumentationAmplifier",
             "differenceAmplifier", "programmableGainAmplifier", "buffer", "sampleHold",
             "analogSwitch", "multiplexer", "adc", "dac", "multiplier", "integrator", "summer",
-            "digitalIsolator"};
+            "digitalIsolator", "digitalPotentiometer", "currentSensor"};
         const json& aas = part.contains("analog") && part["analog"].is_object() ? part["analog"]
                                                                                  : part;
         const char* hit = nullptr;

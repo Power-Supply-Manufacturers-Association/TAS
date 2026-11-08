@@ -1911,6 +1911,14 @@ TEST_CASE("Corpus: AnalogCatalogueIsScreenedWrappedAndBare", "[corpus][dispatche
     CHECK(found_outlier_on_bad(cohort_at({"adc"}, "sampleRate", 1.0e12)));
 }
 
+// digitalPotentiometer and currentSensor (registered 2026-11-08) must reach the
+// cohort screens too, in both shapes.
+TEST_CASE("Corpus: DigitalPotentiometerAndCurrentSensorAreScreened", "[corpus][dispatcher]") {
+    CHECK(found_outlier_on_bad(
+        cohort_at({"analog", "digitalPotentiometer"}, "supplyCurrent", 1.0e12)));
+    CHECK(found_outlier_on_bad(cohort_at({"currentSensor"}, "bandwidth", 1.0e12)));
+}
+
 // ---- 2026-10-17: surge-waveform sub-cohorts for TVS pulse ratings -----------
 // peakPulseCurrent / peakPulsePower are screened only against rows stating the
 // SAME waveform for them; rows stating none form their own "unstated" cohort.
@@ -2835,6 +2843,112 @@ TEST_CASE("AAS: digitalIsolator counts toward GEN_MULTI_DISCRIMINATOR", "[analog
     json p = {{"digitalIsolator", good_digital_isolator()["analog"]["digitalIsolator"]},
               {"operationalAmplifier", json::object()}};
     CHECK(has(V.validate(p), "GEN_MULTI_DISCRIMINATOR", Severity::Impossible));
+}
+
+// ---- AAS digitalPotentiometer / currentSensor: generic checks only ---------
+// Same registration as digitalIsolator above. TAS/data holds no row of either
+// family yet, so the fixtures are minimal records written from the vendor
+// datasheets; both validate against AAS/AAS.json (digitalPotentiometer.json /
+// currentSensor.json). Before these discriminators were registered, validate()
+// threw "no known component discriminator" on every such record.
+//
+// Microchip MCP4131-103E/P (datasheet DS22060, MCP413X/415X/423X/425X,
+// https://ww1.microchip.com/downloads/en/DeviceDoc/22060b.pdf): single 7-bit
+// potentiometer, 129 wiper positions, R_AB 10 kOhm +/-20 %, SPI, volatile wiper
+// that resets to mid-scale at power-on, E temperature grade -40..125 C.
+json good_digital_potentiometer() {
+    return json::parse(R"json({"analog": {"digitalPotentiometer": {"manufacturerInfo": {
+      "name": "Microchip Technology", "reference": "MCP4131-103E/P",
+      "datasheetInfo": {
+        "part": {"partNumber": "MCP4131-103E/P"},
+        "electrical": {"numberOfChannels": 1, "configuration": "potentiometer",
+                       "numberOfPositions": 129,
+                       "totalResistance": {"nominal": 10000.0, "minimum": 8000.0,
+                                           "maximum": 12000.0},
+                       "digitalInterface": ["SPI"],
+                       "memory": {"type": "volatile", "powerOnPosition": 0.5}},
+        "thermal": {"operatingTemperature": {"minimum": -40.0, "maximum": 125.0}},
+        "provenance": [{"source": "manufacturerDatasheet"}]}}}}})json");
+}
+
+// Allegro ACS712ELCTR-20A-T (ACS712 datasheet,
+// https://www.allegromicro.com/-/media/files/datasheets/acs712-datasheet.ashx):
+// open-loop Hall sensor, +/-20 A, 100 mV/A, 2.1 kVrms isolation, E grade -40..85 C.
+json good_current_sensor() {
+    return json::parse(R"json({"analog": {"currentSensor": {"manufacturerInfo": {
+      "name": "Allegro MicroSystems", "reference": "ACS712ELCTR-20A-T",
+      "datasheetInfo": {
+        "part": {"partNumber": "ACS712ELCTR-20A-T"},
+        "electrical": {"numberOfChannels": 1, "sensingElement": "hall",
+                       "loopType": "openLoop",
+                       "measuringRange": {"minimum": -20.0, "maximum": 20.0},
+                       "output": {"type": "analogVoltage", "sensitivity": 0.1},
+                       "isolation": {"withstandVoltageRms": 2100.0}},
+        "thermal": {"operatingTemperature": {"minimum": -40.0, "maximum": 85.0}},
+        "provenance": [{"source": "manufacturerDatasheet"}]}}}}})json");
+}
+
+namespace {
+struct NewAasKind {
+    const char* disc;
+    const char* skip_code;
+    json (*make)();
+};
+const NewAasKind NEW_AAS_KINDS[] = {
+    {"digitalPotentiometer", "ANA_DIGITAL_POTENTIOMETER_NO_PHYSICS_RULES",
+     good_digital_potentiometer},
+    {"currentSensor", "ANA_CURRENT_SENSOR_NO_PHYSICS_RULES", good_current_sensor},
+};
+}  // namespace
+
+TEST_CASE("AAS: digitalPotentiometer and currentSensor are known discriminators and get the "
+          "generic checks",
+          "[analog][digitalPotentiometer][currentSensor]") {
+    for (const auto& k : NEW_AAS_KINDS) {
+        INFO(k.disc);
+        json p = k.make();
+        CHECK_NOTHROW(V.validate(p));  // must NOT throw "no known component discriminator"
+        Verdict v = V.validate(p);
+        CHECK(v.valid);
+        CHECK(v.findings.empty());
+        // Dispatched to check_analog under its own name, not as an unknown subtype.
+        CHECK(std::find(v.skipped.begin(), v.skipped.end(), k.skip_code) != v.skipped.end());
+        CHECK(std::find(v.skipped.begin(), v.skipped.end(), "ANA_UNKNOWN_SUBTYPE") ==
+              v.skipped.end());
+        // Bare (un-wrapped) AAS document shape is accepted too.
+        json bare = {{k.disc, p["analog"][k.disc]}};
+        CHECK_NOTHROW(V.validate(bare));
+    }
+}
+
+TEST_CASE("AAS: digitalPotentiometer and currentSensor generic rules fire (temperature order, "
+          "provenance)",
+          "[analog][digitalPotentiometer][currentSensor]") {
+    for (const auto& k : NEW_AAS_KINDS) {
+        INFO(k.disc);
+        json p = k.make();
+        auto& ds = p["analog"][k.disc]["manufacturerInfo"]["datasheetInfo"];
+        const double tmin = ds["thermal"]["operatingTemperature"]["minimum"];
+        const double tmax = ds["thermal"]["operatingTemperature"]["maximum"];
+        ds["thermal"]["operatingTemperature"] = {{"minimum", tmax}, {"maximum", tmin}};
+        Verdict v = V.validate(p);
+        CHECK(has(v, "GEN_TEMP_ORDER", Severity::Impossible));
+        CHECK(!v.valid);
+
+        json q = k.make();
+        q["analog"][k.disc]["manufacturerInfo"]["datasheetInfo"].erase("provenance");
+        CHECK(has(V.validate(q), "GEN_PROVENANCE_MISSING", Severity::Suspicious));
+    }
+}
+
+TEST_CASE("AAS: digitalPotentiometer and currentSensor count toward GEN_MULTI_DISCRIMINATOR",
+          "[analog][digitalPotentiometer][currentSensor]") {
+    for (const auto& k : NEW_AAS_KINDS) {
+        INFO(k.disc);
+        // Bare AAS shape: the discriminator count looks at top-level keys.
+        json p = {{k.disc, k.make()["analog"][k.disc]}, {"operationalAmplifier", json::object()}};
+        CHECK(has(V.validate(p), "GEN_MULTI_DISCRIMINATOR", Severity::Impossible));
+    }
 }
 
 TEST_CASE("AAS: analog switch with mA off-leakage is impossible", "[analog]") {
