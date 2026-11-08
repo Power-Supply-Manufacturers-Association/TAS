@@ -724,11 +724,73 @@ def impossible_ratings(info, electrical):
     return None
 
 
+_SCRIPTS = Path(__file__).resolve().parent
+
+
+def _canonical_manufacturer(name):
+    """The duplicate finder's manufacturer canonicaliser (case, corporate suffix,
+    division and acquisition aliases), so "ON Semiconductor" and "onsemi" are one."""
+    if not isinstance(name, str) or not name.strip():
+        return None
+    if str(_SCRIPTS) not in sys.path:
+        sys.path.insert(0, str(_SCRIPTS))
+    from find_duplicate_candidates import normalize_mfr
+    return normalize_mfr(name)
+
+
+def _same_manufacturer(a, b):
+    """Canonical names equal, or one is the other plus more words ("samsung" vs
+    "samsung electro-mechanics") -- deliberately generous, because a miss here
+    lets a condemned identity back in."""
+    if a == b:
+        return True
+    short, long_ = sorted((a, b), key=len)
+    return long_.startswith(short + " ") or long_.startswith(short + "-")
+
+
+class DenySet(set):
+    """Condemned identities, plus the manufacturer each was condemned under.
+
+    An MPN alone is not an identity: HER105G was condemned as an invented Vishay
+    row, and Taiwan Semiconductor's real HER105G (citing TSC's own datasheet) is
+    a different part. An entry that records a manufacturer therefore only matches
+    a live row of that manufacturer -- or one with no manufacturer at all, which
+    cannot clear itself. An entry without a manufacturer matches on MPN alone,
+    exactly as before. A plain set passed to check_file keeps MPN-only matching.
+    """
+
+    def __init__(self, *args):
+        super().__init__(*args)
+        self.manufacturers = {}      # id -> set of canonical manufacturer names
+        self.unconditional = set()   # ids condemned at least once with no manufacturer
+
+    def condemn(self, part_id, manufacturer=None):
+        self.add(part_id)
+        canon = _canonical_manufacturer(manufacturer)
+        if canon is None:
+            self.unconditional.add(part_id)
+        else:
+            self.manufacturers.setdefault(part_id, set()).add(canon)
+
+
+def is_condemned(refs, part_id, manufacturer):
+    if part_id not in refs:
+        return False
+    denied = getattr(refs, "manufacturers", {}).get(part_id)
+    if not denied or part_id in getattr(refs, "unconditional", ()):
+        return True
+    live = _canonical_manufacturer(manufacturer)
+    if live is None:
+        return True
+    return any(_same_manufacturer(live, d) for d in denied)
+
+
 def load_quarantined_fabricated(data_dir):
     """Identities already condemned as fabricated must never reappear live.
 
     Reads ``data/fabricated_denylist.ndjson`` -- one line per condemned identity,
-    ``{"id": ..., "source": ..., "date": ...}``.
+    ``{"id": ..., "source": ..., "date": ..., "manufacturer": ...}`` (manufacturer
+    optional; see DenySet for how it narrows the match).
 
     The fabricated RECORDS themselves are gone. An invented part is not a record with
     a problem, it is not a record, so it is deleted outright rather than kept in the
@@ -740,14 +802,15 @@ def load_quarantined_fabricated(data_dir):
 
     The older quarantine harvest is kept as a fallback so an old checkout still works.
     """
-    refs = set()
+    refs = DenySet()
 
     deny = data_dir / "fabricated_denylist.ndjson"
     if deny.is_file():
         with deny.open(encoding="utf-8", errors="replace") as fh:
             for line in fh:
                 try:
-                    refs.add(str(json.loads(line)["id"]))
+                    entry = json.loads(line)
+                    refs.condemn(str(entry["id"]), entry.get("manufacturer"))
                 except Exception:
                     continue
         refs.discard("")
@@ -828,7 +891,7 @@ def check_file(path, quarantined_refs=frozenset(), stats=None):
                 if hit:
                     findings.append((lineno, label, f"MPN matches the {hit} generator template"))
                     continue
-                if any(i in quarantined_refs for i in ids):
+                if any(is_condemned(quarantined_refs, i, info.get("name")) for i in ids):
                     findings.append((lineno, label,
                                      "part was previously quarantined as fabricated "
                                      "and must not reappear live"))

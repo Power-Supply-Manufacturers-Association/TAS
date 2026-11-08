@@ -776,3 +776,57 @@ def test_high_vf_with_only_a_series_citation_is_refused(tmp_path):
     found = schottky_findings(tmp_path, schottky("V20150S-Y", 150.0, 1.43, vf_at=20.0,
                                                  verification="seriesConfirmed"))
     assert len(found) == 1 and "forward drop" in found[0][2]
+
+
+# ── manufacturer-aware denylist (ABT #2310) ───────────────────────────────────
+
+def diode(part_number, manufacturer):
+    return {"semiconductor": {"diode": {"manufacturerInfo": {
+        "name": manufacturer, "reference": part_number,
+        "datasheetInfo": {"part": {"partNumber": part_number, "subType": "ultrafast"},
+                          "electrical": {"reverseVoltage": 400.0}}}}}}
+
+
+def denylist_findings(tmp_path, entries, *records):
+    (tmp_path / "fabricated_denylist.ndjson").write_text(
+        "".join(json.dumps(e) + "\n" for e in entries))
+    refs = guard.load_quarantined_fabricated(tmp_path)
+    path = tmp_path / "diodes.ndjson"
+    path.write_text("".join(json.dumps(r) + "\n" for r in records))
+    return {label for _l, label, why in guard.check_file(path, refs)
+            if "previously quarantined as fabricated" in why}
+
+
+HER105G_VISHAY = {"id": "HER105G", "source": "diodes.ndjson (fabricated letter cohort, 2026-09-04)",
+                  "date": "2026-09-04", "manufacturer": "Vishay"}
+
+
+def test_denylist_condemns_the_mpn_only_under_its_recorded_manufacturer(tmp_path):
+    """HER105G was condemned as an invented Vishay row; TSC's real HER105G is another part."""
+    assert denylist_findings(tmp_path, [HER105G_VISHAY], diode("HER105G", "Taiwan Semiconductor")) == set()
+
+
+def test_denylisted_mpn_under_the_condemned_manufacturer_is_still_caught(tmp_path):
+    assert denylist_findings(tmp_path, [HER105G_VISHAY], diode("HER105G", "Vishay")) == {"HER105G"}
+
+
+@pytest.mark.parametrize("spelling", ["Vishay General Semiconductor - Diodes Division",
+                                      "VISHAY", "Vishay Intertechnology, Inc."])
+def test_manufacturer_spelling_variants_do_not_clear_a_condemned_part(tmp_path, spelling):
+    assert denylist_findings(tmp_path, [HER105G_VISHAY], diode("HER105G", spelling)) == {"HER105G"}
+
+
+def test_acquisition_alias_does_not_clear_a_condemned_part(tmp_path):
+    entry = {"id": "FAKE1", "source": "x", "date": "2026-09-04", "manufacturer": "ON Semiconductor"}
+    assert denylist_findings(tmp_path, [entry], diode("FAKE1", "onsemi")) == {"FAKE1"}
+
+
+def test_row_without_a_manufacturer_cannot_clear_itself(tmp_path):
+    rec = diode("HER105G", "Vishay")
+    del rec["semiconductor"]["diode"]["manufacturerInfo"]["name"]
+    assert denylist_findings(tmp_path, [HER105G_VISHAY], rec) == {"HER105G"}
+
+
+def test_denylist_entry_without_a_manufacturer_still_matches_on_mpn_alone(tmp_path):
+    entry = {"id": "HER105G", "source": "x", "date": "2026-09-04"}
+    assert denylist_findings(tmp_path, [entry], diode("HER105G", "Taiwan Semiconductor")) == {"HER105G"}
