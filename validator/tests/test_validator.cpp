@@ -2782,6 +2782,61 @@ TEST_CASE("AAS: PEAS-wrapped {analog:{...}} record dispatches to check_analog", 
     CHECK(v.valid);
 }
 
+// ---- AAS digitalIsolator: registered for the generic checks only ---------
+// Toshiba DCL320C00 as the vendor pull stored it (2 forward / 0 reverse channels,
+// 3 kVrms / 60 s barrier, -40..125 C). Schema-valid against AAS/digitalIsolator.json.
+// Before digitalIsolator was registered, validate() threw "no known component
+// discriminator" on every such row, so the gate could not judge it at all.
+json good_digital_isolator() {
+    return json::parse(R"json({"analog": {"digitalIsolator": {"manufacturerInfo": {
+      "name": "Toshiba Electronic Devices & Storage", "reference": "DCL320C00",
+      "datasheetInfo": {
+        "part": {"partNumber": "DCL320C00"},
+        "electrical": {"forwardChannels": 2, "reverseChannels": 0,
+                       "isolation": {"withstandVoltageRms": 3000.0,
+                                     "withstandVoltageDuration": 60.0}},
+        "thermal": {"operatingTemperature": {"minimum": -40.0, "maximum": 125.0}},
+        "provenance": [{"source": "manufacturerParametric"}]}}}}})json");
+}
+
+TEST_CASE("AAS: digitalIsolator is a known discriminator and gets the generic checks",
+          "[analog][digitalIsolator]") {
+    json p = good_digital_isolator();
+    CHECK_NOTHROW(V.validate(p));  // must NOT throw "no known component discriminator"
+    Verdict v = V.validate(p);
+    CHECK(v.valid);
+    CHECK(v.findings.empty());
+    // Dispatched to check_analog under its own name, not as an unknown subtype.
+    CHECK(std::find(v.skipped.begin(), v.skipped.end(),
+                    "ANA_DIGITAL_ISOLATOR_NO_PHYSICS_RULES") != v.skipped.end());
+    CHECK(std::find(v.skipped.begin(), v.skipped.end(), "ANA_UNKNOWN_SUBTYPE") ==
+          v.skipped.end());
+    // Bare (un-wrapped) AAS document shape is accepted too.
+    json bare = {{"digitalIsolator", p["analog"]["digitalIsolator"]}};
+    CHECK_NOTHROW(V.validate(bare));
+}
+
+TEST_CASE("AAS: digitalIsolator generic rules fire (temperature order, provenance)",
+          "[analog][digitalIsolator]") {
+    json p = good_digital_isolator();
+    auto& ds = p["analog"]["digitalIsolator"]["manufacturerInfo"]["datasheetInfo"];
+    ds["thermal"]["operatingTemperature"] = {{"minimum", 125.0}, {"maximum", -40.0}};
+    Verdict v = V.validate(p);
+    CHECK(has(v, "GEN_TEMP_ORDER", Severity::Impossible));
+    CHECK(!v.valid);
+
+    json q = good_digital_isolator();
+    q["analog"]["digitalIsolator"]["manufacturerInfo"]["datasheetInfo"].erase("provenance");
+    CHECK(has(V.validate(q), "GEN_PROVENANCE_MISSING", Severity::Suspicious));
+}
+
+TEST_CASE("AAS: digitalIsolator counts toward GEN_MULTI_DISCRIMINATOR", "[analog][digitalIsolator]") {
+    // Bare AAS shape: the discriminator count looks at top-level keys.
+    json p = {{"digitalIsolator", good_digital_isolator()["analog"]["digitalIsolator"]},
+              {"operationalAmplifier", json::object()}};
+    CHECK(has(V.validate(p), "GEN_MULTI_DISCRIMINATOR", Severity::Impossible));
+}
+
 TEST_CASE("AAS: analog switch with mA off-leakage is impossible", "[analog]") {
     json p = json::parse(R"json({"analog": {"analogSwitch": {"manufacturerInfo": {
       "name": "X", "reference": "SW", "datasheetInfo": {

@@ -9,6 +9,7 @@
 //   switch      (analogSwitch, multiplexer) -> utils.switchCore (onResistance, ...)
 //   multiplier  -> own scaleFactor/totalError/bandwidth -> check_multiplier()
 //   behavioral  (integrator, summer only) -> no electrical; nothing to check
+//   digitalIsolator -> registered for generic checks only; no physics rules yet
 // Bounds: TI/ADI op-amp portfolios (GBW 50 MHz–8 GHz; slew ≤~3500 V/µs; CMRR/PSRR 60–140 dB;
 // Vos µV–10 mV), ADC ≤32 bits / ~GSPS, comparator t_PD ns–µs.
 #include "tas_validator/helpers.hpp"
@@ -280,6 +281,10 @@ void check_analog(const json& datasheet, const Ctx& ctx, std::vector<Finding>& o
     else if (c == "adc" || c == "dac") check_converter(*elec, ctx, out);
     else if (c == "analogSwitch" || c == "multiplexer") check_switch(*elec, ctx, out);
     else if (c == "multiplier") check_multiplier(*elec, ctx, out);
+    // digitalIsolator is registered for the generic, provenance and corpus checks
+    // only; no physics rule has been written for it yet, and saying so is clearer
+    // than reporting it as an unknown subtype.
+    else if (c == "digitalIsolator") skipped.push_back("ANA_DIGITAL_ISOLATOR_NO_PHYSICS_RULES");
     else skipped.push_back("ANA_UNKNOWN_SUBTYPE");
 }
 
