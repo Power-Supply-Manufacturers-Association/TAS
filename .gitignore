@@ -59,6 +59,8 @@
 !/scripts/manufacturer_aliases.json
 !/scripts/check_component_uris.py
 !/scripts/check_no_fabricated_parts.py
+# Per-part exemptions from the arithmetic-ladder rule (real series whose values follow a printed formula), each with an evidence URL.
+!/scripts/fabrication_ladder_exemptions.ndjson
 # External existence oracle: one web search per part, judged strictly by a model.
 # The pattern guards above cannot tell a unique, plausible invented part from a
 # real one; this asks the world. Calibrate it against known fakes before use.

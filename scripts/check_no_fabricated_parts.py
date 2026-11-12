@@ -412,6 +412,32 @@ def seed_expanded_mosfet(electrical):
 # (provenance, the cohort's own citations), not a looser bar here.
 LADDER_MIN = 8
 LADDER_MIN_MIDSTRING_FIELDS = 2
+
+# PER-PART EXEMPTIONS from rule (4) ONLY, approved by Alf on 2026-11-12. A part
+# listed here was read from its OWN vendor page (evidenceUrl), and the "second
+# affine quantity" that trips the rule is a vendor formula printed on that page.
+# The first entries are Taiyo Yuden RF MLCCs (MLASE/MLAST/MMASU/MBASU/...), where
+# the page prints the EIA class-1 minimum Q = 400 + 20*C(pF), so qFactor is affine
+# in the 0.1 pF value code by construction. Every other rule still screens these
+# parts, and an entry without an evidenceUrl is an error, not a pass.
+LADDER_EXEMPTIONS_FILE = Path(__file__).resolve().parent / "fabrication_ladder_exemptions.ndjson"
+
+
+def load_ladder_exemptions(path=LADDER_EXEMPTIONS_FILE):
+    """{(canonical manufacturer, PART NUMBER)} exempt from the arithmetic-ladder rule."""
+    exempt = set()
+    if not path.exists():
+        return frozenset()
+    for lineno, line in enumerate(path.open(encoding="utf-8"), 1):
+        if not line.strip():
+            continue
+        entry = json.loads(line)
+        if not entry.get("evidenceUrl") or not entry.get("partNumber") or not entry.get("manufacturer"):
+            raise ValueError(f"{path}:{lineno}: a ladder exemption needs manufacturer, "
+                             "partNumber and evidenceUrl")
+        exempt.add((_canonical_manufacturer(entry["manufacturer"]),
+                    entry["partNumber"].strip().upper()))
+    return frozenset(exempt)
 # Every maximal digit run, with what surrounds it.
 LADDER_RUN = re.compile(r"\d+")
 LADDER_DEGENERATE_FRACTION = 0.7
@@ -539,7 +565,7 @@ def _vendor_corroborates(members, ladder_fields):
 
 
 def find_arithmetic_ladders(cohorts):
-    """Yield (members, why) for each cohort that is a generator's output.
+    """Yield (manufacturer, members, why) for each cohort that is a generator's output.
 
     `cohorts` maps (manufacturer, prefix, suffix) -> list of (index, lineno,
     part_number, {field: value}, description); `suffix` is "" for a trailing-index cohort and
@@ -585,7 +611,7 @@ def find_arithmetic_ladders(cohorts):
                            for f in ladder_fields)
                + f", while {degenerate} of the other {others} shared numeric field(s) "
                "hold one identical value across every member")
-        yield members, why
+        yield manufacturer, members, why
 
 
 def _ladder_numeric_fields(electrical):
@@ -843,7 +869,7 @@ def new_stats():
             "nonComponentRows": 0, "nestedUnidentified": 0}
 
 
-def check_file(path, quarantined_refs=frozenset(), stats=None):
+def check_file(path, quarantined_refs=frozenset(), stats=None, ladder_exemptions=None):
     """Findings [(lineno, label, why)] for one catalogue.
 
     ``stats`` (optional dict, see new_stats) is filled with what the guard SAW:
@@ -930,9 +956,14 @@ def check_file(path, quarantined_refs=frozenset(), stats=None):
     # A label now belongs to one candidate cohort per numeric run, so the same
     # record can be condemned by more than one of them. Report it once.
     seen = set()
-    for members, why in find_arithmetic_ladders(cohorts):
+    if ladder_exemptions is None:
+        ladder_exemptions = load_ladder_exemptions()
+    for manufacturer, members, why in find_arithmetic_ladders(cohorts):
+        manufacturer = _canonical_manufacturer(manufacturer)
         for _index, lineno, label, _fields, _description in members:
             if (lineno, label) in seen:
+                continue
+            if (manufacturer, str(label).strip().upper()) in ladder_exemptions:
                 continue
             seen.add((lineno, label))
             findings.append((lineno, label, why))

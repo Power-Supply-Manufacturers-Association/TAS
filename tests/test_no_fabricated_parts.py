@@ -830,3 +830,39 @@ def test_row_without_a_manufacturer_cannot_clear_itself(tmp_path):
 def test_denylist_entry_without_a_manufacturer_still_matches_on_mpn_alone(tmp_path):
     entry = {"id": "HER105G", "source": "x", "date": "2026-09-04"}
     assert denylist_findings(tmp_path, [entry], diode("HER105G", "Taiwan Semiconductor")) == {"HER105G"}
+
+
+# ── 2026-11-12: per-part ladder exemptions (Taiyo Yuden RF MLCC) ─────────────
+# A vendor that prints a FORMULA quantity (EIA class-1 Q >= 400 + 20*C) makes a
+# real 0.1 pF value-coded family look like a two-quantity generator. Alf approved
+# exempting such parts one by one, each with the page it was read from. The
+# exemption must reach ONLY the listed parts: the same cohort unlisted still fails.
+
+def _rf_cohort():
+    return [ladder_record(f"MLASE042SCG{i}R1BWNA01", manufacturer="Taiyo Yuden",
+                          capacitance=(1 + i) * 1e-12, qFactor=400 + 20 * (1 + i),
+                          ratedVoltage=16.0, dissipationFactor=0.001)
+            for i in range(9)]
+
+
+def test_listed_ladder_cohort_is_exempt(tmp_path):
+    path = tmp_path / "capacitors.ndjson"
+    path.write_text("".join(json.dumps(r) + "\n" for r in _rf_cohort()))
+    exempt = frozenset((guard._canonical_manufacturer("Taiyo Yuden"), f"MLASE042SCG{i}R1BWNA01")
+                       for i in range(9))
+    assert guard.check_file(path, ladder_exemptions=exempt) == []
+
+
+def test_unlisted_identical_cohort_still_fails(tmp_path):
+    path = tmp_path / "capacitors.ndjson"
+    path.write_text("".join(json.dumps(r) + "\n" for r in _rf_cohort()))
+    found = guard.check_file(path, ladder_exemptions=frozenset())
+    assert len(found) == 9, found
+    assert "exact linear function of the part index" in found[0][2]
+
+
+def test_exemption_without_evidence_is_an_error(tmp_path):
+    f = tmp_path / "ex.ndjson"
+    f.write_text(json.dumps({"manufacturer": "Taiyo Yuden", "partNumber": "X1"}) + "\n")
+    with pytest.raises(ValueError):
+        guard.load_ladder_exemptions(f)
