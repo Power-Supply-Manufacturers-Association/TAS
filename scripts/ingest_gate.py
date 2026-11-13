@@ -990,9 +990,15 @@ SEARCH_RE = re.compile(
 # category. It cannot echo a query, so its stored text may testify that it
 # prints the part (Alf 2026-11-06). Anything else under selectionmodel stays
 # SEARCH-shaped.
+# ECS Inc.'s /parametric-search/ page takes no query and embeds the whole
+# category's product table (Alf 2026-11-13); only the bare URL qualifies.
+# Bourns' parametric page addressed by its category id alone (Cat=npInductors)
+# is the category list Alf exported (2026-11-13); a part query stays search-shaped.
 PARAMETRIC_LIST_RE = re.compile(
     r"^https://www\.ti\.com/selectionmodel/api/gpn/result-list\?destinationId=\d+"
-    r"&destinationType=GPT&mode=parametric&locale=[a-z]{2}-[A-Z]{2}$")
+    r"&destinationType=GPT&mode=parametric&locale=[a-z]{2}-[A-Z]{2}$"
+    r"|^https://ecsxtal\.com/parametric-search/$"
+    r"|^https://bourns\.com/parametric-search\?Cat=npInductors$")
 
 
 def search_shaped(url):

@@ -32,3 +32,28 @@ def test_generic_search_pages_stay_search_shaped():
 
 def test_unregistered_list_never_names_a_part():
     assert not g.stored_document_names_part(LIST + "&q=TPS22860", "TPS22860")
+
+
+ECS = "https://ecsxtal.com/parametric-search/"
+
+
+def test_ecs_parametric_page_is_not_search_shaped():
+    assert not g.search_shaped(ECS)
+
+
+def test_ecs_parametric_page_with_query_stays_search_shaped():
+    assert g.search_shaped(ECS + "?q=ECS-MPI4040")
+    assert g.search_shaped("http://ecsxtal.com/parametric-search/")
+    assert g.search_shaped("https://ecsxtal.com/parametric-search/crystals")
+
+
+BOURNS = "https://bourns.com/parametric-search?Cat=npInductors"
+
+
+def test_bourns_inductor_category_page_is_not_search_shaped():
+    assert not g.search_shaped(BOURNS)
+
+
+def test_bourns_category_page_with_query_stays_search_shaped():
+    assert g.search_shaped(BOURNS + "&q=SRR1260")
+    assert g.search_shaped("https://bourns.com/parametric-search?Cat=npResistors")
