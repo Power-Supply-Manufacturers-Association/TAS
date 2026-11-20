@@ -834,11 +834,15 @@ def load_quarantined_fabricated(data_dir):
     if deny.is_file():
         with deny.open(encoding="utf-8", errors="replace") as fh:
             for line in fh:
+                # Skip only a malformed line. Anything else (an ImportError from the
+                # manufacturer canonicaliser, say) must stop the guard: swallowing it
+                # left the denylist EMPTY and the guard passed condemned parts.
                 try:
                     entry = json.loads(line)
-                    refs.condemn(str(entry["id"]), entry.get("manufacturer"))
-                except Exception:
+                    ident = str(entry["id"])
+                except (json.JSONDecodeError, KeyError, TypeError):
                     continue
+                refs.condemn(ident, entry.get("manufacturer"))
         refs.discard("")
         return refs
 
